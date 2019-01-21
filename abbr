@@ -1,10 +1,14 @@
-typeset -A abbreviations
-abbreviations=(
-  abbr1 'hello world'
-)
+ABBR_SOURCE="$HOME"/.zsh_abbreviations
+
+typeset -gA abbreviations
+
+if [ -s "$ABBR_SOURCE" ]; then
+  while read k v; do abbreviations[$k]="$v"; done < "$ABBR_SOURCE"
+fi
 
 function abbr() {
   abbreviations+=("$@")
+  echo "$*" >> $ABBR_SOURCE
 }
 
 function expand_abbr() {
