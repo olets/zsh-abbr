@@ -1,23 +1,43 @@
-ABBR_SOURCE="$HOME"/.zsh_abbreviations
+ABBR_SOURCE="$HOME"/.zsh_abbrs
 
-typeset -gA abbreviations
+typeset -gA abbrs
 
-if [ -s "$ABBR_SOURCE" ]; then
-  while read k v; do abbreviations[$k]="$v"; done < "$ABBR_SOURCE"
+if [ -f "$ABBR_SOURCE" ]; then
+  while read k v; do abbrs[$k]="$v"; done < "$ABBR_SOURCE"
 fi
 
+function fresh_temp() {
+  rm $1 2> /dev/null
+  mktemp $1 1> /dev/null
+}
+
+function add_local_abbr() {
+  abbrs+=("$@")
+}
+
+function add_global_abbr() {
+  local temp_abbrs="$TMPDIR"abbrArray
+  fresh_temp "$temp_abbrs"
+
+  for key value in ${(kv)abbrs}; do
+    echo "$key $value" >> "$temp_abbrs"
+  done
+
+  mv "$temp_abbrs" "$ABBR_SOURCE"
+}
+
 function abbr() {
-  abbreviations+=("$@")
-  echo "$*" >> $ABBR_SOURCE
+  add_local_abbr "$@"
+  add_global_abbr
 }
 
 function expand_abbr() {
   local current_word="${LBUFFER/*[ ,;|&\n\t]/}"
-  local expansion=${abbreviations[$current_word]}
+  local expansion=${abbrs[$current_word]}
 
   if [ $expansion ]; then
-    local command_up_to_abbreviation="${LBUFFER%%$current_word}"
-    LBUFFER="$command_up_to_abbreviation$expansion"
+    local rest="${LBUFFER%%$current_word}"
+    LBUFFER="$rest$expansion"
   fi
   zle self-insert
 }
