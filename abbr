@@ -1,0 +1,28 @@
+typeset -A abbreviations
+abbreviations=(
+  abbr1 'hello world'
+)
+
+function abbr() {
+  abbreviations+=("$@")
+}
+
+function expand_abbr() {
+  local current_word="${LBUFFER/*[ ,;|&\n\t]/}"
+  local expansion=${abbreviations[$current_word]}
+
+  if [ $expansion ]; then
+    local command_up_to_abbreviation="${LBUFFER%%$current_word}"
+    LBUFFER="$command_up_to_abbreviation$expansion"
+  fi
+  zle self-insert
+}
+
+zle -N expand_abbr
+
+bindkey " " expand_abbr
+bindkey "^ " magic-space
+bindkey -M isearch " " magic-space
+bindkey -M isearch "^ " expand_abbr
+
+
