@@ -1,11 +1,11 @@
-ABBR_SOURCE="$HOME"/.zsh_abbrs
+OPT_SOURCE="$HOME"/.zsh_abbrs
 
 typeset -gA abbrs
 abbrs=()
 
 function read_abbrs () {
-  if [ -f "$ABBR_SOURCE" ]; then
-    while read k v; do abbrs[$k]="$v"; done < "$ABBR_SOURCE"
+  if [ -f "$OPT_SOURCE" ]; then
+    while read k v; do abbrs[$k]="$v"; done < "$OPT_SOURCE"
   fi
 }
 
@@ -18,7 +18,7 @@ function check_allowed_option() {
 }
 
 function try_sync_global_abbr() {
-  if ! "$ABBR_UNIVERSAL"; then
+  if ! "$OPT_UNIVERSAL"; then
     return
   fi
 
@@ -30,7 +30,7 @@ function try_sync_global_abbr() {
     echo "$key $value" >> "$temp_abbrs"
   done
 
-  mv "$temp_abbrs" "$ABBR_SOURCE"
+  mv "$temp_abbrs" "$OPT_SOURCE"
 }
 
 function add_local_abbr() {
@@ -62,50 +62,50 @@ function rename() {
 }
 
 function abbr() {
-  ABBR_ADD=false
-  ABBR_RENAME=false
-  ABBR_SHOW=false
-  ABBR_LIST=false
-  ABBR_ERASE=false
-  ABBR_GLOBAL=false
-  ABBR_UNIVERSAL=false
+  OPT_ADD=false
+  OPT_RENAME=false
+  OPT_SHOW=false
+  OPT_LIST=false
+  OPT_ERASE=false
+  OPT_GLOBAL=false
+  OPT_UNIVERSAL=false
 
   while getopts "arslegU" opt; do
     case "$opt" in
       a)
-        disallowed_options=("$ABBR_RENAME" "$ABBR_SHOW" "$ABBR_LIST" "$ABBR_ERASE")
+        disallowed_options=("$OPT_RENAME" "$OPT_SHOW" "$OPT_LIST" "$OPT_ERASE")
         check_allowed_option $disallowed_options
-        ABBR_ADD=true
+        OPT_ADD=true
         ;;
       r)
-        disallowed_options=("$ABBR_ADD" "$ABBR_SHOW" "$ABBR_LIST" "$ABBR_ERASE")
+        disallowed_options=("$OPT_ADD" "$OPT_SHOW" "$OPT_LIST" "$OPT_ERASE")
         check_allowed_option $disallowed_options
-        ABBR_RENAME=true
+        OPT_RENAME=true
         ;;
       s)
-        disallowed_options=("$ABBR_ADD" "$ABBR_RENAME" "$ABBR_LIST" "$ABBR_ERASE")
+        disallowed_options=("$OPT_ADD" "$OPT_RENAME" "$OPT_LIST" "$OPT_ERASE")
         check_allowed_option $disallowed_options
-        ABBR_SHOW=true
+        OPT_SHOW=true
         ;;
       l)
-        disallowed_options=("$ABBR_ADD" "$ABBR_RENAME" "$ABBR_SHOW" "$ABBR_ERASE")
+        disallowed_options=("$OPT_ADD" "$OPT_RENAME" "$OPT_SHOW" "$OPT_ERASE")
         check_allowed_option $disallowed_options
-        ABBR_LIST=true
+        OPT_LIST=true
         ;;
       e)
-        disallowed_options=("$ABBR_ADD" "$ABBR_RENAME" "$ABBR_SHOW" "$ABBR_LIST")
+        disallowed_options=("$OPT_ADD" "$OPT_RENAME" "$OPT_SHOW" "$OPT_LIST")
         check_allowed_option $disallowed_options
-        ABBR_ERASE=true
+        OPT_ERASE=true
         ;;
       g)
-        disallowed_options=("$ABBR_UNIVERSAL")
+        disallowed_options=("$OPT_UNIVERSAL")
         check_allowed_option $disallowed_options
-        ABBR_GLOBAL=true
+        OPT_GLOBAL=true
         ;;
       U)
-        disallowed_options=("$ABBR_GLOBAL")
+        disallowed_options=("$OPT_GLOBAL")
         check_allowed_option $disallowed_options
-        ABBR_UNIVERSAL=true
+        OPT_UNIVERSAL=true
         ;;
       *) echo "Unknown option $opt"
     esac
@@ -115,9 +115,9 @@ function abbr() {
 
   if [[ ! -n $1 ]]; then
     echo 'need arguments'
-  elif "$ABBR_ADD"; then
+  elif "$OPT_ADD"; then
     add_local_abbr "$@"
-  elif "$ABBR_RENAME"; then
+  elif "$OPT_RENAME"; then
     rename "$@"
   fi
 }
