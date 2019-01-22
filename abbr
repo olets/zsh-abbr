@@ -98,35 +98,31 @@ Version 3.0.0  Fri Dec 28 2018  abbr(1)
 typeset -gA abbrs
 abbrs=()
 
-function print_error() {
+function abbr_error() {
   set -x
   print "abbr $@\nFor help run abbr -h"
 }
 
-function read_abbrs() {
+function abbr_read_universals() {
   if [ -f "$OPT_SOURCE" ]; then
     while read k v; do abbrs[$k]="$v"; done < "$OPT_SOURCE"
   fi
 }
 
-function get_expansion() {
+function abbr_get_expansion() {
   print ${abbrs[$1]}
 }
 
-function check_allowed_option() {
+function abbr_check_options() {
   for arg in "$@"; do
     if "$arg"; then
-      print_error ": Illegal combination of options"
+      abbr_error ": Illegal combination of options"
       exit
     fi
   done
 }
 
-function try_sync_global_abbr() {
-  if ! "$OPT_UNIVERSAL"; then
-    return
-  fi
-
+function sync_global_abbr() {
   local temp_abbrs="$TMPDIR"abbrArray
   rm $temp_abbrs 2> /dev/null
   mktemp $temp_abbrs 1> /dev/null
@@ -138,9 +134,17 @@ function try_sync_global_abbr() {
   mv "$temp_abbrs" "$OPT_SOURCE"
 }
 
-function add() {
+function abbr_try_sync_global() {
+  if ! "$OPT_UNIVERSAL"; then
+    return
+  fi
+
+  sync_global_abbr
+}
+
+function abbr_add() {
   if [[ $# -lt 2 ]]; then
-    print_error "-a: Requires at least two arguments"
+    abbr_error "-a: Requires at least two arguments"
     exit
   fi
 
@@ -148,13 +152,13 @@ function add() {
   shift
   value="$@"
 
-  abbrs[$key]="$value"
-  try_sync_global_abbr
+  abbrs[$key]="'$value'"
+  abbr_try_sync_global
 }
 
-function rename() {
+function abbr_rename() {
   if [[ $# -ne 2 ]]; then
-    print_error "-r: Requires exactly two arguments"
+    abbr_error "-r: Requires exactly two arguments"
     exit
   fi
 
@@ -163,38 +167,39 @@ function rename() {
   value=${abbrs[$old_key]}
   abbrs[$new_key]="$value"
   unset abbrs["$old_key"]
-  try_sync_global_abbr
+  abbr_try_sync_global
 }
 
-function list() {
+function abbr_list() {
   if [[ -n $1 ]]; then
-    print_error "-l: Unexpected argument"
+    abbr_error "-l: Unexpected argument"
     exit
   fi
 
   print -l ${(k)abbrs}
 }
 
-function erase() {
+function abbr_erase() {
   if [[ -n $2 ]]; then
-    print_error "-e: Expected one argument"
+    abbr_error "-e: Expected one argument"
     exit
   elif [[ ! -n $1 ]]; then
-    print_error "-e: Erase needs a variable name"
+    abbr_error "-e: Erase needs a variable name"
     exit
   fi
 
-  if [ "$(get_expansion $1)" ]; then
+  if [ "$(abbr_get_expansion $1)" ]; then
     unset abbrs[$1]
+    abbr_try_sync_global
   else
-    print_error "-e: No abbreviation named $1"
+    abbr_error "-e: No abbreviation named $1"
     exit
   fi
 }
 
-function show() {
+function abbr_show() {
   if [[ -n $1 ]]; then
-    print_error "-s: Unexpected argument"
+    abbr_error "-s: Unexpected argument"
     exit
   fi
 
@@ -216,37 +221,37 @@ function abbr() {
     case "$opt" in
       a)
         disallowed_options=("$OPT_RENAME" "$OPT_SHOW" "$OPT_LIST" "$OPT_ERASE")
-        check_allowed_option $disallowed_options
+        abbr_check_options $disallowed_options
         OPT_ADD=true
         ;;
       r)
         disallowed_options=("$OPT_ADD" "$OPT_SHOW" "$OPT_LIST" "$OPT_ERASE")
-        check_allowed_option $disallowed_options
+        abbr_check_options $disallowed_options
         OPT_RENAME=true
         ;;
       s)
         disallowed_options=("$OPT_ADD" "$OPT_RENAME" "$OPT_LIST" "$OPT_ERASE")
-        check_allowed_option $disallowed_options
+        abbr_check_options $disallowed_options
         OPT_SHOW=true
         ;;
       l)
         disallowed_options=("$OPT_ADD" "$OPT_RENAME" "$OPT_SHOW" "$OPT_ERASE")
-        check_allowed_option $disallowed_options
+        abbr_check_options $disallowed_options
         OPT_LIST=true
         ;;
       e)
         disallowed_options=("$OPT_ADD" "$OPT_RENAME" "$OPT_SHOW" "$OPT_LIST")
-        check_allowed_option $disallowed_options
+        abbr_check_options $disallowed_options
         OPT_ERASE=true
         ;;
       g)
         disallowed_options=("$OPT_UNIVERSAL")
-        check_allowed_option $disallowed_options
+        abbr_check_options $disallowed_options
         OPT_GLOBAL=true
         ;;
       U)
         disallowed_options=("$OPT_GLOBAL")
-        check_allowed_option $disallowed_options
+        abbr_check_options $disallowed_options
         OPT_UNIVERSAL=true
         ;;
       h)
@@ -254,7 +259,7 @@ function abbr() {
         exit
         ;;
       *)
-        print_error "Unknown option '-$OPTARG'"
+        abbr_error "Unknown option '-$OPTARG'"
         ;;
     esac
   done
@@ -262,21 +267,21 @@ function abbr() {
   shift $((OPTIND-1))
 
   if "$OPT_RENAME"; then
-    rename "$@"
+    abbr_rename "$@"
   elif "$OPT_LIST"; then
-    list
+    abbr_list
   elif "$OPT_ERASE"; then
-    erase "$@"
+    abbr_erase "$@"
   elif "$OPT_ADD" || [[ -n $1 ]]; then
-    add "$@"
+    abbr_add "$@"
   else
-    show
+    abbr_show
   fi
 }
 
-function expand_abbr() {
+function abbr_expand() {
   local current_word="${LBUFFER/*[ ,;|&\n\t]/}"
-  local expansion=$(get_expansion $current_word)
+  local expansion=$(abbr_get_expansion $current_word)
 
   if [ $expansion ]; then
     local rest="${LBUFFER%%$current_word}"
@@ -285,12 +290,12 @@ function expand_abbr() {
   zle self-insert
 }
 
-read_abbrs
+abbr_read_universals
 
 
-zle -N expand_abbr
+zle -N abbr_expand
 
-bindkey " " expand_abbr
+bindkey " " abbr_expand
 bindkey "^ " magic-space
 bindkey -M isearch " " magic-space
-bindkey -M isearch "^ " expand_abbr
+bindkey -M isearch "^ " abbr_expand
