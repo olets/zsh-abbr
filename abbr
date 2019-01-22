@@ -9,6 +9,10 @@ function read_abbrs () {
   fi
 }
 
+function get_expansion() {
+  print ${abbrs[$1]}
+}
+
 function check_allowed_option() {
   for arg in "$@"; do
     if "$arg"; then
@@ -63,6 +67,21 @@ function rename() {
 
 function list() {
   print -l ${(k)abbrs}
+}
+
+function erase() {
+  if [[ -n $2 ]]; then
+    print "Expected one argument"
+    exit
+  elif [[ ! -n $1 ]]; then
+    print "Erase needs a variable name"
+  fi
+
+  if [ "$(get_expansion $1)" ]; then
+    unset abbrs[$1]
+  else
+    print "No expansion named $1"
+  fi
 }
 
 function abbr() {
@@ -123,12 +142,14 @@ function abbr() {
     rename "$@"
   elif "$OPT_LIST"; then
     list
+  elif "$OPT_ERASE"; then
+    erase "$@"
   fi
 }
 
 function expand_abbr() {
   local current_word="${LBUFFER/*[ ,;|&\n\t]/}"
-  local expansion=${abbrs[$current_word]}
+  local expansion=$(get_expansion $current_word)
 
   if [ $expansion ]; then
     local rest="${LBUFFER%%$current_word}"
