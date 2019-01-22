@@ -98,6 +98,11 @@ Version 3.0.0  Fri Dec 28 2018  abbr(1)
 typeset -gA abbrs
 abbrs=()
 
+function print_error() {
+  set -x
+  print "abbr $@\nFor help run abbr -h"
+}
+
 function read_abbrs() {
   if [ -f "$OPT_SOURCE" ]; then
     while read k v; do abbrs[$k]="$v"; done < "$OPT_SOURCE"
@@ -111,7 +116,8 @@ function get_expansion() {
 function check_allowed_option() {
   for arg in "$@"; do
     if "$arg"; then
-      printf "Illegal combination of options\n"
+      print_error ": Illegal combination of options"
+      exit
     fi
   done
 }
@@ -134,7 +140,7 @@ function try_sync_global_abbr() {
 
 function add() {
   if [[ $# -lt 2 ]]; then
-    print "abbr -a: Requires at least two arguments"
+    print_error "-a: Requires at least two arguments"
     exit
   fi
 
@@ -148,7 +154,7 @@ function add() {
 
 function rename() {
   if [[ $# -ne 2 ]]; then
-    print "abbr -r: Requires exactly two arguments"
+    print_error "-r: Requires exactly two arguments"
     exit
   fi
 
@@ -162,7 +168,8 @@ function rename() {
 
 function list() {
   if [[ -n $1 ]]; then
-    print "abbr -l: Unexpected argument"
+    print_error "-l: Unexpected argument"
+    exit
   fi
 
   print -l ${(k)abbrs}
@@ -170,22 +177,25 @@ function list() {
 
 function erase() {
   if [[ -n $2 ]]; then
-    print "abbr -e: Expected one argument"
+    print_error "-e: Expected one argument"
     exit
   elif [[ ! -n $1 ]]; then
-    print "abbr -e: Erase needs a variable name"
+    print_error "-e: Erase needs a variable name"
+    exit
   fi
 
   if [ "$(get_expansion $1)" ]; then
     unset abbrs[$1]
   else
-    print "abbr -e: No abbreviation named $1"
+    print_error "-e: No abbreviation named $1"
+    exit
   fi
 }
 
 function show() {
   if [[ -n $1 ]]; then
-    print "abbr -s: Unexpected argument"
+    print_error "-s: Unexpected argument"
+    exit
   fi
 
   for key value in ${(kv)abbrs}; do
@@ -240,12 +250,11 @@ function abbr() {
         OPT_UNIVERSAL=true
         ;;
       h)
-        echo "$MAN"
+        print "$MAN\n"
         exit
         ;;
       *)
-        print "abbr: Unknown option '-$OPTARG'"
-        exit
+        print_error "Unknown option '-$OPTARG'"
         ;;
     esac
   done
