@@ -89,7 +89,10 @@ function abbr() {
     echo 'need arguments'
   elif "$ABBR_ADD"; then
     add_local_abbr "$@"
-    add_global_abbr
+
+    if "$ABBR_UNIVERSAL"; then
+      sync_global_abbr
+    fi
   fi
 }
 
