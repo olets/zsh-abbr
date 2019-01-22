@@ -84,6 +84,12 @@ function erase() {
   fi
 }
 
+function show() {
+  for key value in ${(kv)abbrs}; do
+    echo "$key $value"
+  done
+}
+
 function abbr() {
   OPT_ADD=false
   OPT_RENAME=false
@@ -144,6 +150,8 @@ function abbr() {
     list
   elif "$OPT_ERASE"; then
     erase "$@"
+  elif "$OPT_SHOW"; then
+    show
   fi
 }
 
