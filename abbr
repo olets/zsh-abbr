@@ -18,7 +18,11 @@ function check_allowed_option() {
 }
 
 function add_local_abbr() {
-  abbrs+=("$@")
+  key="$1"
+  shift
+  value="$@"
+
+  abbrs[$key]="$value"
 }
 
 function add_global_abbr() {
