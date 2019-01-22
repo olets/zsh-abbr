@@ -37,9 +37,9 @@ function try_sync_global_abbr() {
   mv "$temp_abbrs" "$OPT_SOURCE"
 }
 
-function add_local_abbr() {
+function add() {
   if [[ $# -lt 2 ]]; then
-    print "Wrong number of arguments."
+    print "abbr -a: Requires at least two arguments"
     exit
   fi
 
@@ -142,15 +142,15 @@ function abbr() {
 
   shift $((OPTIND-1))
 
-  if "$OPT_ADD"; then
-    add_local_abbr "$@"
-  elif "$OPT_RENAME"; then
+  if "$OPT_RENAME"; then
     rename "$@"
   elif "$OPT_LIST"; then
     list
   elif "$OPT_ERASE"; then
     erase "$@"
-  elif "$OPT_SHOW"; then
+  elif "$OPT_ADD" || [[ -n $1 ]]; then
+    add "$@"
+  else
     show
   fi
 }
