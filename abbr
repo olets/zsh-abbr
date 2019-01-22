@@ -61,6 +61,10 @@ function rename() {
   try_sync_global_abbr
 }
 
+function list() {
+  print -l ${(k)abbrs}
+}
+
 function abbr() {
   OPT_ADD=false
   OPT_RENAME=false
@@ -113,12 +117,12 @@ function abbr() {
 
   shift $((OPTIND-1))
 
-  if [[ ! -n $1 ]]; then
-    echo 'need arguments'
-  elif "$OPT_ADD"; then
+  if "$OPT_ADD"; then
     add_local_abbr "$@"
   elif "$OPT_RENAME"; then
     rename "$@"
+  elif "$OPT_LIST"; then
+    list
   fi
 }
 
