@@ -266,7 +266,7 @@ function abbr() {
 
   shift $((OPTIND-1))
 
-  if ! $ABBR_OPT_GLOBAL; then
+  if [[ ! $ABBR_OPT_GLOBAL ]]; then
     ABBR_OPT_UNIVERSAL=true
   fi
 
