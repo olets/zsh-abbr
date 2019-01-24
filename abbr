@@ -101,7 +101,6 @@ typeset -gA abbrs
 abbrs=()
 
 function abbr_error() {
-  set -x
   print "abbr $@\nFor help run abbr -h"
 }
 
@@ -115,13 +114,9 @@ function abbr_get_expansion() {
   print ${abbrs[$1]}
 }
 
-function abbr_check_options() {
-  for arg in "$@"; do
-    if "$arg"; then
-      abbr_error ": Illegal combination of options"
-      exit
-    fi
-  done
+function abbr_bad_options() {
+  abbr_error ": Illegal combination of options"
+  exit
 }
 
 function sync_global_abbr() {
@@ -219,39 +214,45 @@ function abbr() {
   while getopts ":arslegUh" opt; do
     case "$opt" in
       a)
-        disallowed_options=($abbr_opt_rename $abbr_opt_show $abbr_opt_list $abbr_opt_erase)
-        abbr_check_options $disallowed_options
+        if $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase; then
+          abbr_bad_options
+        fi
         abbr_opt_add=true
         ;;
       r)
-        disallowed_options=($abbr_opt_add $abbr_opt_show $abbr_opt_list $abbr_opt_erase)
-        abbr_check_options $disallowed_options
+        if $abbr_opt_add || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase; then
+          abbr_bad_options
+        fi
         abbr_opt_rename=true
         ;;
       s)
-        disallowed_options=($abbr_opt_add $abbr_opt_rename $abbr_opt_list $abbr_opt_erase)
-        abbr_check_options $disallowed_options
+        if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_list || $abbr_opt_erase; then
+          abbr_bad_options
+        fi
         abbr_opt_show=true
         ;;
       l)
-        disallowed_options=($abbr_opt_add $abbr_opt_rename $abbr_opt_show $abbr_opt_erase)
-        abbr_check_options $disallowed_options
+        if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase; then
+          abbr_bad_options
+        fi
         abbr_opt_list=true
         ;;
       e)
-        disallowed_options=($abbr_opt_add $abbr_opt_rename $abbr_opt_show $abbr_opt_list)
-        abbr_check_options $disallowed_options
+        if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list; then
+          abbr_bad_options
+        fi
         abbr_opt_erase=true
         ;;
       g)
-        disallowed_options=($ABBR_OPT_UNIVERSAL)
-        abbr_check_options $disallowed_options
+        if $ABBR_OPT_UNIVERSAL; then
+          abbr_bad_options
+        fi
         ABBR_OPT_GLOBAL=true
-        ABBR_OPT_UNIVERSAL=false
         ;;
       U)
-        disallowed_options=($ABBR_OPT_GLOBAL)
-        abbr_check_options $disallowed_options
+        if $ABBR_OPT_GLOBAL; then
+          abbr_bad_options
+        fi
         ;;
       h)
         print "$MAN\n"
