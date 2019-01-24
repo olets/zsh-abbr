@@ -205,6 +205,7 @@ function abbr_show() {
 }
 
 function abbr() {
+  local disallowed_options
   local abbr_opt_add=false
   local abbr_opt_rename=false
   local abbr_opt_show=false
@@ -258,9 +259,7 @@ function abbr() {
         print "$MAN\n"
         exit
         ;;
-      *)
-        abbr_error "Unknown option '-$OPTARG'"
-        ;;
+      *) abbr_error "Unknown option '-$OPTARG'" ;;
     esac
   done
 
