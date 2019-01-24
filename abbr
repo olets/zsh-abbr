@@ -1,4 +1,4 @@
-OPT_SOURCE="$HOME"/.zsh_abbrs
+ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
 ABBR_OPT_GLOBAL=false
 ABBR_OPT_UNIVERSAL=true
 
@@ -106,8 +106,8 @@ function abbr_error() {
 }
 
 function abbr_read_universals() {
-  if [ -f "$OPT_SOURCE" ]; then
-    while read k v; do abbrs[$k]="$v"; done < "$OPT_SOURCE"
+  if [ -f "$ABBR_UNIVERSALS_SOURCE" ]; then
+    while read k v; do abbrs[$k]="$v"; done < "$ABBR_UNIVERSALS_SOURCE"
   fi
 }
 
@@ -133,7 +133,7 @@ function sync_global_abbr() {
     echo "$k $v" >> "$temp_abbrs"
   done
 
-  mv "$temp_abbrs" "$OPT_SOURCE"
+  mv "$temp_abbrs" "$ABBR_UNIVERSALS_SOURCE"
 }
 
 function abbr_try_sync_global() {
