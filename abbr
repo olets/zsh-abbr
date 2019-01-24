@@ -1,4 +1,6 @@
 OPT_SOURCE="$HOME"/.zsh_abbrs
+ABBR_OPT_GLOBAL=false
+ABBR_OPT_UNIVERSAL=true
 
 MAN="
     abbr(zsh) is a Zsh port of fish shell's abbr
@@ -135,7 +137,7 @@ function sync_global_abbr() {
 }
 
 function abbr_try_sync_global() {
-  if ! $OPT_UNIVERSAL; then
+  if ! $ABBR_OPT_UNIVERSAL; then
     return
   fi
 
@@ -208,49 +210,47 @@ function abbr_show() {
 }
 
 function abbr() {
-  OPT_ADD=false
-  OPT_RENAME=false
-  OPT_SHOW=false
-  OPT_LIST=false
-  OPT_ERASE=false
-  OPT_GLOBAL=false
-  OPT_UNIVERSAL=true
+  local abbr_opt_add=false
+  local abbr_opt_rename=false
+  local abbr_opt_show=false
+  local abbr_opt_list=false
+  local abbr_opt_erase=false
 
   while getopts ":arslegUh" opt; do
     case "$opt" in
       a)
-        disallowed_options=($OPT_RENAME $OPT_SHOW $OPT_LIST $OPT_ERASE)
+        disallowed_options=($abbr_opt_rename $abbr_opt_show $abbr_opt_list $abbr_opt_erase)
         abbr_check_options $disallowed_options
-        OPT_ADD=true
+        abbr_opt_add=true
         ;;
       r)
-        disallowed_options=($OPT_ADD $OPT_SHOW $OPT_LIST $OPT_ERASE)
+        disallowed_options=($abbr_opt_add $abbr_opt_show $abbr_opt_list $abbr_opt_erase)
         abbr_check_options $disallowed_options
-        OPT_RENAME=true
+        abbr_opt_rename=true
         ;;
       s)
-        disallowed_options=($OPT_ADD $OPT_RENAME $OPT_LIST $OPT_ERASE)
+        disallowed_options=($abbr_opt_add $abbr_opt_rename $abbr_opt_list $abbr_opt_erase)
         abbr_check_options $disallowed_options
-        OPT_SHOW=true
+        abbr_opt_show=true
         ;;
       l)
-        disallowed_options=($OPT_ADD $OPT_RENAME $OPT_SHOW $OPT_ERASE)
+        disallowed_options=($abbr_opt_add $abbr_opt_rename $abbr_opt_show $abbr_opt_erase)
         abbr_check_options $disallowed_options
-        OPT_LIST=true
+        abbr_opt_list=true
         ;;
       e)
-        disallowed_options=($OPT_ADD $OPT_RENAME $OPT_SHOW $OPT_LIST)
+        disallowed_options=($abbr_opt_add $abbr_opt_rename $abbr_opt_show $abbr_opt_list)
         abbr_check_options $disallowed_options
-        OPT_ERASE=true
+        abbr_opt_erase=true
         ;;
       g)
-        disallowed_options=($OPT_UNIVERSAL)
+        disallowed_options=($ABBR_OPT_UNIVERSAL)
         abbr_check_options $disallowed_options
-        OPT_UNIVERSAL=false
-        OPT_GLOBAL=true
+        ABBR_OPT_GLOBAL=true
+        ABBR_OPT_UNIVERSAL=false
         ;;
       U)
-        disallowed_options=($OPT_GLOBAL)
+        disallowed_options=($ABBR_OPT_GLOBAL)
         abbr_check_options $disallowed_options
         ;;
       h)
@@ -265,13 +265,13 @@ function abbr() {
 
   shift $((OPTIND-1))
 
-  if $OPT_RENAME; then
+  if $abbr_opt_rename; then
     abbr_rename "$@"
-  elif $OPT_LIST; then
+  elif $abbr_opt_list; then
     abbr_list
-  elif $OPT_ERASE; then
+  elif $abbr_opt_erase; then
     abbr_erase "$@"
-  elif $OPT_ADD || [[ -n $1 ]]; then
+  elif $abbr_opt_add || [[ -n $1 ]]; then
     abbr_add "$@"
   else
     abbr_show
