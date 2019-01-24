@@ -200,7 +200,7 @@ function abbr_show() {
   fi
 
   for key value in ${(kv)abbrs}; do
-    print "$key $value\n"
+    print "$key $value"
   done
 }
 
