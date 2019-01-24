@@ -214,7 +214,7 @@ function abbr() {
   OPT_LIST=false
   OPT_ERASE=false
   OPT_GLOBAL=false
-  OPT_UNIVERSAL=false
+  OPT_UNIVERSAL=true
 
   while getopts ":arslegUh" opt; do
     case "$opt" in
@@ -246,12 +246,12 @@ function abbr() {
       g)
         disallowed_options=($OPT_UNIVERSAL)
         abbr_check_options $disallowed_options
+        OPT_UNIVERSAL=false
         OPT_GLOBAL=true
         ;;
       U)
         disallowed_options=($OPT_GLOBAL)
         abbr_check_options $disallowed_options
-        OPT_UNIVERSAL=true
         ;;
       h)
         print "$MAN\n"
