@@ -1,6 +1,6 @@
 ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
 ABBR_OPT_GLOBAL=false
-ABBR_OPT_UNIVERSAL=true
+ABBR_OPT_UNIVERSAL=false
 
 MAN="
     abbr(zsh) is a Zsh port of fish shell's abbr
@@ -265,6 +265,10 @@ function abbr() {
   done
 
   shift $((OPTIND-1))
+
+  if ! $ABBR_OPT_GLOBAL; then
+    ABBR_OPT_UNIVERSAL=true
+  fi
 
   if $abbr_opt_rename; then
     abbr_rename "$@"
