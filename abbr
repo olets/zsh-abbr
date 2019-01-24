@@ -101,7 +101,8 @@ typeset -gA abbrs
 abbrs=()
 
 function abbr_error() {
-  print "abbr $@\nFor help run abbr -h"
+  printf "abbr %s\\nFor help run abbr -h\\n" "$@"
+  exit
 }
 
 function abbr_read_universals() {
@@ -111,12 +112,11 @@ function abbr_read_universals() {
 }
 
 function abbr_get_expansion() {
-  print ${abbrs[$1]}
+  printf "%s\\n" "${abbrs[$1]}"
 }
 
 function abbr_bad_options() {
   abbr_error ": Illegal combination of options"
-  exit
 }
 
 function sync_global_abbr() {
