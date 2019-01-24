@@ -276,10 +276,12 @@ function abbr() {
     abbr_list
   elif $abbr_opt_erase; then
     abbr_erase "$@"
-  elif $abbr_opt_add || [[ -n $1 ]]; then
-    abbr_add "$@"
+  elif $abbr_opt_add; then
+     abbr_add "$@"
+  elif ! $abbr_opt_show && [[ -n $1 ]]; then
+     abbr_add "$@"
   else
-    abbr_show
+    abbr_show "$@"
   fi
 }
 
