@@ -72,6 +72,7 @@ function abbr() {
     local abbr_opt_show=false
     local abbr_opt_list=false
     local abbr_opt_erase=false
+    local abbr_opt_populate=false
     local abbr_usage="
         abbr(zsh) is a Zsh port of fish shell's abbr
 
@@ -239,6 +240,21 @@ function abbr() {
       fi
     }
 
+    function abbr_show() {
+      if [[ -n $1 ]]; then
+        abbr_error " -s: Unexpected argument"
+        return
+      fi
+
+      for key value in ${(kv)ABBRS}; do
+        printf "abbr -a -U -- %s %s\\n" "$key" "$value"
+      done
+
+      for key value in ${(kv)ABBRS_GLOBAL}; do
+        printf "abbr -a -g -- %s %s\\n" "$key" "$value"
+      done
+    }
+
     function abbr_list() {
       if [[ -n $1 ]]; then
         abbr_error " -l: Unexpected argument"
@@ -276,22 +292,28 @@ function abbr() {
       fi
     }
 
-    function abbr_show() {
+    function abbr_populate() {
       if [[ -n $1 ]]; then
-        abbr_error " -s: Unexpected argument"
+        abbr_error " -p: Unexpected argument"
         return
       fi
 
-      for key value in ${(kv)ABBRS}; do
-        printf "abbr -a -U -- %s %s\\n" "$key" "$value"
-      done
+      if $abbr_opt_global; then
+        for key value in ${(kv)aliases}; do
+          ABBRS_GLOBAL[$key]="$value"
+        done
+      else
+        source "$TMPDIR"abbr_universals
 
-      for key value in ${(kv)ABBRS_GLOBAL}; do
-        printf "abbr -a -g -- %s %s\\n" "$key" "$value"
-      done
+        for key value in ${(kv)aliases}; do
+          ABBRS[$key]="$value"
+        done
+
+        abbr_try_sync_global
+      fi
     }
 
-    while getopts ":harslegU" opt; do
+    while getopts ":harslepgU" opt; do
       if $abbr_should_exit; then
         abbr_should_exit=false
         return
@@ -303,34 +325,40 @@ function abbr() {
           abbr_should_exit=true
           ;;
         a)
-          if $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase; then
+          if $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate; then
             abbr_bad_options
           fi
           abbr_opt_add=true
           ;;
         r)
-          if $abbr_opt_add || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase; then
+          if $abbr_opt_add || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate; then
             abbr_bad_options
           fi
           abbr_opt_rename=true
           ;;
         s)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_list || $abbr_opt_erase; then
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate; then
             abbr_bad_options
           fi
           abbr_opt_show=true
           ;;
         l)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase; then
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_populate; then
             abbr_bad_options
           fi
           abbr_opt_list=true
           ;;
         e)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list; then
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_populate; then
             abbr_bad_options
           fi
           abbr_opt_erase=true
+          ;;
+        p)
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_list; then
+            abbr_bad_options
+          fi
+          abbr_opt_populate=true
           ;;
         g)
           if $abbr_opt_universal; then
@@ -364,6 +392,8 @@ function abbr() {
       abbr_list "$@"
     elif $abbr_opt_erase; then
       abbr_erase "$@"
+    elif $abbr_opt_populate; then
+      abbr_populate "$@"
     elif $abbr_opt_add; then
        abbr_add "$@"
     elif ! $abbr_opt_show && [[ -n $1 ]]; then
