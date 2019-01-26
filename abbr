@@ -5,13 +5,25 @@
 # Here management, scoped to the abbr command, follows expansion handling.
 
 typeset -gA ABBRS
+typeset -gA ABBRS_GLOBAL
 ABBRS=()
+ABBRS_GLOBAL=(
+  demo demo\ expansion
+)
+
 ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
 
 function abbr_read_universals() {
+  local abbr_universals_temp="$TMPDIR"abbr_universals
+
   if [ -f "$ABBR_UNIVERSALS_SOURCE" ]; then
     while read -r k v; do ABBRS[$k]="$v"; done < "$ABBR_UNIVERSALS_SOURCE"
   fi
+
+  rm "$abbr_universals_temp" 2> /dev/null
+  mktemp "$abbr_universals_temp" 1> /dev/null
+
+  typeset -p ABBRS > "$abbr_universals_temp"
 }
 
 function abbr_expand() {
@@ -23,7 +35,12 @@ function abbr_expand() {
     local current_word="${LBUFFER/*[ ,;|&\n\t]/}"
     local expansion
 
-    expansion=$(abbr_get_expansion "$current_word")
+    expansion="${ABBRS_GLOBAL[$current_word]}"
+
+    if [[ ! -n $expansion ]]; then
+      source "$TMPDIR"abbr_universals
+      expansion="${ABBRS[$current_word]}"
+    fi
 
     if [ "$expansion" ]; then
       local rest="${LBUFFER%%$current_word}"
