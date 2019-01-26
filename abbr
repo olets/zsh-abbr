@@ -257,12 +257,21 @@ function abbr() {
         return
       fi
 
-      if [ ${ABBRS[(I)$1]} ]; then
-        unset ABBRS[$1]
-        abbr_try_sync_global
+      if $abbr_opt_global; then
+        if [ ${ABBRS_GLOBAL[(I)$1]} ]; then
+          unset ABBRS_GLOBAL[$1]
+        else
+          abbr_error " -e: No global abbreviation named $1"
+          return
+        fi
       else
-        abbr_error " -e: No abbreviation named $1"
-        return
+        if [ ${ABBRS[(I)$1]} ]; then
+          unset ABBRS[$1]
+          abbr_try_sync_global
+        else
+          abbr_error " -e: No universal abbreviation named $1"
+          return
+        fi
       fi
     }
 
