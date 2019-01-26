@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
 ABBR_OPT_GLOBAL=false
