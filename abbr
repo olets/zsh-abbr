@@ -1,5 +1,9 @@
 #!/usr/bin/env zsh
 
+# Abbreviation support has two parts:
+# abbreviation expansion, and abbreviation management.
+# Here management, scoped to the abbr command, follows expansion handling.
+
 typeset -gA ABBRS
 ABBRS=()
 ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
@@ -13,6 +17,30 @@ function abbr_read_universals() {
 function abbr_get_expansion() {
   printf "%s\\n" "${ABBRS[$1]}"
 }
+
+function abbr_expand() {
+  local current_word="${LBUFFER/*[ ,;|&\n\t]/}"
+  local expansion
+
+  expansion=$(abbr_get_expansion "$current_word")
+
+  if [ "$expansion" ]; then
+    local rest="${LBUFFER%%$current_word}"
+    LBUFFER="$rest$expansion"
+  fi
+  zle self-insert
+}
+
+abbr_read_universals
+
+zle -N abbr_expand
+
+bindkey " " abbr_expand
+bindkey "^ " magic-space
+bindkey -M isearch " " magic-space
+bindkey -M isearch "^ " abbr_expand
+
+
 
 function abbr() {
   {
@@ -305,26 +333,3 @@ function abbr() {
     unfunction -m "abbr_show"
   }
 }
-
-function abbr_expand() {
-  local current_word="${LBUFFER/*[ ,;|&\n\t]/}"
-  local expansion
-
-  expansion=$(abbr_get_expansion "$current_word")
-
-  if [ "$expansion" ]; then
-    local rest="${LBUFFER%%$current_word}"
-    LBUFFER="$rest$expansion"
-  fi
-  zle self-insert
-}
-
-abbr_read_universals
-
-
-zle -N abbr_expand
-
-bindkey " " abbr_expand
-bindkey "^ " magic-space
-bindkey -M isearch " " magic-space
-bindkey -M isearch "^ " abbr_expand
