@@ -3,111 +3,6 @@
 typeset -gA ABBRS
 ABBRS=()
 ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
-ABBR_OPT_GLOBAL=false
-ABBR_OPT_UNIVERSAL=false
-ABBR_SHOULD_EXIT=false
-
-function abbr_usage() {
-  print "
-    abbr(zsh) is a Zsh port of fish shell's abbr
-
-
-    The following are the fish shell abbr's docs as of v3.0.0, December 28 2018
-    Source: https://fishshell.com/docs/current/commands.html
-
-
-       abbr - manage fish abbreviations
-
-   Synopsis
-       abbr --add [SCOPE] WORD EXPANSION
-       abbr --erase word
-       abbr --rename [SCOPE] OLD_WORD NEW_WORD
-       abbr --show
-       abbr --list
-
-   Description
-       abbr manages abbreviations - user-defined words that are replaced with longer phrases after they are entered.
-
-       For example, a frequently-run command like git checkout can be abbreviated to gco. After entering gco and pressing
-       [Space] or [Enter], the full text git checkout will appear in the command line.
-
-   Options
-       The following options are available:
-
-       o -a WORD EXPANSION or --add WORD EXPANSION Adds a new abbreviation, causing WORD to be expanded to PHRASE.
-
-       o -r OLD_WORD NEW_WORD or --rename OLD_WORD NEW_WORD Renames an abbreviation, from OLD_WORD to NEW_WORD.
-
-       o -s or --show Show all abbreviations in a manner suitable for export and import.
-
-       o -l or --list Lists all abbreviated words.
-
-       o -e WORD or --erase WORD Erase the abbreviation WORD.
-
-       In addition, when adding abbreviations:
-
-       o -g or --global to use a global variable.
-
-       o -U or --universal to use a universal variable (default).
-
-       See the 'Internals' section for more on them.
-
-   Examples
-       abbr -a -g gco git checkout
-
-        Add a new abbreviation where gco will be replaced with git checkout global to the current shell. This abbreviation
-       will not be automatically visible to other shells unless the same command is run in those shells (such as when
-       executing the commands in config.fish).
-
-       abbr -a -U l less
-
-        Add a new abbreviation where l will be replaced with less universal so all shells. Note that you omit the -U since it
-       is the default.
-
-       abbr -r gco gch
-
-        Renames an existing abbreviation from gco to gch.
-
-       abbr -e gco
-
-        Erase the gco abbreviation.
-
-       ssh another_host abbr -s | source
-
-        Import the abbreviations defined on another_host over SSH.
-
-   Internals
-       Each abbreviation is stored in its own global or universal variable. The name consists of the prefix _fish_abbr_
-       followed by the WORD after being transformed by string escape style=var. The WORD cannot contain a space but all other
-       characters are legal.
-
-       Defining an abbreviation with global scope is slightly faster than universal scope (which is the default). But in
-       general you'll only want to use the global scope when defining abbreviations in a startup script like
-       ~/.config/fish/config.fish like this:
-
-       if status --is-interactive
-           abbr --add --global first 'echo my first abbreviation'
-           abbr --add --global second 'echo my second abbreviation'
-           abbr --add --global gco git checkout
-             etcetera
-       end
-
-       You can create abbreviations interactively and they will be visible to other fish sessions if you use the -U or
-       --universal flag or don't explicitly specify the scope and the abbreviation isn't already defined with global scope. If
-       you want it to be visible only to the current shell use the -g or --global flag.
-
-Version 3.0.0  Fri Dec 28 2018  abbr(1)
-
-
-    abbr(zsh) is a Zsh port of fish shell's abbr
-    The preceding is the fish shell abbr's docs as of v3.0.0, December 28 2018
-    Source: https://fishshell.com/docs/current/commands.html\\n"
-}
-
-function abbr_error() {
-  printf "abbr%s\\nFor help run abbr -h\\n" "$@"
-  ABBR_SHOULD_EXIT=true
-}
 
 function abbr_read_universals() {
   if [ -f "$ABBR_UNIVERSALS_SOURCE" ]; then
@@ -119,184 +14,301 @@ function abbr_get_expansion() {
   printf "%s\\n" "${ABBRS[$1]}"
 }
 
-function abbr_bad_options() {
-  abbr_error ": Illegal combination of options"
-}
-
-function sync_global_abbr() {
-  local temp_abbrs="$TMPDIR"abbrArray
-  rm "$temp_abbrs" 2> /dev/null
-  mktemp "$temp_abbrs" 1> /dev/null
-
-  for k v in ${(kv)ABBRS}; do
-    echo "$k $v" >> "$temp_abbrs"
-  done
-
-  mv "$temp_abbrs" "$ABBR_UNIVERSALS_SOURCE"
-}
-
-function abbr_try_sync_global() {
-  if ! $ABBR_OPT_UNIVERSAL; then
-    return
-  fi
-
-  sync_global_abbr
-}
-
-function abbr_add() {
-  if [[ $# -lt 2 ]]; then
-    abbr_error " -a: Requires at least two arguments"
-    return
-  fi
-
-  key="$1"
-  shift
-  # $@ is value
-
-  ABBRS[$key]="'$*'"
-  abbr_try_sync_global
-}
-
-function abbr_rename() {
-  if [[ $# -ne 2 ]]; then
-    abbr_error " -r: Requires exactly two arguments"
-    return
-  fi
-
-  # $1 is old key
-  # $2 is new key
-  ABBRS[$2]="${ABBRS[$1]}"
-  unset ABBRS["$1"]
-  abbr_try_sync_global
-}
-
-function abbr_list() {
-  if [[ -n $1 ]]; then
-    abbr_error " -l: Unexpected argument"
-    return
-  fi
-
-  print -l ${(k)ABBRS}
-}
-
-function abbr_erase() {
-  if [[ -n $2 ]]; then
-    abbr_error " -e: Expected one argument"
-    return
-  elif [[ ! -n $1 ]]; then
-    abbr_error " -e: Erase needs a variable name"
-    return
-  fi
-
-  if [ ${ABBRS[(I)$1]} ]; then
-    unset ABBRS[$1]
-    abbr_try_sync_global
-  else
-    abbr_error " -e: No abbreviation named $1"
-    return
-  fi
-}
-
-function abbr_show() {
-  if [[ -n $1 ]]; then
-    abbr_error " -s: Unexpected argument"
-    return
-  fi
-
-  for key value in ${(kv)ABBRS}; do
-    print "$key $value"
-  done
-}
-
 function abbr() {
-  local abbr_opt_add=false
-  local abbr_opt_rename=false
-  local abbr_opt_show=false
-  local abbr_opt_list=false
-  local abbr_opt_erase=false
+  {
+    local abbr_opt_global=false
+    local abbr_opt_universal=false
+    local abbr_should_exit=false
+    local abbr_opt_add=false
+    local abbr_opt_rename=false
+    local abbr_opt_show=false
+    local abbr_opt_list=false
+    local abbr_opt_erase=false
+    local abbr_usage="
+        abbr(zsh) is a Zsh port of fish shell's abbr
 
-  while getopts ":harslegU" opt; do
-    if $ABBR_SHOULD_EXIT; then
-      ABBR_SHOULD_EXIT=false
+
+        The following are the fish shell abbr's docs as of v3.0.0, December 28 2018
+        Source: https://fishshell.com/docs/current/commands.html
+
+
+           abbr - manage fish abbreviations
+
+       Synopsis
+           abbr --add [SCOPE] WORD EXPANSION
+           abbr --erase word
+           abbr --rename [SCOPE] OLD_WORD NEW_WORD
+           abbr --show
+           abbr --list
+
+       Description
+           abbr manages abbreviations - user-defined words that are replaced with longer phrases after they are entered.
+
+           For example, a frequently-run command like git checkout can be abbreviated to gco. After entering gco and pressing
+           [Space] or [Enter], the full text git checkout will appear in the command line.
+
+       Options
+           The following options are available:
+
+           o -a WORD EXPANSION or --add WORD EXPANSION Adds a new abbreviation, causing WORD to be expanded to PHRASE.
+
+           o -r OLD_WORD NEW_WORD or --rename OLD_WORD NEW_WORD Renames an abbreviation, from OLD_WORD to NEW_WORD.
+
+           o -s or --show Show all abbreviations in a manner suitable for export and import.
+
+           o -l or --list Lists all abbreviated words.
+
+           o -e WORD or --erase WORD Erase the abbreviation WORD.
+
+           In addition, when adding abbreviations:
+
+           o -g or --global to use a global variable.
+
+           o -U or --universal to use a universal variable (default).
+
+           See the 'Internals' section for more on them.
+
+       Examples
+           abbr -a -g gco git checkout
+
+            Add a new abbreviation where gco will be replaced with git checkout global to the current shell. This abbreviation
+           will not be automatically visible to other shells unless the same command is run in those shells (such as when
+           executing the commands in config.fish).
+
+           abbr -a -U l less
+
+            Add a new abbreviation where l will be replaced with less universal so all shells. Note that you omit the -U since it
+           is the default.
+
+           abbr -r gco gch
+
+            Renames an existing abbreviation from gco to gch.
+
+           abbr -e gco
+
+            Erase the gco abbreviation.
+
+           ssh another_host abbr -s | source
+
+            Import the abbreviations defined on another_host over SSH.
+
+       Internals
+           Each abbreviation is stored in its own global or universal variable. The name consists of the prefix _fish_abbr_
+           followed by the WORD after being transformed by string escape style=var. The WORD cannot contain a space but all other
+           characters are legal.
+
+           Defining an abbreviation with global scope is slightly faster than universal scope (which is the default). But in
+           general you'll only want to use the global scope when defining abbreviations in a startup script like
+           ~/.config/fish/config.fish like this:
+
+           if status --is-interactive
+               abbr --add --global first 'echo my first abbreviation'
+               abbr --add --global second 'echo my second abbreviation'
+               abbr --add --global gco git checkout
+                 etcetera
+           end
+
+           You can create abbreviations interactively and they will be visible to other fish sessions if you use the -U or
+           --universal flag or don't explicitly specify the scope and the abbreviation isn't already defined with global scope. If
+           you want it to be visible only to the current shell use the -g or --global flag.
+
+    Version 3.0.0  Fri Dec 28 2018  abbr(1)
+
+
+        abbr(zsh) is a Zsh port of fish shell's abbr
+        The preceding is the fish shell abbr's docs as of v3.0.0, December 28 2018
+        Source: https://fishshell.com/docs/current/commands.html"
+
+    function abbr_usage() {
+      print "$abbr_usage\\n"
+    }
+
+    function abbr_error() {
+      printf "abbr%s\\nFor help run abbr -h\\n" "$@"
+      abbr_should_exit=true
+    }
+
+    function abbr_bad_options() {
+      abbr_error ": Illegal combination of options"
+    }
+
+    function sync_global_abbr() {
+      local temp_abbrs="$TMPDIR"abbrArray
+      rm "$temp_abbrs" 2> /dev/null
+      mktemp "$temp_abbrs" 1> /dev/null
+
+      for k v in ${(kv)ABBRS}; do
+        echo "$k $v" >> "$temp_abbrs"
+      done
+
+      mv "$temp_abbrs" "$ABBR_UNIVERSALS_SOURCE"
+    }
+
+    function abbr_try_sync_global() {
+      if ! $abbr_opt_universal; then
+        return
+      fi
+
+      sync_global_abbr
+    }
+
+    function abbr_add() {
+      if [[ $# -lt 2 ]]; then
+        abbr_error " -a: Requires at least two arguments"
+        return
+      fi
+
+      key="$1"
+      shift
+      # $@ is value
+
+      ABBRS[$key]="'$*'"
+      abbr_try_sync_global
+    }
+
+    function abbr_rename() {
+      if [[ $# -ne 2 ]]; then
+        abbr_error " -r: Requires exactly two arguments"
+        return
+      fi
+
+      # $1 is old key
+      # $2 is new key
+      ABBRS[$2]="${ABBRS[$1]}"
+      unset ABBRS["$1"]
+      abbr_try_sync_global
+    }
+
+    function abbr_list() {
+      if [[ -n $1 ]]; then
+        abbr_error " -l: Unexpected argument"
+        return
+      fi
+
+      print -l ${(k)ABBRS}
+    }
+
+    function abbr_erase() {
+      if [[ -n $2 ]]; then
+        abbr_error " -e: Expected one argument"
+        return
+      elif [[ ! -n $1 ]]; then
+        abbr_error " -e: Erase needs a variable name"
+        return
+      fi
+
+      if [ ${ABBRS[(I)$1]} ]; then
+        unset ABBRS[$1]
+        abbr_try_sync_global
+      else
+        abbr_error " -e: No abbreviation named $1"
+        return
+      fi
+    }
+
+    function abbr_show() {
+      if [[ -n $1 ]]; then
+        abbr_error " -s: Unexpected argument"
+        return
+      fi
+
+      for key value in ${(kv)ABBRS}; do
+        print "$key $value"
+      done
+    }
+
+    while getopts ":harslegU" opt; do
+      if $abbr_should_exit; then
+        abbr_should_exit=false
+        return
+      fi
+
+      case "$opt" in
+        h)
+          abbr_usage
+          abbr_should_exit=true
+          ;;
+        a)
+          if $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase; then
+            abbr_bad_options
+          fi
+          abbr_opt_add=true
+          ;;
+        r)
+          if $abbr_opt_add || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase; then
+            abbr_bad_options
+          fi
+          abbr_opt_rename=true
+          ;;
+        s)
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_list || $abbr_opt_erase; then
+            abbr_bad_options
+          fi
+          abbr_opt_show=true
+          ;;
+        l)
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase; then
+            abbr_bad_options
+          fi
+          abbr_opt_list=true
+          ;;
+        e)
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list; then
+            abbr_bad_options
+          fi
+          abbr_opt_erase=true
+          ;;
+        g)
+          if $abbr_opt_universal; then
+            abbr_bad_options
+          fi
+          abbr_opt_global=true
+          ;;
+        U)
+          if $abbr_opt_global; then
+            abbr_bad_options
+          fi
+          ;;
+        *) abbr_error " Unknown option '-$OPTARG'" ;;
+      esac
+    done
+
+    if $abbr_should_exit; then
+      abbr_should_exit=false
       return
     fi
 
-    case "$opt" in
-      h)
-        abbr_usage
-        ABBR_SHOULD_EXIT=true
-        ;;
-      a)
-        if $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase; then
-          abbr_bad_options
-        fi
-        abbr_opt_add=true
-        ;;
-      r)
-        if $abbr_opt_add || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase; then
-          abbr_bad_options
-        fi
-        abbr_opt_rename=true
-        ;;
-      s)
-        if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_list || $abbr_opt_erase; then
-          abbr_bad_options
-        fi
-        abbr_opt_show=true
-        ;;
-      l)
-        if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase; then
-          abbr_bad_options
-        fi
-        abbr_opt_list=true
-        ;;
-      e)
-        if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list; then
-          abbr_bad_options
-        fi
-        abbr_opt_erase=true
-        ;;
-      g)
-        if $ABBR_OPT_UNIVERSAL; then
-          abbr_bad_options
-        fi
-        ABBR_OPT_GLOBAL=true
-        ;;
-      U)
-        if $ABBR_OPT_GLOBAL; then
-          abbr_bad_options
-        fi
-        ;;
-      *) abbr_error " Unknown option '-$OPTARG'" ;;
-    esac
-  done
+    shift $((OPTIND-1))
 
-  if $ABBR_SHOULD_EXIT; then
-    ABBR_SHOULD_EXIT=false
-    return
-  fi
+    if [[ ! $abbr_opt_global ]]; then
+      abbr_opt_universal=true
+    fi
 
-  shift $((OPTIND-1))
-
-  if [[ ! $ABBR_OPT_GLOBAL ]]; then
-    ABBR_OPT_UNIVERSAL=true
-  fi
-
-  if $abbr_opt_rename; then
-    abbr_rename "$@"
-  elif $abbr_opt_list; then
-    abbr_list "$@"
-  elif $abbr_opt_erase; then
-    abbr_erase "$@"
-  elif $abbr_opt_add; then
-     abbr_add "$@"
-  elif ! $abbr_opt_show && [[ -n $1 ]]; then
-     abbr_add "$@"
-  else
-    abbr_show "$@"
-  fi
-
-  ABBR_SHOULD_EXIT=false
+    if $abbr_opt_rename; then
+      abbr_rename "$@"
+    elif $abbr_opt_list; then
+      abbr_list "$@"
+    elif $abbr_opt_erase; then
+      abbr_erase "$@"
+    elif $abbr_opt_add; then
+       abbr_add "$@"
+    elif ! $abbr_opt_show && [[ -n $1 ]]; then
+       abbr_add "$@"
+    else
+      abbr_show "$@"
+    fi
+  } always {
+    unfunction -m "abbr_usage"
+    unfunction -m "abbr_error"
+    unfunction -m "abbr_bad_options"
+    unfunction -m "sync_global_abbr"
+    unfunction -m "abbr_try_sync_global"
+    unfunction -m "abbr_add"
+    unfunction -m "abbr_rename"
+    unfunction -m "abbr_list"
+    unfunction -m "abbr_erase"
+    unfunction -m "abbr_show"
+  }
 }
 
 function abbr_expand() {
