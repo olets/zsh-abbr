@@ -230,6 +230,8 @@ function abbr() {
           abbr_error " -r: No global abbreviation named $1"
         fi
       else
+        source "$TMPDIR"abbr_universals
+
         if [ ${ABBRS[(I)$1]} ]; then
           ABBRS[$2]="${ABBRS[$1]}"
           unset ABBRS["$1"]
@@ -246,6 +248,8 @@ function abbr() {
         return
       fi
 
+      source "$TMPDIR"abbr_universals
+
       for key value in ${(kv)ABBRS}; do
         printf "abbr -a -U -- %s %s\\n" "$key" "$value"
       done
@@ -260,6 +264,8 @@ function abbr() {
         abbr_error " -l: Unexpected argument"
         return
       fi
+
+      source "$TMPDIR"abbr_universals
 
       print -l ${(k)ABBRS}
       print -l ${(k)ABBRS_GLOBAL}
@@ -282,6 +288,8 @@ function abbr() {
           return
         fi
       else
+        source "$TMPDIR"abbr_universals
+
         if [ ${ABBRS[(I)$1]} ]; then
           unset ABBRS[$1]
           abbr_try_sync_global
