@@ -188,22 +188,19 @@ function abbr() {
       abbr_error ": Illegal combination of options"
     }
 
-    function abbr_try_sync_global() {
-      if ! $abbr_opt_universal; then
-        return
-      fi
+    function abbr_sync_global() {
+      local abbr_universals_updated="$TMPDIR"abbr_universals_updated
 
       typeset -p ABBRS > "$TMPDIR"abbr_universals
 
-      local temp_abbrs="$TMPDIR"abbr_universals_list
-      rm "$temp_abbrs" 2> /dev/null
-      mktemp "$temp_abbrs" 1> /dev/null
+      rm "$abbr_universals_updated" 2> /dev/null
+      mktemp "$abbr_universals_updated" 1> /dev/null
 
       for k v in ${(kv)ABBRS}; do
-        echo "$k $v" >> "$temp_abbrs"
+        echo "$k $v" >> "$abbr_universals_updated"
       done
 
-      mv "$temp_abbrs" "$ABBR_UNIVERSALS_SOURCE"
+      mv "$abbr_universals_updated" "$ABBR_UNIVERSALS_SOURCE"
     }
 
     function abbr_add() {
@@ -231,7 +228,7 @@ function abbr() {
 
         source "$TMPDIR"abbr_universals
         ABBRS[$key]="$*"
-        abbr_try_sync_global
+        abbr_sync_global
       fi
     }
 
@@ -256,7 +253,7 @@ function abbr() {
 
         if [ ${ABBRS[(I)$1]} ]; then
           unset ABBRS[$1]
-          abbr_try_sync_global
+          abbr_sync_global
         else
           abbr_error " -e: No universal abbreviation named $1"
           return
@@ -283,7 +280,7 @@ function abbr() {
         if [ ${ABBRS[(I)$1]} ]; then
           ABBRS[$2]="${ABBRS[$1]}"
           unset ABBRS["$1"]
-          abbr_try_sync_global
+          abbr_sync_global
         else
           abbr_error " -r: No universal abbreviation named $1"
         fi
@@ -336,7 +333,7 @@ function abbr() {
           ABBRS[$key]="$value"
         done
 
-        abbr_try_sync_global
+        abbr_sync_global
       fi
     }
 
@@ -368,7 +365,7 @@ function abbr() {
           ABBRS[$k]="$v"
         done
 
-        abbr_try_sync_global
+        abbr_sync_global
       fi
     }
 
@@ -472,7 +469,7 @@ function abbr() {
     unfunction -m "abbr_usage"
     unfunction -m "abbr_error"
     unfunction -m "abbr_bad_options"
-    unfunction -m "abbr_try_sync_global"
+    unfunction -m "abbr_sync_global"
     unfunction -m "abbr_add"
     unfunction -m "abbr_rename"
     unfunction -m "abbr_list"
