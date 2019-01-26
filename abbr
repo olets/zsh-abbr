@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+typeset -gA ABBRS
+ABBRS=()
 ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
 ABBR_OPT_GLOBAL=false
 ABBR_OPT_UNIVERSAL=false
@@ -110,12 +112,12 @@ function abbr_error() {
 
 function abbr_read_universals() {
   if [ -f "$ABBR_UNIVERSALS_SOURCE" ]; then
-    while read -r k v; do abbrs[$k]="$v"; done < "$ABBR_UNIVERSALS_SOURCE"
+    while read -r k v; do ABBRS[$k]="$v"; done < "$ABBR_UNIVERSALS_SOURCE"
   fi
 }
 
 function abbr_get_expansion() {
-  printf "%s\\n" "${abbrs[$1]}"
+  printf "%s\\n" "${ABBRS[$1]}"
 }
 
 function abbr_bad_options() {
@@ -127,7 +129,7 @@ function sync_global_abbr() {
   rm "$temp_abbrs" 2> /dev/null
   mktemp "$temp_abbrs" 1> /dev/null
 
-  for k v in ${(kv)abbrs}; do
+  for k v in ${(kv)ABBRS}; do
     echo "$k $v" >> "$temp_abbrs"
   done
 
@@ -152,7 +154,7 @@ function abbr_add() {
   shift
   # $@ is value
 
-  abbrs[$key]="'$*'"
+  ABBRS[$key]="'$*'"
   abbr_try_sync_global
 }
 
@@ -164,8 +166,8 @@ function abbr_rename() {
 
   # $1 is old key
   # $2 is new key
-  abbrs[$2]="${abbrs[$1]}"
-  unset abbrs["$1"]
+  ABBRS[$2]="${ABBRS[$1]}"
+  unset ABBRS["$1"]
   abbr_try_sync_global
 }
 
@@ -175,7 +177,7 @@ function abbr_list() {
     return
   fi
 
-  print -l ${(k)abbrs}
+  print -l ${(k)ABBRS}
 }
 
 function abbr_erase() {
@@ -187,8 +189,8 @@ function abbr_erase() {
     return
   fi
 
-  if [ ${abbrs[(I)$1]} ]; then
-    unset abbrs[$1]
+  if [ ${ABBRS[(I)$1]} ]; then
+    unset ABBRS[$1]
     abbr_try_sync_global
   else
     abbr_error " -e: No abbreviation named $1"
@@ -202,7 +204,7 @@ function abbr_show() {
     return
   fi
 
-  for key value in ${(kv)abbrs}; do
+  for key value in ${(kv)ABBRS}; do
     print "$key $value"
   done
 }
