@@ -3,6 +3,7 @@
 ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
 ABBR_OPT_GLOBAL=false
 ABBR_OPT_UNIVERSAL=false
+ABBR_ERRORED=false
 
 MAN="
     abbr(zsh) is a Zsh port of fish shell's abbr
@@ -103,8 +104,8 @@ typeset -gA abbrs
 abbrs=()
 
 function abbr_error() {
-  printf "abbr %s\\nFor help run abbr -h\\n" "$@"
-  exit
+  printf "abbr%s\\nFor help run abbr -h\\n" "$@"
+  ABBR_ERRORED=true
 }
 
 function abbr_read_universals() {
@@ -143,7 +144,8 @@ function abbr_try_sync_global() {
 
 function abbr_add() {
   if [[ $# -lt 2 ]]; then
-    abbr_error "-a: Requires at least two arguments"
+    abbr_error " -a: Requires at least two arguments"
+    return
   fi
 
   key="$1"
@@ -156,7 +158,8 @@ function abbr_add() {
 
 function abbr_rename() {
   if [[ $# -ne 2 ]]; then
-    abbr_error "-r: Requires exactly two arguments"
+    abbr_error " -r: Requires exactly two arguments"
+    return
   fi
 
   # $1 is old key
@@ -168,7 +171,8 @@ function abbr_rename() {
 
 function abbr_list() {
   if [[ -n $1 ]]; then
-    abbr_error "-l: Unexpected argument"
+    abbr_error " -l: Unexpected argument"
+    return
   fi
 
   print -l ${(k)abbrs}
@@ -176,22 +180,26 @@ function abbr_list() {
 
 function abbr_erase() {
   if [[ -n $2 ]]; then
-    abbr_error "-e: Expected one argument"
+    abbr_error " -e: Expected one argument"
+    return
   elif [[ ! -n $1 ]]; then
-    abbr_error "-e: Erase needs a variable name"
+    abbr_error " -e: Erase needs a variable name"
+    return
   fi
 
   if [ ${abbrs[(I)$1]} ]; then
     unset abbrs[$1]
     abbr_try_sync_global
   else
-    abbr_error "-e: No abbreviation named $1"
+    abbr_error " -e: No abbreviation named $1"
+    return
   fi
 }
 
 function abbr_show() {
   if [[ -n $1 ]]; then
-    abbr_error "-s: Unexpected argument"
+    abbr_error " -s: Unexpected argument"
+    return
   fi
 
   for key value in ${(kv)abbrs}; do
@@ -207,6 +215,11 @@ function abbr() {
   local abbr_opt_erase=false
 
   while getopts ":arslegUh" opt; do
+    if $ABBR_ERRORED; then
+      ABBR_ERRORED=false
+      return
+    fi
+
     case "$opt" in
       a)
         if $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase; then
@@ -253,9 +266,14 @@ function abbr() {
         print "$MAN\\n"
         exit
         ;;
-      *) abbr_error "Unknown option '-$OPTARG'" ;;
+      *) abbr_error " Unknown option '-$OPTARG'" ;;
     esac
   done
+
+  if $ABBR_ERRORED; then
+    ABBR_ERRORED=false
+    return
+  fi
 
   shift $((OPTIND-1))
 
@@ -276,6 +294,8 @@ function abbr() {
   else
     abbr_show "$@"
   fi
+
+  ABBR_ERRORED=false
 }
 
 function abbr_expand() {
