@@ -180,6 +180,8 @@ function abbr() {
         return
       fi
 
+      typeset -p ABBRS > "$TMPDIR"abbr_universals
+
       local temp_abbrs="$TMPDIR"abbr_universals_list
       rm "$temp_abbrs" 2> /dev/null
       mktemp "$temp_abbrs" 1> /dev/null
