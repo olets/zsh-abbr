@@ -185,7 +185,7 @@ function abbr() {
         return
       fi
 
-      local temp_abbrs="$TMPDIR"abbrArray
+      local temp_abbrs="$TMPDIR"abbr_universals_list
       rm "$temp_abbrs" 2> /dev/null
       mktemp "$temp_abbrs" 1> /dev/null
 
@@ -207,9 +207,10 @@ function abbr() {
       # $* is value
 
       if $abbr_opt_global; then
-        ABBRS_GLOBAL[$key]="'$*'"
+        ABBRS_GLOBAL[$key]="$*"
       else
-        ABBRS[$key]="'$*'"
+        source "$TMPDIR"abbr_universals
+        ABBRS[$key]="$*"
         abbr_try_sync_global
       fi
     }
