@@ -7,9 +7,7 @@
 typeset -gA ABBRS
 typeset -gA ABBRS_GLOBAL
 ABBRS=()
-ABBRS_GLOBAL=(
-  demo demo\ expansion
-)
+ABBRS_GLOBAL=()
 
 ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
 
@@ -206,10 +204,14 @@ function abbr() {
 
       key="$1"
       shift
-      # $@ is value
+      # $* is value
 
-      ABBRS[$key]="'$*'"
-      abbr_try_sync_global
+      if $abbr_opt_global; then
+        ABBRS_GLOBAL[$key]="'$*'"
+      else
+        ABBRS[$key]="'$*'"
+        abbr_try_sync_global
+      fi
     }
 
     function abbr_rename() {
