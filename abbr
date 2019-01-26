@@ -91,46 +91,48 @@ function abbr() {
     local abbr_opt_populate=false
     local abbr_opt_git_populate=false
     local abbr_usage="
-        abbr(zsh) is a Zsh port of fish shell's abbr
-
-
-        The following are the fish shell abbr's docs as of v3.0.0, December 28 2018
-        Source: https://fishshell.com/docs/current/commands.html
-
-
-           abbr - manage fish abbreviations
+           abbr(Zsh) is a modified Zsh port of fish shell's abbr abbreviation manager
 
        Synopsis
-           abbr --add [SCOPE] WORD EXPANSION
-           abbr --erase word
-           abbr --rename [SCOPE] OLD_WORD NEW_WORD
-           abbr --show
-           abbr --list
+           abbr -a [SCOPE] WORD EXPANSION
+           abbr -e [SCOPE] word
+           abbr -r [SCOPE] OLD_WORD NEW_WORD
+           abbr -s
+           abbr -l
+           abbr -p [SCOPE]
+           abbr -i [SCOPE]
+           abbr -h
 
        Description
            abbr manages abbreviations - user-defined words that are replaced with longer phrases after they are entered.
 
            For example, a frequently-run command like git checkout can be abbreviated to gco. After entering gco and pressing
-           [Space] or [Enter], the full text git checkout will appear in the command line.
+           [Space], the full text git checkout will appear in the command line.
+
+           To prevent expansion, press [CTRL-SPACE] in place of [SPACE].
 
        Options
            The following options are available:
 
-           o -a WORD EXPANSION or --add WORD EXPANSION Adds a new abbreviation, causing WORD to be expanded to PHRASE.
+           o -a WORD EXPANSION Adds a new abbreviation, causing WORD to be expanded to PHRASE.
 
-           o -r OLD_WORD NEW_WORD or --rename OLD_WORD NEW_WORD Renames an abbreviation, from OLD_WORD to NEW_WORD.
+           o -e WORD Erases the abbreviation WORD.
 
-           o -s or --show Show all abbreviations in a manner suitable for export and import.
+           o -r OLD_WORD NEW_WORD Renames an abbreviation, from OLD_WORD to NEW_WORD.
 
-           o -l or --list Lists all abbreviated words.
+           o -s Show all abbreviations in a manner suitable for export and import.
 
-           o -e WORD or --erase WORD Erase the abbreviation WORD.
+           o -l Lists all abbreviated words.
 
-           In addition, when adding abbreviations:
+           o -p Creates abbreviations for all aliases.
 
-           o -g or --global to use a global variable.
+           o -i Creates abbreviations for all git aliases. WORD are prefixed with g,  EXPANSIONs are prefixed with git<space>.
 
-           o -U or --universal to use a universal variable (default).
+           In addition, when adding abbreviations use
+
+           o -g to create a global abbreviation, available only in the current session.
+
+           o -U to create a universal abbreviation (default), immediately available to all sessions.
 
            See the 'Internals' section for more on them.
 
@@ -146,44 +148,32 @@ function abbr() {
             Add a new abbreviation where l will be replaced with less universal so all shells. Note that you omit the -U since it
            is the default.
 
-           abbr -r gco gch
+           abbr -r -g gco gch
 
-            Renames an existing abbreviation from gco to gch.
+            Rename the existing global abbreviation from gco to gch.
 
-           abbr -e gco
+           abbr -r l le
 
-            Erase the gco abbreviation.
+            Rename the existing universal abbreviation from l to le. Note that you omit the -U since it is the default.
 
-           ssh another_host abbr -s | source
+           abbr -e -g gco
 
-            Import the abbreviations defined on another_host over SSH.
+            Erase the global gco abbreviation.
 
        Internals
-           Each abbreviation is stored in its own global or universal variable. The name consists of the prefix _fish_abbr_
-           followed by the WORD after being transformed by string escape style=var. The WORD cannot contain a space but all other
-           characters are legal.
+           The WORD cannot contain a space but all other characters are legal.
 
-           Defining an abbreviation with global scope is slightly faster than universal scope (which is the default). But in
-           general you'll only want to use the global scope when defining abbreviations in a startup script like
-           ~/.config/fish/config.fish like this:
+           Defining an abbreviation with global scope is slightly faster than universal scope (which is the default).
 
-           if status --is-interactive
-               abbr --add --global first 'echo my first abbreviation'
-               abbr --add --global second 'echo my second abbreviation'
-               abbr --add --global gco git checkout
-                 etcetera
-           end
+           You can create abbreviations interactively and they will be visible to other fish sessions if you use the -U
+           flag or don't explicitly specify the scope. If you want it to be visible only to the current shell use the -g flag.
 
-           You can create abbreviations interactively and they will be visible to other fish sessions if you use the -U or
-           --universal flag or don't explicitly specify the scope and the abbreviation isn't already defined with global scope. If
-           you want it to be visible only to the current shell use the -g or --global flag.
+           The options -a -e -r -s -l -p and -i are mutually exclusive, as are the scope options -g and -U.
 
-    Version 3.0.0  Fri Dec 28 2018  abbr(1)
+           The command abbr_expand is available to return an abbreviation's expansion. The result is the global expansion
+           if one exists, otherwise the universal expansion if one exists.
 
-
-        abbr(zsh) is a Zsh port of fish shell's abbr
-        The preceding is the fish shell abbr's docs as of v3.0.0, December 28 2018
-        Source: https://fishshell.com/docs/current/commands.html"
+           Version 1.1.0 January 26 2019"
 
     function abbr_usage() {
       print "$abbr_usage\\n"
@@ -245,6 +235,35 @@ function abbr() {
       fi
     }
 
+    function abbr_erase() {
+      if [[ -n $2 ]]; then
+        abbr_error " -e: Expected one argument"
+        return
+      elif [[ ! -n $1 ]]; then
+        abbr_error " -e: Erase needs a variable name"
+        return
+      fi
+
+      if $abbr_opt_global; then
+        if [ ${ABBRS_GLOBAL[(I)$1]} ]; then
+          unset ABBRS_GLOBAL[$1]
+        else
+          abbr_error " -e: No global abbreviation named $1"
+          return
+        fi
+      else
+        source "$TMPDIR"abbr_universals
+
+        if [ ${ABBRS[(I)$1]} ]; then
+          unset ABBRS[$1]
+          abbr_try_sync_global
+        else
+          abbr_error " -e: No universal abbreviation named $1"
+          return
+        fi
+      fi
+    }
+
     function abbr_rename() {
       if [[ $# -ne 2 ]]; then
         abbr_error " -r: Requires exactly two arguments"
@@ -300,35 +319,6 @@ function abbr() {
       print -l ${(k)ABBRS_GLOBAL}
     }
 
-    function abbr_erase() {
-      if [[ -n $2 ]]; then
-        abbr_error " -e: Expected one argument"
-        return
-      elif [[ ! -n $1 ]]; then
-        abbr_error " -e: Erase needs a variable name"
-        return
-      fi
-
-      if $abbr_opt_global; then
-        if [ ${ABBRS_GLOBAL[(I)$1]} ]; then
-          unset ABBRS_GLOBAL[$1]
-        else
-          abbr_error " -e: No global abbreviation named $1"
-          return
-        fi
-      else
-        source "$TMPDIR"abbr_universals
-
-        if [ ${ABBRS[(I)$1]} ]; then
-          unset ABBRS[$1]
-          abbr_try_sync_global
-        else
-          abbr_error " -e: No universal abbreviation named $1"
-          return
-        fi
-      fi
-    }
-
     function abbr_populate() {
       if [[ -n $1 ]]; then
         abbr_error " -p: Unexpected argument"
@@ -382,7 +372,7 @@ function abbr() {
       fi
     }
 
-    while getopts ":harslepigU" opt; do
+    while getopts ":haerslpigU" opt; do
       if $abbr_should_exit; then
         abbr_should_exit=false
         return
@@ -398,6 +388,12 @@ function abbr() {
             abbr_bad_options
           fi
           abbr_opt_add=true
+          ;;
+        e)
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_populate || $abbr_opt_git_populate; then
+            abbr_bad_options
+          fi
+          abbr_opt_erase=true
           ;;
         r)
           if $abbr_opt_add || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; then
@@ -416,12 +412,6 @@ function abbr() {
             abbr_bad_options
           fi
           abbr_opt_list=true
-          ;;
-        e)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_populate || $abbr_opt_git_populate; then
-            abbr_bad_options
-          fi
-          abbr_opt_erase=true
           ;;
         p)
           if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_list || $abbr_opt_git_populate; then
