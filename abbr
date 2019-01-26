@@ -246,6 +246,7 @@ function abbr() {
       fi
 
       print -l ${(k)ABBRS}
+      print -l ${(k)ABBRS_GLOBAL}
     }
 
     function abbr_erase() {
