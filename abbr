@@ -132,7 +132,11 @@ function abbr() {
       abbr_error ": Illegal combination of options"
     }
 
-    function sync_global_abbr() {
+    function abbr_try_sync_global() {
+      if ! $abbr_opt_universal; then
+        return
+      fi
+
       local temp_abbrs="$TMPDIR"abbrArray
       rm "$temp_abbrs" 2> /dev/null
       mktemp "$temp_abbrs" 1> /dev/null
@@ -142,14 +146,6 @@ function abbr() {
       done
 
       mv "$temp_abbrs" "$ABBR_UNIVERSALS_SOURCE"
-    }
-
-    function abbr_try_sync_global() {
-      if ! $abbr_opt_universal; then
-        return
-      fi
-
-      sync_global_abbr
     }
 
     function abbr_add() {
@@ -301,7 +297,6 @@ function abbr() {
     unfunction -m "abbr_usage"
     unfunction -m "abbr_error"
     unfunction -m "abbr_bad_options"
-    unfunction -m "sync_global_abbr"
     unfunction -m "abbr_try_sync_global"
     unfunction -m "abbr_add"
     unfunction -m "abbr_rename"
