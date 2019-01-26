@@ -5,9 +5,10 @@ ABBRS=()
 ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
 ABBR_OPT_GLOBAL=false
 ABBR_OPT_UNIVERSAL=false
-ABBR_ERRORED=false
+ABBR_SHOULD_EXIT=false
 
-MAN="
+function abbr_usage() {
+  print "
     abbr(zsh) is a Zsh port of fish shell's abbr
 
 
@@ -100,14 +101,12 @@ Version 3.0.0  Fri Dec 28 2018  abbr(1)
 
     abbr(zsh) is a Zsh port of fish shell's abbr
     The preceding is the fish shell abbr's docs as of v3.0.0, December 28 2018
-    Source: https://fishshell.com/docs/current/commands.html"
-
-typeset -gA abbrs
-abbrs=()
+    Source: https://fishshell.com/docs/current/commands.html\\n"
+}
 
 function abbr_error() {
   printf "abbr%s\\nFor help run abbr -h\\n" "$@"
-  ABBR_ERRORED=true
+  ABBR_SHOULD_EXIT=true
 }
 
 function abbr_read_universals() {
@@ -216,13 +215,17 @@ function abbr() {
   local abbr_opt_list=false
   local abbr_opt_erase=false
 
-  while getopts ":arslegUh" opt; do
-    if $ABBR_ERRORED; then
-      ABBR_ERRORED=false
+  while getopts ":harslegU" opt; do
+    if $ABBR_SHOULD_EXIT; then
+      ABBR_SHOULD_EXIT=false
       return
     fi
 
     case "$opt" in
+      h)
+        abbr_usage
+        ABBR_SHOULD_EXIT=true
+        ;;
       a)
         if $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase; then
           abbr_bad_options
@@ -264,16 +267,12 @@ function abbr() {
           abbr_bad_options
         fi
         ;;
-      h)
-        print "$MAN\\n"
-        exit
-        ;;
       *) abbr_error " Unknown option '-$OPTARG'" ;;
     esac
   done
 
-  if $ABBR_ERRORED; then
-    ABBR_ERRORED=false
+  if $ABBR_SHOULD_EXIT; then
+    ABBR_SHOULD_EXIT=false
     return
   fi
 
@@ -297,7 +296,7 @@ function abbr() {
     abbr_show "$@"
   fi
 
-  ABBR_ERRORED=false
+  ABBR_SHOULD_EXIT=false
 }
 
 function abbr_expand() {
