@@ -9,7 +9,9 @@ typeset -gA ABBRS_GLOBAL
 ABBRS=()
 ABBRS_GLOBAL=()
 
-ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
+if [[ ! -n "$ABBR_UNIVERSALS_SOURCE" ]]; then
+  ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
+fi
 
 function abbr_expand() {
   {
