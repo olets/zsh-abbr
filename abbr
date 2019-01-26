@@ -221,11 +221,14 @@ function abbr() {
         return
       fi
 
-      # $1 is old key
-      # $2 is new key
-      ABBRS[$2]="${ABBRS[$1]}"
-      unset ABBRS["$1"]
-      abbr_try_sync_global
+      if $abbr_opt_global; then
+        ABBRS_GLOBAL[$2]="${ABBRS_GLOBAL[$1]}"
+        unset ABBRS_GLOBAL["$1"]
+      else
+        ABBRS[$2]="${ABBRS[$1]}"
+        unset ABBRS["$1"]
+        abbr_try_sync_global
+      fi
     }
 
     function abbr_list() {
