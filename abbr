@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
 ABBR_OPT_GLOBAL=false
 ABBR_OPT_UNIVERSAL=false
@@ -107,7 +109,7 @@ function abbr_error() {
 
 function abbr_read_universals() {
   if [ -f "$ABBR_UNIVERSALS_SOURCE" ]; then
-    while read k v; do abbrs[$k]="$v"; done < "$ABBR_UNIVERSALS_SOURCE"
+    while read -r k v; do abbrs[$k]="$v"; done < "$ABBR_UNIVERSALS_SOURCE"
   fi
 }
 
@@ -121,8 +123,8 @@ function abbr_bad_options() {
 
 function sync_global_abbr() {
   local temp_abbrs="$TMPDIR"abbrArray
-  rm $temp_abbrs 2> /dev/null
-  mktemp $temp_abbrs 1> /dev/null
+  rm "$temp_abbrs" 2> /dev/null
+  mktemp "$temp_abbrs" 1> /dev/null
 
   for k v in ${(kv)abbrs}; do
     echo "$k $v" >> "$temp_abbrs"
@@ -142,21 +144,19 @@ function abbr_try_sync_global() {
 function abbr_add() {
   if [[ $# -lt 2 ]]; then
     abbr_error "-a: Requires at least two arguments"
-    exit
   fi
 
   key="$1"
   shift
   # $@ is value
 
-  abbrs[$key]="'$@'"
+  abbrs[$key]="'$*'"
   abbr_try_sync_global
 }
 
 function abbr_rename() {
   if [[ $# -ne 2 ]]; then
     abbr_error "-r: Requires exactly two arguments"
-    exit
   fi
 
   # $1 is old key
@@ -169,7 +169,6 @@ function abbr_rename() {
 function abbr_list() {
   if [[ -n $1 ]]; then
     abbr_error "-l: Unexpected argument"
-    exit
   fi
 
   print -l ${(k)abbrs}
@@ -178,25 +177,21 @@ function abbr_list() {
 function abbr_erase() {
   if [[ -n $2 ]]; then
     abbr_error "-e: Expected one argument"
-    exit
   elif [[ ! -n $1 ]]; then
     abbr_error "-e: Erase needs a variable name"
-    exit
   fi
 
-  if [ "$(abbr_get_expansion $1)" ]; then
+  if [ "$(abbr_get_expansion "$1")" ]; then
     unset abbrs[$1]
     abbr_try_sync_global
   else
     abbr_error "-e: No abbreviation named $1"
-    exit
   fi
 }
 
 function abbr_show() {
   if [[ -n $1 ]]; then
     abbr_error "-s: Unexpected argument"
-    exit
   fi
 
   for key value in ${(kv)abbrs}; do
@@ -205,7 +200,6 @@ function abbr_show() {
 }
 
 function abbr() {
-  local disallowed_options
   local abbr_opt_add=false
   local abbr_opt_rename=false
   local abbr_opt_show=false
@@ -256,7 +250,7 @@ function abbr() {
         fi
         ;;
       h)
-        print "$MAN\n"
+        print "$MAN\\n"
         exit
         ;;
       *) abbr_error "Unknown option '-$OPTARG'" ;;
@@ -272,7 +266,7 @@ function abbr() {
   if $abbr_opt_rename; then
     abbr_rename "$@"
   elif $abbr_opt_list; then
-    abbr_list
+    abbr_list "$@"
   elif $abbr_opt_erase; then
     abbr_erase "$@"
   elif $abbr_opt_add; then
@@ -286,9 +280,11 @@ function abbr() {
 
 function abbr_expand() {
   local current_word="${LBUFFER/*[ ,;|&\n\t]/}"
-  local expansion=$(abbr_get_expansion $current_word)
+  local expansion
 
-  if [ $expansion ]; then
+  expansion=$(abbr_get_expansion "$current_word")
+
+  if [ "$expansion" ]; then
     local rest="${LBUFFER%%$current_word}"
     LBUFFER="$rest$expansion"
   fi
