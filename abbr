@@ -181,7 +181,7 @@ function abbr_erase() {
     abbr_error "-e: Erase needs a variable name"
   fi
 
-  if [ "$(abbr_get_expansion "$1")" ]; then
+  if [ ${abbrs[(I)$1]} ]; then
     unset abbrs[$1]
     abbr_try_sync_global
   else
