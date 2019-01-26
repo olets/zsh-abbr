@@ -14,21 +14,26 @@ function abbr_read_universals() {
   fi
 }
 
-function abbr_get_expansion() {
-  printf "%s\\n" "${ABBRS[$1]}"
-}
-
 function abbr_expand() {
-  local current_word="${LBUFFER/*[ ,;|&\n\t]/}"
-  local expansion
+  {
+    function abbr_get_expansion() {
+      printf "%s\\n" "${ABBRS[$1]}"
+    }
 
-  expansion=$(abbr_get_expansion "$current_word")
+    local current_word="${LBUFFER/*[ ,;|&\n\t]/}"
+    local expansion
 
-  if [ "$expansion" ]; then
-    local rest="${LBUFFER%%$current_word}"
-    LBUFFER="$rest$expansion"
-  fi
-  zle self-insert
+    expansion=$(abbr_get_expansion "$current_word")
+
+    if [ "$expansion" ]; then
+      local rest="${LBUFFER%%$current_word}"
+      LBUFFER="$rest$expansion"
+    fi
+
+    zle self-insert
+  } always {
+    unfunction -m "abbr_get_expansion"
+  }
 }
 
 abbr_read_universals
