@@ -13,26 +13,46 @@ ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
 
 function abbr_expand() {
   {
+    function abbr_expand_error() {
+      printf "abbr%s\\nFor help run abbr -h\\n" "$@"
+      abbr_should_exit=true
+    }
+
     function abbr_get_expansion() {
       printf "%s\\n" "${ABBRS[$1]}"
     }
 
-    local current_word="${LBUFFER/*[ ,;|&\n\t]/}"
+    local abbreviation=$1
     local expansion
 
-    expansion="${ABBRS_GLOBAL[$current_word]}"
+    if ! zle; then
+      if [[ "$#" -ne 1 ]]; then
+        printf "abbr_expand requires exactly one argument\\n"
+        return
+      fi
+
+      abbreviation=$1
+    else
+      abbreviation="${LBUFFER/*[ ,;|&\n\t]/}"
+    fi
+
+    expansion="${ABBRS_GLOBAL[$abbreviation]}"
 
     if [[ ! -n $expansion ]]; then
       source "$TMPDIR"abbr_universals
-      expansion="${ABBRS[$current_word]}"
+      expansion="${ABBRS[$abbreviation]}"
     fi
 
-    if [ "$expansion" ]; then
-      local rest="${LBUFFER%%$current_word}"
-      LBUFFER="$rest$expansion"
-    fi
+    if ! zle; then
+      printf "%s\\n" "$expansion"
+    else
+      if [ "$expansion" ]; then
+        local rest="${LBUFFER%%$abbreviation}"
+        LBUFFER="$rest$expansion"
+      fi
 
-    zle self-insert
+      zle self-insert
+    fi
   } always {
     unfunction -m "abbr_get_expansion"
   }
