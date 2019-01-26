@@ -227,8 +227,18 @@ function abbr() {
       # $* is value
 
       if $abbr_opt_global; then
+        if [ ${ABBRS_GLOBAL[(I)$key]} ]; then
+          abbr_error " -a: A global abbreviation $key already exists"
+          return
+        fi
+
         ABBRS_GLOBAL[$key]="$*"
       else
+        if [ ${ABBRS[(I)$key]} ]; then
+          abbr_error " -a: A universal abbreviation $key already exists"
+          return
+        fi
+
         source "$TMPDIR"abbr_universals
         ABBRS[$key]="$*"
         abbr_try_sync_global
