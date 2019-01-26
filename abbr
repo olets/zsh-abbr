@@ -282,11 +282,11 @@ function abbr() {
       fi
 
       for key value in ${(kv)ABBRS}; do
-        print "$key $value"
+        printf "abbr -a -U -- %s %s\\n" "$key" "$value"
       done
 
       for key value in ${(kv)ABBRS_GLOBAL}; do
-        print "$key $value"
+        printf "abbr -a -g -- %s %s\\n" "$key" "$value"
       done
     }
 
