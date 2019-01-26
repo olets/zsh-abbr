@@ -87,6 +87,7 @@ function abbr() {
     local abbr_opt_list=false
     local abbr_opt_erase=false
     local abbr_opt_populate=false
+    local abbr_opt_git_populate=false
     local abbr_usage="
         abbr(zsh) is a Zsh port of fish shell's abbr
 
@@ -337,7 +338,39 @@ function abbr() {
       fi
     }
 
-    while getopts ":harslepgU" opt; do
+    function abbr_git_populate() {
+      if [[ -n $1 ]]; then
+        abbr_error " -p: Unexpected argument"
+        return
+      fi
+
+      local git_aliases abbr_git_aliases
+      local git_aliases=("${(@f)$(git config --get-regexp '^alias\.')}")
+      typeset -A abbr_git_aliases
+
+      for i in $git_aliases; do
+        key="${$(echo $i | awk '{print $1;}')##alias.}"
+        value="${$(echo $i)##alias.$key }"
+
+        abbr_git_aliases[g$key]="git ${value# }"
+      done
+
+      if $abbr_opt_global; then
+        for k v in ${(kv)abbr_git_aliases}; do
+          ABBRS_GLOBAL[$k]="$v"
+        done
+      else
+        source "$TMPDIR"abbr_universals
+
+        for k v in ${(kv)abbr_git_aliases}; do
+          ABBRS[$k]="$v"
+        done
+
+        abbr_try_sync_global
+      fi
+    }
+
+    while getopts ":harslepigU" opt; do
       if $abbr_should_exit; then
         abbr_should_exit=false
         return
@@ -349,40 +382,46 @@ function abbr() {
           abbr_should_exit=true
           ;;
         a)
-          if $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate; then
+          if $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; then
             abbr_bad_options
           fi
           abbr_opt_add=true
           ;;
         r)
-          if $abbr_opt_add || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate; then
+          if $abbr_opt_add || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; then
             abbr_bad_options
           fi
           abbr_opt_rename=true
           ;;
         s)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate; then
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; then
             abbr_bad_options
           fi
           abbr_opt_show=true
           ;;
         l)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_populate; then
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; then
             abbr_bad_options
           fi
           abbr_opt_list=true
           ;;
         e)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_populate; then
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_populate || $abbr_opt_git_populate; then
             abbr_bad_options
           fi
           abbr_opt_erase=true
           ;;
         p)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_list; then
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_list || $abbr_opt_git_populate; then
             abbr_bad_options
           fi
           abbr_opt_populate=true
+          ;;
+        i)
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_list || $abbr_opt_populate; then
+            abbr_bad_options
+          fi
+          abbr_opt_git_populate=true
           ;;
         g)
           if $abbr_opt_universal; then
@@ -418,6 +457,8 @@ function abbr() {
       abbr_erase "$@"
     elif $abbr_opt_populate; then
       abbr_populate "$@"
+    elif $abbr_opt_git_populate; then
+      abbr_git_populate "$@"
     elif $abbr_opt_add; then
        abbr_add "$@"
     elif ! $abbr_opt_show && [[ -n $1 ]]; then
