@@ -329,7 +329,7 @@ function abbr() {
 
     shift $((OPTIND-1))
 
-    if [[ ! $abbr_opt_global ]]; then
+    if ! $abbr_opt_global; then
       abbr_opt_universal=true
     fi
 
