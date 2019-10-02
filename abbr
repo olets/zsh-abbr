@@ -58,6 +58,19 @@ function abbr_expand() {
   }
 }
 
+function abbr_expand_accept() {
+  local lbuffer=$LBUFFER
+  local rbuffer=$RBUFFER
+
+  RBUFFER=$rbuffer # clear suggestions for the abbreviation
+  abbr_expand
+  RBUFFER=$rbuffer # clear suggestions for the expanded command
+
+  # if [[ $lbuffer == $LBUFFER ]]; then
+    zle accept-line
+  # fi
+}
+
 function abbr_expand_space() {
   abbr_expand
   LBUFFER="$LBUFFER "
@@ -84,6 +97,10 @@ bindkey "^ " magic-space
 bindkey -M isearch "^ " abbr_expand_space
 bindkey -M isearch " " magic-space
 
+# return expands and accepts abbreviations
+# NOTE: will clear anything after the cursor!!
+zle -N abbr_expand_accept
+bindkey "^M" abbr_expand_accept
 
 
 function abbr() {
