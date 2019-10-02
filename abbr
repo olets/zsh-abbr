@@ -214,9 +214,9 @@ function abbr() {
     }
 
     function abbr_sync_global() {
-      local abbr_universals_updated="$TMPDIR"abbr_universals_updated
+      local abbr_universals_updated="$TMPDIR"/abbr_universals_updated
 
-      typeset -p ABBRS > "$TMPDIR"abbr_universals
+      typeset -p ABBRS > "$TMPDIR"/abbr_universals
 
       rm "$abbr_universals_updated" 2> /dev/null
       mktemp "$abbr_universals_updated" 1> /dev/null
@@ -251,7 +251,7 @@ function abbr() {
           return
         fi
 
-        source "$TMPDIR"abbr_universals
+        source "$TMPDIR"/abbr_universals
         ABBRS[$key]="$*"
         abbr_sync_global
       fi
@@ -274,7 +274,7 @@ function abbr() {
           return
         fi
       else
-        source "$TMPDIR"abbr_universals
+        source "$TMPDIR"/abbr_universals
 
         if [ ${ABBRS[(I)$1]} ]; then
           unset ABBRS[$1]
@@ -300,7 +300,7 @@ function abbr() {
           abbr_error " -r: No global abbreviation named $1"
         fi
       else
-        source "$TMPDIR"abbr_universals
+        source "$TMPDIR"/abbr_universals
 
         if [ ${ABBRS[(I)$1]} ]; then
           ABBRS[$2]="${ABBRS[$1]}"
@@ -318,7 +318,7 @@ function abbr() {
         return
       fi
 
-      source "$TMPDIR"abbr_universals
+      source "$TMPDIR"/abbr_universals
 
       for key value in ${(kv)ABBRS}; do
         printf "abbr -a -U -- %s %s\\n" "$key" "$value"
@@ -335,7 +335,7 @@ function abbr() {
         return
       fi
 
-      source "$TMPDIR"abbr_universals
+      source "$TMPDIR"/abbr_universals
 
       print -l ${(k)ABBRS}
       print -l ${(k)ABBRS_GLOBAL}
@@ -352,7 +352,7 @@ function abbr() {
           ABBRS_GLOBAL[$key]="$value"
         done
       else
-        source "$TMPDIR"abbr_universals
+        source "$TMPDIR"/abbr_universals
 
         for key value in ${(kv)aliases}; do
           ABBRS[$key]="$value"
@@ -384,7 +384,7 @@ function abbr() {
           ABBRS_GLOBAL[$k]="$v"
         done
       else
-        source "$TMPDIR"abbr_universals
+        source "$TMPDIR"/abbr_universals
 
         for k v in ${(kv)abbr_git_aliases}; do
           ABBRS[$k]="$v"
