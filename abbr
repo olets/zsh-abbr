@@ -41,7 +41,7 @@ function abbr_expand() {
     expansion="${ABBRS_GLOBAL[$abbreviation]}"
 
     if [[ ! -n $expansion ]]; then
-      source "$TMPDIR"abbr_universals
+      source "$TMPDIR"/abbr_universals
       expansion="${ABBRS[$abbreviation]}"
     fi
 
@@ -64,10 +64,10 @@ if [ -f "$ABBR_UNIVERSALS_SOURCE" ]; then
   while read -r k v; do ABBRS[$k]="$v"; done < "$ABBR_UNIVERSALS_SOURCE"
 fi
 
-rm "$TMPDIR"abbr_universals 2> /dev/null
-mktemp "$TMPDIR"abbr_universals 1> /dev/null
+rm "$TMPDIR"/abbr_universals 2> /dev/null
+mktemp "$TMPDIR"/abbr_universals 1> /dev/null
 
-typeset -p ABBRS > "$TMPDIR"abbr_universals
+typeset -p ABBRS > "$TMPDIR"/abbr_universals
 
 zle -N abbr_expand
 
