@@ -52,12 +52,15 @@ function abbr_expand() {
         local rest="${LBUFFER%%$abbreviation}"
         LBUFFER="$rest$expansion"
       fi
-
-      zle self-insert
     fi
   } always {
     unfunction -m "abbr_get_expansion"
   }
+}
+
+function abbr_expand_space() {
+  abbr_expand
+  LBUFFER="$LBUFFER "
 }
 
 if [ -f "$ABBR_UNIVERSALS_SOURCE" ]; then
@@ -69,12 +72,17 @@ mktemp "$TMPDIR"/abbr_universals 1> /dev/null
 
 typeset -p ABBRS > "$TMPDIR"/abbr_universals
 
-zle -N abbr_expand
+# spacebar expands abbreviations
+zle -N abbr_expand_space
+bindkey " " abbr_expand_space
 
-bindkey " " abbr_expand
+# control-spacebar is a normal space
 bindkey "^ " magic-space
+
+# when running an incremental search,
+# spacebar behaves normally and control-space expands abbreviations
+bindkey -M isearch "^ " abbr_expand_space
 bindkey -M isearch " " magic-space
-bindkey -M isearch "^ " abbr_expand
 
 
 
