@@ -115,11 +115,13 @@ function abbr() {
     local abbr_opt_erase=false
     local abbr_opt_populate=false
     local abbr_opt_git_populate=false
+    local abbr_opt_create_aliases=false
     local abbr_usage="
            abbr(Zsh) is a modified Zsh port of fish shell's abbr abbreviation manager
 
        Synopsis
            abbr -a [SCOPE] WORD EXPANSION
+           abbr -c
            abbr -e [SCOPE] word
            abbr -r [SCOPE] OLD_WORD NEW_WORD
            abbr -s
@@ -140,6 +142,8 @@ function abbr() {
            The following options are available:
 
            o -a WORD EXPANSION Adds a new abbreviation, causing WORD to be expanded to PHRASE.
+
+           o -c Outputs a list of alias command for abbreviations, suitable for pasting or piping to whereever you keep aliases.
 
            o -e WORD Erases the abbreviation WORD.
 
@@ -168,6 +172,14 @@ function abbr() {
            will not be automatically visible to other shells unless the same command is run in those shells (such as when
            executing the commands in config.fish).
 
+           abbr -c
+
+            Output a list of commands of the form `alias -g <abbr>='<expansion>'`, one per line for every global abbreviation.
+
+           abbr -c -U
+
+            Output a list commands of the form `alias -g <abbr>='<expansion>'`, one per line for every universal abbreviation.
+
            abbr -a -U l less
 
             Add a new abbreviation where l will be replaced with less universal so all shells. Note that you omit the -U since it
@@ -193,7 +205,7 @@ function abbr() {
            You can create abbreviations interactively and they will be visible to other fish sessions if you use the -U
            flag or don't explicitly specify the scope. If you want it to be visible only to the current shell use the -g flag.
 
-           The options -a -e -r -s -l -p and -i are mutually exclusive, as are the scope options -g and -U.
+           The options -a -c -e -r -s -l -p and -i are mutually exclusive, as are the scope options -g and -U.
 
            The command abbr_expand is available to return an abbreviation's expansion. The result is the global expansion
            if one exists, otherwise the universal expansion if one exists.
@@ -394,7 +406,28 @@ function abbr() {
       fi
     }
 
-    while getopts ":haerslpigU" opt; do
+    function abbr_create_aliases() {
+      if [[ -n $1 ]]; then
+        abbr_error " -c: Unexpected argument"
+        return
+      fi
+
+      if $abbr_opt_global; then
+        for k v in ${(kv)ABBRS_GLOBAL}; do
+          ABBRS_GLOBAL[$k]="$v"
+          print "alias -g $k='$v'"
+        done
+      else
+        source "$TMPDIR"/abbr_universals
+
+        for k v in ${(kv)ABBRS}; do
+          ABBRS[$k]="$v"
+          print "alias -g $k='$v'"
+        done
+      fi
+    }
+
+    while getopts ":haerslpicgU" opt; do
       if $abbr_should_exit; then
         abbr_should_exit=false
         return
@@ -406,46 +439,52 @@ function abbr() {
           abbr_should_exit=true
           ;;
         a)
-          if $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; then
+          if $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; $abbr_opt_create_aliases; then
             abbr_bad_options
           fi
           abbr_opt_add=true
           ;;
         e)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_populate || $abbr_opt_git_populate; then
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_populate || $abbr_opt_git_populate; $abbr_opt_create_aliases; then
             abbr_bad_options
           fi
           abbr_opt_erase=true
           ;;
         r)
-          if $abbr_opt_add || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; then
+          if $abbr_opt_add || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; $abbr_opt_create_aliases; then
             abbr_bad_options
           fi
           abbr_opt_rename=true
           ;;
         s)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; then
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; $abbr_opt_create_aliases; then
             abbr_bad_options
           fi
           abbr_opt_show=true
           ;;
         l)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; then
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; $abbr_opt_create_aliases; then
             abbr_bad_options
           fi
           abbr_opt_list=true
           ;;
         p)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_list || $abbr_opt_git_populate; then
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_list || $abbr_opt_git_populate; $abbr_opt_create_aliases; then
             abbr_bad_options
           fi
           abbr_opt_populate=true
           ;;
         i)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_list || $abbr_opt_populate; then
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_list || $abbr_opt_populate; $abbr_opt_create_aliases; then
             abbr_bad_options
           fi
           abbr_opt_git_populate=true
+          ;;
+        c)
+          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_list || $abbr_opt_populate || $abbr_opt_git_populate; then
+            abbr_bad_options
+          fi
+          abbr_opt_create_aliases=true
           ;;
         g)
           if $abbr_opt_universal; then
@@ -483,6 +522,8 @@ function abbr() {
       abbr_populate "$@"
     elif $abbr_opt_git_populate; then
       abbr_git_populate "$@"
+    elif $abbr_opt_create_aliases; then
+      abbr_create_aliases "$@"
     elif $abbr_opt_add; then
        abbr_add "$@"
     elif ! $abbr_opt_show && [[ -n $1 ]]; then
