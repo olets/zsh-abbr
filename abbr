@@ -4,6 +4,9 @@
 # abbreviation expansion, and abbreviation management.
 # Here management, scoped to the abbr command, follows expansion handling.
 
+# References
+# https://www.zsh.org/mla/users/2012/msg00014.html
+
 typeset -gA ABBRS
 typeset -gA ABBRS_GLOBAL
 ABBRS=()
