@@ -385,7 +385,7 @@ function abbr() {
       fi
 
       local git_aliases abbr_git_aliases
-      local git_aliases=("${(@f)$(git config --get-regexp '^alias\.')}")
+      git_aliases=("${(@f)$(git config --get-regexp '^alias\.')}")
       typeset -A abbr_git_aliases
 
       for i in $git_aliases; do
