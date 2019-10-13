@@ -57,6 +57,7 @@ function abbr_expand() {
       fi
     fi
   } always {
+    unfunction -m "abbr_expand_error"
     unfunction -m "abbr_get_expansion"
   }
 }
@@ -535,14 +536,16 @@ function abbr() {
       abbr_show "$@"
     fi
   } always {
-    unfunction -m "abbr_usage"
-    unfunction -m "abbr_error"
-    unfunction -m "abbr_bad_options"
-    unfunction -m "abbr_sync_global"
     unfunction -m "abbr_add"
-    unfunction -m "abbr_rename"
-    unfunction -m "abbr_list"
+    unfunction -m "abbr_bad_options"
+    unfunction -m "abbr_create_aliases"
     unfunction -m "abbr_erase"
+    unfunction -m "abbr_error"
+    unfunction -m "abbr_git_populate"
+    unfunction -m "abbr_list"
+    unfunction -m "abbr_rename"
     unfunction -m "abbr_show"
+    unfunction -m "abbr_sync_global"
+    unfunction -m "abbr_usage"
   }
 }
