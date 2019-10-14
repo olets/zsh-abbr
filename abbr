@@ -148,6 +148,7 @@ function abbr() {
            o -a WORD EXPANSION Adds a new abbreviation, causing WORD to be expanded to PHRASE.
 
            o -c Outputs a list of alias command for abbreviations, suitable for pasting or piping to whereever you keep aliases.
+                Optionally specify an output FILE.
 
            o -e WORD Erases the abbreviation WORD.
 
@@ -200,6 +201,10 @@ function abbr() {
            abbr -c
 
             Output a list commands of the form `alias -g <abbr>='<expansion>'`, one per line for every universal abbreviation.
+
+           abbr -c ~/aliases
+
+            Add alias definitions to ~/aliases
 
        Internals
            The WORD cannot contain a space but all other characters are legal.
@@ -414,7 +419,7 @@ function abbr() {
       local source
       local alias_definition
 
-      if [[ -n $1 ]]; then
+      if [[ -n $2 ]]; then
         abbr_error " -c: Unexpected argument"
         return
       fi
@@ -429,7 +434,11 @@ function abbr() {
         source[$k]="$v"
         alias_definition="alias -g $k='$v'"
 
-        print "$alias_definition"
+        if [[ -n $1 ]]; then
+          echo "$alias_definition" >> "$1"
+        else
+          print "$alias_definition"
+        fi
       done
     }
 
