@@ -176,15 +176,7 @@ function abbr() {
            will not be automatically visible to other shells unless the same command is run in those shells (such as when
            executing the commands in config.fish).
 
-           abbr -c
-
-            Output a list of commands of the form `alias -g <abbr>='<expansion>'`, one per line for every global abbreviation.
-
-           abbr -c -U
-
-            Output a list commands of the form `alias -g <abbr>='<expansion>'`, one per line for every universal abbreviation.
-
-           abbr -a -U l less
+           abbr -a l less
 
             Add a new abbreviation where l will be replaced with less universal so all shells. Note that you omit the -U since it
            is the default.
@@ -200,6 +192,14 @@ function abbr() {
            abbr -e -g gco
 
             Erase the global gco abbreviation.
+
+           abbr -c -g
+
+            Output a list of commands of the form `alias -g <abbr>='<expansion>'`, one per line for every global abbreviation.
+
+           abbr -c
+
+            Output a list commands of the form `alias -g <abbr>='<expansion>'`, one per line for every universal abbreviation.
 
        Internals
            The WORD cannot contain a space but all other characters are legal.
