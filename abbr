@@ -411,24 +411,26 @@ function abbr() {
     }
 
     function abbr_create_aliases() {
+      local source
+      local alias_definition
+
       if [[ -n $1 ]]; then
         abbr_error " -c: Unexpected argument"
         return
       fi
 
       if $abbr_opt_global; then
-        for k v in ${(kv)ABBRS_GLOBAL}; do
-          ABBRS_GLOBAL[$k]="$v"
-          print "alias -g $k='$v'"
-        done
+        source=ABBRS_GLOBAL
       else
-        source "$TMPDIR"/abbr_universals
-
-        for k v in ${(kv)ABBRS}; do
-          ABBRS[$k]="$v"
-          print "alias -g $k='$v'"
-        done
+        source=ABBRS
       fi
+
+      for k v in ${(kv)source}; do
+        source[$k]="$v"
+        alias_definition="alias -g $k='$v'"
+
+        print "$alias_definition"
+      done
     }
 
     while getopts ":haerslpicgU" opt; do
