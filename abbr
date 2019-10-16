@@ -279,10 +279,10 @@ function abbr() {
     }
 
     function abbr_erase() {
-      if [[ -n $2 ]]; then
+      if [ $# -gt 1 ]; then
         abbr_error " -e: Expected one argument"
         return
-      elif [[ ! -n $1 ]]; then
+      elif [ $# -lt 1 ]; then
         abbr_error " -e: Erase needs a variable name"
         return
       fi
@@ -307,7 +307,7 @@ function abbr() {
     }
 
     function abbr_rename() {
-      if [[ $# -ne 2 ]]; then
+      if [ $# -ne 2 ]; then
         abbr_error " -r: Requires exactly two arguments"
         return
       fi
@@ -333,7 +333,7 @@ function abbr() {
     }
 
     function abbr_show() {
-      if [[ -n $1 ]]; then
+      if [ $# -gt 0 ]; then
         abbr_error " -s: Unexpected argument"
         return
       fi
@@ -350,7 +350,7 @@ function abbr() {
     }
 
     function abbr_list() {
-      if [[ -n $1 ]]; then
+      if [ $# -gt 0 ]; then
         abbr_error " -l: Unexpected argument"
         return
       fi
@@ -362,7 +362,7 @@ function abbr() {
     }
 
     function abbr_populate() {
-      if [[ -n $1 ]]; then
+      if [ $# -gt 0 ]; then
         abbr_error " -p: Unexpected argument"
         return
       fi
@@ -383,7 +383,7 @@ function abbr() {
     }
 
     function abbr_git_populate() {
-      if [[ -n $1 ]]; then
+      if [ $# -gt 0 ]; then
         abbr_error " -p: Unexpected argument"
         return
       fi
@@ -418,7 +418,7 @@ function abbr() {
       local source
       local alias_definition
 
-      if [[ -n $2 ]]; then
+      if [ $# -gt 1 ]; then
         abbr_error " -c: Unexpected argument"
         return
       fi
@@ -433,7 +433,7 @@ function abbr() {
         source[$k]="$v"
         alias_definition="alias -g $k='$v'"
 
-        if [[ -n $1 ]]; then
+        if [ $# -gt 0 ]; then
           echo "$alias_definition" >> "$1"
         else
           print "$alias_definition"
@@ -540,7 +540,7 @@ function abbr() {
       abbr_create_aliases "$@"
     elif $abbr_opt_add; then
        abbr_add "$@"
-    elif ! $abbr_opt_show && [[ -n $1 ]]; then
+    elif ! $abbr_opt_show && [ $# -gt 0 ]; then
        abbr_add "$@"
     else
       abbr_show "$@"
