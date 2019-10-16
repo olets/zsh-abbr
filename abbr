@@ -6,6 +6,7 @@
 
 # References
 # https://www.zsh.org/mla/users/2012/msg00014.html
+# Unsetting an associative array entry: http://www.zsh.org/mla/workers/2018/msg01078.html
 
 typeset -gA ABBRS
 typeset -gA ABBRS_GLOBAL
