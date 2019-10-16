@@ -8,9 +8,9 @@
 # https://www.zsh.org/mla/users/2012/msg00014.html
 # Unsetting an associative array entry: http://www.zsh.org/mla/workers/2018/msg01078.html
 
-typeset -gA ABBRS
+typeset -gA ABBRS_UNIVERSAL
 typeset -gA ABBRS_GLOBAL
-ABBRS=()
+ABBRS_UNIVERSAL=()
 ABBRS_GLOBAL=()
 
 if [[ ! -n "$ABBR_UNIVERSALS_SOURCE" ]]; then
@@ -25,7 +25,7 @@ function abbr_expand() {
     }
 
     function abbr_get_expansion() {
-      printf "%s\\n" "${ABBRS[$1]}"
+      printf "%s\\n" "${ABBRS_UNIVERSAL[$1]}"
     }
 
     local abbreviation=$1
@@ -46,7 +46,7 @@ function abbr_expand() {
 
     if [[ ! -n $expansion ]]; then
       source "$TMPDIR"/abbr_universals
-      expansion="${ABBRS[$abbreviation]}"
+      expansion="${ABBRS_UNIVERSAL[$abbreviation]}"
     fi
 
     if ! zle; then
@@ -82,13 +82,13 @@ function abbr_expand_space() {
 }
 
 if [ -f "$ABBR_UNIVERSALS_SOURCE" ]; then
-  while read -r k v; do ABBRS[$k]="$v"; done < "$ABBR_UNIVERSALS_SOURCE"
+  while read -r k v; do ABBRS_UNIVERSAL[$k]="$v"; done < "$ABBR_UNIVERSALS_SOURCE"
 fi
 
 rm "$TMPDIR"/abbr_universals 2> /dev/null
 mktemp "$TMPDIR"/abbr_universals 1> /dev/null
 
-typeset -p ABBRS > "$TMPDIR"/abbr_universals
+typeset -p ABBRS_UNIVERSAL > "$TMPDIR"/abbr_universals
 
 # spacebar expands abbreviations
 zle -N abbr_expand_space
@@ -238,12 +238,12 @@ function abbr() {
     function abbr_sync_global() {
       local abbr_universals_updated="$TMPDIR"/abbr_universals_updated
 
-      typeset -p ABBRS > "$TMPDIR"/abbr_universals
+      typeset -p ABBRS_UNIVERSAL > "$TMPDIR"/abbr_universals
 
       rm "$abbr_universals_updated" 2> /dev/null
       mktemp "$abbr_universals_updated" 1> /dev/null
 
-      for k v in ${(kv)ABBRS}; do
+      for k v in ${(kv)ABBRS_UNIVERSAL}; do
         echo "$k $v" >> "$abbr_universals_updated"
       done
 
@@ -268,13 +268,13 @@ function abbr() {
 
         ABBRS_GLOBAL[$key]="$*"
       else
-        if [ ${ABBRS[(I)$key]} ]; then
+        if [ ${ABBRS_UNIVERSAL[(I)$key]} ]; then
           abbr_error " -a: A universal abbreviation $key already exists"
           return
         fi
 
         source "$TMPDIR"/abbr_universals
-        ABBRS[$key]="$*"
+        ABBRS_UNIVERSAL[$key]="$*"
         abbr_sync_global
       fi
     }
@@ -323,9 +323,9 @@ function abbr() {
       else
         source "$TMPDIR"/abbr_universals
 
-        if [ ${ABBRS[(I)$1]} ]; then
-          ABBRS[$2]="${ABBRS[$1]}"
-          unset ABBRS["$1"]
+        if [ ${ABBRS_UNIVERSAL[(I)$1]} ]; then
+          ABBRS_UNIVERSAL[$2]="${ABBRS_UNIVERSAL[$1]}"
+          unset ABBRS_UNIVERSAL["$1"]
           abbr_sync_global
         else
           abbr_error " -r: No universal abbreviation named $1"
@@ -341,7 +341,7 @@ function abbr() {
 
       source "$TMPDIR"/abbr_universals
 
-      for key value in ${(kv)ABBRS}; do
+      for key value in ${(kv)ABBRS_UNIVERSAL}; do
         printf "abbr -a -U -- %s %s\\n" "$key" "$value"
       done
 
@@ -358,7 +358,7 @@ function abbr() {
 
       source "$TMPDIR"/abbr_universals
 
-      print -l ${(k)ABBRS}
+      print -l ${(k)ABBRS_UNIVERSAL}
       print -l ${(k)ABBRS_GLOBAL}
     }
 
@@ -376,7 +376,7 @@ function abbr() {
         source "$TMPDIR"/abbr_universals
 
         for key value in ${(kv)aliases}; do
-          ABBRS[$key]="$value"
+          ABBRS_UNIVERSAL[$key]="$value"
         done
 
         abbr_sync_global
@@ -408,7 +408,7 @@ function abbr() {
         source "$TMPDIR"/abbr_universals
 
         for k v in ${(kv)abbr_git_aliases}; do
-          ABBRS[$k]="$v"
+          ABBRS_UNIVERSAL[$k]="$v"
         done
 
         abbr_sync_global
@@ -427,7 +427,7 @@ function abbr() {
       if $abbr_opt_global; then
         source=ABBRS_GLOBAL
       else
-        source=ABBRS
+        source=ABBRS_UNIVERSAL
       fi
 
       for k v in ${(kv)source}; do
