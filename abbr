@@ -161,7 +161,7 @@ function abbr() {
 
            o -p Creates abbreviations for all aliases.
 
-           o -i Creates abbreviations for all git aliases. WORD are prefixed with g,  EXPANSIONs are prefixed with git<space>.
+           o -i Creates abbreviations for all git aliases. WORDs are prefixed with g, EXPANSIONs are prefixed with git<space>.
 
            In addition, when adding abbreviations use
 
