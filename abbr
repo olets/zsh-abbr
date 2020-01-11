@@ -329,8 +329,9 @@ function abbr() {
       else
         source "$TMPDIR"/abbr_universals
 
-        if (( ${+ABBR[$1]} )); then
-          unset "ABBR[${(b)1}]"
+        if (( ${+ABBRS_UNIVERSAL[$1]} )); then
+          unset "ABBRS_UNIVERSAL[${(b)1}]"
+          abbr_sync_global
         else
           abbr_error " -e: No universal abbreviation named $1"
           return
