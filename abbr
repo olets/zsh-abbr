@@ -8,18 +8,73 @@
 # https://www.zsh.org/mla/users/2012/msg00014.html
 # Unsetting an associative array entry: http://www.zsh.org/mla/workers/2018/msg01078.html
 
+# CONFIGURATION
+# -------------
+
+# File abbreviations are stored in
+ABBR_UNIVERSALS_SOURCE="${ABBR_UNIVERSALS_SOURCE="${HOME}/.zsh_abbrs"}"
+# Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
+# add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
+ABBRS_DEFAULT_BEHAVIOR="${ABBRS_DEFAULT_BEHAVIOR=true}"
+
+# INITIALIZE
+# ----------
+
 typeset -gA ABBRS_UNIVERSAL
 typeset -gA ABBRS_GLOBAL
 ABBRS_UNIVERSAL=()
 ABBRS_GLOBAL=()
 
-ABBRS_DEFAULT_BEHAVIOR="${ABBRS_DEFAULT_BEHAVIOR=true}"
-
-if [[ ! -n "$ABBR_UNIVERSALS_SOURCE" ]]; then
-  ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
+# Load saved universal abbreviations
+if [ -f "$ABBR_UNIVERSALS_SOURCE" ]; then
+  while read -r k v; do
+    ABBRS_UNIVERSAL[$k]="$v"
+  done < "$ABBR_UNIVERSALS_SOURCE"
 fi
 
-function _zsh_abbr_widget_expand() {
+# Scratch file
+rm "$TMPDIR"/abbr_universals 2> /dev/null
+mktemp "$TMPDIR"/abbr_universals 1> /dev/null
+typeset -p ABBRS_UNIVERSAL > "$TMPDIR"/abbr_universals
+
+# Bind
+if [ "$ABBRS_DEFAULT_BEHAVIOR" = true ]; then
+  # spacebar expands abbreviations
+  zle -N _zsh_abbr_expand_space
+  bindkey " " _zsh_abbr_expand_space
+
+  # control-spacebar is a normal space
+  bindkey "^ " magic-space
+
+  # when running an incremental search,
+  # spacebar behaves normally and control-space expands abbreviations
+  bindkey -M isearch "^ " _zsh_abbr_expand_space
+  bindkey -M isearch " " magic-space
+
+  # enter key expands and accepts abbreviations
+  zle -N _zsh_abbr_expand_accept
+  bindkey "^M" _zsh_abbr_expand_accept
+fi
+
+
+# FUNCTIONS
+# ---------
+function _zsh_abbr_expand_accept() {
+  _zsh_abbr_expand_widget
+  zle autosuggest-clear # if using zsh-autosuggestions, clear any suggestion
+  zle accept-line
+}
+
+function _zsh_abbr_expand_space() {
+  _zsh_abbr_expand_widget
+  LBUFFER="$LBUFFER "
+}
+
+
+# WIDGETS
+# -------
+
+function _zsh_abbr_expand_widget() {
   {
     function abbr_expand_error() {
       printf "abbr%s\\nFor help run abbr -h\\n" "$@"
@@ -66,46 +121,14 @@ function _zsh_abbr_widget_expand() {
   }
 }
 
-function _zsh_abbr_widget_expand_accept() {
-  _zsh_abbr_widget_expand
-  zle autosuggest-clear # if using zsh-autosuggestions, clear any suggestion
-  zle accept-line
-}
-
-function _zsh_abbr_widget_expand_space() {
-  _zsh_abbr_widget_expand
-  LBUFFER="$LBUFFER "
-}
-
-if [ -f "$ABBR_UNIVERSALS_SOURCE" ]; then
-  while read -r k v; do ABBRS_UNIVERSAL[$k]="$v"; done < "$ABBR_UNIVERSALS_SOURCE"
-fi
-
-rm "$TMPDIR"/abbr_universals 2> /dev/null
-mktemp "$TMPDIR"/abbr_universals 1> /dev/null
-
-typeset -p ABBRS_UNIVERSAL > "$TMPDIR"/abbr_universals
+# Create widgets
+zle -N abbr_expand _zsh_abbr_expand_widget
 
 
-if [ "$ABBRS_DEFAULT_BEHAVIOR" = true ]; then
-  # spacebar expands abbreviations
-  zle -N _zsh_abbr_widget_expand_space
-  bindkey " " _zsh_abbr_widget_expand_space
+# FUNCTIONS
+# ---------
 
-  # control-spacebar is a normal space
-  bindkey "^ " magic-space
-
-  # when running an incremental search,
-  # spacebar behaves normally and control-space expands abbreviations
-  bindkey -M isearch "^ " _zsh_abbr_widget_expand_space
-  bindkey -M isearch " " magic-space
-
-  # enter key expands and accepts abbreviations
-  zle -N _zsh_abbr_widget_expand_accept
-  bindkey "^M" _zsh_abbr_widget_expand_accept
-fi
-
-function _zsh_abbr_widget() {
+function abbr() {
   {
     local abbr_opt_global=false
     local abbr_opt_universal=false
@@ -561,6 +584,3 @@ function _zsh_abbr_widget() {
     unfunction -m "abbr_usage"
   }
 }
-
-zle -N abbr_expand _zsh_abbr_widget_expand
-zle -N abbr _zsh_abbr_widget
