@@ -199,8 +199,7 @@ function abbr() {
        \e[1mabbr\e[0m -a -g gco git checkout
 
         Add a new abbreviation where gco will be replaced with git checkout global to the current shell. This abbreviation
-       will not be automatically visible to other shells unless the same command is run in those shells (such as when
-       executing the commands in config.fish).
+       will not be automatically visible to other shells unless the same command is run in those shells.
 
        \e[1mabbr\e[0m -a l less
 
@@ -238,7 +237,7 @@ function abbr() {
 
        Defining an abbreviation with global scope is slightly faster than universal scope (which is the default).
 
-       You can create abbreviations interactively and they will be visible to other fish sessions if you use the -U
+       You can create abbreviations interactively and they will be visible to other zsh sessions if you use the -U
        flag or don't explicitly specify the scope. If you want it to be visible only to the current shell use the -g flag.
 
        The options -a -c -e -r -s -l -p and -i are mutually exclusive, as are the scope options -g and -U.
