@@ -255,10 +255,6 @@ function abbr() {
       abbr_should_exit=true
     }
 
-    function abbr_bad_options() {
-      abbr_error ": Illegal combination of options"
-    }
-
     function abbr_sync_global() {
       local abbr_universals_updated="$TMPDIR"/abbr_universals_updated
 
@@ -466,6 +462,14 @@ function abbr() {
       done
     }
 
+    function abbr_check_options() {
+      for option in "$@"; do
+        if [ "$option" = true ]; then
+          abbr_error ": Illegal combination of options"
+        fi
+      done
+    }
+
     while getopts ":haerslpicgU" opt; do
       if $abbr_should_exit; then
         abbr_should_exit=false
@@ -478,63 +482,43 @@ function abbr() {
           abbr_should_exit=true
           ;;
         a)
-          if $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; $abbr_opt_create_aliases; then
-            abbr_bad_options
-          fi
+          abbr_check_options $abbr_opt_rename $abbr_opt_show $abbr_opt_list $abbr_opt_erase $abbr_opt_populate $abbr_opt_git_populate $abbr_opt_create_aliases
           abbr_opt_add=true
           ;;
         e)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_list || $abbr_opt_populate || $abbr_opt_git_populate; $abbr_opt_create_aliases; then
-            abbr_bad_options
-          fi
+          abbr_check_options $abbr_opt_add $abbr_opt_rename $abbr_opt_show $abbr_opt_list $abbr_opt_populate $abbr_opt_git_populate $abbr_opt_create_aliases
           abbr_opt_erase=true
           ;;
         r)
-          if $abbr_opt_add || $abbr_opt_show || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; $abbr_opt_create_aliases; then
-            abbr_bad_options
-          fi
+          abbr_check_options $abbr_opt_add $abbr_opt_show $abbr_opt_list $abbr_opt_erase $abbr_opt_populate $abbr_opt_git_populate $abbr_opt_create_aliases
           abbr_opt_rename=true
           ;;
         s)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_list || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; $abbr_opt_create_aliases; then
-            abbr_bad_options
-          fi
+          abbr_check_options $abbr_opt_add $abbr_opt_rename $abbr_opt_list $abbr_opt_erase $abbr_opt_populate $abbr_opt_git_populate $abbr_opt_create_aliases
           abbr_opt_show=true
           ;;
         l)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_populate || $abbr_opt_git_populate; $abbr_opt_create_aliases; then
-            abbr_bad_options
-          fi
+          abbr_check_options $abbr_opt_add $abbr_opt_rename $abbr_opt_show $abbr_opt_erase $abbr_opt_populate $abbr_opt_git_populate $abbr_opt_create_aliases
           abbr_opt_list=true
           ;;
         p)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_list || $abbr_opt_git_populate; $abbr_opt_create_aliases; then
-            abbr_bad_options
-          fi
+          abbr_check_options $abbr_opt_add $abbr_opt_rename $abbr_opt_show $abbr_opt_erase $abbr_opt_list $abbr_opt_git_populate $abbr_opt_create_aliases
           abbr_opt_populate=true
           ;;
         i)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_list || $abbr_opt_populate; $abbr_opt_create_aliases; then
-            abbr_bad_options
-          fi
+          abbr_check_options $abbr_opt_add $abbr_opt_rename $abbr_opt_show $abbr_opt_erase $abbr_opt_list $abbr_opt_populate $abbr_opt_create_aliases
           abbr_opt_git_populate=true
           ;;
         c)
-          if $abbr_opt_add || $abbr_opt_rename || $abbr_opt_show || $abbr_opt_erase || $abbr_opt_list || $abbr_opt_populate || $abbr_opt_git_populate; then
-            abbr_bad_options
-          fi
+          abbr_check_options $abbr_opt_add $abbr_opt_rename $abbr_opt_show $abbr_opt_erase $abbr_opt_list $abbr_opt_populate $abbr_opt_git_populate
           abbr_opt_create_aliases=true
           ;;
         g)
-          if $abbr_opt_universal; then
-            abbr_bad_options
-          fi
+          abbr_check_options $abbr_opt_universal
           abbr_opt_global=true
           ;;
         U)
-          if $abbr_opt_global; then
-            abbr_bad_options
-          fi
+          abbr_check_options $abbr_opt_global
           ;;
         *) abbr_error " Unknown option '-$OPTARG'" ;;
       esac
@@ -572,11 +556,11 @@ function abbr() {
     fi
   } always {
     unfunction -m "abbr_add"
-    unfunction -m "abbr_bad_options"
     unfunction -m "abbr_create_aliases"
     unfunction -m "abbr_erase"
     unfunction -m "abbr_error"
     unfunction -m "abbr_git_populate"
+    unfunction -m "abbr_check_options"
     unfunction -m "abbr_list"
     unfunction -m "abbr_rename"
     unfunction -m "abbr_show"
