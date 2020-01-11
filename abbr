@@ -114,108 +114,109 @@ function abbr() {
     local abbr_opt_git_populate=false
     local abbr_opt_create_aliases=false
     local abbr_usage="
-           abbr(Zsh) is a modified Zsh port of fish shell's abbr abbreviation manager
+       \e[1mabbr\e[0m (Zsh) is a modified Zsh port of fish shell's abbr abbreviation manager
 
-       Synopsis
-           abbr -a [SCOPE] WORD EXPANSION
-           abbr -c
-           abbr -e [SCOPE] word
-           abbr -r [SCOPE] OLD_WORD NEW_WORD
-           abbr -s
-           abbr -l
-           abbr -p [SCOPE]
-           abbr -i [SCOPE]
-           abbr -h
+   \e[1mSynopsis\e[0m
+       \e[1mabbr\e[0m -a [SCOPE] WORD EXPANSION
+       \e[1mabbr\e[0m -c
+       \e[1mabbr\e[0m -e [SCOPE] word
+       \e[1mabbr\e[0m -r [SCOPE] OLD_WORD NEW_WORD
+       \e[1mabbr\e[0m -s
+       \e[1mabbr\e[0m -l
+       \e[1mabbr\e[0m -p [SCOPE]
+       \e[1mabbr\e[0m -i [SCOPE]
+       \e[1mabbr\e[0m -h
 
-       Description
-           abbr manages abbreviations - user-defined words that are replaced with longer phrases after they are entered.
+   \e[1mDescription\e[0m
+       \e[1mabbr\e[0m manages abbreviations - user-defined words that are replaced with longer phrases after they are entered.
 
-           For example, a frequently-run command like git checkout can be abbreviated to gco. After entering gco and pressing
-           [Space], the full text git checkout will appear in the command line.
+       For example, a frequently-run command like git checkout can be abbreviated to gco. After entering gco and pressing
+       [\e[1mSpace\e[0m], the full text git checkout will appear in the command line.
 
-           To prevent expansion, press [CTRL-SPACE] in place of [SPACE].
+       To prevent expansion, press [\e[1mCTRL-SPACE\e[0m] in place of [\e[1mSPACE\e[0m].
 
-       Options
-           The following options are available:
+   \e[1mOptions\e[0m
+       The following options are available:
 
-           o -a WORD EXPANSION Adds a new abbreviation, causing WORD to be expanded to PHRASE.
+       o -a WORD EXPANSION Adds a new abbreviation, causing WORD to be expanded to PHRASE.
 
-           o -c [-g] [<DESTINATION_FILE>] Outputs a list of alias command for universal abbreviations, suitable for pasting or piping to whereever you keep aliases.
-               Add -g to output alias commands for global abbreviations.
-               If a DESTINATION_FILE is provided, the commands will be appended to it.
+       o -c [-g] [<DESTINATION_FILE>] Outputs a list of alias command for universal abbreviations,
+           suitable for pasting or piping to whereever you keep aliases.
+           Add -g to output alias commands for global abbreviations.
+           If a DESTINATION_FILE is provided, the commands will be appended to it.
 
-           o -e WORD Erases the abbreviation WORD.
+       o -e WORD Erases the abbreviation WORD.
 
-           o -r OLD_WORD NEW_WORD Renames an abbreviation, from OLD_WORD to NEW_WORD.
+       o -r OLD_WORD NEW_WORD Renames an abbreviation, from OLD_WORD to NEW_WORD.
 
-           o -s Show all abbreviations in a manner suitable for export and import.
+       o -s Show all abbreviations in a manner suitable for export and import.
 
-           o -l Lists all abbreviated words.
+       o -l Lists all abbreviated words.
 
-           o -p Creates abbreviations for all aliases.
+       o -p Creates abbreviations for all aliases.
 
-           o -i Creates abbreviations for all git aliases. WORDs are prefixed with g, EXPANSIONs are prefixed with git<space>.
+       o -i Creates abbreviations for all git aliases. WORDs are prefixed with g, EXPANSIONs are prefixed with git<space>.
 
-           In addition, when adding abbreviations use
+       In addition, when adding abbreviations use
 
-           o -g to create a global abbreviation, available only in the current session.
+       o -g to create a global abbreviation, available only in the current session.
 
-           o -U to create a universal abbreviation (default), immediately available to all sessions.
+       o -U to create a universal abbreviation (default), immediately available to all sessions.
 
-           See the 'Internals' section for more on them.
+       See the 'Internals' section for more on them.
 
-       Examples
-           abbr -a -g gco git checkout
+   \e[1mExamples\e[0m
+       \e[1mabbr\e[0m -a -g gco git checkout
 
-            Add a new abbreviation where gco will be replaced with git checkout global to the current shell. This abbreviation
-           will not be automatically visible to other shells unless the same command is run in those shells (such as when
-           executing the commands in config.fish).
+        Add a new abbreviation where gco will be replaced with git checkout global to the current shell. This abbreviation
+       will not be automatically visible to other shells unless the same command is run in those shells (such as when
+       executing the commands in config.fish).
 
-           abbr -a l less
+       \e[1mabbr\e[0m -a l less
 
-            Add a new abbreviation where l will be replaced with less universal so all shells. Note that you omit the -U since it
-           is the default.
+        Add a new abbreviation where l will be replaced with less universal so all shells. Note that you omit the -U since it
+       is the default.
 
-           abbr -r -g gco gch
+       \e[1mabbr\e[0m -r -g gco gch
 
-            Rename the existing global abbreviation from gco to gch.
+        Rename the existing global abbreviation from gco to gch.
 
-           abbr -r l le
+       \e[1mabbr\e[0m -r l le
 
-            Rename the existing universal abbreviation from l to le. Note that you omit the -U since it is the default.
+        Rename the existing universal abbreviation from l to le. Note that you omit the -U since it is the default.
 
-           abbr -e -g gco
+       \e[1mabbr\e[0m -e -g gco
 
-            Erase the global gco abbreviation.
+        Erase the global gco abbreviation.
 
-           abbr -c -g
+       \e[1mabbr\e[0m -c -g
 
-            Output alias declaration commands for each *global* abbreviation. Output lines look like
-              alias -g <WORD>='<EXPANSION>'
+        Output alias declaration commands for each *global* abbreviation. Output lines look like
+          alias -g <WORD>='<EXPANSION>'
 
-           abbr -c
+       \e[1mabbr\e[0m -c
 
-            Output alias declaration commands for each *universal* abbreviation. Output lines look like
-              alias -g <WORD>='<EXPANSION>'
+        Output alias declaration commands for each *universal* abbreviation. Output lines look like
+          alias -g <WORD>='<EXPANSION>'
 
-           abbr -c ~/aliases
+       \e[1mabbr\e[0m -c ~/aliases
 
-            Add alias definitions to ~/aliases
+        Add alias definitions to ~/aliases
 
-       Internals
-           The WORD cannot contain a space but all other characters are legal.
+   \e[1mInternals\e[0m
+       The WORD cannot contain a space but all other characters are legal.
 
-           Defining an abbreviation with global scope is slightly faster than universal scope (which is the default).
+       Defining an abbreviation with global scope is slightly faster than universal scope (which is the default).
 
-           You can create abbreviations interactively and they will be visible to other fish sessions if you use the -U
-           flag or don't explicitly specify the scope. If you want it to be visible only to the current shell use the -g flag.
+       You can create abbreviations interactively and they will be visible to other fish sessions if you use the -U
+       flag or don't explicitly specify the scope. If you want it to be visible only to the current shell use the -g flag.
 
-           The options -a -c -e -r -s -l -p and -i are mutually exclusive, as are the scope options -g and -U.
+       The options -a -c -e -r -s -l -p and -i are mutually exclusive, as are the scope options -g and -U.
 
-           The command abbr_expand is available to return an abbreviation's expansion. The result is the global expansion
-           if one exists, otherwise the universal expansion if one exists.
+       The command abbr_expand is available to return an abbreviation's expansion. The result is the global expansion
+       if one exists, otherwise the universal expansion if one exists.
 
-           Version 1.1.0 January 26 2019"
+       Version 1.1.0 January 26 2019"
 
     function abbr_usage() {
       print "$abbr_usage\\n"
