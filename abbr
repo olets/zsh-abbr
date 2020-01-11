@@ -140,8 +140,9 @@ function abbr() {
 
            o -a WORD EXPANSION Adds a new abbreviation, causing WORD to be expanded to PHRASE.
 
-           o -c Outputs a list of alias command for abbreviations, suitable for pasting or piping to whereever you keep aliases.
-                Optionally specify an output FILE.
+           o -c [-g] [<DESTINATION_FILE>] Outputs a list of alias command for universal abbreviations, suitable for pasting or piping to whereever you keep aliases.
+               Add -g to output alias commands for global abbreviations.
+               If a DESTINATION_FILE is provided, the commands will be appended to it.
 
            o -e WORD Erases the abbreviation WORD.
 
