@@ -33,9 +33,11 @@ if [ -f "$ABBR_UNIVERSALS_SOURCE" ]; then
 fi
 
 # Scratch file
-rm "$TMPDIR"/abbr_universals 2> /dev/null
-mktemp "$TMPDIR"/abbr_universals 1> /dev/null
-typeset -p ABBRS_UNIVERSAL > "$TMPDIR"/abbr_universals
+ABBRS_UNIVERSAL_SCRATCH_FILE="${TMPDIR}/abbr_universals"
+
+rm "$ABBRS_UNIVERSAL_SCRATCH_FILE" 2> /dev/null
+mktemp "$ABBRS_UNIVERSAL_SCRATCH_FILE" 1> /dev/null
+typeset -p ABBRS_UNIVERSAL > "$ABBRS_UNIVERSAL_SCRATCH_FILE"
 
 # Bind
 if [ "$ABBRS_DEFAULT_BEHAVIOR" = true ]; then
@@ -102,7 +104,7 @@ function _zsh_abbr_expand_widget() {
     expansion="${ABBRS_GLOBAL[$abbreviation]}"
 
     if [[ ! -n $expansion ]]; then
-      source "$TMPDIR"/abbr_universals
+      source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
       expansion="${ABBRS_UNIVERSAL[$abbreviation]}"
     fi
 
@@ -269,7 +271,7 @@ function abbr() {
           return
         fi
 
-        source "$TMPDIR"/abbr_universals
+        source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
         ABBRS_UNIVERSAL[$key]="$*"
         abbr_sync_global
       fi
@@ -327,7 +329,7 @@ function abbr() {
           return
         fi
       else
-        source "$TMPDIR"/abbr_universals
+        source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
 
         if (( ${+ABBRS_UNIVERSAL[$1]} )); then
           unset "ABBRS_UNIVERSAL[${(b)1}]"
@@ -366,7 +368,7 @@ function abbr() {
           ABBRS_GLOBAL[$k]="$v"
         done
       else
-        source "$TMPDIR"/abbr_universals
+        source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
 
         for k v in ${(kv)abbr_git_aliases}; do
           ABBRS_UNIVERSAL[$k]="$v"
@@ -382,7 +384,7 @@ function abbr() {
         return
       fi
 
-      source "$TMPDIR"/abbr_universals
+      source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
 
       print -l ${(k)ABBRS_UNIVERSAL}
       print -l ${(k)ABBRS_GLOBAL}
@@ -399,7 +401,7 @@ function abbr() {
           ABBRS_GLOBAL[$key]="$value"
         done
       else
-        source "$TMPDIR"/abbr_universals
+        source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
 
         for key value in ${(kv)aliases}; do
           ABBRS_UNIVERSAL[$key]="$value"
@@ -410,9 +412,9 @@ function abbr() {
     }
 
     function abbr_sync_global() {
-      local abbr_universals_updated="$TMPDIR"/abbr_universals_updated
+      local abbr_universals_updated="$ABBRS_UNIVERSAL_SCRATCH_FILE"_updated
 
-      typeset -p ABBRS_UNIVERSAL > "$TMPDIR"/abbr_universals
+      typeset -p ABBRS_UNIVERSAL > "$ABBRS_UNIVERSAL_SCRATCH_FILE"
 
       rm "$abbr_universals_updated" 2> /dev/null
       mktemp "$abbr_universals_updated" 1> /dev/null
@@ -438,7 +440,7 @@ function abbr() {
           abbr_error " -r: No global abbreviation named $1"
         fi
       else
-        source "$TMPDIR"/abbr_universals
+        source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
 
         if [ ${ABBRS_UNIVERSAL[(I)$1]} ]; then
           ABBRS_UNIVERSAL[$2]="${ABBRS_UNIVERSAL[$1]}"
@@ -456,7 +458,7 @@ function abbr() {
         return
       fi
 
-      source "$TMPDIR"/abbr_universals
+      source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
 
       for key value in ${(kv)ABBRS_UNIVERSAL}; do
         printf "abbr -a -U -- %s %s\\n" "$key" "$value"
