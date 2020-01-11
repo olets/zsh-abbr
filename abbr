@@ -273,7 +273,7 @@ function abbr() {
 
         source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
         ABBRS_UNIVERSAL[$key]="$*"
-        abbr_sync_global
+        abbr_sync_universal
       fi
     }
 
@@ -333,7 +333,7 @@ function abbr() {
 
         if (( ${+ABBRS_UNIVERSAL[$1]} )); then
           unset "ABBRS_UNIVERSAL[${(b)1}]"
-          abbr_sync_global
+          abbr_sync_universal
         else
           abbr_error " -e: No universal abbreviation named $1"
           return
@@ -374,7 +374,7 @@ function abbr() {
           ABBRS_UNIVERSAL[$k]="$v"
         done
 
-        abbr_sync_global
+        abbr_sync_universal
       fi
     }
 
@@ -407,11 +407,11 @@ function abbr() {
           ABBRS_UNIVERSAL[$key]="$value"
         done
 
-        abbr_sync_global
+        abbr_sync_universal
       fi
     }
 
-    function abbr_sync_global() {
+    function abbr_sync_universal() {
       local abbr_universals_updated="$ABBRS_UNIVERSAL_SCRATCH_FILE"_updated
 
       typeset -p ABBRS_UNIVERSAL > "$ABBRS_UNIVERSAL_SCRATCH_FILE"
@@ -445,7 +445,7 @@ function abbr() {
         if [ ${ABBRS_UNIVERSAL[(I)$1]} ]; then
           ABBRS_UNIVERSAL[$2]="${ABBRS_UNIVERSAL[$1]}"
           unset ABBRS_UNIVERSAL["$1"]
-          abbr_sync_global
+          abbr_sync_universal
         else
           abbr_error " -r: No universal abbreviation named $1"
         fi
@@ -567,7 +567,7 @@ function abbr() {
     unfunction -m "abbr_list"
     unfunction -m "abbr_rename"
     unfunction -m "abbr_show"
-    unfunction -m "abbr_sync_global"
+    unfunction -m "abbr_sync_universal"
     unfunction -m "abbr_usage"
   }
 }
