@@ -148,8 +148,8 @@ function abbr() {
 
    \e[1mSynopsis\e[0m
        \e[1mabbr\e[0m -a [SCOPE] WORD EXPANSION
-       \e[1mabbr\e[0m -c
-       \e[1mabbr\e[0m -e [SCOPE] word
+       \e[1mabbr\e[0m -c [SCOPE] [DESTINATION_FILE]
+       \e[1mabbr\e[0m -e [SCOPE] WORD
        \e[1mabbr\e[0m -r [SCOPE] OLD_WORD NEW_WORD
        \e[1mabbr\e[0m -s
        \e[1mabbr\e[0m -l
