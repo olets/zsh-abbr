@@ -189,11 +189,13 @@ function abbr() {
 
            abbr -c -g
 
-            Output a list of commands of the form `alias -g <abbr>='<expansion>'`, one per line for every global abbreviation.
+            Output alias declaration commands for each *global* abbreviation. Output lines look like
+              alias -g <WORD>='<EXPANSION>'
 
            abbr -c
 
-            Output a list commands of the form `alias -g <abbr>='<expansion>'`, one per line for every universal abbreviation.
+            Output alias declaration commands for each *universal* abbreviation. Output lines look like
+              alias -g <WORD>='<EXPANSION>'
 
            abbr -c ~/aliases
 
