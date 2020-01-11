@@ -13,6 +13,8 @@ typeset -gA ABBRS_GLOBAL
 ABBRS_UNIVERSAL=()
 ABBRS_GLOBAL=()
 
+ABBRS_DEFAULT_BEHAVIOR="${ABBRS_DEFAULT_BEHAVIOR=true}"
+
 if [[ ! -n "$ABBR_UNIVERSALS_SOURCE" ]]; then
   ABBR_UNIVERSALS_SOURCE="$HOME"/.zsh_abbrs
 fi
@@ -83,22 +85,24 @@ mktemp "$TMPDIR"/abbr_universals 1> /dev/null
 
 typeset -p ABBRS_UNIVERSAL > "$TMPDIR"/abbr_universals
 
-# spacebar expands abbreviations
-zle -N abbr_expand_space
-bindkey " " abbr_expand_space
 
-# control-spacebar is a normal space
-bindkey "^ " magic-space
+if [ "$ABBRS_DEFAULT_BEHAVIOR" = true ]; then
+  # spacebar expands abbreviations
+  zle -N _zsh_abbr_widget_expand_space
+  bindkey " " _zsh_abbr_widget_expand_space
 
-# when running an incremental search,
-# spacebar behaves normally and control-space expands abbreviations
-bindkey -M isearch "^ " abbr_expand_space
-bindkey -M isearch " " magic-space
+  # control-spacebar is a normal space
+  bindkey "^ " magic-space
 
-# enter key expands and accepts abbreviations
-zle -N abbr_expand_accept
-bindkey "^M" abbr_expand_accept
+  # when running an incremental search,
+  # spacebar behaves normally and control-space expands abbreviations
+  bindkey -M isearch "^ " _zsh_abbr_widget_expand_space
+  bindkey -M isearch " " magic-space
 
+  # enter key expands and accepts abbreviations
+  zle -N _zsh_abbr_widget_expand_accept
+  bindkey "^M" _zsh_abbr_widget_expand_accept
+fi
 
 function abbr() {
   {
