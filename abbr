@@ -57,6 +57,7 @@ function _zsh_abbr_widget_expand() {
       if [ "$expansion" ]; then
         local rest="${LBUFFER%%$abbreviation}"
         LBUFFER="$rest$expansion"
+        _zsh_highlight # if using zsh-syntax-highlighting, update the highlighting
       fi
     fi
   } always {
