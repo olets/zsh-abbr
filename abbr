@@ -26,7 +26,7 @@ function _zsh_abbr_widget_expand() {
       abbr_should_exit=true
     }
 
-    function abbr_get_expansion() {
+    function abbr_expand_get_expansion() {
       printf "%s\\n" "${ABBRS_UNIVERSAL[$1]}"
     }
 
@@ -61,7 +61,7 @@ function _zsh_abbr_widget_expand() {
     fi
   } always {
     unfunction -m "abbr_expand_error"
-    unfunction -m "abbr_get_expansion"
+    unfunction -m "abbr_expand_get_expansion"
   }
 }
 
