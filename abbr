@@ -144,7 +144,7 @@ function abbr() {
     local abbr_opt_universal=false
     local abbr_should_exit=false
     local abbr_usage="
-       \e[1mabbr\e[0m (Zsh) is a modified Zsh port of fish shell's abbr abbreviation manager
+       \e[1mabbr\e[0m: fish shell-like abbreviations for zsh
 
    \e[1mSynopsis\e[0m
        \e[1mabbr\e[0m -a [SCOPE] WORD EXPANSION
