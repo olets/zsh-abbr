@@ -130,17 +130,17 @@ zle -N abbr_expand _zsh_abbr_expand_widget
 
 function abbr() {
   {
-    local abbr_opt_global=false
-    local abbr_opt_universal=false
-    local abbr_should_exit=false
     local abbr_opt_add=false
+    local abbr_opt_create_aliases=false
+    local abbr_opt_erase=false
+    local abbr_opt_git_populate=false
+    local abbr_opt_global=false
+    local abbr_opt_list=false
     local abbr_opt_rename=false
     local abbr_opt_show=false
-    local abbr_opt_list=false
-    local abbr_opt_erase=false
     local abbr_opt_populate=false
-    local abbr_opt_git_populate=false
-    local abbr_opt_create_aliases=false
+    local abbr_opt_universal=false
+    local abbr_should_exit=false
     local abbr_usage="
        \e[1mabbr\e[0m (Zsh) is a modified Zsh port of fish shell's abbr abbreviation manager
 
@@ -246,30 +246,6 @@ function abbr() {
 
        Version 1.1.0 January 26 2019"
 
-    function abbr_usage() {
-      print "$abbr_usage\\n"
-    }
-
-    function abbr_error() {
-      printf "abbr%s\\nFor help run abbr -h\\n" "$@"
-      abbr_should_exit=true
-    }
-
-    function abbr_sync_global() {
-      local abbr_universals_updated="$TMPDIR"/abbr_universals_updated
-
-      typeset -p ABBRS_UNIVERSAL > "$TMPDIR"/abbr_universals
-
-      rm "$abbr_universals_updated" 2> /dev/null
-      mktemp "$abbr_universals_updated" 1> /dev/null
-
-      for k v in ${(kv)ABBRS_UNIVERSAL}; do
-        echo "$k $v" >> "$abbr_universals_updated"
-      done
-
-      mv "$abbr_universals_updated" "$ABBR_UNIVERSALS_SOURCE"
-    }
-
     function abbr_add() {
       if [[ $# -lt 2 ]]; then
         abbr_error " -a: Requires at least two arguments"
@@ -299,6 +275,41 @@ function abbr() {
       fi
     }
 
+    function abbr_check_options() {
+      for option in "$@"; do
+        if [ "$option" = true ]; then
+          abbr_error ": Illegal combination of options"
+        fi
+      done
+    }
+
+    function abbr_create_aliases() {
+      local source
+      local alias_definition
+
+      if [ $# -gt 1 ]; then
+        abbr_error " -c: Unexpected argument"
+        return
+      fi
+
+      if $abbr_opt_global; then
+        source=ABBRS_GLOBAL
+      else
+        source=ABBRS_UNIVERSAL
+      fi
+
+      for k v in ${(kv)source}; do
+        source[$k]="$v"
+        alias_definition="alias -g $k='$v'"
+
+        if [ $# -gt 0 ]; then
+          echo "$alias_definition" >> "$1"
+        else
+          print "$alias_definition"
+        fi
+      done
+    }
+
     function abbr_erase() {
       if [ $# -gt 1 ]; then
         abbr_error " -e: Expected one argument"
@@ -325,6 +336,91 @@ function abbr() {
           return
         fi
       fi
+    }
+
+    function abbr_error() {
+      printf "abbr%s\\nFor help run abbr -h\\n" "$@"
+      abbr_should_exit=true
+    }
+
+    function abbr_git_populate() {
+      if [ $# -gt 0 ]; then
+        abbr_error " -p: Unexpected argument"
+        return
+      fi
+
+      local git_aliases abbr_git_aliases
+      git_aliases=("${(@f)$(git config --get-regexp '^alias\.')}")
+      typeset -A abbr_git_aliases
+
+      for i in $git_aliases; do
+        key="${$(echo $i | awk '{print $1;}')##alias.}"
+        value="${$(echo $i)##alias.$key }"
+
+        abbr_git_aliases[g$key]="git ${value# }"
+      done
+
+      if $abbr_opt_global; then
+        for k v in ${(kv)abbr_git_aliases}; do
+          ABBRS_GLOBAL[$k]="$v"
+        done
+      else
+        source "$TMPDIR"/abbr_universals
+
+        for k v in ${(kv)abbr_git_aliases}; do
+          ABBRS_UNIVERSAL[$k]="$v"
+        done
+
+        abbr_sync_global
+      fi
+    }
+
+    function abbr_list() {
+      if [ $# -gt 0 ]; then
+        abbr_error " -l: Unexpected argument"
+        return
+      fi
+
+      source "$TMPDIR"/abbr_universals
+
+      print -l ${(k)ABBRS_UNIVERSAL}
+      print -l ${(k)ABBRS_GLOBAL}
+    }
+
+    function abbr_populate() {
+      if [ $# -gt 0 ]; then
+        abbr_error " -p: Unexpected argument"
+        return
+      fi
+
+      if $abbr_opt_global; then
+        for key value in ${(kv)aliases}; do
+          ABBRS_GLOBAL[$key]="$value"
+        done
+      else
+        source "$TMPDIR"/abbr_universals
+
+        for key value in ${(kv)aliases}; do
+          ABBRS_UNIVERSAL[$key]="$value"
+        done
+
+        abbr_sync_global
+      fi
+    }
+
+    function abbr_sync_global() {
+      local abbr_universals_updated="$TMPDIR"/abbr_universals_updated
+
+      typeset -p ABBRS_UNIVERSAL > "$TMPDIR"/abbr_universals
+
+      rm "$abbr_universals_updated" 2> /dev/null
+      mktemp "$abbr_universals_updated" 1> /dev/null
+
+      for k v in ${(kv)ABBRS_UNIVERSAL}; do
+        echo "$k $v" >> "$abbr_universals_updated"
+      done
+
+      mv "$abbr_universals_updated" "$ABBR_UNIVERSALS_SOURCE"
     }
 
     function abbr_rename() {
@@ -370,104 +466,8 @@ function abbr() {
       done
     }
 
-    function abbr_list() {
-      if [ $# -gt 0 ]; then
-        abbr_error " -l: Unexpected argument"
-        return
-      fi
-
-      source "$TMPDIR"/abbr_universals
-
-      print -l ${(k)ABBRS_UNIVERSAL}
-      print -l ${(k)ABBRS_GLOBAL}
-    }
-
-    function abbr_populate() {
-      if [ $# -gt 0 ]; then
-        abbr_error " -p: Unexpected argument"
-        return
-      fi
-
-      if $abbr_opt_global; then
-        for key value in ${(kv)aliases}; do
-          ABBRS_GLOBAL[$key]="$value"
-        done
-      else
-        source "$TMPDIR"/abbr_universals
-
-        for key value in ${(kv)aliases}; do
-          ABBRS_UNIVERSAL[$key]="$value"
-        done
-
-        abbr_sync_global
-      fi
-    }
-
-    function abbr_git_populate() {
-      if [ $# -gt 0 ]; then
-        abbr_error " -p: Unexpected argument"
-        return
-      fi
-
-      local git_aliases abbr_git_aliases
-      git_aliases=("${(@f)$(git config --get-regexp '^alias\.')}")
-      typeset -A abbr_git_aliases
-
-      for i in $git_aliases; do
-        key="${$(echo $i | awk '{print $1;}')##alias.}"
-        value="${$(echo $i)##alias.$key }"
-
-        abbr_git_aliases[g$key]="git ${value# }"
-      done
-
-      if $abbr_opt_global; then
-        for k v in ${(kv)abbr_git_aliases}; do
-          ABBRS_GLOBAL[$k]="$v"
-        done
-      else
-        source "$TMPDIR"/abbr_universals
-
-        for k v in ${(kv)abbr_git_aliases}; do
-          ABBRS_UNIVERSAL[$k]="$v"
-        done
-
-        abbr_sync_global
-      fi
-    }
-
-    function abbr_create_aliases() {
-      local source
-      local alias_definition
-
-      if [ $# -gt 1 ]; then
-        abbr_error " -c: Unexpected argument"
-        return
-      fi
-
-      if $abbr_opt_global; then
-        source=ABBRS_GLOBAL
-      else
-        source=ABBRS_UNIVERSAL
-      fi
-
-      for k v in ${(kv)source}; do
-        source[$k]="$v"
-        alias_definition="alias -g $k='$v'"
-
-        if [ $# -gt 0 ]; then
-          echo "$alias_definition" >> "$1"
-        else
-          print "$alias_definition"
-        fi
-      done
-    }
-
-    function abbr_check_options() {
-      for option in "$@"; do
-        if [ "$option" = true ]; then
-          abbr_error ": Illegal combination of options"
-        fi
-      done
+    function abbr_usage() {
+      print "$abbr_usage\\n"
     }
 
     while getopts ":haerslpicgU" opt; do
