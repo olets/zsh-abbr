@@ -17,7 +17,7 @@
 ABBR_UNIVERSALS_SOURCE="${ABBR_UNIVERSALS_SOURCE="${HOME}/.zsh_abbrs"}"
 # Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
-ABBRS_DEFAULT_BEHAVIOR="${ABBRS_DEFAULT_BEHAVIOR=true}"
+ABBRS_DEFAULT_BINDINGS="${ABBRS_DEFAULT_BINDINGS=true}"
 
 # INITIALIZE
 # ----------
@@ -42,7 +42,7 @@ mktemp "$ABBRS_UNIVERSAL_SCRATCH_FILE" 1> /dev/null
 typeset -p ABBRS_UNIVERSAL > "$ABBRS_UNIVERSAL_SCRATCH_FILE"
 
 # Bind
-if [ "$ABBRS_DEFAULT_BEHAVIOR" = true ]; then
+if [ "$ABBRS_DEFAULT_BINDINGS" = true ]; then
   # spacebar expands abbreviations
   zle -N _zsh_abbr_expand_space
   bindkey " " _zsh_abbr_expand_space
