@@ -148,15 +148,15 @@ function abbr() {
        \e[1mabbr\e[0m: fish shell-like abbreviations for zsh
 
    \e[1mSynopsis\e[0m
-       \e[1mabbr\e[0m -a [SCOPE] WORD EXPANSION
-       \e[1mabbr\e[0m -c [SCOPE] [DESTINATION_FILE]
-       \e[1mabbr\e[0m -e [SCOPE] WORD
-       \e[1mabbr\e[0m -r [SCOPE] OLD_WORD NEW_WORD
-       \e[1mabbr\e[0m -s
-       \e[1mabbr\e[0m -l
-       \e[1mabbr\e[0m -p [SCOPE]
-       \e[1mabbr\e[0m -i [SCOPE]
-       \e[1mabbr\e[0m -h
+       \e[1mabbr\e[0m --add|-a [SCOPE] WORD EXPANSION
+       \e[1mabbr\e[0m --create-aliases|-c [SCOPE] [DESTINATION_FILE]
+       \e[1mabbr\e[0m --erase|-e [SCOPE] WORD
+       \e[1mabbr\e[0m --rename|-r [SCOPE] OLD_WORD NEW_WORD
+       \e[1mabbr\e[0m --show|-s
+       \e[1mabbr\e[0m --list|-l
+       \e[1mabbr\e[0m --populate|-p [SCOPE]
+       \e[1mabbr\e[0m --git-populate|-i [SCOPE]
+       \e[1mabbr\e[0m --help|-h
 
    \e[1mDescription\e[0m
        \e[1mabbr\e[0m manages abbreviations - user-defined words that are replaced with longer phrases after they are entered.
@@ -169,67 +169,75 @@ function abbr() {
    \e[1mOptions\e[0m
        The following options are available:
 
-       o -a WORD EXPANSION Adds a new abbreviation, causing WORD to be expanded to PHRASE.
+       o --add WORD EXPANSION or -a WORD EXPANSION Adds a new abbreviation, causing WORD to be expanded to PHRASE.
 
-       o -c [-g] [<DESTINATION_FILE>] Outputs a list of alias command for universal abbreviations,
+       o --create-aliases [-g] [DESTINATION_FILE] or -c [-g] [<DESTINATION_FILE>] Outputs a list of alias command for universal abbreviations,
            suitable for pasting or piping to whereever you keep aliases.
            Add -g to output alias commands for global abbreviations.
            If a DESTINATION_FILE is provided, the commands will be appended to it.
 
-       o -e WORD Erases the abbreviation WORD.
+       o --erase WORD or -e WORD Erases the abbreviation WORD.
 
-       o -r OLD_WORD NEW_WORD Renames an abbreviation, from OLD_WORD to NEW_WORD.
+       o --rename OLD_WORD NEW_WORD -r OLD_WORD NEW_WORD Renames an abbreviation, from OLD_WORD to NEW_WORD.
 
-       o -s Show all abbreviations in a manner suitable for export and import.
+       o --show or -s Show all abbreviations in a manner suitable for export and import.
 
-       o -l Lists all abbreviated words.
+       o --list -l Lists all abbreviated words.
 
-       o -p Creates abbreviations for all aliases.
+       o --populate or -p Creates abbreviations for all aliases.
 
-       o -i Creates abbreviations for all git aliases. WORDs are prefixed with g, EXPANSIONs are prefixed with git<space>.
+       o --git-populate or -i Creates abbreviations for all git aliases. WORDs are prefixed with g, EXPANSIONs are prefixed with git<space>.
 
        In addition, when adding abbreviations use
 
-       o -g to create a global abbreviation, available only in the current session.
+       o --global or -g to create a global abbreviation, available only in the current session.
 
-       o -U to create a universal abbreviation (default), immediately available to all sessions.
+       o --universal or -U to create a universal abbreviation (default), immediately available to all sessions.
 
        See the 'Internals' section for more on them.
 
    \e[1mExamples\e[0m
        \e[1mabbr\e[0m -a -g gco git checkout
+       \e[1mabbr\e[0m --add --global gco git checkout
 
         Add a new abbreviation where gco will be replaced with git checkout global to the current shell. This abbreviation
        will not be automatically visible to other shells unless the same command is run in those shells.
 
        \e[1mabbr\e[0m -a l less
+       \e[1mabbr\e[0m --add l less
 
         Add a new abbreviation where l will be replaced with less universal so all shells. Note that you omit the -U since it
        is the default.
 
        \e[1mabbr\e[0m -r -g gco gch
+       \e[1mabbr\e[0m --rename --global gco gch
 
         Rename the existing global abbreviation from gco to gch.
 
        \e[1mabbr\e[0m -r l le
+       \e[1mabbr\e[0m --rename l le
 
         Rename the existing universal abbreviation from l to le. Note that you omit the -U since it is the default.
 
        \e[1mabbr\e[0m -e -g gco
+       \e[1mabbr\e[0m --erase --global gco
 
         Erase the global gco abbreviation.
 
        \e[1mabbr\e[0m -c -g
+       \e[1mabbr\e[0m --create-aliases -global
 
         Output alias declaration commands for each *global* abbreviation. Output lines look like
           alias -g <WORD>='<EXPANSION>'
 
        \e[1mabbr\e[0m -c
+       \e[1mabbr\e[0m --create-aliases
 
         Output alias declaration commands for each *universal* abbreviation. Output lines look like
           alias -g <WORD>='<EXPANSION>'
 
        \e[1mabbr\e[0m -c ~/aliases
+       \e[1mabbr\e[0m --create-aliases ~/aliases
 
         Add alias definitions to ~/aliases
 
