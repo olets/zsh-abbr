@@ -178,15 +178,15 @@ function abbr() {
 
        o --erase WORD or -e WORD Erases the abbreviation WORD.
 
-       o --rename OLD_WORD NEW_WORD -r OLD_WORD NEW_WORD Renames an abbreviation, from OLD_WORD to NEW_WORD.
-
-       o --show or -s Show all abbreviations in a manner suitable for export and import.
+       o --git-populate or -i Adds abbreviations for all git aliases. WORDs are prefixed with g, EXPANSIONs are prefixed with git[Space].
 
        o --list -l Lists all abbreviated words.
 
-       o --populate or -p Creates abbreviations for all aliases.
+       o --populate or -p Adds abbreviations for all aliases.
 
-       o --git-populate or -i Creates abbreviations for all git aliases. WORDs are prefixed with g, EXPANSIONs are prefixed with git<space>.
+       o --rename OLD_WORD NEW_WORD -r OLD_WORD NEW_WORD Renames an abbreviation, from OLD_WORD to NEW_WORD.
+
+       o --show or -s Show all abbreviations in a manner suitable for export and import.
 
        In addition, when adding abbreviations use
 
@@ -209,21 +209,6 @@ function abbr() {
         Add a new abbreviation where l will be replaced with less universal so all shells. Note that you omit the -U since it
        is the default.
 
-       \e[1mabbr\e[0m -r -g gco gch
-       \e[1mabbr\e[0m --rename --global gco gch
-
-        Rename the existing global abbreviation from gco to gch.
-
-       \e[1mabbr\e[0m -r l le
-       \e[1mabbr\e[0m --rename l le
-
-        Rename the existing universal abbreviation from l to le. Note that you omit the -U since it is the default.
-
-       \e[1mabbr\e[0m -e -g gco
-       \e[1mabbr\e[0m --erase --global gco
-
-        Erase the global gco abbreviation.
-
        \e[1mabbr\e[0m -c -g
        \e[1mabbr\e[0m --create-aliases -global
 
@@ -240,6 +225,21 @@ function abbr() {
        \e[1mabbr\e[0m --create-aliases ~/aliases
 
         Add alias definitions to ~/aliases
+
+       \e[1mabbr\e[0m -e -g gco
+       \e[1mabbr\e[0m --erase --global gco
+
+        Erase the global gco abbreviation.
+
+       \e[1mabbr\e[0m -r -g gco gch
+       \e[1mabbr\e[0m --rename --global gco gch
+
+        Rename the existing global abbreviation from gco to gch.
+
+       \e[1mabbr\e[0m -r l le
+       \e[1mabbr\e[0m --rename l le
+
+        Rename the existing universal abbreviation from l to le. Note that you omit the -U since it is the default.
 
    \e[1mInternals\e[0m
        The WORD cannot contain a space but all other characters are legal.
