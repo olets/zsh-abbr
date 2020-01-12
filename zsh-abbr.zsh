@@ -458,18 +458,18 @@ function abbr() {
       fi
 
       if $abbr_opt_global; then
-        if [ ${ABBRS_GLOBAL[(I)$1]} ]; then
+        if (( ${+ABBRS_GLOBAL[$1]} )); then
           ABBRS_GLOBAL[$2]="${ABBRS_GLOBAL[$1]}"
-          unset ABBRS_GLOBAL["$1"]
+          unset "ABBRS_GLOBAL[${(b)1}]"
         else
           abbr_error " -r: No global abbreviation named $1"
         fi
       else
         source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
 
-        if [ ${ABBRS_UNIVERSAL[(I)$1]} ]; then
+        if (( ${+ABBRS_UNIVERSAL[$1]} )); then
           ABBRS_UNIVERSAL[$2]="${ABBRS_UNIVERSAL[$1]}"
-          unset ABBRS_UNIVERSAL["$1"]
+          unset "ABBRS_UNIVERSAL[${(b)1}]"
           abbr_sync_universal
         else
           abbr_error " -r: No universal abbreviation named $1"
