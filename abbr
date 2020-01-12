@@ -1,10 +1,12 @@
 #!/usr/bin/env zsh
 
-# Abbreviation support has two parts:
-# abbreviation expansion, and abbreviation management.
-# Here management, scoped to the abbr command, follows expansion handling.
+# fish shell-like abbreviation management for zsh.
+# https://github.com/olets/zsh-abbr
+# v1.1.0
+# Copyright (c) 2019-2020 Henry Bley-Vroman
 
-# References
+
+# References that helped in writing this
 # https://www.zsh.org/mla/users/2012/msg00014.html
 # Unsetting an associative array entry: http://www.zsh.org/mla/workers/2018/msg01078.html
 
