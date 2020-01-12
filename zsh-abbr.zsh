@@ -328,8 +328,7 @@ function abbr() {
         source=ABBRS_UNIVERSAL
       fi
 
-      for k v in ${(kv)source}; do
-        source[$k]="$v"
+      for k v in ${(kv)${(P)source}}; do
         alias_definition="alias -g $k='$v'"
 
         if [ $# -gt 0 ]; then
