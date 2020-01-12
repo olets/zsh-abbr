@@ -64,13 +64,13 @@ fi
 # FUNCTIONS
 # ---------
 function _zsh_abbr_expand_accept() {
-  _zsh_abbr_expand_widget
+  zle _zsh_abbr_expand_widget
   zle autosuggest-clear # if using zsh-autosuggestions, clear any suggestion
   zle accept-line
 }
 
 function _zsh_abbr_expand_space() {
-  _zsh_abbr_expand_widget
+  zle _zsh_abbr_expand_widget
   LBUFFER="$LBUFFER "
 }
 
@@ -79,6 +79,16 @@ function _zsh_abbr_expand_space() {
 # -------
 
 function _zsh_abbr_expand_widget() {
+  abbr_expand "$@"
+}
+
+zle -N _zsh_abbr_expand_widget
+
+
+# FUNCTIONS
+# ---------
+
+function abbr_expand() {
   {
     function abbr_expand_error() {
       printf "abbr%s\\nFor help run abbr -h\\n" "$@"
@@ -124,13 +134,6 @@ function _zsh_abbr_expand_widget() {
     unfunction -m "abbr_expand_get_expansion"
   }
 }
-
-# Create widgets
-zle -N abbr_expand _zsh_abbr_expand_widget
-
-
-# FUNCTIONS
-# ---------
 
 function abbr() {
   {
@@ -271,7 +274,7 @@ function abbr() {
        The options -a -c -e -r -s -l -p and -i are mutually exclusive,
        as are the scope options -g and -U.
 
-       The command abbr_expand is available to return an abbreviation's
+       The function abbr_expand is available to return an abbreviation's
        expansion. The result is the global expansion if one exists, otherwise
        the universal expansion if one exists.
 
