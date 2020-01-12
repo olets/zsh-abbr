@@ -280,12 +280,7 @@ function abbr() {
 
        Version 1.1.0 January 26 2019"
 
-    function abbr_add() {
-      if [[ $# -lt 2 ]]; then
-        abbr_error " -a: Requires at least two arguments"
-        return
-      fi
-
+    function abbr_util_add() {
       key="$1"
       shift
       # $* is value
@@ -307,6 +302,15 @@ function abbr() {
         ABBRS_UNIVERSAL[$key]="$*"
         abbr_sync_universal
       fi
+    }
+
+    function abbr_add() {
+      if [[ $# -lt 2 ]]; then
+        abbr_error " -a: Requires at least two arguments"
+        return
+      fi
+
+      abbr_util_add $*
     }
 
     function abbr_bad_options() {
@@ -387,22 +391,8 @@ function abbr() {
         key="${$(echo $i | awk '{print $1;}')##alias.}"
         value="${$(echo $i)##alias.$key }"
 
-        abbr_git_aliases[g$key]="git ${value# }"
+        abbr_util_add "g$key" "git ${value# }"
       done
-
-      if $abbr_opt_global; then
-        for k v in ${(kv)abbr_git_aliases}; do
-          ABBRS_GLOBAL[$k]="$v"
-        done
-      else
-        source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
-
-        for k v in ${(kv)abbr_git_aliases}; do
-          ABBRS_UNIVERSAL[$k]="$v"
-        done
-
-        abbr_sync_universal
-      fi
     }
 
     function abbr_list() {
@@ -423,19 +413,9 @@ function abbr() {
         return
       fi
 
-      if $abbr_opt_global; then
-        for key value in ${(kv)aliases}; do
-          ABBRS_GLOBAL[$key]="$value"
-        done
-      else
-        source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
-
-        for key value in ${(kv)aliases}; do
-          ABBRS_UNIVERSAL[$key]="$value"
-        done
-
-        abbr_sync_universal
-      fi
+      for k v in ${(kv)aliases}; do
+        abbr_util_add "$k" "${v# }"
+      done
     }
 
     function abbr_sync_universal() {
@@ -606,6 +586,7 @@ function abbr() {
       abbr_show "$@"
     fi
   } always {
+    unfunction -m "abbr_util_add"
     unfunction -m "abbr_add"
     unfunction -m "abbr_create_aliases"
     unfunction -m "abbr_erase"
