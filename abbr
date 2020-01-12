@@ -132,6 +132,7 @@ zle -N abbr_expand _zsh_abbr_expand_widget
 
 function abbr() {
   {
+    local abbr_number_opts=0
     local abbr_opt_add=false
     local abbr_opt_create_aliases=false
     local abbr_opt_erase=false
@@ -341,7 +342,7 @@ function abbr() {
     }
 
     function abbr_error() {
-      printf "abbr%s\\nFor help run abbr -h\\n" "$@"
+      printf "abbr%s\\nFor help run abbr --help\\n" "$@"
       abbr_should_exit=true
     }
 
@@ -472,57 +473,70 @@ function abbr() {
       print "$abbr_usage\\n"
     }
 
-    while getopts ":haerslpicgU" opt; do
+    local abbr_number_opts=0
+    for opt in "$@"; do
       if $abbr_should_exit; then
         abbr_should_exit=false
         return
       fi
 
       case "$opt" in
-        h)
+        "-h"|"--help")
           abbr_usage
           abbr_should_exit=true
           ;;
-        a)
+        "-a"|"--add")
           abbr_check_options $abbr_opt_rename $abbr_opt_show $abbr_opt_list $abbr_opt_erase $abbr_opt_populate $abbr_opt_git_populate $abbr_opt_create_aliases
+          ((abbr_number_opts++))
           abbr_opt_add=true
           ;;
-        e)
+        "-e"|"--erase")
           abbr_check_options $abbr_opt_add $abbr_opt_rename $abbr_opt_show $abbr_opt_list $abbr_opt_populate $abbr_opt_git_populate $abbr_opt_create_aliases
+          ((abbr_number_opts++))
           abbr_opt_erase=true
           ;;
-        r)
+        "-r"|"--rename")
           abbr_check_options $abbr_opt_add $abbr_opt_show $abbr_opt_list $abbr_opt_erase $abbr_opt_populate $abbr_opt_git_populate $abbr_opt_create_aliases
+          ((abbr_number_opts++))
           abbr_opt_rename=true
           ;;
-        s)
+        "-s"|"--show")
           abbr_check_options $abbr_opt_add $abbr_opt_rename $abbr_opt_list $abbr_opt_erase $abbr_opt_populate $abbr_opt_git_populate $abbr_opt_create_aliases
+          ((abbr_number_opts++))
           abbr_opt_show=true
           ;;
-        l)
+        "-l"|"--list")
           abbr_check_options $abbr_opt_add $abbr_opt_rename $abbr_opt_show $abbr_opt_erase $abbr_opt_populate $abbr_opt_git_populate $abbr_opt_create_aliases
+          ((abbr_number_opts++))
           abbr_opt_list=true
           ;;
-        p)
+        "-p"|"--populate")
           abbr_check_options $abbr_opt_add $abbr_opt_rename $abbr_opt_show $abbr_opt_erase $abbr_opt_list $abbr_opt_git_populate $abbr_opt_create_aliases
+          ((abbr_number_opts++))
           abbr_opt_populate=true
           ;;
-        i)
+        "-i"|"--git-populate")
           abbr_check_options $abbr_opt_add $abbr_opt_rename $abbr_opt_show $abbr_opt_erase $abbr_opt_list $abbr_opt_populate $abbr_opt_create_aliases
+          ((abbr_number_opts++))
           abbr_opt_git_populate=true
           ;;
-        c)
+        "-c"|"--create-aliases")
           abbr_check_options $abbr_opt_add $abbr_opt_rename $abbr_opt_show $abbr_opt_erase $abbr_opt_list $abbr_opt_populate $abbr_opt_git_populate
+          ((abbr_number_opts++))
           abbr_opt_create_aliases=true
           ;;
-        g)
+        "-g"|"--global")
           abbr_check_options $abbr_opt_universal
+          ((abbr_number_opts++))
           abbr_opt_global=true
           ;;
-        U)
+        "-U"|"--universal")
           abbr_check_options $abbr_opt_global
+          ((abbr_number_opts++))
           ;;
-        *) abbr_error " Unknown option '-$OPTARG'" ;;
+        "-"*)
+          abbr_error ": Unknown option '$opt'"
+          ;;
       esac
     done
 
@@ -531,7 +545,7 @@ function abbr() {
       return
     fi
 
-    shift $((OPTIND-1))
+    shift $abbr_number_opts
 
     if ! $abbr_opt_global; then
       abbr_opt_universal=true
