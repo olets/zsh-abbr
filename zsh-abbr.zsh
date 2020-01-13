@@ -64,8 +64,9 @@ if [ "$ABBRS_DEFAULT_BINDINGS" = true ]; then
 fi
 
 
-# FUNCTIONS
-# ---------
+# INTERNAL FUNCTIONS
+# ------------------
+
 function _zsh_abbr_expand_accept() {
   zle _zsh_abbr_expand_widget
   zle autosuggest-clear # if using zsh-autosuggestions, clear any suggestion
@@ -77,65 +78,55 @@ function _zsh_abbr_expand_space() {
   LBUFFER="$LBUFFER "
 }
 
+function _zsh_abbr_expansion() {
+  local expansion
+  expansion="${ABBRS_GLOBAL[$1]}"
+
+  if [[ ! -n $expansion ]]; then
+    source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
+    expansion="${ABBRS_UNIVERSAL[$1]}"
+  fi
+
+  echo "$expansion"
+}
+
 
 # WIDGETS
 # -------
 
 function _zsh_abbr_expand_widget() {
-  abbr_expand "$@"
+  {
+    function abbr_expand_get_expansion() {
+      printf "%s\\n" "${ABBRS_UNIVERSAL[$1]}"
+    }
+
+    local abbreviation expansion
+    abbreviation="${LBUFFER/*[ ,;|&\n\t]/}"
+    expansion=$(_zsh_abbr_expansion "$abbreviation")
+
+    if [ "$expansion" ]; then
+      local rest="${LBUFFER%%$abbreviation}"
+      LBUFFER="$rest$expansion"
+      _zsh_highlight # if using zsh-syntax-highlighting, update the highlighting
+    fi
+  } always {
+    unfunction -m "abbr_expand_get_expansion"
+  }
 }
 
 zle -N _zsh_abbr_expand_widget
 
 
-# FUNCTIONS
-# ---------
+# SHARED FUNCTIONS
+# ----------------
 
 function abbr_expand() {
-  {
-    function abbr_expand_error() {
-      printf "abbr%s\\nFor help run abbr -h\\n" "$@"
-      abbr_should_exit=true
-    }
+  if [[ "$#" -ne 1 ]]; then
+    printf "abbr_expand requires exactly one argument\\n"
+    return
+  fi
 
-    function abbr_expand_get_expansion() {
-      printf "%s\\n" "${ABBRS_UNIVERSAL[$1]}"
-    }
-
-    local abbreviation=$1
-    local expansion
-
-    if ! zle; then
-      if [[ "$#" -ne 1 ]]; then
-        printf "abbr_expand requires exactly one argument\\n"
-        return
-      fi
-
-      abbreviation=$1
-    else
-      abbreviation="${LBUFFER/*[ ,;|&\n\t]/}"
-    fi
-
-    expansion="${ABBRS_GLOBAL[$abbreviation]}"
-
-    if [[ ! -n $expansion ]]; then
-      source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
-      expansion="${ABBRS_UNIVERSAL[$abbreviation]}"
-    fi
-
-    if ! zle; then
-      printf "%s\\n" "$expansion"
-    else
-      if [ "$expansion" ]; then
-        local rest="${LBUFFER%%$abbreviation}"
-        LBUFFER="$rest$expansion"
-        _zsh_highlight # if using zsh-syntax-highlighting, update the highlighting
-      fi
-    fi
-  } always {
-    unfunction -m "abbr_expand_error"
-    unfunction -m "abbr_expand_get_expansion"
-  }
+  _zsh_abbr_expansion "$1"
 }
 
 function abbr() {
