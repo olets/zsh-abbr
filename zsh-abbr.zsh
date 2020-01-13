@@ -425,14 +425,36 @@ function abbr() {
     }
 
     function abbr_rename() {
+      local source type
+      source="ABBRS_GLOBAL"
+      type="universal"
+
+      if $abbr_opt_global; then
+        source="ABBRS_GLOBAL"
+        type="global"
+      fi
+
       if [ $# -ne 2 ]; then
         abbr_error " -r: Requires exactly two arguments"
         return
       fi
 
+      if [ $(abbr_util_exists $1) != true ]; then
+        abbr_error " -r: No $type abbreviation $1 exists"
+        return
+      fi
+
+      if [ $(abbr_util_exists $2) = true ]; then
+        abbr_error " -r: A $type abbreviation $2 already exists"
+      else
+        abbr_rename_modify $1 $2
+      fi
+    }
+
+    function abbr_rename_modify {
       if $abbr_opt_global; then
         if (( ${+ABBRS_GLOBAL[$1]} )); then
-          ABBRS_GLOBAL[$2]="${ABBRS_GLOBAL[$1]}"
+          abbr_util_add "$2" "${ABBRS_GLOBAL[$1]}"
           unset "ABBRS_GLOBAL[${(b)1}]"
         else
           abbr_error " -r: No global abbreviation named $1"
@@ -441,7 +463,7 @@ function abbr() {
         source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
 
         if (( ${+ABBRS_UNIVERSAL[$1]} )); then
-          ABBRS_UNIVERSAL[$2]="${ABBRS_UNIVERSAL[$1]}"
+          abbr_util_add "$2" "${ABBRS_UNIVERSAL[$1]}"
           unset "ABBRS_UNIVERSAL[${(b)1}]"
           abbr_sync_universal
         else
@@ -602,6 +624,7 @@ function abbr() {
     unfunction -m "abbr_check_options"
     unfunction -m "abbr_list"
     unfunction -m "abbr_rename"
+    unfunction -m "abbr_rename_modify"
     unfunction -m "abbr_show"
     unfunction -m "abbr_sync_universal"
     unfunction -m "abbr_usage"
