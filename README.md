@@ -4,11 +4,9 @@ An enhanced [zsh](http://www.zsh.org/) port of [fish shell](http://www.fishshell
 
 **abbr** manages abbreviations - user-defined words that are replaced with longer phrases after they are entered.
 
-For example, a frequently-run command like `git checkout` can be abbreviated to `gco`. After entering `gco` and pressing <kbd>Space</kbd>, the full text `git checkout` will appear in the command line. To prevent expansion, press <kbd>Ctrl</kbd><kbd>Space</kbd> in place of <kbd>Space</kbd>.
+For example, a frequently-run command like `git checkout` can be abbreviated to `gco`. After entering `gco` and pressing <kbd>Space</kbd>, the full text `git checkout` will appear in the command line. To prevent expansion, press <kbd>Ctrl</kbd><kbd>Space</kbd> in place of <kbd>Space</kbd>. Pressing <kbd>Enter</kbd> after an abbreviation will expand the abbreviation and accept the current line.
 
-Pressing <kbd>Enter</kbd> after an abbreviation will expand the abbreviation and accept the current line.
-
-Abbreviations are expanded whether or not they are the first word on the line. Cross-session abbreviations are store in the clear in a plaintext configuration file.
+Abbreviations are expanded whether or not they are the first word on the line. Cross-session abbreviations are stored in the clear in a plaintext configuration file.
 
 Run `abbr --help` (or `abbr -h`) for documentation.
 
@@ -25,7 +23,7 @@ Run `abbr --help` (or `abbr -h`) for documentation.
 
 - **[antibody](https://getantibody.github.io/)**: Add `olets/zsh-abbr` to your plugins file. If you use static loading, reload plugins.
 
-- **[Antigen](https://github.com/zsh-users/antigen)**: Add `antigen bundle olets/zsh-abbr` to your `.zshrc`. (untested)
+- **[Antigen](https://github.com/zsh-users/antigen)**: Add `antigen bundle olets/zsh-abbr` to your `.zshrc`.
 
 - **[Oh-My-Zsh](https://github.com/robbyrussell/oh-my-zsh)**:
 
@@ -35,7 +33,7 @@ Run `abbr --help` (or `abbr -h`) for documentation.
     git clone https://github.com/olets/zsh-abbr.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-abbr
     ```
 
-  - Add to the OMZ plugins array in you `.zshrc`:
+  - Add to the OMZ plugins array in your `.zshrc`:
 
     ```zsh
     plugins=( [plugins...] zsh-syntax-highlighting)
@@ -49,7 +47,11 @@ Run `abbr --help` (or `abbr -h`) for documentation.
 
 - **[zplugin](https://github.com/zplug/zplug)**: add `zplugin load olets/zsh-abbr` to your `.zshrc`.
 
-If that didn't do it, opening a new terminal or reloading zsh (`source path/to/your/.zshrc`, e.g. `source ~/.zshrc`) should.
+If running `abbr` gives an error "zsh: permission denied: abbr", reload zsh:
+
+```zsh
+% source ~/.zshrc # or your custom .zshrc path
+```
 
 ## Quick Start
 
@@ -62,7 +64,7 @@ If that didn't do it, opening a new terminal or reloading zsh (`source path/to/y
 # expands to and runs `git checkout master`
 
 % abbr gcm git checkout master
-# Note the `m`s in `gcm` and `master` did not expand. Expansion only runs on entire words
+# Note the `m`s in `gcm` and `master` did not expand. Expansion only run on entire words
 % gcm[Enter]
 # expands to and runs `git checkout master`
 
@@ -81,7 +83,7 @@ If that didn't do it, opening a new terminal or reloading zsh (`source path/to/y
 % abbr -g wgco[Ctrl-Space]
 % wgco[Space] # no expansion
 
-# Migrate you aliases to abbreviations
+# Migrate your aliases to abbreviations
 % abbr -p # creates abbreviations from all aliases, adding 'g' prefix
 % abbr -i # creates abbreviations from all Git aliases
 ```
@@ -290,7 +292,7 @@ ABBR_UNIVERSALS_SOURCE="path/to/my/universal/abbreviations"
 # load zsh-abbr
 ```
 
-Note that the default file is created the first time zsh-abbr is run. If you customize the path, you may want to delete the default file or even the zsh-abbr config directory.
+Note that the default file is created the first time zsh-abbr is run. If you customize the path, you may want to delete the default file or even the default zsh-abbr config directory.
 
 ### Bindings
 
@@ -302,7 +304,7 @@ By default
 
 (In incremental search mode, <kbd>Space</kbd> is a normal space and <kbd>Ctrl</kbd><kbd>Space</kbd> expands abbreviations.)
 
-If you want to set your own different bindings, set `ABBRS_DEFAULT_BINDINGS` to `false` in your `.zshrc` before loading zsh-abbr.
+If you want to set your own bindings, set `ABBRS_DEFAULT_BINDINGS` to `false` in your `.zshrc` before loading zsh-abbr.
 
 ```zsh
 % cat ~/.zshrc
@@ -314,9 +316,10 @@ ABBRS_DEFAULT_BINDINGS=false
 
 ## Uninstalling
 
-Follow the standard uninstallation procedure for your installation method. To delete the universal abbreviations storage file, run
+Delete the zsh-abbr configuration directory. Note that this will permanently delete the universal abbreviations file.
 
 ```zsh
-% rm -rf $HOME/.config/zsh-abbr
+% rm -rf $(dirname "$ABBR_UNIVERSALS_SOURCE")
 ```
 
+Then follow the standard uninstallation procedure for your installation method. This is typically the reverse of what you did to install.
