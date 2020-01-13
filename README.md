@@ -52,7 +52,7 @@ If that didn't do it, opening a new terminal or reloading zsh (`source path/to/y
 
 ## Scopes
 
-An given abbreviation can be made available in the current zsh session (i.e. in the current terminal) —these are called *global* abbreviations— or to all terminals —these are called *universal* abbreviations.
+A given abbreviation can be made available in the current zsh session (i.e. in the current terminal) —these are called *global* abbreviations— or to all terminals —these are called *universal* abbreviations.
 
 ## Options
 
@@ -143,8 +143,6 @@ Add abbreviations for every Git alias available in the current session. WORDs ar
 
 This command is useful for migrating from aliases to abbreviations.
 
-See also **Populate**.
-
 ```zsh
 % git config alias.co checkout
 % abbr --git-populate --global
@@ -155,6 +153,8 @@ See also **Populate**.
 % source ~/.zshrc
 % gco[Space] # expands to git checkout
 ```
+
+Note for users migrating from Oh-My-Zsh: [OMZ's Git aliases are shell aliases](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh), not aliases in the Git config. To add abbreviations for them, use **Populate**.
 
 ### List
 
