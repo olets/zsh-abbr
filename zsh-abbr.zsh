@@ -95,23 +95,15 @@ function _zsh_abbr_expansion() {
 # -------
 
 function _zsh_abbr_expand_widget() {
-  {
-    function abbr_expand_get_expansion() {
-      printf "%s\\n" "${ABBRS_UNIVERSAL[$1]}"
-    }
+  local abbreviation expansion
+  abbreviation="${LBUFFER/*[ ,;|&\n\t]/}"
+  expansion=$(_zsh_abbr_expansion "$abbreviation")
 
-    local abbreviation expansion
-    abbreviation="${LBUFFER/*[ ,;|&\n\t]/}"
-    expansion=$(_zsh_abbr_expansion "$abbreviation")
-
-    if [ "$expansion" ]; then
-      local rest="${LBUFFER%%$abbreviation}"
-      LBUFFER="$rest$expansion"
-      _zsh_highlight # if using zsh-syntax-highlighting, update the highlighting
-    fi
-  } always {
-    unfunction -m "abbr_expand_get_expansion"
-  }
+  if [[ -n "$expansion" ]]; then
+    local rest="${LBUFFER%%$abbreviation}"
+    LBUFFER="$rest$expansion"
+    _zsh_highlight # if using zsh-syntax-highlighting, update the highlighting
+  fi
 }
 
 zle -N _zsh_abbr_expand_widget
