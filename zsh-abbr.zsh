@@ -14,7 +14,7 @@
 # -------------
 
 # File abbreviations are stored in
-ABBR_UNIVERSALS_SOURCE="${ABBR_UNIVERSALS_SOURCE="${HOME}/.zsh_abbrs"}"
+ABBR_UNIVERSALS_SOURCE="${ABBR_UNIVERSALS_SOURCE="${HOME}/.config/zsh-abbr/universal"}"
 # Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
 ABBRS_DEFAULT_BINDINGS="${ABBRS_DEFAULT_BINDINGS=true}"
@@ -32,6 +32,9 @@ if [ -f "$ABBR_UNIVERSALS_SOURCE" ]; then
   while read -r k v; do
     ABBRS_UNIVERSAL[$k]="$v"
   done < "$ABBR_UNIVERSALS_SOURCE"
+else
+  mkdir -p $(dirname "$ABBR_UNIVERSALS_SOURCE")
+  touch "$ABBR_UNIVERSALS_SOURCE"
 fi
 
 # Scratch file
