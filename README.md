@@ -4,7 +4,7 @@ An enhanced [zsh](http://www.zsh.org/) port of [fish shell](http://www.fishshell
 
 **abbr** manages abbreviations - user-defined words that are replaced with longer phrases after they are entered.
 
-For example, a frequently-run command like git checkout can be abbreviated to gco. After entering gco and pressing <kbd>Space</kbd>, the full text git checkout will appear in the command line. To prevent expansion, press <kbd>Ctrl</kbd><kbd>Space</kbd> in place of <kbd>Space</kbd>.
+For example, a frequently-run command like `git checkout` can be abbreviated to `gco`. After entering `gco` and pressing <kbd>Space</kbd>, the full text `git checkout` will appear in the command line. To prevent expansion, press <kbd>Ctrl</kbd><kbd>Space</kbd> in place of <kbd>Space</kbd>.
 
 Pressing <kbd>Enter</kbd> after an abbreviation will expand the abbreviation and accept the current line.
 
@@ -15,6 +15,7 @@ Run `abbr --help` (or `abbr -h`) for documentation.
 ## Contents
 
 1. [Installation](#installation)
+1. [Quick Start](#quick-start)
 1. [Scopes](#scopes)
 1. [Options](#options)
 1. [Configuration](#configuration)
@@ -49,6 +50,41 @@ Run `abbr --help` (or `abbr -h`) for documentation.
 - **[zplugin](https://github.com/zplug/zplug)**: add `zplugin load olets/zsh-abbr` to your `.zshrc`.
 
 If that didn't do it, opening a new terminal or reloading zsh (`source path/to/your/.zshrc`, e.g. `source ~/.zshrc`) should.
+
+## Quick Start
+
+```zsh
+# Add and use an abbreviation
+% abbr m master
+% m[Space] # expands to `master`
+% git checkout m[Space] # becomes `git checkout master`
+% git checkout m[Enter]
+# expands to and runs `git checkout master`
+
+% abbr gcm git checkout master
+# Note the `m`s in `gcm` and `master` did not expand. Expansion only runs on entire words
+% gcm[Enter]
+# expands to and runs `git checkout master`
+
+# The above will in other open sessions, and in future sessions.
+# Add an abbreviation only available in the current terminal
+% abbr -g gco[Ctrl-Space] https://en.wikipedia.org/wiki/GCO
+# (Note that Ctrl-Space opts out of space-triggered expansion)
+% gco[Space] # expands to `https://en.wikipedia.org/wiki/GCO`
+
+# Rename it
+% abbr -r gco[Ctrl-Space] wgco
+% gco[Space] # expands to `git checkout`
+% wgco[Space] # expands to `https://en.wikipedia.org/wiki/GCO`
+
+# Delete it
+% abbr -g wgco[Ctrl-Space]
+% wgco[Space] # no expansion
+
+# Migrate you aliases to abbreviations
+% abbr -p # creates abbreviations from all aliases, adding 'g' prefix
+% abbr -i # creates abbreviations from all Git aliases
+```
 
 ## Scopes
 
