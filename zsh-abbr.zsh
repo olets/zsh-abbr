@@ -421,21 +421,6 @@ function abbr() {
       done
     }
 
-    function abbr_sync_universal() {
-      local abbr_universals_updated="$ABBRS_UNIVERSAL_SCRATCH_FILE"_updated
-
-      typeset -p ABBRS_UNIVERSAL > "$ABBRS_UNIVERSAL_SCRATCH_FILE"
-
-      rm "$abbr_universals_updated" 2> /dev/null
-      mktemp "$abbr_universals_updated" 1> /dev/null
-
-      for k v in ${(kv)ABBRS_UNIVERSAL}; do
-        echo "$k $v" >> "$abbr_universals_updated"
-      done
-
-      mv "$abbr_universals_updated" "$ABBR_UNIVERSALS_SOURCE"
-    }
-
     function abbr_rename() {
       if [ $# -ne 2 ]; then
         abbr_error " -r: Requires exactly two arguments"
@@ -477,6 +462,21 @@ function abbr() {
       for key value in ${(kv)ABBRS_GLOBAL}; do
         printf "abbr -a -g -- %s %s\\n" "$key" "$value"
       done
+    }
+
+    function abbr_sync_universal() {
+      local abbr_universals_updated="$ABBRS_UNIVERSAL_SCRATCH_FILE"_updated
+
+      typeset -p ABBRS_UNIVERSAL > "$ABBRS_UNIVERSAL_SCRATCH_FILE"
+
+      rm "$abbr_universals_updated" 2> /dev/null
+      mktemp "$abbr_universals_updated" 1> /dev/null
+
+      for k v in ${(kv)ABBRS_UNIVERSAL}; do
+        echo "$k $v" >> "$abbr_universals_updated"
+      done
+
+      mv "$abbr_universals_updated" "$ABBR_UNIVERSALS_SOURCE"
     }
 
     function abbr_usage() {
