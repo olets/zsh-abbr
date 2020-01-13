@@ -2,7 +2,7 @@
 
 # fish shell-like abbreviation management for zsh.
 # https://github.com/olets/zsh-abbr
-# v1.1.0
+# v1.2.0
 # Copyright (c) 2019-2020 Henry Bley-Vroman
 
 
@@ -264,7 +264,7 @@ function abbr() {
        expansion. The result is the global expansion if one exists, otherwise
        the universal expansion if one exists.
 
-       Version 1.1.0 January 26 2019"
+       Version 1.2.0 January 12 2020"
 
     function abbr_util_add() {
       local key
