@@ -89,7 +89,8 @@ function _zsh_abbr_expansion() {
 # -------
 
 function _zsh_abbr_expand_widget() {
-  local abbreviation expansion
+  local abbreviation
+  local expansion
   abbreviation="${LBUFFER/*[ ,;|&\n\t]/}"
   expansion=$(_zsh_abbr_expansion "$abbreviation")
 
@@ -347,12 +348,14 @@ function abbr() {
     }
 
     function abbr_git_populate() {
+      local git_aliases
+      local abbr_git_aliases
+
       if [ $# -gt 0 ]; then
         abbr_error " -p: Unexpected argument"
         return
       fi
 
-      local git_aliases abbr_git_aliases
       git_aliases=("${(@f)$(git config --get-regexp '^alias\.')}")
       typeset -A abbr_git_aliases
 
@@ -499,7 +502,8 @@ function abbr() {
     }
 
     function abbr_util_exists() {
-      local abbreviation exists
+      local abbreviation
+      local exists
       exists=false
 
       if $abbr_opt_global; then
@@ -515,7 +519,6 @@ function abbr() {
       echo "$exists"
     }
 
-    local abbr_number_opts=0
     for opt in "$@"; do
       if $abbr_should_exit; then
         abbr_should_exit=false
