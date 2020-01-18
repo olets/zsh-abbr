@@ -108,6 +108,9 @@ zle -N _zsh_abbr_expand_widget
 
 function abbr() {
   {
+    local text_bold="\\033[1m"
+    local text_reset="\\033[0m"
+
     local abbr_action_set=false
     local abbr_number_opts=0
     local abbr_opt_add=false
@@ -124,31 +127,31 @@ function abbr() {
     local abbr_scope_set=false
     local abbr_should_exit=false
     local abbr_usage="
-       \e[1mabbr\e[0m: fish shell-like abbreviations for zsh
+       ${text_bold}abbr${text_reset}: fish shell-like abbreviations for zsh
 
-   \e[1mSynopsis\e[0m
-       \e[1mabbr\e[0m --add|-a [SCOPE] WORD EXPANSION
-       \e[1mabbr\e[0m --create-aliases|-c [SCOPE] [DESTINATION_FILE]
-       \e[1mabbr\e[0m --erase|-e [SCOPE] WORD
-       \e[1mabbr\e[0m --expand|-x WORD
-       \e[1mabbr\e[0m --git-populate|-i [SCOPE]
-       \e[1mabbr\e[0m --rename|-r [SCOPE] OLD_WORD NEW_WORD
-       \e[1mabbr\e[0m --show|-s
-       \e[1mabbr\e[0m --list|-l
-       \e[1mabbr\e[0m --populate|-p [SCOPE]
-       \e[1mabbr\e[0m --help|-h
+   ${text_bold}Synopsis${text_reset}
+       ${text_bold}abbr${text_reset} --add|-a [SCOPE] WORD EXPANSION
+       ${text_bold}abbr${text_reset} --create-aliases|-c [SCOPE] [DESTINATION_FILE]
+       ${text_bold}abbr${text_reset} --erase|-e [SCOPE] WORD
+       ${text_bold}abbr${text_reset} --expand|-x WORD
+       ${text_bold}abbr${text_reset} --git-populate|-i [SCOPE]
+       ${text_bold}abbr${text_reset} --rename|-r [SCOPE] OLD_WORD NEW_WORD
+       ${text_bold}abbr${text_reset} --show|-s
+       ${text_bold}abbr${text_reset} --list|-l
+       ${text_bold}abbr${text_reset} --populate|-p [SCOPE]
+       ${text_bold}abbr${text_reset} --help|-h
 
-   \e[1mDescription\e[0m
-       \e[1mabbr\e[0m manages abbreviations - user-defined words that are
+   ${text_bold}Description${text_reset}
+       ${text_bold}abbr${text_reset} manages abbreviations - user-defined words that are
        replaced with longer phrases after they are entered.
 
        For example, a frequently-run command like git checkout can be
-       abbreviated to gco. After entering gco and pressing [\e[1mSpace\e[0m],
+       abbreviated to gco. After entering gco and pressing [${text_bold}Space${text_reset}],
        the full text git checkout will appear in the command line.
 
-       To prevent expansion, press [\e[1mCTRL-SPACE\e[0m] in place of [\e[1mSPACE\e[0m].
+       To prevent expansion, press [${text_bold}CTRL-SPACE${text_reset}] in place of [${text_bold}SPACE${text_reset}].
 
-   \e[1mOptions\e[0m
+   ${text_bold}Options${text_reset}
        The following options are available:
 
        o --add WORD EXPANSION or -a WORD EXPANSION Adds a new abbreviation,
@@ -187,61 +190,61 @@ function abbr() {
 
        See the 'Internals' section for more on them.
 
-   \e[1mExamples\e[0m
-       \e[1mabbr\e[0m -a -g gco git checkout
-       \e[1mabbr\e[0m --add --global gco git checkout
+   ${text_bold}Examples${text_reset}
+       ${text_bold}abbr${text_reset} -a -g gco git checkout
+       ${text_bold}abbr${text_reset} --add --global gco git checkout
 
          Add a new abbreviation where gco will be replaced with git checkout
          global to the current shell. This abbreviation will not be
          automatically visible to other shells unless the same command is run
          in those shells.
 
-       \e[1mabbr\e[0m -a l less
-       \e[1mabbr\e[0m --add l less
+       ${text_bold}abbr${text_reset} -a l less
+       ${text_bold}abbr${text_reset} --add l less
 
          Add a new abbreviation where l will be replaced with less universal so
          all shells. Note that you omit the -U since it is the default.
 
-       \e[1mabbr\e[0m -c -g
-       \e[1mabbr\e[0m --create-aliases -global
+       ${text_bold}abbr${text_reset} -c -g
+       ${text_bold}abbr${text_reset} --create-aliases -global
 
          Output alias declaration commands for each *global* abbreviation.
          Output lines look like alias -g <WORD>='<EXPANSION>'
 
-       \e[1mabbr\e[0m -c
-       \e[1mabbr\e[0m --create-aliases
+       ${text_bold}abbr${text_reset} -c
+       ${text_bold}abbr${text_reset} --create-aliases
 
          Output alias declaration commands for each *universal* abbreviation.
          Output lines look like alias -g <WORD>='<EXPANSION>'
 
-       \e[1mabbr\e[0m -c ~/aliases
-       \e[1mabbr\e[0m --create-aliases ~/aliases
+       ${text_bold}abbr${text_reset} -c ~/aliases
+       ${text_bold}abbr${text_reset} --create-aliases ~/aliases
 
          Add alias definitions to ~/aliases
 
-       \e[1mabbr\e[0m -e -g gco
-       \e[1mabbr\e[0m --erase --global gco
+       ${text_bold}abbr${text_reset} -e -g gco
+       ${text_bold}abbr${text_reset} --erase --global gco
 
          Erase the global gco abbreviation.
 
-       \e[1mabbr\e[0m -x gco
-       \$(\e[1mabbr\e[0m -x gco)
+       ${text_bold}abbr${text_reset} -x gco
+       \$(${text_bold}abbr${text_reset} -x gco)
 
          Output the expansion for gco (in the above --add example,
          git checkout). Useful in scripting.
 
-       \e[1mabbr\e[0m -r -g gco gch
-       \e[1mabbr\e[0m --rename --global gco gch
+       ${text_bold}abbr${text_reset} -r -g gco gch
+       ${text_bold}abbr${text_reset} --rename --global gco gch
 
          Rename the existing global abbreviation from gco to gch.
 
-       \e[1mabbr\e[0m -r l le
-       \e[1mabbr\e[0m --rename l le
+       ${text_bold}abbr${text_reset} -r l le
+       ${text_bold}abbr${text_reset} --rename l le
 
         Rename the existing universal abbreviation from l to le. Note that you
         can omit the -U since it is the default.
 
-   \e[1mInternals\e[0m
+   ${text_bold}Internals${text_reset}
        The WORD cannot contain a space but all other characters are legal.
 
        Defining an abbreviation with global scope is slightly faster than
