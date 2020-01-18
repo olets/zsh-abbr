@@ -523,68 +523,80 @@ function abbr() {
       fi
 
       case "$opt" in
-        "-a"|"--add")
+        "--add"|\
+        "-a")
           [ "$abbr_action_set" = true ] && abbr_bad_options
           abbr_action_set=true
           abbr_opt_add=true
           ((abbr_number_opts++))
           ;;
-        "-c"|"--create-aliases")
+        "--create-aliases"|\
+        "-c")
           [ "$abbr_action_set" = true ] && abbr_bad_options
           abbr_action_set=true
           abbr_opt_create_aliases=true
           ((abbr_number_opts++))
           ;;
-        "-e"|"--erase")
+        "--erase"|\
+        "-e")
           [ "$abbr_action_set" = true ] && abbr_bad_options
           abbr_action_set=true
           abbr_opt_erase=true
           ((abbr_number_opts++))
           ;;
-        "-g"|"--global")
+        "--global"|\
+        "-g")
           [ "$abbr_scope_set" = true ] && abbr_bad_options
           abbr_opt_global=true
           ((abbr_number_opts++))
           ;;
-        "-h"|"--help")
+        "--help"|\
+        "-h")
           abbr_usage
           abbr_should_exit=true
           ;;
-        "-i"|"--git-populate")
+        "--git-populate"|\
+        "-i")
           [ "$abbr_action_set" = true ] && abbr_bad_options
           abbr_action_set=true
           abbr_opt_git_populate=true
           ((abbr_number_opts++))
           ;;
-        "-l"|"--list")
+        "--list"|\
+        "-l")
           [ "$abbr_action_set" = true ] && abbr_bad_options
           abbr_action_set=true
           abbr_opt_list=true
           ((abbr_number_opts++))
           ;;
-        "-p"|"--populate")
+        "--populate"|\
+        "-p")
           [ "$abbr_action_set" = true ] && abbr_bad_options
           abbr_action_set=true
           abbr_opt_populate=true
           ((abbr_number_opts++))
           ;;
-        "-r"|"--rename")
+        "--rename"|\
+        "-r")
           [ "$abbr_action_set" = true ] && abbr_bad_options
           abbr_action_set=true
           abbr_opt_rename=true
           ((abbr_number_opts++))
           ;;
-        "-s"|"--show")
+        "--show"|\
+        "-s")
           [ "$abbr_action_set" = true ] && abbr_bad_options
           abbr_action_set=true
           abbr_opt_show=true
           ((abbr_number_opts++))
           ;;
-        "-U"|"--universal")
+        "--universal"|\
+        "-U")
           [ "$abbr_scope_set" = true ] && abbr_bad_options
           ((abbr_number_opts++))
           ;;
-        "-x"|"--expand")
+        "--expand"|\
+        "-x")
           [ "$abbr_action_set" = true ] && abbr_bad_options
           abbr_action_set=true
           abbr_opt_expand=true
