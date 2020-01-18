@@ -94,6 +94,23 @@ A given abbreviation can be made available in the current zsh session (i.e. in t
 
 ## Options
 
+```
+abbr [(--add | -a)
+      | (--create-aliases | -c)
+      | (--erase | -e)
+      | (--expand | -x)
+      | (--global | -g)
+      | (--help | -h)
+      | (--git-populate | -i)
+      | (--list | -l)
+      | (--populate | -p)
+      | (--rename | -r)
+      | (--show | -s)
+     ]
+     [(--global | -g)
+      | (--universal | -U)]
+```
+
 `zsh-abbr` has options to add, rename, and erase abbreviations; to add abbreviations for every alias or Git alias; to list the available abbreviations with or without their expansions; and to create aliases from abbreviations.
 
 The default when `abbr` is run with no arguments is to show all abbreviations and their expansions.
