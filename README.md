@@ -29,13 +29,13 @@ Run `abbr --help` (or `abbr -h`) for documentation.
 
   - Clone to OMZ's plugins' directory:
 
-    ```zsh
+    ```shell
     git clone https://github.com/olets/zsh-abbr.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-abbr
     ```
 
   - Add to the OMZ plugins array in your `.zshrc`:
 
-    ```zsh
+    ```shell
     plugins=( [plugins...] zsh-syntax-highlighting)
     ```
 
@@ -49,13 +49,13 @@ Run `abbr --help` (or `abbr -h`) for documentation.
 
 If running `abbr` gives an error "zsh: permission denied: abbr", reload zsh:
 
-```zsh
+```shell
 % source ~/.zshrc # or your custom .zshrc path
 ```
 
 ## Quick Start
 
-```zsh
+```shell
 # Add and use an abbreviation
 % abbr m master
 % m[Space] # expands to `master`
@@ -106,13 +106,15 @@ abbr (--add|-a) [(--global|-g)|(--Universal|-U)] WORD EXPANSION
 
 Add a new abbreviation. If the **--global** scope is used, the abbreviation will only be available in the current session. Otherwise, or if the **--Universal** scope is used, the abbreviation will be immediately available to all open and future sessions.
 
-```zsh
+```shell
 % abbr --add gcm git checkout master
 % gcm[Space] # expands as git checkout master
 % gcm[Enter] # expands and accepts git checkout master
 ```
+
 The following are equivalent:
-```zsh
+
+```shell
 % abbr --add --Universal gcm git checkout master
 % abbr -a --Universal gcm git checkout master
 % abbr --Universal gcm git checkout master
@@ -124,34 +126,34 @@ The following are equivalent:
 
 ### Create Aliases
 
-```shell
+```
 abbr (--create-aliases|-c) [(--global|-g)|(--Universal|-U)] [DESTINATION]
 ```
 
 Export abbreviations as aliases declarations. To export global abbreviations, use  **--global**. Othewise, or if the **--Universal** scope is used, universal abbreviations are exported.
 
-```zsh
+```shell
 % abbr --add gcm git checkout master
 % abbr --add --global g git
 ```
-```zsh
+```shell
 % abbr --create-aliases
-alias -g gcm='git checkout master' 
+alias -g gcm='git checkout master'
 ```
-```zsh
+```shell
 % abbr --create-aliases --global
-alias -g g='git' 
+alias -g g='git'
 ```
-```zsh
+```shell
 % abbr --create-aliases ~/.zshrc
 % cat ~/.zshrc
 # -- snip --
-alias -g g='git' 
+alias -g g='git'
 ```
 
 ### Erase
 
-```zsh
+```
 abbr (--erase|-e) [(--global|-g)|(--Universal|-U)] WORD
 ```
 
@@ -195,7 +197,7 @@ Add abbreviations for every Git alias available in the current session. WORDs ar
 
 This command is useful for migrating from aliases to abbreviations.
 
-```zsh
+```shell
 % git config alias.co checkout
 % abbr --git-populate --global
 % gco[Space] # expands to git checkout
@@ -216,7 +218,7 @@ abbr (--list|-l)
 
 List all abbreviations available in the current shell. Universal abbreviations appear first.
 
-```
+```shell
 % abbr a apple
 % abbr b ball
 % abbr -g c cat
@@ -232,7 +234,7 @@ b
 
 ### Populate
 
-```shell
+```
 abbr (--git-populate|-i) [(--global|-g)|(--Universal|-U)]
 ```
 
@@ -242,7 +244,7 @@ This command is useful for migrating from aliases to abbreviations.
 
 See also **Git-Populate**.
 
-```zsh
+```shell
 % cat ~/.zshrc
 # --snip--
 alias -g d='bin/deploy'
@@ -264,7 +266,7 @@ abbr (--rename|-r) [(--global|-g)|(--Universal|-U)] OLD_WORD NEW_WORD
 
 Rename an abbreviation. Use the **--global** scope to rename a global abbreviation.
 
-```zsh
+```shell
 % abbr --add gcm git checkout master
 % gcm[Space] # expands to git checkout master
 % gm[Space] # no expansion
@@ -275,13 +277,13 @@ Rename an abbreviation. Use the **--global** scope to rename a global abbreviati
 
 ### Show
 
-```zsh
+```
 abbr [(--show|-s)]
 ```
 
 Show all the abbreviations available in the current session, along with their expansions. Global abbreviations are marked `-g` and follow universal abbreviations, which are marked `-U`.
 
-```zsh
+```shell
 % abbr --add gcm git checkout master
 % abbr --add --global a apple
 % abbr --show # or `abbr` with no arguments
@@ -298,7 +300,7 @@ abbr -a -U -- gcm git checkout master
 
 Universal abbreviations live in a plain text file which you can manually edit, shared, etc. Its default location is `${HOME}/config/zsh-abbr/universal`. Customize this by setting the `ABBR_UNIVERSALS_SOURCE` variable in your `.zshrc` before loading zsh-abbr.
 
-```zsh
+```shell
 % cat ~/.zshrc
 # -- snip --
 ABBR_UNIVERSALS_SOURCE="path/to/my/universal/abbreviations"
@@ -320,7 +322,7 @@ By default
 
 If you want to set your own bindings, set `ABBRS_DEFAULT_BINDINGS` to `false` in your `.zshrc` before loading zsh-abbr.
 
-```zsh
+```shell
 % cat ~/.zshrc
 # -- snip --
 ABBRS_DEFAULT_BINDINGS=false
@@ -332,7 +334,7 @@ ABBRS_DEFAULT_BINDINGS=false
 
 Delete the zsh-abbr configuration directory. Note that this will permanently delete the universal abbreviations file.
 
-```zsh
+```shell
 % rm -rf $(dirname "$ABBR_UNIVERSALS_SOURCE")
 ```
 
