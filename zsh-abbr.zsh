@@ -8,38 +8,38 @@
 # -------------
 
 # File abbreviations are stored in
-ABBR_UNIVERSALS_SOURCE="${ABBR_UNIVERSALS_SOURCE="${HOME}/.config/zsh-abbr/universal"}"
+ZSH_ABBR_UNIVERSALS_PATH="${ZSH_ABBR_UNIVERSALS_PATH="${HOME}/.config/zsh-abbr/universal"}"
 # Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
-ABBRS_DEFAULT_BINDINGS="${ABBRS_DEFAULT_BINDINGS=true}"
+ZSH_ABBR_DEFAULT_BINDINGS="${ZSH_ABBR_DEFAULT_BINDINGS=true}"
 
 # INITIALIZE
 # ----------
 
-typeset -gA ABBRS_UNIVERSAL
-typeset -gA ABBRS_GLOBAL
-ABBRS_UNIVERSAL=()
-ABBRS_GLOBAL=()
+typeset -gA ZSH_ABBR_UNIVERSALS
+typeset -gA ZSH_ABBR_GLOBALS
+ZSH_ABBR_UNIVERSALS=()
+ZSH_ABBR_GLOBALS=()
 
 # Load saved universal abbreviations
-if [ -f "$ABBR_UNIVERSALS_SOURCE" ]; then
+if [ -f "$ZSH_ABBR_UNIVERSALS_PATH" ]; then
   while read -r k v; do
-    ABBRS_UNIVERSAL[$k]="$v"
-  done < "$ABBR_UNIVERSALS_SOURCE"
+    ZSH_ABBR_UNIVERSALS[$k]="$v"
+  done < "$ZSH_ABBR_UNIVERSALS_PATH"
 else
-  mkdir -p $(dirname "$ABBR_UNIVERSALS_SOURCE")
-  touch "$ABBR_UNIVERSALS_SOURCE"
+  mkdir -p $(dirname "$ZSH_ABBR_UNIVERSALS_PATH")
+  touch "$ZSH_ABBR_UNIVERSALS_PATH"
 fi
 
 # Scratch file
-ABBRS_UNIVERSAL_SCRATCH_FILE="${TMPDIR}/abbr_universals"
+ZSH_ABBR_UNIVERSALS_SCRATCH_FILE="${TMPDIR}/abbr_universals"
 
-rm "$ABBRS_UNIVERSAL_SCRATCH_FILE" 2> /dev/null
-mktemp "$ABBRS_UNIVERSAL_SCRATCH_FILE" 1> /dev/null
-typeset -p ABBRS_UNIVERSAL > "$ABBRS_UNIVERSAL_SCRATCH_FILE"
+rm "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE" 2> /dev/null
+mktemp "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE" 1> /dev/null
+typeset -p ZSH_ABBR_UNIVERSALS > "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
 
 # Bind
-if [ "$ABBRS_DEFAULT_BINDINGS" = true ]; then
+if [ "$ZSH_ABBR_DEFAULT_BINDINGS" = true ]; then
   # spacebar expands abbreviations
   zle -N _zsh_abbr_expand_space
   bindkey " " _zsh_abbr_expand_space
@@ -74,11 +74,11 @@ function _zsh_abbr_expand_space() {
 
 function _zsh_abbr_expansion() {
   local expansion
-  expansion="${ABBRS_GLOBAL[$1]}"
+  expansion="${ZSH_ABBR_GLOBALS[$1]}"
 
   if [[ ! -n $expansion ]]; then
-    source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
-    expansion="${ABBRS_UNIVERSAL[$1]}"
+    source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
+    expansion="${ZSH_ABBR_UNIVERSALS[$1]}"
   fi
 
   echo "$expansion"
@@ -288,9 +288,9 @@ function abbr() {
       fi
 
       if $abbr_opt_global; then
-        source=ABBRS_GLOBAL
+        source=ZSH_ABBR_GLOBALS
       else
-        source=ABBRS_UNIVERSAL
+        source=ZSH_ABBR_UNIVERSALS
       fi
 
       for k v in ${(kv)${(P)source}}; do
@@ -314,17 +314,17 @@ function abbr() {
       fi
 
       if $abbr_opt_global; then
-        if (( ${+ABBRS_GLOBAL[$1]} )); then
-          unset "ABBRS_GLOBAL[${(b)1}]"
+        if (( ${+ZSH_ABBR_GLOBALS[$1]} )); then
+          unset "ZSH_ABBR_GLOBALS[${(b)1}]"
         else
           abbr_error " -e: No global abbreviation named $1"
           return
         fi
       else
-        source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
+        source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
 
-        if (( ${+ABBRS_UNIVERSAL[$1]} )); then
-          unset "ABBRS_UNIVERSAL[${(b)1}]"
+        if (( ${+ZSH_ABBR_UNIVERSALS[$1]} )); then
+          unset "ZSH_ABBR_UNIVERSALS[${(b)1}]"
           abbr_sync_universal
         else
           abbr_error " -e: No universal abbreviation named $1"
@@ -373,10 +373,10 @@ function abbr() {
         return
       fi
 
-      source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
+      source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
 
-      print -l ${(k)ABBRS_UNIVERSAL}
-      print -l ${(k)ABBRS_GLOBAL}
+      print -l ${(k)ZSH_ABBR_UNIVERSALS}
+      print -l ${(k)ZSH_ABBR_GLOBALS}
     }
 
     function abbr_populate() {
@@ -392,11 +392,11 @@ function abbr() {
 
     function abbr_rename() {
       local source type
-      source="ABBRS_GLOBAL"
+      source="ZSH_ABBR_GLOBALS"
       type="universal"
 
       if $abbr_opt_global; then
-        source="ABBRS_GLOBAL"
+        source="ZSH_ABBR_GLOBALS"
         type="global"
       fi
 
@@ -419,18 +419,18 @@ function abbr() {
 
     function abbr_rename_modify {
       if $abbr_opt_global; then
-        if (( ${+ABBRS_GLOBAL[$1]} )); then
-          abbr_util_add "$2" "${ABBRS_GLOBAL[$1]}"
-          unset "ABBRS_GLOBAL[${(b)1}]"
+        if (( ${+ZSH_ABBR_GLOBALS[$1]} )); then
+          abbr_util_add "$2" "${ZSH_ABBR_GLOBALS[$1]}"
+          unset "ZSH_ABBR_GLOBALS[${(b)1}]"
         else
           abbr_error " -r: No global abbreviation named $1"
         fi
       else
-        source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
+        source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
 
-        if (( ${+ABBRS_UNIVERSAL[$1]} )); then
-          abbr_util_add "$2" "${ABBRS_UNIVERSAL[$1]}"
-          unset "ABBRS_UNIVERSAL[${(b)1}]"
+        if (( ${+ZSH_ABBR_UNIVERSALS[$1]} )); then
+          abbr_util_add "$2" "${ZSH_ABBR_UNIVERSALS[$1]}"
+          unset "ZSH_ABBR_UNIVERSALS[${(b)1}]"
           abbr_sync_universal
         else
           abbr_error " -r: No universal abbreviation named $1"
@@ -444,30 +444,30 @@ function abbr() {
         return
       fi
 
-      source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
+      source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
 
-      for key value in ${(kv)ABBRS_UNIVERSAL}; do
+      for key value in ${(kv)ZSH_ABBR_UNIVERSALS}; do
         printf "abbr -a -U -- %s %s\\n" "$key" "$value"
       done
 
-      for key value in ${(kv)ABBRS_GLOBAL}; do
+      for key value in ${(kv)ZSH_ABBR_GLOBALS}; do
         printf "abbr -a -g -- %s %s\\n" "$key" "$value"
       done
     }
 
     function abbr_sync_universal() {
-      local abbr_universals_updated="$ABBRS_UNIVERSAL_SCRATCH_FILE"_updated
+      local abbr_universals_updated="$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"_updated
 
-      typeset -p ABBRS_UNIVERSAL > "$ABBRS_UNIVERSAL_SCRATCH_FILE"
+      typeset -p ZSH_ABBR_UNIVERSALS > "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
 
       rm "$abbr_universals_updated" 2> /dev/null
       mktemp "$abbr_universals_updated" 1> /dev/null
 
-      for k v in ${(kv)ABBRS_UNIVERSAL}; do
+      for k v in ${(kv)ZSH_ABBR_UNIVERSALS}; do
         echo "$k $v" >> "$abbr_universals_updated"
       done
 
-      mv "$abbr_universals_updated" "$ABBR_UNIVERSALS_SOURCE"
+      mv "$abbr_universals_updated" "$ZSH_ABBR_UNIVERSALS_PATH"
     }
 
     function abbr_usage() {
@@ -493,10 +493,10 @@ function abbr() {
       fi
 
       if $abbr_opt_global; then
-        ABBRS_GLOBAL[$key]="$*"
+        ZSH_ABBR_GLOBALS[$key]="$*"
       else
-        source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
-        ABBRS_UNIVERSAL[$key]="$*"
+        source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
+        ZSH_ABBR_UNIVERSALS[$key]="$*"
         abbr_sync_universal
       fi
     }
@@ -507,9 +507,9 @@ function abbr() {
       exists=false
 
       if $abbr_opt_global; then
-        abbreviation="${ABBRS_GLOBAL[(I)$1]}"
+        abbreviation="${ZSH_ABBR_GLOBALS[(I)$1]}"
       else
-        abbreviation="${ABBRS_UNIVERSAL[(I)$1]}"
+        abbreviation="${ZSH_ABBR_UNIVERSALS[(I)$1]}"
       fi
 
       if [[ -n "$abbreviation" ]]; then

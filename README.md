@@ -315,12 +315,12 @@ abbr -a -U -- gcm git checkout master
 
 ### Storage
 
-Universal abbreviations live in a plain text file which you can manually edit, shared, etc. Its default location is `${HOME}/config/zsh-abbr/universal`. Customize this by setting the `ABBR_UNIVERSALS_SOURCE` variable in your `.zshrc` before loading zsh-abbr.
+Universal abbreviations live in a plain text file which you can manually edit, shared, etc. Its default location is `${HOME}/config/zsh-abbr/universal`. Customize this by setting the `ZSH_ABBR_UNIVERSALS_PATH` variable in your `.zshrc` before loading zsh-abbr.
 
 ```shell
 % cat ~/.zshrc
 # -- snip --
-ABBR_UNIVERSALS_SOURCE="path/to/my/universal/abbreviations"
+ZSH_ABBR_UNIVERSALS_PATH="path/to/my/universal/abbreviations"
 # -- snip --
 # load zsh-abbr
 ```
@@ -337,12 +337,12 @@ By default
 
 (In incremental search mode, <kbd>Space</kbd> is a normal space and <kbd>Ctrl</kbd><kbd>Space</kbd> expands abbreviations.)
 
-If you want to set your own bindings, set `ABBRS_DEFAULT_BINDINGS` to `false` in your `.zshrc` before loading zsh-abbr. In the following example, expansion is bound to <kbd>Ctrl</kbd><kbd>a</kbd>:
+If you want to set your own bindings, set `ZSH_ABBR_DEFAULT_BINDINGS` to `false` in your `.zshrc` before loading zsh-abbr. In the following example, expansion is bound to <kbd>Ctrl</kbd><kbd>a</kbd>:
 
 ```shell
 % cat ~/.zshrc
 # -- snip --
-ABBRS_DEFAULT_BINDINGS=false
+ZSH_ABBR_DEFAULT_BINDINGS=false
 bindkey "^A" _zsh_abbr_expand_space
 # -- snip --
 # load zsh-abbr
@@ -353,7 +353,7 @@ bindkey "^A" _zsh_abbr_expand_space
 Delete the zsh-abbr configuration directory. Note that this will permanently delete the universal abbreviations file.
 
 ```shell
-% rm -rf $(dirname "$ABBR_UNIVERSALS_SOURCE")
+% rm -rf $(dirname "$ZSH_ABBR_UNIVERSALS_PATH")
 ```
 
 Then follow the standard uninstallation procedure for your installation method. This is typically the reverse of what you did to install.
