@@ -264,50 +264,6 @@ function abbr() {
 
        Version 1.2.0 January 12 2020"
 
-    function abbr_util_add() {
-      local key
-      key="$1"
-      shift
-      # $* is value
-
-      if [ $(abbr_util_exists $key) = true ]; then
-        local type
-        type="universal"
-
-        if $abbr_opt_global; then
-          type="global"
-        fi
-
-        abbr_error " -a: A $type abbreviation $key already exists"
-        return
-      fi
-
-      if $abbr_opt_global; then
-        ABBRS_GLOBAL[$key]="$*"
-      else
-        source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
-        ABBRS_UNIVERSAL[$key]="$*"
-        abbr_sync_universal
-      fi
-    }
-
-    function abbr_util_exists() {
-      local abbreviation exists
-      exists=false
-
-      if $abbr_opt_global; then
-        abbreviation="${ABBRS_GLOBAL[(I)$1]}"
-      else
-        abbreviation="${ABBRS_UNIVERSAL[(I)$1]}"
-      fi
-
-      if [[ -n "$abbreviation" ]]; then
-        exists=true
-      fi
-
-      echo "$exists"
-    }
-
     function abbr_add() {
       if [[ $# -lt 2 ]]; then
         abbr_error " -a: Requires at least two arguments"
@@ -513,6 +469,50 @@ function abbr() {
 
     function abbr_usage() {
       print "$abbr_usage\\n"
+    }
+
+    function abbr_util_add() {
+      local key
+      key="$1"
+      shift
+      # $* is value
+
+      if [ $(abbr_util_exists $key) = true ]; then
+        local type
+        type="universal"
+
+        if $abbr_opt_global; then
+          type="global"
+        fi
+
+        abbr_error " -a: A $type abbreviation $key already exists"
+        return
+      fi
+
+      if $abbr_opt_global; then
+        ABBRS_GLOBAL[$key]="$*"
+      else
+        source "$ABBRS_UNIVERSAL_SCRATCH_FILE"
+        ABBRS_UNIVERSAL[$key]="$*"
+        abbr_sync_universal
+      fi
+    }
+
+    function abbr_util_exists() {
+      local abbreviation exists
+      exists=false
+
+      if $abbr_opt_global; then
+        abbreviation="${ABBRS_GLOBAL[(I)$1]}"
+      else
+        abbreviation="${ABBRS_UNIVERSAL[(I)$1]}"
+      fi
+
+      if [[ -n "$abbreviation" ]]; then
+        exists=true
+      fi
+
+      echo "$exists"
     }
 
     local abbr_number_opts=0
