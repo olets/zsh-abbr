@@ -544,6 +544,13 @@ function abbr() {
           abbr_opt_erase=true
           ((abbr_number_opts++))
           ;;
+        "--expand"|\
+        "-x")
+          [ "$abbr_action_set" = true ] && abbr_bad_options
+          abbr_action_set=true
+          abbr_opt_expand=true
+          ((abbr_number_opts++))
+          ;;
         "--global"|\
         "-g")
           [ "$abbr_scope_set" = true ] && abbr_bad_options
@@ -593,13 +600,6 @@ function abbr() {
         "--universal"|\
         "-U")
           [ "$abbr_scope_set" = true ] && abbr_bad_options
-          ((abbr_number_opts++))
-          ;;
-        "--expand"|\
-        "-x")
-          [ "$abbr_action_set" = true ] && abbr_bad_options
-          abbr_action_set=true
-          abbr_opt_expand=true
           ((abbr_number_opts++))
           ;;
         "-"*)
