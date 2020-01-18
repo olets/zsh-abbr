@@ -337,12 +337,13 @@ By default
 
 (In incremental search mode, <kbd>Space</kbd> is a normal space and <kbd>Ctrl</kbd><kbd>Space</kbd> expands abbreviations.)
 
-If you want to set your own bindings, set `ABBRS_DEFAULT_BINDINGS` to `false` in your `.zshrc` before loading zsh-abbr.
+If you want to set your own bindings, set `ABBRS_DEFAULT_BINDINGS` to `false` in your `.zshrc` before loading zsh-abbr. In the following example, expansion is bound to <kbd>Ctrl</kbd><kbd>a</kbd>:
 
 ```shell
 % cat ~/.zshrc
 # -- snip --
 ABBRS_DEFAULT_BINDINGS=false
+bindkey "^A" _zsh_abbr_expand_space
 # -- snip --
 # load zsh-abbr
 ```
