@@ -84,8 +84,8 @@ If running `abbr` gives an error "zsh: permission denied: abbr", reload zsh:
 % wgco[Space] # no expansion
 
 # Migrate your aliases to abbreviations
-% abbr -p # creates abbreviations from all aliases, adding 'g' prefix
-% abbr -i # creates abbreviations from all Git aliases
+% abbr -p # creates abbreviations from all aliases
+% abbr -i # creates abbreviations from all Git aliases, adding 'g' prefix
 ```
 
 ## Scopes
