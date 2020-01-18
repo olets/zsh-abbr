@@ -118,7 +118,7 @@ The default when `abbr` is run with no arguments is to show all abbreviations an
 ### Add
 
 ```
-abbr (--add|-a) [(--global|-g)|(--Universal|-U)] WORD EXPANSION
+abbr (--add | -a) [(--global | -g) | (--Universal | -U)] WORD EXPANSION
 ```
 
 Add a new abbreviation. If the **--global** scope is used, the abbreviation will only be available in the current session. Otherwise, or if the **--Universal** scope is used, the abbreviation will be immediately available to all open and future sessions.
@@ -144,7 +144,7 @@ The following are equivalent:
 ### Create Aliases
 
 ```
-abbr (--create-aliases|-c) [(--global|-g)|(--Universal|-U)] [DESTINATION]
+abbr (--create-aliases | -c) [(--global | -g) | (--Universal | -U)] [DESTINATION]
 ```
 
 Export abbreviations as aliases declarations. To export global abbreviations, use  **--global**. Othewise, or if the **--Universal** scope is used, universal abbreviations are exported.
@@ -171,7 +171,7 @@ alias -g g='git'
 ### Erase
 
 ```
-abbr (--erase|-e) [(--global|-g)|(--Universal|-U)] WORD
+abbr (--erase | -e) [(--global | -g) | (--Universal | -U)] WORD
 ```
 
 Erase an abbreviation. Specify **--global** scope to erase a global abbreviation.
@@ -193,7 +193,7 @@ Already on 'master'
 ### Expand
 
 ```
-abbr (--expand|-x) WORD
+abbr (--expand | -x) WORD
 ```
 
 Output the WORD's EXPANSION. Useful in scripting.
@@ -207,7 +207,7 @@ git checkout
 ### Git-Populate
 
 ```
-abbr (--git-populate|-i) [(--global|-g)|(--Universal|-U)]
+abbr (--git-populate | -i) [(--global | -g) | (--Universal | -U)]
 ```
 
 Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--global** scope to create global abbreviations.
@@ -252,7 +252,7 @@ b
 ### Populate
 
 ```
-abbr (--git-populate|-i) [(--global|-g)|(--Universal|-U)]
+abbr (--git-populate | -i) [(--global | -g) | (--Universal | -U)]
 ```
 
 Add abbreviations for every alias available in the current session. Use the **--global** scope to create global abbreviations.
@@ -278,7 +278,7 @@ alias -g d='bin/deploy'
 ### Rename
 
 ```
-abbr (--rename|-r) [(--global|-g)|(--Universal|-U)] OLD_WORD NEW_WORD
+abbr (--rename | -r) [(--global | -g) | (--Universal | -U)] OLD_WORD NEW_WORD
 ```
 
 Rename an abbreviation. Use the **--global** scope to rename a global abbreviation.
