@@ -106,15 +106,6 @@ zle -N _zsh_abbr_expand_widget
 # SHARED FUNCTIONS
 # ----------------
 
-function abbr_expand() {
-  if [[ "$#" -ne 1 ]]; then
-    printf "abbr_expand requires exactly one argument\\n"
-    return
-  fi
-
-  _zsh_abbr_expansion "$1"
-}
-
 function abbr() {
   {
     local abbr_action_set=false
@@ -122,6 +113,7 @@ function abbr() {
     local abbr_opt_add=false
     local abbr_opt_create_aliases=false
     local abbr_opt_erase=false
+    local abbr_opt_expand=false
     local abbr_opt_git_populate=false
     local abbr_opt_global=false
     local abbr_opt_list=false
@@ -138,11 +130,12 @@ function abbr() {
        \e[1mabbr\e[0m --add|-a [SCOPE] WORD EXPANSION
        \e[1mabbr\e[0m --create-aliases|-c [SCOPE] [DESTINATION_FILE]
        \e[1mabbr\e[0m --erase|-e [SCOPE] WORD
+       \e[1mabbr\e[0m --expand|-x WORD
+       \e[1mabbr\e[0m --git-populate|-i [SCOPE]
        \e[1mabbr\e[0m --rename|-r [SCOPE] OLD_WORD NEW_WORD
        \e[1mabbr\e[0m --show|-s
        \e[1mabbr\e[0m --list|-l
        \e[1mabbr\e[0m --populate|-p [SCOPE]
-       \e[1mabbr\e[0m --git-populate|-i [SCOPE]
        \e[1mabbr\e[0m --help|-h
 
    \e[1mDescription\e[0m
@@ -169,6 +162,8 @@ function abbr() {
 
        o --erase WORD or -e WORD Erases the abbreviation WORD.
 
+       o --expand WORD or -x WORD Returns the abbreviation WORD's EXPANSION.
+
        o --git-populate or -i Adds abbreviations for all git aliases. WORDs are
          prefixed with g, EXPANSIONs are prefixed with git[Space].
 
@@ -176,7 +171,7 @@ function abbr() {
 
        o --populate or -p Adds abbreviations for all aliases.
 
-       o --rename OLD_WORD NEW_WORD -r OLD_WORD NEW_WORD Renames an
+       o --rename OLD_WORD NEW_WORD or -r OLD_WORD NEW_WORD Renames an
          abbreviation, from OLD_WORD to NEW_WORD.
 
        o --show or -s Show all abbreviations in a manner suitable for export
@@ -228,6 +223,12 @@ function abbr() {
        \e[1mabbr\e[0m --erase --global gco
 
          Erase the global gco abbreviation.
+
+       \e[1mabbr\e[0m -x gco
+       \$(\e[1mabbr\e[0m -x gco)
+
+         Output the expansion for gco (in the above --add example,
+         git checkout). Useful in scripting.
 
        \e[1mabbr\e[0m -r -g gco gch
        \e[1mabbr\e[0m --rename --global gco gch
@@ -377,6 +378,15 @@ function abbr() {
       abbr_should_exit=true
     }
 
+    function abbr_expand() {
+      if [ $# -ne 1 ]; then
+        printf "abbr_expand requires exactly one argument\\n"
+        return
+      fi
+
+      _zsh_abbr_expansion "$1"
+    }
+
     function abbr_git_populate() {
       if [ $# -gt 0 ]; then
         abbr_error " -p: Unexpected argument"
@@ -510,14 +520,16 @@ function abbr() {
       fi
 
       case "$opt" in
-        "-h"|"--help")
-          abbr_usage
-          abbr_should_exit=true
-          ;;
         "-a"|"--add")
           [ "$abbr_action_set" = true ] && abbr_bad_options
           abbr_action_set=true
           abbr_opt_add=true
+          ((abbr_number_opts++))
+          ;;
+        "-c"|"--create-aliases")
+          [ "$abbr_action_set" = true ] && abbr_bad_options
+          abbr_action_set=true
+          abbr_opt_create_aliases=true
           ((abbr_number_opts++))
           ;;
         "-e"|"--erase")
@@ -526,16 +538,19 @@ function abbr() {
           abbr_opt_erase=true
           ((abbr_number_opts++))
           ;;
-        "-r"|"--rename")
-          [ "$abbr_action_set" = true ] && abbr_bad_options
-          abbr_action_set=true
-          abbr_opt_rename=true
+        "-g"|"--global")
+          [ "$abbr_scope_set" = true ] && abbr_bad_options
+          abbr_opt_global=true
           ((abbr_number_opts++))
           ;;
-        "-s"|"--show")
+        "-h"|"--help")
+          abbr_usage
+          abbr_should_exit=true
+          ;;
+        "-i"|"--git-populate")
           [ "$abbr_action_set" = true ] && abbr_bad_options
           abbr_action_set=true
-          abbr_opt_show=true
+          abbr_opt_git_populate=true
           ((abbr_number_opts++))
           ;;
         "-l"|"--list")
@@ -550,25 +565,26 @@ function abbr() {
           abbr_opt_populate=true
           ((abbr_number_opts++))
           ;;
-        "-i"|"--git-populate")
+        "-r"|"--rename")
           [ "$abbr_action_set" = true ] && abbr_bad_options
           abbr_action_set=true
-          abbr_opt_git_populate=true
+          abbr_opt_rename=true
           ((abbr_number_opts++))
           ;;
-        "-c"|"--create-aliases")
+        "-s"|"--show")
           [ "$abbr_action_set" = true ] && abbr_bad_options
           abbr_action_set=true
-          abbr_opt_create_aliases=true
-          ((abbr_number_opts++))
-          ;;
-        "-g"|"--global")
-          [ "$abbr_scope_set" = true ] && abbr_bad_options
-          abbr_opt_global=true
+          abbr_opt_show=true
           ((abbr_number_opts++))
           ;;
         "-U"|"--universal")
           [ "$abbr_scope_set" = true ] && abbr_bad_options
+          ((abbr_number_opts++))
+          ;;
+        "-x"|"--expand")
+          [ "$abbr_action_set" = true ] && abbr_bad_options
+          abbr_action_set=true
+          abbr_opt_expand=true
           ((abbr_number_opts++))
           ;;
         "-"*)
@@ -588,7 +604,9 @@ function abbr() {
       abbr_opt_universal=true
     fi
 
-    if $abbr_opt_rename; then
+    if $abbr_opt_expand; then
+      abbr_expand "$@"
+    elif $abbr_opt_rename; then
       abbr_rename "$@"
     elif $abbr_opt_list; then
       abbr_list "$@"
@@ -614,6 +632,7 @@ function abbr() {
     unfunction -m "abbr_create_aliases"
     unfunction -m "abbr_erase"
     unfunction -m "abbr_error"
+    unfunction -m "abbr_expand"
     unfunction -m "abbr_git_populate"
     unfunction -m "abbr_check_options"
     unfunction -m "abbr_list"

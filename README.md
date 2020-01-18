@@ -171,9 +171,23 @@ gimme cookie monster
 Already on 'master'
 ```
 
-### Git-Populate
+### Expand
+
+```
+abbr (--expand|-x) WORD
+```
+
+Output the WORD's EXPANSION. Useful in scripting.
 
 ```shell
+% abbr --add gc git checkout
+% abbr --expand gc[Ctrl-Space]
+git checkout
+```
+
+### Git-Populate
+
+```
 abbr (--git-populate|-i) [(--global|-g)|(--Universal|-U)]
 ```
 
