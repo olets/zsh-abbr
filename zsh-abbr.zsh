@@ -607,24 +607,27 @@ function abbr() {
       abbr_opt_universal=true
     fi
 
-    if $abbr_opt_expand; then
-      abbr_expand "$@"
-    elif $abbr_opt_rename; then
-      abbr_rename "$@"
-    elif $abbr_opt_list; then
-      abbr_list "$@"
-    elif $abbr_opt_erase; then
-      abbr_erase "$@"
-    elif $abbr_opt_populate; then
-      abbr_populate "$@"
-    elif $abbr_opt_git_populate; then
-      abbr_git_populate "$@"
+    if $abbr_opt_add; then
+       abbr_add "$@"
     elif $abbr_opt_create_aliases; then
       abbr_create_aliases "$@"
-    elif $abbr_opt_add; then
-       abbr_add "$@"
+    elif $abbr_opt_erase; then
+      abbr_erase "$@"
+    elif $abbr_opt_expand; then
+      abbr_expand "$@"
+    elif $abbr_opt_git_populate; then
+      abbr_git_populate "$@"
+    elif $abbr_opt_list; then
+      abbr_list "$@"
+    elif $abbr_opt_populate; then
+      abbr_populate "$@"
+    elif $abbr_opt_rename; then
+      abbr_rename "$@"
+
+    # default if arguments are provided
     elif ! $abbr_opt_show && [ $# -gt 0 ]; then
        abbr_add "$@"
+    # default if no argument is provided
     else
       abbr_show "$@"
     fi
