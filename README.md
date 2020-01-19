@@ -332,7 +332,7 @@ abbr -a -U -- gcm git checkout master
 
 ### Storage
 
-Universal abbreviations live in a plain text file which you can manually edit, shared, etc. Its default location is `${HOME}/config/zsh-abbr/universal`. Customize this by setting the `ZSH_ABBR_UNIVERSALS_PATH` variable in your `.zshrc` before loading zsh-abbr.
+Universal abbreviations live in a plain text file which you can manually edit, shared, etc. Its default location is `${HOME}/.config/zsh/universal-abbreviations`. Customize this by setting the `ZSH_ABBR_UNIVERSALS_PATH` variable in your `.zshrc` before loading zsh-abbr.
 
 ```shell
 % cat ~/.zshrc

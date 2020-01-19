@@ -8,10 +8,11 @@
 # -------------
 
 # File abbreviations are stored in
-ZSH_ABBR_UNIVERSALS_PATH="${ZSH_ABBR_UNIVERSALS_PATH="${HOME}/.config/zsh-abbr/universal"}"
+ZSH_ABBR_UNIVERSALS_PATH="${ZSH_ABBR_UNIVERSALS_PATH="${HOME}/.config/zsh/universal-abbreviations"}"
 # Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
 ZSH_ABBR_DEFAULT_BINDINGS="${ZSH_ABBR_DEFAULT_BINDINGS=true}"
+
 
 # INITIALIZE
 # ----------
