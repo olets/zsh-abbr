@@ -8,7 +8,7 @@
 # -------------
 
 # File abbreviations are stored in
-ZSH_ABBR_UNIVERSALS_PATH="${ZSH_ABBR_UNIVERSALS_PATH="${HOME}/.config/zsh/universal-abbreviations"}"
+ZSH_ABBR_UNIVERSALS_FILE="${ZSH_ABBR_UNIVERSALS_FILE="${HOME}/.config/zsh/universal-abbreviations"}"
 # Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
 ZSH_ABBR_DEFAULT_BINDINGS="${ZSH_ABBR_DEFAULT_BINDINGS=true}"
@@ -445,7 +445,7 @@ function _zsh_abbr() {
         echo "$abbreviation $expansion" >> "$abbr_universals_updated"
       done
 
-      mv "$abbr_universals_updated" "$ZSH_ABBR_UNIVERSALS_PATH"
+      mv "$abbr_universals_updated" "$ZSH_ABBR_UNIVERSALS_FILE"
     }
 
     function util_usage() {
@@ -656,13 +656,13 @@ function _zsh_abbr_init() {
   ZSH_ABBR_GLOBALS=()
 
   # Load saved universal abbreviations
-  if [ -f "$ZSH_ABBR_UNIVERSALS_PATH" ]; then
+  if [ -f "$ZSH_ABBR_UNIVERSALS_FILE" ]; then
     while read -r abbreviation expansion; do
       ZSH_ABBR_UNIVERSALS[$abbreviation]="$expansion"
-    done < "$ZSH_ABBR_UNIVERSALS_PATH"
+    done < "$ZSH_ABBR_UNIVERSALS_FILE"
   else
-    mkdir -p $(dirname "$ZSH_ABBR_UNIVERSALS_PATH")
-    touch "$ZSH_ABBR_UNIVERSALS_PATH"
+    mkdir -p $(dirname "$ZSH_ABBR_UNIVERSALS_FILE")
+    touch "$ZSH_ABBR_UNIVERSALS_FILE"
   fi
 
   # Scratch file

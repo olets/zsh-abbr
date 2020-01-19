@@ -184,6 +184,8 @@ To include a hyphen (-) in an EXPANSION, wrap the EXPANSION in double quotation 
 abbr g- "git checkout -"
 ```
 
+Abbreviations can also be manually added to the `ZSH_ABBR_UNIVERSALS_FILE`.
+
 #### Create Aliases
 
 ```
@@ -232,6 +234,8 @@ gimme cookie monster
 % gcm[Enter]
 Already on 'master'
 ```
+
+Abbreviations can also be manually erased from the `ZSH_ABBR_UNIVERSALS_FILE`.
 
 #### Expand
 
@@ -335,6 +339,8 @@ Rename an abbreviation. Use the **--global** scope to rename a global abbreviati
 % gm[Space] # expands to git checkout master
 ```
 
+Abbreviations can also be manually renamed in the `ZSH_ABBR_UNIVERSALS_FILE`.
+
 #### Show
 
 ```
@@ -358,12 +364,12 @@ abbr -a -U -- gcm git checkout master
 
 ### Storage
 
-Universal abbreviations live in a plain text file which you can manually edit, shared, etc. Its default location is `${HOME}/.config/zsh/universal-abbreviations`. Customize this by setting the `ZSH_ABBR_UNIVERSALS_PATH` variable in your `.zshrc` before loading zsh-abbr.
+Universal abbreviations live in a plain text file which you can manually edit, shared, etc. Its default location is `${HOME}/.config/zsh/universal-abbreviations`. Customize this by setting the `ZSH_ABBR_UNIVERSALS_FILE` variable in your `.zshrc` before loading zsh-abbr.
 
 ```shell
 % cat ~/.zshrc
 # -- snip --
-ZSH_ABBR_UNIVERSALS_PATH="path/to/my/universal/abbreviations"
+ZSH_ABBR_UNIVERSALS_FILE="path/to/my/universal/abbreviations"
 # -- snip --
 # load zsh-abbr
 ```
@@ -398,7 +404,7 @@ bindkey "^A" _zsh_abbr_expand_space
 Delete the zsh-abbr configuration directory. Note that this will permanently delete the universal abbreviations file.
 
 ```shell
-% rm -rf $(dirname "$ZSH_ABBR_UNIVERSALS_PATH")
+% rm -rf $(dirname "$ZSH_ABBR_UNIVERSALS_FILE")
 ```
 
 Then follow the standard uninstallation procedure for your installation method. This is typically the reverse of what you did to install.
