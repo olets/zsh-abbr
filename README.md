@@ -153,7 +153,7 @@ abbr [(--add | -a)
 #### Add
 
 ```
-abbr [(--add | -a)] WORD EXPANSION
+abbr [(--add | -a)] ABBREVIATION EXPANSION
 ```
 
 Add a new abbreviation. To add a global abbreviation, use **--global**. Othewise, or if the **--universal** scope is used, the new abbreviation will be universal.
@@ -206,7 +206,7 @@ alias -g g='git'
 #### Erase
 
 ```
-abbr (--erase | -e) WORD
+abbr (--erase | -e) ABBREVIATION
 ```
 
 Erase an abbreviation. Specify **--global** scope to erase a global abbreviation. Othewise, or if the **--universal** scope is used, a universal abbreviation will be erased.
@@ -228,10 +228,10 @@ Already on 'master'
 #### Expand
 
 ```
-abbr (--expand | -x) WORD
+abbr (--expand | -x) ABBREVIATION
 ```
 
-Output the WORD's EXPANSION. Useful in scripting.
+Output the ABBREVIATION's EXPANSION. Useful in scripting.
 
 ```shell
 % abbr --add gc git checkout
