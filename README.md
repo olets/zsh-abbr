@@ -402,3 +402,8 @@ Delete the zsh-abbr configuration directory. Note that this will permanently del
 ```
 
 Then follow the standard uninstallation procedure for your installation method. This is typically the reverse of what you did to install.
+
+## License
+
+This project is licensed under [MIT license](http://opensource.org/licenses/MIT).
+For the full text of the license, see the [LICENSE](LICENSE) file.
