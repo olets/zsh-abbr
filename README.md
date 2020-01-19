@@ -135,6 +135,7 @@ Default is universal.
 abbr [(--add | -a)
       | (--create-aliases | -c)
       | (--erase | -e)
+      | (--erase-all-globals | -E)
       | (--expand | -x)
       | (--global | -g)
       | (--help | -h)
@@ -235,7 +236,15 @@ gimme cookie monster
 Already on 'master'
 ```
 
-Abbreviations can also be manually erased from the `ZSH_ABBR_UNIVERSALS_FILE`.
+Universal abbreviations can also be manually erased from the `ZSH_ABBR_UNIVERSALS_FILE`.
+
+#### Erase All Globals
+
+```
+abbr (--erase-all-globals | -E)
+```
+
+Erase all global abbreviations.
 
 #### Expand
 
