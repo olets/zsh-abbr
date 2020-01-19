@@ -110,6 +110,9 @@ zle -N _zsh_abbr_expand_widget
 
 function abbr() {
   {
+    local version="zsh-abbr version 1.2.0"
+    local release_date="January 12 2020"
+
     local text_bold="\\033[1m"
     local text_reset="\\033[0m"
 
@@ -126,6 +129,7 @@ function abbr() {
     local abbr_opt_show=false
     local abbr_opt_populate=false
     local abbr_opt_universal=false
+    local abbr_opt_version=false
     local abbr_scope_set=false
     local abbr_should_exit=false
     local abbr_usage="
@@ -184,7 +188,10 @@ function abbr() {
        o --show or -s Show all abbreviations in a manner suitable for export
          and import.
 
-       In addition, when adding abbreviations use
+       o --version or -v Show the current version.
+
+       In addition, when adding abbreviations, creating aliases, erasing,
+       [git] populating, or renaming use
 
        o --global or -g to create a global abbreviation, available only in the
          current session.
@@ -266,7 +273,7 @@ function abbr() {
        expansion. The result is the global expansion if one exists, otherwise
        the universal expansion if one exists.
 
-       Version 1.2.0 January 12 2020"
+       $version $release_date"
 
     function abbr_add() {
       if [[ $# -lt 2 ]]; then
@@ -523,6 +530,15 @@ function abbr() {
       echo "$exists"
     }
 
+    function abbr_version() {
+      if [ $# -gt 0 ]; then
+        abbr_error " version: Unexpected argument"
+        return
+      fi
+
+      printf "%s\\n" "$version"
+    }
+
     for opt in "$@"; do
       if $abbr_should_exit; then
         abbr_should_exit=false
@@ -609,6 +625,13 @@ function abbr() {
           [ "$abbr_scope_set" = true ] && abbr_bad_options
           ((abbr_number_opts++))
           ;;
+        "--version"|\
+        "-v")
+          [ "$abbr_action_set" = true ] && abbr_bad_options
+          abbr_action_set=true
+          abbr_opt_version=true
+          ((abbr_number_opts++))
+          ;;
         "-"*)
           abbr_error ": Unknown option '$opt'"
           ;;
@@ -642,6 +665,8 @@ function abbr() {
       abbr_populate "$@"
     elif $abbr_opt_rename; then
       abbr_rename "$@"
+    elif $abbr_opt_version; then
+      abbr_version "$@"
 
     # default if arguments are provided
     elif ! $abbr_opt_show && [ $# -gt 0 ]; then
@@ -666,5 +691,6 @@ function abbr() {
     unfunction -m "abbr_usage"
     unfunction -m "abbr_util_add"
     unfunction -m "abbr_util_exists"
+    unfunction -m "abbr_version"
   }
 }
