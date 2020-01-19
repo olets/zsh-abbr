@@ -125,8 +125,8 @@ function abbr() {
     local opt_show=false
     local opt_populate=false
     local opt_universal=false
-    local opt_version=false
-    local release_date="January 12 2020"
+    local opt_print_version=false
+    local release_date="January 19 2020"
     local scope_set=false
     local should_exit=false
     local text_bold="\\033[1m"
@@ -631,7 +631,7 @@ function abbr() {
         "-v")
           [ "$action_set" = true ] && util_bad_options
           action_set=true
-          opt_version=true
+          opt_print_version=true
           ((number_opts++))
           ;;
         "-"*)
@@ -665,10 +665,10 @@ function abbr() {
       list "$@"
     elif $opt_populate; then
       populate "$@"
+    elif $opt_print_version; then
+      print_version "$@"
     elif $opt_rename; then
       rename "$@"
-    elif $opt_version; then
-      print_version "$@"
 
     # default if arguments are provided
     elif ! $opt_show && [ $# -gt 0 ]; then
