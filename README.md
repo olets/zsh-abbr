@@ -1,4 +1,4 @@
-# zsh-abbr
+# zsh-abbr ![GitHub release (latest by date)](https://img.shields.io/github/v/release/olets/zsh-abbr)
 
 An enhanced [zsh](http://www.zsh.org/) port of [fish shell](http://www.fishshell.com/)'s abbreviations.
 
