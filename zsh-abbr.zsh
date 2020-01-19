@@ -23,8 +23,8 @@ ZSH_ABBR_GLOBALS=()
 
 # Load saved universal abbreviations
 if [ -f "$ZSH_ABBR_UNIVERSALS_PATH" ]; then
-  while read -r k v; do
-    ZSH_ABBR_UNIVERSALS[$k]="$v"
+  while read -r abbreviation expansion; do
+    ZSH_ABBR_UNIVERSALS[$abbreviation]="$expansion"
   done < "$ZSH_ABBR_UNIVERSALS_PATH"
 else
   mkdir -p $(dirname "$ZSH_ABBR_UNIVERSALS_PATH")
@@ -89,14 +89,15 @@ function _zsh_abbr_expansion() {
 # -------
 
 function _zsh_abbr_expand_widget() {
-  local abbreviation
+  local current_word
   local expansion
-  abbreviation="${LBUFFER/*[ ,;|&]/}"
-  expansion=$(_zsh_abbr_expansion "$abbreviation")
+
+  current_word="${LBUFFER/*[ ,;|&]/}"
+  expansion=$(_zsh_abbr_expansion "$current_word")
 
   if [[ -n "$expansion" ]]; then
-    local rest="${LBUFFER%%$abbreviation}"
-    LBUFFER="$rest$expansion"
+    local preceding_lbuffer="${LBUFFER%%$current_word}"
+    LBUFFER="$preceding_lbuffer$expansion"
     _zsh_highlight # if using zsh-syntax-highlighting, update the highlighting
   fi
 }
@@ -131,10 +132,10 @@ function abbr() {
        ${text_bold}abbr${text_reset}: fish shell-like abbreviations for zsh
 
    ${text_bold}Synopsis${text_reset}
-       ${text_bold}abbr${text_reset} --add|-a [SCOPE] WORD EXPANSION
+       ${text_bold}abbr${text_reset} --add|-a [SCOPE] ABBREVIATION EXPANSION
        ${text_bold}abbr${text_reset} --create-aliases|-c [SCOPE] [DESTINATION_FILE]
-       ${text_bold}abbr${text_reset} --erase|-e [SCOPE] WORD
-       ${text_bold}abbr${text_reset} --expand|-x WORD
+       ${text_bold}abbr${text_reset} --erase|-e [SCOPE] ABBREVIATION
+       ${text_bold}abbr${text_reset} --expand|-x ABBREVIATION
        ${text_bold}abbr${text_reset} --git-populate|-i [SCOPE]
        ${text_bold}abbr${text_reset} --rename|-r [SCOPE] OLD_WORD NEW_WORD
        ${text_bold}abbr${text_reset} --show|-s
@@ -155,8 +156,8 @@ function abbr() {
    ${text_bold}Options${text_reset}
        The following options are available:
 
-       o --add WORD EXPANSION or -a WORD EXPANSION Adds a new abbreviation,
-         causing WORD to be expanded to PHRASE.
+       o --add ABBREVIATION EXPANSION or -a ABBREVIATION EXPANSION Adds a new
+         abbreviation, causing ABBREVIATION to be expanded to EXPANSION.
 
        o --create-aliases [-g] [DESTINATION_FILE] or -c [-g] [DESTINATION_FILE]
          Outputs a list of alias command for universal abbreviations, suitable
@@ -164,9 +165,11 @@ function abbr() {
          alias commands for global abbreviations. If a DESTINATION_FILE is
          provided, the commands will be appended to it.
 
-       o --erase WORD or -e WORD Erases the abbreviation WORD.
+       o --erase ABBREVIATION or -e ABBREVIATION Erases the
+         abbreviation ABBREVIATION.
 
-       o --expand WORD or -x WORD Returns the abbreviation WORD's EXPANSION.
+       o --expand ABBREVIATION or -x ABBREVIATION Returns the abbreviation
+         ABBREVIATION's EXPANSION.
 
        o --git-populate or -i Adds abbreviations for all git aliases. WORDs are
          prefixed with g, EXPANSIONs are prefixed with git[Space].
@@ -210,13 +213,13 @@ function abbr() {
        ${text_bold}abbr${text_reset} --create-aliases -global
 
          Output alias declaration commands for each *global* abbreviation.
-         Output lines look like alias -g <WORD>='<EXPANSION>'
+         Output lines look like alias -g <ABBREVIATION>='<EXPANSION>'
 
        ${text_bold}abbr${text_reset} -c
        ${text_bold}abbr${text_reset} --create-aliases
 
          Output alias declaration commands for each *universal* abbreviation.
-         Output lines look like alias -g <WORD>='<EXPANSION>'
+         Output lines look like alias -g <ABBREVIATION>='<EXPANSION>'
 
        ${text_bold}abbr${text_reset} -c ~/aliases
        ${text_bold}abbr${text_reset} --create-aliases ~/aliases
@@ -246,7 +249,7 @@ function abbr() {
         can omit the -U since it is the default.
 
    ${text_bold}Internals${text_reset}
-       The WORD cannot contain a space but all other characters are legal.
+       The ABBREVIATION cannot contain a space but all other characters are legal.
 
        Defining an abbreviation with global scope is slightly faster than
        universal scope (which is the default).
@@ -271,7 +274,7 @@ function abbr() {
         return
       fi
 
-      abbr_util_add $*
+      abbr_util_add $* # must not be quoted
     }
 
     function abbr_bad_options() {
@@ -293,8 +296,8 @@ function abbr() {
         source=ZSH_ABBR_UNIVERSALS
       fi
 
-      for k v in ${(kv)${(P)source}}; do
-        alias_definition="alias -g $k='$v'"
+      for abbreviation expansion in ${(kv)${(P)source}}; do
+        alias_definition="alias -g $abbreviation='$expansion'"
 
         if [ $# -gt 0 ]; then
           echo "$alias_definition" >> "$1"
@@ -385,8 +388,8 @@ function abbr() {
         return
       fi
 
-      for k v in ${(kv)aliases}; do
-        abbr_util_add "$k" "${v# }"
+      for abbreviation expansion in ${(kv)aliases}; do
+        abbr_util_add "$abbreviation" "${expansion# }"
       done
     }
 
@@ -446,12 +449,12 @@ function abbr() {
 
       source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
 
-      for key value in ${(kv)ZSH_ABBR_UNIVERSALS}; do
-        printf "abbr -a -U -- %s %s\\n" "$key" "$value"
+      for abbreviation expansion in ${(kv)ZSH_ABBR_UNIVERSALS}; do
+        printf "abbr -a -U -- %s %s\\n" "$abbreviation" "$expansion"
       done
 
-      for key value in ${(kv)ZSH_ABBR_GLOBALS}; do
-        printf "abbr -a -g -- %s %s\\n" "$key" "$value"
+      for abbreviation expansion in ${(kv)ZSH_ABBR_GLOBALS}; do
+        printf "abbr -a -g -- %s %s\\n" "$abbreviation" "$expansion"
       done
     }
 
@@ -463,8 +466,8 @@ function abbr() {
       rm "$abbr_universals_updated" 2> /dev/null
       mktemp "$abbr_universals_updated" 1> /dev/null
 
-      for k v in ${(kv)ZSH_ABBR_UNIVERSALS}; do
-        echo "$k $v" >> "$abbr_universals_updated"
+      for abbreviation expansion in ${(kv)ZSH_ABBR_UNIVERSALS}; do
+        echo "$abbreviation $expansion" >> "$abbr_universals_updated"
       done
 
       mv "$abbr_universals_updated" "$ZSH_ABBR_UNIVERSALS_PATH"
@@ -475,12 +478,13 @@ function abbr() {
     }
 
     function abbr_util_add() {
-      local key
-      key="$1"
+      local abbreviation
+      local expansion
+      abbreviation="$1"
       shift
-      # $* is value
+      expansion="$*"
 
-      if [ $(abbr_util_exists $key) = true ]; then
+      if [ $(abbr_util_exists $abbreviation) = true ]; then
         local type
         type="universal"
 
@@ -488,15 +492,15 @@ function abbr() {
           type="global"
         fi
 
-        abbr_error " -a: A $type abbreviation $key already exists"
+        abbr_error " -a: A $type abbreviation $abbreviation already exists"
         return
       fi
 
       if $abbr_opt_global; then
-        ZSH_ABBR_GLOBALS[$key]="$*"
+        ZSH_ABBR_GLOBALS[$abbreviation]="$expansion"
       else
         source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
-        ZSH_ABBR_UNIVERSALS[$key]="$*"
+        ZSH_ABBR_UNIVERSALS[$abbreviation]="$expansion"
         abbr_sync_universal
       fi
     }
@@ -647,8 +651,6 @@ function abbr() {
       abbr_show "$@"
     fi
   } always {
-    unfunction -m "abbr_util_add"
-    unfunction -m "abbr_util_exists"
     unfunction -m "abbr_add"
     unfunction -m "abbr_create_aliases"
     unfunction -m "abbr_erase"
@@ -662,5 +664,7 @@ function abbr() {
     unfunction -m "abbr_show"
     unfunction -m "abbr_sync_universal"
     unfunction -m "abbr_usage"
+    unfunction -m "abbr_util_add"
+    unfunction -m "abbr_util_exists"
   }
 }
