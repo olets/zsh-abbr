@@ -245,12 +245,6 @@ function abbr() {
 
          Erase the global gco abbreviation.
 
-       ${text_bold}abbr${text_reset} -x gco
-       \$(${text_bold}abbr${text_reset} -x gco)
-
-         Output the expansion for gco (in the above --add example,
-         git checkout). Useful in scripting.
-
        ${text_bold}abbr${text_reset} -r -g gco gch
        ${text_bold}abbr${text_reset} --rename --global gco gch
 
@@ -261,6 +255,12 @@ function abbr() {
 
         Rename the existing universal abbreviation from l to le. Note that you
         can omit the -U since it is the default.
+
+       ${text_bold}abbr${text_reset} -x gco
+       \$(${text_bold}abbr${text_reset} -expand gco)
+
+         Output the expansion for gco (in the above --add example,
+         git checkout). Useful in scripting.
 
    ${text_bold}Internals${text_reset}
        The ABBREVIATION cannot contain a space but all other characters are legal.
@@ -273,12 +273,8 @@ function abbr() {
        the scope. If you want it to be visible only to the current shell
        use the -g flag.
 
-       The options -a -c -e -r -s -l -p and -i are mutually exclusive,
+       The options -a -c -e -i -l -p -r -s and -x are mutually exclusive,
        as are the scope options -g and -U.
-
-       The function abbr_expand is available to return an abbreviation's
-       expansion. The result is the global expansion if one exists, otherwise
-       the universal expansion if one exists.
 
        $version $release_date"
 
