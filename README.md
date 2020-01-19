@@ -20,6 +20,20 @@ Run `abbr --help` (or `abbr -h`) for documentation.
 
 ## Installation
 
+### Package
+
+zsh-abbr is available on Homebrew. Run
+
+```
+brew install olets/tap/zsh-abbr
+```
+
+and follow the post-install instructions logged to the terminal.
+
+### Plugin
+
+Or install zsh-abbr with your favorite plugin manager:
+
 - **[antibody](https://getantibody.github.io/)**: Add `olets/zsh-abbr` to your plugins file. If you use static loading, reload plugins.
 
 - **[Antigen](https://github.com/zsh-users/antigen)**: Add `antigen bundle olets/zsh-abbr` to your `.zshrc`.
@@ -51,6 +65,10 @@ If running `abbr` gives an error "zsh: permission denied: abbr", reload zsh:
 ```shell
 % source ~/.zshrc # or your custom .zshrc path
 ```
+
+### Manual
+
+Clone this repo and add `source path/to/zsh-abbr.zsh` to your `.zshrc`.
 
 ## Quick Start
 
