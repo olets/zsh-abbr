@@ -176,6 +176,14 @@ The following are equivalent:
 % abbr gcm git checkout master
 ```
 
+The ABBREVIATION cannot contain a space but all other characters are legal.
+
+To include a hyphen (-) in an EXPANSION, wrap the EXPANSION in double quotation marks:
+
+```shell
+abbr g- "git checkout -"
+```
+
 #### Create Aliases
 
 ```

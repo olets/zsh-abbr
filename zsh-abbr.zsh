@@ -263,6 +263,9 @@ function abbr() {
    ${text_bold}Internals${text_reset}
        The ABBREVIATION cannot contain a space but all other characters are legal.
 
+       To include a hyphen (-) in an EXPANSION, wrap the EXPANSION in double
+       quotation marks: ${text_bold}abbr${text_reset} g- \"git checkout -\"
+
        Defining an abbreviation with global scope is slightly faster than
        universal scope (which is the default).
 
@@ -271,8 +274,9 @@ function abbr() {
        the scope. If you want it to be visible only to the current shell
        use the -g flag.
 
-       The options -a -c -e -i -l -p -r -s and -x are mutually exclusive,
-       as are the scope options -g and -U.
+       The options add, create-aliases, erase, expand, git-populate, list,
+       populate, rename, and show are mutually exclusive, as are the global
+       and universal scopes.
 
        $version $release_date"
     local version="zsh-abbr version 1.2.0"
