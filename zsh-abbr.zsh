@@ -14,101 +14,8 @@ ZSH_ABBR_UNIVERSALS_PATH="${ZSH_ABBR_UNIVERSALS_PATH="${HOME}/.config/zsh/univer
 ZSH_ABBR_DEFAULT_BINDINGS="${ZSH_ABBR_DEFAULT_BINDINGS=true}"
 
 
-# INITIALIZE
-# ----------
-
-function _zsh_abbr_init() {
-  typeset -gA ZSH_ABBR_UNIVERSALS
-  typeset -gA ZSH_ABBR_GLOBALS
-  ZSH_ABBR_UNIVERSALS=()
-  ZSH_ABBR_GLOBALS=()
-
-  # Load saved universal abbreviations
-  if [ -f "$ZSH_ABBR_UNIVERSALS_PATH" ]; then
-    while read -r abbreviation expansion; do
-      ZSH_ABBR_UNIVERSALS[$abbreviation]="$expansion"
-    done < "$ZSH_ABBR_UNIVERSALS_PATH"
-  else
-    mkdir -p $(dirname "$ZSH_ABBR_UNIVERSALS_PATH")
-    touch "$ZSH_ABBR_UNIVERSALS_PATH"
-  fi
-
-  # Scratch file
-  ZSH_ABBR_UNIVERSALS_SCRATCH_FILE="${TMPDIR}/abbr_universals"
-
-  rm "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE" 2> /dev/null
-  mktemp "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE" 1> /dev/null
-  typeset -p ZSH_ABBR_UNIVERSALS > "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
-}
-
-function _zsh_abbr_bind_widgets() {
-  # spacebar expands abbreviations
-  zle -N _zsh_abbr_expand_space
-  bindkey " " _zsh_abbr_expand_space
-
-  # control-spacebar is a normal space
-  bindkey "^ " magic-space
-
-  # when running an incremental search,
-  # spacebar behaves normally and control-space expands abbreviations
-  bindkey -M isearch "^ " _zsh_abbr_expand_space
-  bindkey -M isearch " " magic-space
-
-  # enter key expands and accepts abbreviations
-  zle -N _zsh_abbr_expand_accept
-  bindkey "^M" _zsh_abbr_expand_accept
-}
-
-
-# INTERNAL FUNCTIONS
-# ------------------
-
-function _zsh_abbr_expand_accept() {
-  zle _zsh_abbr_expand_widget
-  zle autosuggest-clear # if using zsh-autosuggestions, clear any suggestion
-  zle accept-line
-}
-
-function _zsh_abbr_expand_space() {
-  zle _zsh_abbr_expand_widget
-  LBUFFER="$LBUFFER "
-}
-
-function _zsh_abbr_expansion() {
-  local expansion
-  expansion="${ZSH_ABBR_GLOBALS[$1]}"
-
-  if [[ ! -n $expansion ]]; then
-    source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
-    expansion="${ZSH_ABBR_UNIVERSALS[$1]}"
-  fi
-
-  echo "$expansion"
-}
-
-
-# WIDGETS
-# -------
-
-function _zsh_abbr_expand_widget() {
-  local current_word
-  local expansion
-
-  current_word="${LBUFFER/*[ ,;|&]/}"
-  expansion=$(_zsh_abbr_expansion "$current_word")
-
-  if [[ -n "$expansion" ]]; then
-    local preceding_lbuffer="${LBUFFER%%$current_word}"
-    LBUFFER="$preceding_lbuffer$expansion"
-    _zsh_highlight # if using zsh-syntax-highlighting, update the highlighting
-  fi
-}
-
-zle -N _zsh_abbr_expand_widget
-
-
-# SHARED FUNCTIONS
-# ----------------
+# FUNCTIONS
+# ---------
 
 function _zsh_abbr() {
   {
@@ -701,11 +608,103 @@ function _zsh_abbr() {
   }
 }
 
-# Initialization on shell load
+function _zsh_abbr_bind_widgets() {
+  # spacebar expands abbreviations
+  zle -N _zsh_abbr_expand_space
+  bindkey " " _zsh_abbr_expand_space
+
+  # control-spacebar is a normal space
+  bindkey "^ " magic-space
+
+  # when running an incremental search,
+  # spacebar behaves normally and control-space expands abbreviations
+  bindkey -M isearch "^ " _zsh_abbr_expand_space
+  bindkey -M isearch " " magic-space
+
+  # enter key expands and accepts abbreviations
+  zle -N _zsh_abbr_expand_accept
+  bindkey "^M" _zsh_abbr_expand_accept
+}
+
+function _zsh_abbr_expand_accept() {
+  zle _zsh_abbr_expand_widget
+  zle autosuggest-clear # if using zsh-autosuggestions, clear any suggestion
+  zle accept-line
+}
+
+function _zsh_abbr_expand_space() {
+  zle _zsh_abbr_expand_widget
+  LBUFFER="$LBUFFER "
+}
+
+function _zsh_abbr_expansion() {
+  local expansion
+  expansion="${ZSH_ABBR_GLOBALS[$1]}"
+
+  if [[ ! -n $expansion ]]; then
+    source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
+    expansion="${ZSH_ABBR_UNIVERSALS[$1]}"
+  fi
+
+  echo "$expansion"
+}
+
+function _zsh_abbr_init() {
+  typeset -gA ZSH_ABBR_UNIVERSALS
+  typeset -gA ZSH_ABBR_GLOBALS
+  ZSH_ABBR_UNIVERSALS=()
+  ZSH_ABBR_GLOBALS=()
+
+  # Load saved universal abbreviations
+  if [ -f "$ZSH_ABBR_UNIVERSALS_PATH" ]; then
+    while read -r abbreviation expansion; do
+      ZSH_ABBR_UNIVERSALS[$abbreviation]="$expansion"
+    done < "$ZSH_ABBR_UNIVERSALS_PATH"
+  else
+    mkdir -p $(dirname "$ZSH_ABBR_UNIVERSALS_PATH")
+    touch "$ZSH_ABBR_UNIVERSALS_PATH"
+  fi
+
+  # Scratch file
+  ZSH_ABBR_UNIVERSALS_SCRATCH_FILE="${TMPDIR}/abbr_universals"
+
+  rm "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE" 2> /dev/null
+  mktemp "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE" 1> /dev/null
+  typeset -p ZSH_ABBR_UNIVERSALS > "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
+}
+
+
+# WIDGETS
+# -------
+
+function _zsh_abbr_expand_widget() {
+  local current_word
+  local expansion
+
+  current_word="${LBUFFER/*[ ,;|&]/}"
+  expansion=$(_zsh_abbr_expansion "$current_word")
+
+  if [[ -n "$expansion" ]]; then
+    local preceding_lbuffer="${LBUFFER%%$current_word}"
+    LBUFFER="$preceding_lbuffer$expansion"
+    _zsh_highlight # if using zsh-syntax-highlighting, update the highlighting
+  fi
+}
+
+zle -N _zsh_abbr_expand_widget
+
+
+# INITIALIZATION
+# --------------
+
 _zsh_abbr_init
 if [ "$ZSH_ABBR_DEFAULT_BINDINGS" = true ]; then
   _zsh_abbr_bind_widgets
 fi
+
+
+# SHARE
+# -----
 
 function abbr() {
   _zsh_abbr $*
