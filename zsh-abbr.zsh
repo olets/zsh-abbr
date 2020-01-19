@@ -270,7 +270,7 @@ function abbr() {
 
     function abbr_add() {
       if [[ $# -lt 2 ]]; then
-        abbr_error " -a: Requires at least two arguments"
+        abbr_error " add: Requires at least two arguments"
         return
       fi
 
@@ -286,7 +286,7 @@ function abbr() {
       local alias_definition
 
       if [ $# -gt 1 ]; then
-        abbr_error " -c: Unexpected argument"
+        abbr_error " create-aliases: Unexpected argument"
         return
       fi
 
@@ -309,10 +309,10 @@ function abbr() {
 
     function abbr_erase() {
       if [ $# -gt 1 ]; then
-        abbr_error " -e: Expected one argument"
+        abbr_error " erase: Expected one argument"
         return
       elif [ $# -lt 1 ]; then
-        abbr_error " -e: Erase needs a variable name"
+        abbr_error " erase: Erase needs a variable name"
         return
       fi
 
@@ -320,7 +320,7 @@ function abbr() {
         if (( ${+ZSH_ABBR_GLOBALS[$1]} )); then
           unset "ZSH_ABBR_GLOBALS[${(b)1}]"
         else
-          abbr_error " -e: No global abbreviation named $1"
+          abbr_error " erase: No global abbreviation named $1"
           return
         fi
       else
@@ -330,7 +330,7 @@ function abbr() {
           unset "ZSH_ABBR_UNIVERSALS[${(b)1}]"
           abbr_sync_universal
         else
-          abbr_error " -e: No universal abbreviation named $1"
+          abbr_error " erase: No universal abbreviation named $1"
           return
         fi
       fi
@@ -355,7 +355,7 @@ function abbr() {
       local abbr_git_aliases
 
       if [ $# -gt 0 ]; then
-        abbr_error " -p: Unexpected argument"
+        abbr_error " git-populate: Unexpected argument"
         return
       fi
 
@@ -372,7 +372,7 @@ function abbr() {
 
     function abbr_list() {
       if [ $# -gt 0 ]; then
-        abbr_error " -l: Unexpected argument"
+        abbr_error " list: Unexpected argument"
         return
       fi
 
@@ -384,7 +384,7 @@ function abbr() {
 
     function abbr_populate() {
       if [ $# -gt 0 ]; then
-        abbr_error " -p: Unexpected argument"
+        abbr_error " populate: Unexpected argument"
         return
       fi
 
@@ -404,17 +404,17 @@ function abbr() {
       fi
 
       if [ $# -ne 2 ]; then
-        abbr_error " -r: Requires exactly two arguments"
+        abbr_error " rename: Requires exactly two arguments"
         return
       fi
 
       if [ $(abbr_util_exists $1) != true ]; then
-        abbr_error " -r: No $type abbreviation $1 exists"
+        abbr_error " rename: No $type abbreviation $1 exists"
         return
       fi
 
       if [ $(abbr_util_exists $2) = true ]; then
-        abbr_error " -r: A $type abbreviation $2 already exists"
+        abbr_error " rename: A $type abbreviation $2 already exists"
       else
         abbr_rename_modify $1 $2
       fi
@@ -426,7 +426,7 @@ function abbr() {
           abbr_util_add "$2" "${ZSH_ABBR_GLOBALS[$1]}"
           unset "ZSH_ABBR_GLOBALS[${(b)1}]"
         else
-          abbr_error " -r: No global abbreviation named $1"
+          abbr_error " rename: No global abbreviation named $1"
         fi
       else
         source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
@@ -436,14 +436,14 @@ function abbr() {
           unset "ZSH_ABBR_UNIVERSALS[${(b)1}]"
           abbr_sync_universal
         else
-          abbr_error " -r: No universal abbreviation named $1"
+          abbr_error " rename: No universal abbreviation named $1"
         fi
       fi
     }
 
     function abbr_show() {
       if [ $# -gt 0 ]; then
-        abbr_error " -s: Unexpected argument"
+        abbr_error " show: Unexpected argument"
         return
       fi
 
@@ -492,7 +492,7 @@ function abbr() {
           type="global"
         fi
 
-        abbr_error " -a: A $type abbreviation $abbreviation already exists"
+        abbr_error " add: A $type abbreviation $abbreviation already exists"
         return
       fi
 
