@@ -6,10 +6,6 @@
 # Copyright (c) 2019-2020 Henry Bley-Vroman
 
 
-# References that helped in writing this
-# https://www.zsh.org/mla/users/2012/msg00014.html
-# Unsetting an associative array entry: http://www.zsh.org/mla/workers/2018/msg01078.html
-
 # CONFIGURATION
 # -------------
 
