@@ -110,7 +110,7 @@ zle -N _zsh_abbr_expand_widget
 # SHARED FUNCTIONS
 # ----------------
 
-function abbr() {
+function _zsh_abbr() {
   {
     local action_set=false
     local number_opts=0
@@ -706,3 +706,7 @@ _zsh_abbr_init
 if [ "$ZSH_ABBR_DEFAULT_BINDINGS" = true ]; then
   _zsh_abbr_bind_widgets
 fi
+
+function abbr() {
+  _zsh_abbr $*
+}
