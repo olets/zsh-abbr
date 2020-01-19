@@ -137,19 +137,21 @@ function abbr() {
 
    ${text_bold}Synopsis${text_reset}
        ${text_bold}abbr${text_reset} --add|-a [SCOPE] ABBREVIATION EXPANSION
-       ${text_bold}abbr${text_reset} --create-aliases|-c [SCOPE] [DESTINATION_FILE]
+       ${text_bold}abbr${text_reset} --create-aliases|-c [SCOPE] [DESTINATION]
        ${text_bold}abbr${text_reset} --erase|-e [SCOPE] ABBREVIATION
        ${text_bold}abbr${text_reset} --expand|-x ABBREVIATION
        ${text_bold}abbr${text_reset} --git-populate|-i [SCOPE]
-       ${text_bold}abbr${text_reset} --rename|-r [SCOPE] OLD_WORD NEW_WORD
-       ${text_bold}abbr${text_reset} --show|-s
        ${text_bold}abbr${text_reset} --list|-l
        ${text_bold}abbr${text_reset} --populate|-p [SCOPE]
+       ${text_bold}abbr${text_reset} --rename|-r [SCOPE] OLD_ABBREVIATION NEW
+       ${text_bold}abbr${text_reset} --show|-s
+
        ${text_bold}abbr${text_reset} --help|-h
+       ${text_bold}abbr${text_reset} --version|-v
 
    ${text_bold}Description${text_reset}
-       ${text_bold}abbr${text_reset} manages abbreviations - user-defined words that are
-       replaced with longer phrases after they are entered.
+       ${text_bold}abbr${text_reset} manages abbreviations - user-defined words
+       that are replaced with longer phrases after they are entered.
 
        For example, a frequently-run command like git checkout can be
        abbreviated to gco. After entering gco and pressing [${text_bold}Space${text_reset}],
@@ -175,15 +177,19 @@ function abbr() {
        o --expand ABBREVIATION or -x ABBREVIATION Returns the abbreviation
          ABBREVIATION's EXPANSION.
 
-       o --git-populate or -i Adds abbreviations for all git aliases. WORDs are
-         prefixed with g, EXPANSIONs are prefixed with git[Space].
+       o --git-populate or -i Adds abbreviations for all git aliases.
+         ABBREVIATIONs are prefixed with g, EXPANSIONs are prefixed
+         with git[Space].
 
-       o --list -l Lists all abbreviated words.
+       o --help or -h Show this documentation.
+
+       o --list -l Lists all ABBREVIATIONs.
 
        o --populate or -p Adds abbreviations for all aliases.
 
-       o --rename OLD_WORD NEW_WORD or -r OLD_WORD NEW_WORD Renames an
-         abbreviation, from OLD_WORD to NEW_WORD.
+       o --rename OLD_ABBREVIATION NEW_ABBREVIATION
+         or -r OLD_ABBREVIATION NEW_ABBREVIATION Renames an abbreviation,
+         from OLD_ABBREVIATION to NEW_ABBREVIATION.
 
        o --show or -s Show all abbreviations in a manner suitable for export
          and import.
