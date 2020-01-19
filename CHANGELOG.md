@@ -1,3 +1,23 @@
+# v2.0.0
+
+
+### Breaking changes
+
+* **universals:** change variable name ([7ee831b](https://github.com/olets/zsh-abbr/commit/7ee831bbf4ef3629e75bf034560122609ed2b602))
+
+
+### Bug Fixes
+
+* **expansion widget:** abbreviations can end in n or t ([16feffe](https://github.com/olets/zsh-abbr/commit/16feffe826ba5b90b20bc8717a38422b5e63f4c2))
+
+
+### Features
+
+* **erase-all-globals:** new option ([f7b1bee](https://github.com/olets/zsh-abbr/commit/f7b1beeb8cd9d1e9ac675360fe9f8cd86b6edb71))
+* **version:** new option ([206f521](https://github.com/olets/zsh-abbr/commit/206f521b7562ca4b91180d889a690a36c0bb2e26))
+* **universals:** change default path ([c7ba374](https://github.com/olets/zsh-abbr/commit/c7ba3745e8b51dd1e70cb61031182d0334e0c811))
+
+
 # v1.2.0
 
 
@@ -21,6 +41,7 @@
 * **rename:** error if old doesn't exist or new already exists ([a030670](https://github.com/olets/zsh-abbr/commit/a0306700c79b486cda6780dbfbcd33b4799bf223))
 
 
+
 # v1.1.0
 
 Bug fixes and
@@ -30,6 +51,7 @@ Bug fixes and
 
 * **git-populate:** new option ([28ea419](https://github.com/olets/zsh-abbr/commit/28ea4198ba28a8f764e4685d233cc9b10268623f))
 * **populate:** option to create abbreviations from aliases ([fbbf9a6](https://github.com/olets/zsh-abbr/commit/fbbf9a6753bf3aa31625d006c4992a7f0cb21386))
+
 
 
 # v1.0.0
