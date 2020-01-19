@@ -14,8 +14,7 @@ Run `abbr --help` (or `abbr -h`) for documentation.
 
 1. [Installation](#installation)
 1. [Quick Start](#quick-start)
-1. [Scopes](#scopes)
-1. [Options](#options)
+1. [Usage](#usage)
 1. [Configuration](#configuration)
 1. [Uninstalling](#uninstalling)
 
@@ -88,11 +87,31 @@ If running `abbr` gives an error "zsh: permission denied: abbr", reload zsh:
 % abbr -i # creates abbreviations from all Git aliases, adding 'g' prefix
 ```
 
-## Scopes
+## Usage
+
+```
+abbr <SCOPE> <OPTION> <ANY OPTION ARGUMENTS>
+```
+
+or
+
+```
+abbr <OPTION> <SCOPE> <ANY OPTION ARGUMENTS>
+```
+
+### Scope
+
+```
+[(--global | -g) | (--universal | -U)]
+```
 
 A given abbreviation can be made available in the current zsh session (i.e. in the current terminal) —these are called *global* abbreviations— or to all terminals —these are called *universal* abbreviations.
 
-## Options
+Newly added universal abbreviations are available to all open sessions immediately.
+
+Default is universal.
+
+### Options
 
 ```
 abbr [(--add | -a)
@@ -107,21 +126,19 @@ abbr [(--add | -a)
       | (--rename | -r)
       | (--show | -s)
      ]
-     [(--global | -g)
-      | (--universal | -U)]
 ```
 
 `zsh-abbr` has options to add, rename, and erase abbreviations; to add abbreviations for every alias or Git alias; to list the available abbreviations with or without their expansions; and to create aliases from abbreviations.
 
-The default when `abbr` is run with no arguments is to show all abbreviations and their expansions.
+`abbr` with no arguments is shorthand for `abbr --show`. `abbr ...` with arguments and no flags is shorthand for `abbr --add ...`.
 
-### Add
+#### Add
 
 ```
-abbr (--add | -a) [(--global | -g) | (--Universal | -U)] WORD EXPANSION
+abbr [(--add | -a)] WORD EXPANSION
 ```
 
-Add a new abbreviation. If the **--global** scope is used, the abbreviation will only be available in the current session. Otherwise, or if the **--Universal** scope is used, the abbreviation will be immediately available to all open and future sessions.
+Add a new abbreviation. To add a global abbreviation, use **--global**. Othewise, or if the **--Universal** scope is used, the new abbreviation will be universal.
 
 ```shell
 % abbr --add gcm git checkout master
@@ -141,10 +158,10 @@ The following are equivalent:
 % abbr gcm git checkout master
 ```
 
-### Create Aliases
+#### Create Aliases
 
 ```
-abbr (--create-aliases | -c) [(--global | -g) | (--Universal | -U)] [DESTINATION]
+abbr (--create-aliases | -c) [DESTINATION]
 ```
 
 Export abbreviations as aliases declarations. To export global abbreviations, use  **--global**. Othewise, or if the **--Universal** scope is used, universal abbreviations are exported.
@@ -168,13 +185,13 @@ alias -g g='git'
 alias -g g='git'
 ```
 
-### Erase
+#### Erase
 
 ```
-abbr (--erase | -e) [(--global | -g) | (--Universal | -U)] WORD
+abbr (--erase | -e) WORD
 ```
 
-Erase an abbreviation. Specify **--global** scope to erase a global abbreviation.
+Erase an abbreviation. Specify **--global** scope to erase a global abbreviation. Othewise, or if the **--Universal** scope is used, a universal abbreviation will be erased.
 
 ```shell
 % abbr --add gcm git commit master
@@ -190,7 +207,7 @@ gimme cookie monster
 Already on 'master'
 ```
 
-### Expand
+#### Expand
 
 ```
 abbr (--expand | -x) WORD
@@ -204,13 +221,13 @@ Output the WORD's EXPANSION. Useful in scripting.
 git checkout
 ```
 
-### Git-Populate
+#### Git Populate
 
 ```
-abbr (--git-populate | -i) [(--global | -g) | (--Universal | -U)]
+abbr (--git-populate | -i)
 ```
 
-Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--global** scope to create global abbreviations.
+Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--global** scope to create global abbreviations. Othewise, or if the **--Universal** scope is used, the Git abbreviations will be universal.
 
 This command is useful for migrating from aliases to abbreviations.
 
@@ -227,7 +244,7 @@ This command is useful for migrating from aliases to abbreviations.
 
 Note for users migrating from Oh-My-Zsh: [OMZ's Git aliases are shell aliases](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh), not aliases in the Git config. To add abbreviations for them, use **Populate**.
 
-### List
+#### List
 
 ```shell
 abbr (--list|-l)
@@ -249,17 +266,17 @@ a
 b
 ```
 
-### Populate
+#### Populate
 
 ```
-abbr (--git-populate | -i) [(--global | -g) | (--Universal | -U)]
+abbr (--git-populate | -i)
 ```
 
-Add abbreviations for every alias available in the current session. Use the **--global** scope to create global abbreviations.
+Add abbreviations for every alias available in the current session. Use the **--global** scope to create global abbreviations. Othewise, or if the **--Universal** scope is used, the abbreviations will be universal.
 
 This command is useful for migrating from aliases to abbreviations.
 
-See also **Git-Populate**.
+See also **Git Populate**.
 
 ```shell
 % cat ~/.zshrc
@@ -275,13 +292,13 @@ alias -g d='bin/deploy'
 % d[Space] # expands to bin/deploy
 ```
 
-### Rename
+#### Rename
 
 ```
-abbr (--rename | -r) [(--global | -g) | (--Universal | -U)] OLD_WORD NEW_WORD
+abbr (--rename | -r) OLD_WORD NEW_WORD
 ```
 
-Rename an abbreviation. Use the **--global** scope to rename a global abbreviation.
+Rename an abbreviation. Use the **--global** scope to rename a global abbreviation. Othewise, or if the **--Universal** scope is used, a universal abbreviation will be renamed.
 
 ```shell
 % abbr --add gcm git checkout master
@@ -292,13 +309,13 @@ Rename an abbreviation. Use the **--global** scope to rename a global abbreviati
 % gm[Space] # expands to git checkout master
 ```
 
-### Show
+#### Show
 
 ```
 abbr [(--show|-s)]
 ```
 
-Show all the abbreviations available in the current session, along with their expansions. Global abbreviations are marked `-g` and follow universal abbreviations, which are marked `-U`.
+Show all the abbreviations available in the current session, along with their expansions. _**Show** does not take a scope._ Global abbreviations are marked `-g` and follow universal abbreviations, which are marked `-U`.
 
 ```shell
 % abbr --add gcm git checkout master
