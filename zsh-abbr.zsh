@@ -91,7 +91,7 @@ function _zsh_abbr_expansion() {
 function _zsh_abbr_expand_widget() {
   local abbreviation
   local expansion
-  abbreviation="${LBUFFER/*[ ,;|&\n\t]/}"
+  abbreviation="${LBUFFER/*[ ,;|&]/}"
   expansion=$(_zsh_abbr_expansion "$abbreviation")
 
   if [[ -n "$expansion" ]]; then
