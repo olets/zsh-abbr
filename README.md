@@ -342,7 +342,9 @@ ZSH_ABBR_UNIVERSALS_PATH="path/to/my/universal/abbreviations"
 # load zsh-abbr
 ```
 
-Note that the default file is created the first time zsh-abbr is run. If you customize the path, you may want to delete the default file or even the default zsh-abbr config directory.
+The default file is created the first time zsh-abbr is run. If you customize the path, you may want to delete the default file or even the default zsh-abbr config directory.
+
+_Note: order in the file will not necessarily be preserved, as zsh does not order associative arrays._
 
 ### Bindings
 
