@@ -138,7 +138,7 @@ abbr [(--add | -a)
 abbr [(--add | -a)] WORD EXPANSION
 ```
 
-Add a new abbreviation. To add a global abbreviation, use **--global**. Othewise, or if the **--Universal** scope is used, the new abbreviation will be universal.
+Add a new abbreviation. To add a global abbreviation, use **--global**. Othewise, or if the **--universal** scope is used, the new abbreviation will be universal.
 
 ```shell
 % abbr --add gcm git checkout master
@@ -149,9 +149,9 @@ Add a new abbreviation. To add a global abbreviation, use **--global**. Othewise
 The following are equivalent:
 
 ```shell
-% abbr --add --Universal gcm git checkout master
-% abbr -a --Universal gcm git checkout master
-% abbr --Universal gcm git checkout master
+% abbr --add --universal gcm git checkout master
+% abbr -a --universal gcm git checkout master
+% abbr --universal gcm git checkout master
 % abbr --add -U gcm git checkout master
 % abbr -a -U gcm git checkout master
 % abbr -U gcm git checkout master
@@ -164,7 +164,7 @@ The following are equivalent:
 abbr (--create-aliases | -c) [DESTINATION]
 ```
 
-Export abbreviations as aliases declarations. To export global abbreviations, use  **--global**. Othewise, or if the **--Universal** scope is used, universal abbreviations are exported.
+Export abbreviations as aliases declarations. To export global abbreviations, use  **--global**. Othewise, or if the **--universal** scope is used, universal abbreviations are exported.
 
 ```shell
 % abbr --add gcm git checkout master
@@ -191,7 +191,7 @@ alias -g g='git'
 abbr (--erase | -e) WORD
 ```
 
-Erase an abbreviation. Specify **--global** scope to erase a global abbreviation. Othewise, or if the **--Universal** scope is used, a universal abbreviation will be erased.
+Erase an abbreviation. Specify **--global** scope to erase a global abbreviation. Othewise, or if the **--universal** scope is used, a universal abbreviation will be erased.
 
 ```shell
 % abbr --add gcm git commit master
@@ -227,7 +227,7 @@ git checkout
 abbr (--git-populate | -i)
 ```
 
-Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--global** scope to create global abbreviations. Othewise, or if the **--Universal** scope is used, the Git abbreviations will be universal.
+Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--global** scope to create global abbreviations. Othewise, or if the **--universal** scope is used, the Git abbreviations will be universal.
 
 This command is useful for migrating from aliases to abbreviations.
 
@@ -272,7 +272,7 @@ b
 abbr (--git-populate | -i)
 ```
 
-Add abbreviations for every alias available in the current session. Use the **--global** scope to create global abbreviations. Othewise, or if the **--Universal** scope is used, the abbreviations will be universal.
+Add abbreviations for every alias available in the current session. Use the **--global** scope to create global abbreviations. Othewise, or if the **--universal** scope is used, the abbreviations will be universal.
 
 This command is useful for migrating from aliases to abbreviations.
 
@@ -298,7 +298,7 @@ alias -g d='bin/deploy'
 abbr (--rename | -r) OLD_WORD NEW_WORD
 ```
 
-Rename an abbreviation. Use the **--global** scope to rename a global abbreviation. Othewise, or if the **--Universal** scope is used, a universal abbreviation will be renamed.
+Rename an abbreviation. Use the **--global** scope to rename a global abbreviation. Othewise, or if the **--universal** scope is used, a universal abbreviation will be renamed.
 
 ```shell
 % abbr --add gcm git checkout master
