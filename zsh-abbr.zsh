@@ -42,20 +42,20 @@ function _zsh_abbr_init() {
 
 function _zsh_abbr_bind_widgets() {
   # spacebar expands abbreviations
-  zle -N _zsh_expand_space
-  bindkey " " _zsh_expand_space
+  zle -N _zsh_abbr_expand_space
+  bindkey " " _zsh_abbr_expand_space
 
   # control-spacebar is a normal space
   bindkey "^ " magic-space
 
   # when running an incremental search,
   # spacebar behaves normally and control-space expands abbreviations
-  bindkey -M isearch "^ " _zsh_expand_space
+  bindkey -M isearch "^ " _zsh_abbr_expand_space
   bindkey -M isearch " " magic-space
 
   # enter key expands and accepts abbreviations
-  zle -N _zsh_expand_accept
-  bindkey "^M" _zsh_expand_accept
+  zle -N _zsh_abbr_expand_accept
+  bindkey "^M" _zsh_abbr_expand_accept
 }
 
 
