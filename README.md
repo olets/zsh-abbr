@@ -1,6 +1,6 @@
 # zsh-abbr ![GitHub release (latest by date)](https://img.shields.io/github/v/release/olets/zsh-abbr)
 
-An enhanced [zsh](http://www.zsh.org/) port of [fish shell](http://www.fishshell.com/)'s abbreviations.
+zsh abbreviations — an enhanced [zsh](http://www.zsh.org/) port of [fish shell](http://www.fishshell.com/)'s `abbr`'s auto-expanding abbreviations.
 
 **abbr** manages abbreviations - user-defined words that are replaced with longer phrases after they are entered.
 
