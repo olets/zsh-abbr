@@ -112,29 +112,26 @@ zle -N _zsh_abbr_expand_widget
 
 function abbr() {
   {
-    local version="zsh-abbr version 1.2.0"
+    local action_set=false
+    local number_opts=0
+    local opt_add=false
+    local opt_create_aliases=false
+    local opt_erase=false
+    local opt_expand=false
+    local opt_git_populate=false
+    local opt_global=false
+    local opt_list=false
+    local opt_rename=false
+    local opt_show=false
+    local opt_populate=false
+    local opt_universal=false
+    local opt_version=false
     local release_date="January 12 2020"
-
+    local scope_set=false
+    local should_exit=false
     local text_bold="\\033[1m"
     local text_reset="\\033[0m"
-
-    local abbr_action_set=false
-    local abbr_number_opts=0
-    local abbr_opt_add=false
-    local abbr_opt_create_aliases=false
-    local abbr_opt_erase=false
-    local abbr_opt_expand=false
-    local abbr_opt_git_populate=false
-    local abbr_opt_global=false
-    local abbr_opt_list=false
-    local abbr_opt_rename=false
-    local abbr_opt_show=false
-    local abbr_opt_populate=false
-    local abbr_opt_universal=false
-    local abbr_opt_version=false
-    local abbr_scope_set=false
-    local abbr_should_exit=false
-    local abbr_usage="
+    local util_usage="
        ${text_bold}abbr${text_reset}: fish shell-like abbreviations for zsh
 
    ${text_bold}Synopsis${text_reset}
@@ -278,30 +275,27 @@ function abbr() {
        as are the scope options -g and -U.
 
        $version $release_date"
+    local version="zsh-abbr version 1.2.0"
 
-    function abbr_add() {
+    function add() {
       if [[ $# -lt 2 ]]; then
-        abbr_error " add: Requires at least two arguments"
+        util_error " add: Requires at least two arguments"
         return
       fi
 
-      abbr_util_add $* # must not be quoted
+      util_add $* # must not be quoted
     }
 
-    function abbr_bad_options() {
-      abbr_error ": Illegal combination of options"
-    }
-
-    function abbr_create_aliases() {
+    function create_aliases() {
       local source
       local alias_definition
 
       if [ $# -gt 1 ]; then
-        abbr_error " create-aliases: Unexpected argument"
+        util_error " create-aliases: Unexpected argument"
         return
       fi
 
-      if $abbr_opt_global; then
+      if $opt_global; then
         source=ZSH_ABBR_GLOBALS
       else
         source=ZSH_ABBR_UNIVERSALS
@@ -318,20 +312,20 @@ function abbr() {
       done
     }
 
-    function abbr_erase() {
+    function erase() {
       if [ $# -gt 1 ]; then
-        abbr_error " erase: Expected one argument"
+        util_error " erase: Expected one argument"
         return
       elif [ $# -lt 1 ]; then
-        abbr_error " erase: Erase needs a variable name"
+        util_error " erase: Erase needs a variable name"
         return
       fi
 
-      if $abbr_opt_global; then
+      if $opt_global; then
         if (( ${+ZSH_ABBR_GLOBALS[$1]} )); then
           unset "ZSH_ABBR_GLOBALS[${(b)1}]"
         else
-          abbr_error " erase: No global abbreviation named $1"
+          util_error " erase: No global abbreviation named $1"
           return
         fi
       else
@@ -339,34 +333,29 @@ function abbr() {
 
         if (( ${+ZSH_ABBR_UNIVERSALS[$1]} )); then
           unset "ZSH_ABBR_UNIVERSALS[${(b)1}]"
-          abbr_sync_universal
+          util_sync_universal
         else
-          abbr_error " erase: No universal abbreviation named $1"
+          util_error " erase: No universal abbreviation named $1"
           return
         fi
       fi
     }
 
-    function abbr_error() {
-      printf "abbr%s\\nFor help run abbr --help\\n" "$@"
-      abbr_should_exit=true
-    }
-
-    function abbr_expand() {
+    function expand() {
       if [ $# -ne 1 ]; then
-        printf "abbr_expand requires exactly one argument\\n"
+        printf "expand requires exactly one argument\\n"
         return
       fi
 
       _zsh_abbr_expansion "$1"
     }
 
-    function abbr_git_populate() {
+    function git_populate() {
       local git_aliases
       local abbr_git_aliases
 
       if [ $# -gt 0 ]; then
-        abbr_error " git-populate: Unexpected argument"
+        util_error " git-populate: Unexpected argument"
         return
       fi
 
@@ -377,13 +366,13 @@ function abbr() {
         key="${$(echo $i | awk '{print $1;}')##alias.}"
         value="${$(echo $i)##alias.$key }"
 
-        abbr_util_add "g$key" "git ${value# }"
+        util_add "g$key" "git ${value# }"
       done
     }
 
-    function abbr_list() {
+    function list() {
       if [ $# -gt 0 ]; then
-        abbr_error " list: Unexpected argument"
+        util_error " list: Unexpected argument"
         return
       fi
 
@@ -393,68 +382,56 @@ function abbr() {
       print -l ${(k)ZSH_ABBR_GLOBALS}
     }
 
-    function abbr_populate() {
+    function populate() {
       if [ $# -gt 0 ]; then
-        abbr_error " populate: Unexpected argument"
+        util_error " populate: Unexpected argument"
         return
       fi
 
       for abbreviation expansion in ${(kv)aliases}; do
-        abbr_util_add "$abbreviation" "${expansion# }"
+        util_add "$abbreviation" "${expansion# }"
       done
     }
 
-    function abbr_rename() {
+    function print_version() {
+      if [ $# -gt 0 ]; then
+        util_error " version: Unexpected argument"
+        return
+      fi
+
+      printf "%s\\n" "$version"
+    }
+
+    function rename() {
       local source type
       source="ZSH_ABBR_GLOBALS"
       type="universal"
 
-      if $abbr_opt_global; then
+      if $opt_global; then
         source="ZSH_ABBR_GLOBALS"
         type="global"
       fi
 
       if [ $# -ne 2 ]; then
-        abbr_error " rename: Requires exactly two arguments"
+        util_error " rename: Requires exactly two arguments"
         return
       fi
 
-      if [ $(abbr_util_exists $1) != true ]; then
-        abbr_error " rename: No $type abbreviation $1 exists"
+      if [ $(util_exists $1) != true ]; then
+        util_error " rename: No $type abbreviation $1 exists"
         return
       fi
 
-      if [ $(abbr_util_exists $2) = true ]; then
-        abbr_error " rename: A $type abbreviation $2 already exists"
+      if [ $(util_exists $2) = true ]; then
+        util_error " rename: A $type abbreviation $2 already exists"
       else
-        abbr_rename_modify $1 $2
+        util_rename_modify $1 $2
       fi
     }
 
-    function abbr_rename_modify {
-      if $abbr_opt_global; then
-        if (( ${+ZSH_ABBR_GLOBALS[$1]} )); then
-          abbr_util_add "$2" "${ZSH_ABBR_GLOBALS[$1]}"
-          unset "ZSH_ABBR_GLOBALS[${(b)1}]"
-        else
-          abbr_error " rename: No global abbreviation named $1"
-        fi
-      else
-        source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
-
-        if (( ${+ZSH_ABBR_UNIVERSALS[$1]} )); then
-          abbr_util_add "$2" "${ZSH_ABBR_UNIVERSALS[$1]}"
-          unset "ZSH_ABBR_UNIVERSALS[${(b)1}]"
-          abbr_sync_universal
-        else
-          abbr_error " rename: No universal abbreviation named $1"
-        fi
-      fi
-    }
-
-    function abbr_show() {
+    function show() {
       if [ $# -gt 0 ]; then
-        abbr_error " show: Unexpected argument"
+        util_error " show: Unexpected argument"
         return
       fi
 
@@ -469,7 +446,83 @@ function abbr() {
       done
     }
 
-    function abbr_sync_universal() {
+    function util_add() {
+      local abbreviation
+      local expansion
+      abbreviation="$1"
+      shift
+      expansion="$*"
+
+      if [ $(util_exists $abbreviation) = true ]; then
+        local type
+        type="universal"
+
+        if $opt_global; then
+          type="global"
+        fi
+
+        util_error " add: A $type abbreviation $abbreviation already exists"
+        return
+      fi
+
+      if $opt_global; then
+        ZSH_ABBR_GLOBALS[$abbreviation]="$expansion"
+      else
+        source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
+        ZSH_ABBR_UNIVERSALS[$abbreviation]="$expansion"
+        util_sync_universal
+      fi
+    }
+
+    function util_bad_options() {
+      util_error ": Illegal combination of options"
+    }
+
+    function util_error() {
+      printf "abbr%s\\nFor help run abbr --help\\n" "$@"
+      should_exit=true
+    }
+
+    function util_exists() {
+      local abbreviation
+      local exists
+      exists=false
+
+      if $opt_global; then
+        abbreviation="${ZSH_ABBR_GLOBALS[(I)$1]}"
+      else
+        abbreviation="${ZSH_ABBR_UNIVERSALS[(I)$1]}"
+      fi
+
+      if [[ -n "$abbreviation" ]]; then
+        exists=true
+      fi
+
+      echo "$exists"
+    }
+
+    function util_rename_modify {
+      if $opt_global; then
+        if (( ${+ZSH_ABBR_GLOBALS[$1]} )); then
+          util_add "$2" "${ZSH_ABBR_GLOBALS[$1]}"
+          unset "ZSH_ABBR_GLOBALS[${(b)1}]"
+        else
+          util_error " rename: No global abbreviation named $1"
+        fi
+      else
+        source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
+
+        if (( ${+ZSH_ABBR_UNIVERSALS[$1]} )); then
+          util_add "$2" "${ZSH_ABBR_UNIVERSALS[$1]}"
+          unset "ZSH_ABBR_UNIVERSALS[${(b)1}]"
+          util_sync_universal
+        else
+          util_error " rename: No universal abbreviation named $1"
+        fi
+      fi
+    }
+
+    function util_sync_universal() {
       local abbr_universals_updated="$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"_updated
 
       typeset -p ZSH_ABBR_UNIVERSALS > "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
@@ -484,218 +537,163 @@ function abbr() {
       mv "$abbr_universals_updated" "$ZSH_ABBR_UNIVERSALS_PATH"
     }
 
-    function abbr_usage() {
-      print "$abbr_usage\\n"
-    }
-
-    function abbr_util_add() {
-      local abbreviation
-      local expansion
-      abbreviation="$1"
-      shift
-      expansion="$*"
-
-      if [ $(abbr_util_exists $abbreviation) = true ]; then
-        local type
-        type="universal"
-
-        if $abbr_opt_global; then
-          type="global"
-        fi
-
-        abbr_error " add: A $type abbreviation $abbreviation already exists"
-        return
-      fi
-
-      if $abbr_opt_global; then
-        ZSH_ABBR_GLOBALS[$abbreviation]="$expansion"
-      else
-        source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
-        ZSH_ABBR_UNIVERSALS[$abbreviation]="$expansion"
-        abbr_sync_universal
-      fi
-    }
-
-    function abbr_util_exists() {
-      local abbreviation
-      local exists
-      exists=false
-
-      if $abbr_opt_global; then
-        abbreviation="${ZSH_ABBR_GLOBALS[(I)$1]}"
-      else
-        abbreviation="${ZSH_ABBR_UNIVERSALS[(I)$1]}"
-      fi
-
-      if [[ -n "$abbreviation" ]]; then
-        exists=true
-      fi
-
-      echo "$exists"
-    }
-
-    function abbr_version() {
-      if [ $# -gt 0 ]; then
-        abbr_error " version: Unexpected argument"
-        return
-      fi
-
-      printf "%s\\n" "$version"
+    function util_usage() {
+      print "$util_usage\\n"
     }
 
     for opt in "$@"; do
-      if $abbr_should_exit; then
-        abbr_should_exit=false
+      if $should_exit; then
+        should_exit=false
         return
       fi
 
       case "$opt" in
         "--add"|\
         "-a")
-          [ "$abbr_action_set" = true ] && abbr_bad_options
-          abbr_action_set=true
-          abbr_opt_add=true
-          ((abbr_number_opts++))
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_add=true
+          ((number_opts++))
           ;;
         "--create-aliases"|\
         "-c")
-          [ "$abbr_action_set" = true ] && abbr_bad_options
-          abbr_action_set=true
-          abbr_opt_create_aliases=true
-          ((abbr_number_opts++))
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_create_aliases=true
+          ((number_opts++))
           ;;
         "--erase"|\
         "-e")
-          [ "$abbr_action_set" = true ] && abbr_bad_options
-          abbr_action_set=true
-          abbr_opt_erase=true
-          ((abbr_number_opts++))
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_erase=true
+          ((number_opts++))
           ;;
         "--expand"|\
         "-x")
-          [ "$abbr_action_set" = true ] && abbr_bad_options
-          abbr_action_set=true
-          abbr_opt_expand=true
-          ((abbr_number_opts++))
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_expand=true
+          ((number_opts++))
           ;;
         "--global"|\
         "-g")
-          [ "$abbr_scope_set" = true ] && abbr_bad_options
-          abbr_opt_global=true
-          ((abbr_number_opts++))
+          [ "$scope_set" = true ] && util_bad_options
+          opt_global=true
+          ((number_opts++))
           ;;
         "--help"|\
         "-h")
-          abbr_usage
-          abbr_should_exit=true
+          util_usage
+          should_exit=true
           ;;
         "--git-populate"|\
         "-i")
-          [ "$abbr_action_set" = true ] && abbr_bad_options
-          abbr_action_set=true
-          abbr_opt_git_populate=true
-          ((abbr_number_opts++))
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_git_populate=true
+          ((number_opts++))
           ;;
         "--list"|\
         "-l")
-          [ "$abbr_action_set" = true ] && abbr_bad_options
-          abbr_action_set=true
-          abbr_opt_list=true
-          ((abbr_number_opts++))
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_list=true
+          ((number_opts++))
           ;;
         "--populate"|\
         "-p")
-          [ "$abbr_action_set" = true ] && abbr_bad_options
-          abbr_action_set=true
-          abbr_opt_populate=true
-          ((abbr_number_opts++))
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_populate=true
+          ((number_opts++))
           ;;
         "--rename"|\
         "-r")
-          [ "$abbr_action_set" = true ] && abbr_bad_options
-          abbr_action_set=true
-          abbr_opt_rename=true
-          ((abbr_number_opts++))
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_rename=true
+          ((number_opts++))
           ;;
         "--show"|\
         "-s")
-          [ "$abbr_action_set" = true ] && abbr_bad_options
-          abbr_action_set=true
-          abbr_opt_show=true
-          ((abbr_number_opts++))
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_show=true
+          ((number_opts++))
           ;;
         "--universal"|\
         "-U")
-          [ "$abbr_scope_set" = true ] && abbr_bad_options
-          ((abbr_number_opts++))
+          [ "$scope_set" = true ] && util_bad_options
+          ((number_opts++))
           ;;
         "--version"|\
         "-v")
-          [ "$abbr_action_set" = true ] && abbr_bad_options
-          abbr_action_set=true
-          abbr_opt_version=true
-          ((abbr_number_opts++))
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_version=true
+          ((number_opts++))
           ;;
         "-"*)
-          abbr_error ": Unknown option '$opt'"
+          util_error ": Unknown option '$opt'"
           ;;
       esac
     done
 
-    if $abbr_should_exit; then
-      abbr_should_exit=false
+    if $should_exit; then
+      should_exit=false
       return
     fi
 
-    shift $abbr_number_opts
+    shift $number_opts
 
-    if ! $abbr_opt_global; then
-      abbr_opt_universal=true
+    if ! $opt_global; then
+      opt_universal=true
     fi
 
-    if $abbr_opt_add; then
-       abbr_add "$@"
-    elif $abbr_opt_create_aliases; then
-      abbr_create_aliases "$@"
-    elif $abbr_opt_erase; then
-      abbr_erase "$@"
-    elif $abbr_opt_expand; then
-      abbr_expand "$@"
-    elif $abbr_opt_git_populate; then
-      abbr_git_populate "$@"
-    elif $abbr_opt_list; then
-      abbr_list "$@"
-    elif $abbr_opt_populate; then
-      abbr_populate "$@"
-    elif $abbr_opt_rename; then
-      abbr_rename "$@"
-    elif $abbr_opt_version; then
-      abbr_version "$@"
+    if $opt_add; then
+       add "$@"
+    elif $opt_create_aliases; then
+      create_aliases "$@"
+    elif $opt_erase; then
+      erase "$@"
+    elif $opt_expand; then
+      expand "$@"
+    elif $opt_git_populate; then
+      git_populate "$@"
+    elif $opt_list; then
+      list "$@"
+    elif $opt_populate; then
+      populate "$@"
+    elif $opt_rename; then
+      rename "$@"
+    elif $opt_version; then
+      print_version "$@"
 
     # default if arguments are provided
-    elif ! $abbr_opt_show && [ $# -gt 0 ]; then
-       abbr_add "$@"
+    elif ! $opt_show && [ $# -gt 0 ]; then
+       add "$@"
     # default if no argument is provided
     else
-      abbr_show "$@"
+      show "$@"
     fi
   } always {
-    unfunction -m "abbr_add"
-    unfunction -m "abbr_create_aliases"
-    unfunction -m "abbr_erase"
-    unfunction -m "abbr_error"
-    unfunction -m "abbr_expand"
-    unfunction -m "abbr_git_populate"
-    unfunction -m "abbr_list"
-    unfunction -m "abbr_populate"
-    unfunction -m "abbr_rename"
-    unfunction -m "abbr_rename_modify"
-    unfunction -m "abbr_show"
-    unfunction -m "abbr_sync_universal"
-    unfunction -m "abbr_usage"
-    unfunction -m "abbr_util_add"
-    unfunction -m "abbr_util_exists"
-    unfunction -m "abbr_version"
+    unfunction -m "add"
+    unfunction -m "create_aliases"
+    unfunction -m "erase"
+    unfunction -m "expand"
+    unfunction -m "git_populate"
+    unfunction -m "list"
+    unfunction -m "populate"
+    unfunction -m "print_version"
+    unfunction -m "rename"
+    unfunction -m "show"
+    unfunction -m "util_add"
+    unfunction -m "util_error"
+    unfunction -m "util_exists"
+    unfunction -m "util_rename_modify"
+    unfunction -m "util_sync_universal"
+    unfunction -m "util_usage"
   }
 }
 
