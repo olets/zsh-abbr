@@ -17,7 +17,7 @@ ZSH_ABBR_DEFAULT_BINDINGS="${ZSH_ABBR_DEFAULT_BINDINGS=true}"
 # FUNCTIONS
 # ---------
 
-function _zsh_abbr() {
+_zsh_abbr() {
   {
     local action_set=false
     local number_opts=0
@@ -630,7 +630,7 @@ function _zsh_abbr() {
   }
 }
 
-function _zsh_abbr_bind_widgets() {
+_zsh_abbr_bind_widgets() {
   # spacebar expands abbreviations
   zle -N _zsh_abbr_expand_space
   bindkey " " _zsh_abbr_expand_space
@@ -648,18 +648,18 @@ function _zsh_abbr_bind_widgets() {
   bindkey "^M" _zsh_abbr_expand_accept
 }
 
-function _zsh_abbr_expand_accept() {
+_zsh_abbr_expand_accept() {
   zle _zsh_abbr_expand_widget
   zle autosuggest-clear # if using zsh-autosuggestions, clear any suggestion
   zle accept-line
 }
 
-function _zsh_abbr_expand_space() {
+_zsh_abbr_expand_space() {
   zle _zsh_abbr_expand_widget
   LBUFFER="$LBUFFER "
 }
 
-function _zsh_abbr_expansion() {
+_zsh_abbr_expansion() {
   local expansion
   expansion="${ZSH_ABBR_GLOBALS[$1]}"
 
@@ -671,7 +671,7 @@ function _zsh_abbr_expansion() {
   echo "$expansion"
 }
 
-function _zsh_abbr_init() {
+_zsh_abbr_init() {
   typeset -gA ZSH_ABBR_UNIVERSALS
   typeset -gA ZSH_ABBR_GLOBALS
   ZSH_ABBR_UNIVERSALS=()
@@ -699,7 +699,7 @@ function _zsh_abbr_init() {
 # WIDGETS
 # -------
 
-function _zsh_abbr_expand_widget() {
+_zsh_abbr_expand_widget() {
   local current_word
   local expansion
 
@@ -728,6 +728,6 @@ fi
 # SHARE
 # -----
 
-function abbr() {
+abbr() {
   _zsh_abbr $*
 }
