@@ -6,7 +6,7 @@ zsh abbreviations — an enhanced [zsh](http://www.zsh.org/) port of [fish shell
 
 For example, a frequently-run command like `git checkout` can be abbreviated to `gco`. After entering `gco` and pressing <kbd>Space</kbd>, the full text `git checkout` will appear in the command line. To prevent expansion, press <kbd>Ctrl</kbd><kbd>Space</kbd> in place of <kbd>Space</kbd>. Pressing <kbd>Enter</kbd> after an abbreviation will expand the abbreviation and accept the current line.
 
-Abbreviations are expanded whether or not they are the first word on the line. Cross-session abbreviations are stored in the clear in a plaintext configuration file.
+Abbreviations are expanded whether or not they are the first word on the line, like zsh's global aliases. Cross-session abbreviations are stored in the clear in a plaintext configuration file.
 
 Run `abbr --help` (or `abbr -h`) for documentation.
 
@@ -177,7 +177,7 @@ The following are equivalent:
 % abbr gcm git checkout master
 ```
 
-The ABBREVIATION cannot contain a space but all other characters are legal.
+See [Delimiters](#delimiters) for details on what characters are legal in the ABBREVIATION.
 
 To include a hyphen (-) in an EXPANSION, wrap the EXPANSION in double quotation marks:
 
@@ -407,6 +407,30 @@ bindkey "^A" _zsh_abbr_expand_space
 # -- snip --
 # load zsh-abbr
 ```
+
+### Delimiters
+
+By default, IFS whitespace and the characters comma (`,`), semicolon (`;`), pipe (`|`), ampersand (`&`) are ABBREVIATION-delimiting prefixes. That means that given the abbreviation `m my abbreviation` the following will expand:
+
+```shell
+% x,m[Space]
+% x;m[Space]
+% x|m[Space]
+% x&m[Space]
+% x[Space]m[Space]
+% x[Return]
+m[Space]
+% x[Tab]m[Space]
+```
+
+Accordingly, those characters are not legal in ABBREVIATIONs:
+
+```shell
+% abbr g\; test
+% g;[Space] # does not expand
+```
+
+If you want to customize the delimiting prefixes, set `ZSH_ABBR_DELIMITING_PREFIXES` to you custom match string in your `.zshrc` (can be before or after loading zsh-abbr; default is `'',;|&[:IFSSPACE:]'`).
 
 ## Uninstalling
 

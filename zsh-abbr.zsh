@@ -7,11 +7,16 @@
 # CONFIGURATION
 # -------------
 
-# File abbreviations are stored in
-ZSH_ABBR_UNIVERSALS_FILE="${ZSH_ABBR_UNIVERSALS_FILE="${HOME}/.config/zsh/universal-abbreviations"}"
 # Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
 ZSH_ABBR_DEFAULT_BINDINGS="${ZSH_ABBR_DEFAULT_BINDINGS=true}"
+
+# The non-whitespace characters which are considered a word break for purposes
+# of recognizing abbreviations.
+ZSH_ABBR_DELIMITING_PREFIXES="${ZSH_ABBR_DELIMITING_PREFIXES=',;|&[:IFSSPACE:]'}"
+
+# File abbreviations are stored in
+ZSH_ABBR_UNIVERSALS_FILE="${ZSH_ABBR_UNIVERSALS_FILE="${HOME}/.config/zsh/universal-abbreviations"}"
 
 
 # FUNCTIONS
@@ -125,6 +130,11 @@ _zsh_abbr() {
          automatically visible to other shells unless the same command is run
          in those shells.
 
+       ${text_bold}abbr${text_reset} g- \'git checkout -\'
+
+         If the EXPANSION includes a hyphen (-), the --add command\'s
+         entire EXPANSION must be quoted.
+
        ${text_bold}abbr${text_reset} -a l less
        ${text_bold}abbr${text_reset} --add l less
 
@@ -171,10 +181,8 @@ _zsh_abbr() {
          git checkout). Useful in scripting.
 
    ${text_bold}Internals${text_reset}
-       The ABBREVIATION cannot contain a space but all other characters are legal.
-
-       To include a hyphen (-) in an EXPANSION, wrap the EXPANSION in double
-       quotation marks: ${text_bold}abbr${text_reset} g- \"git checkout -\"
+       The ABBREVIATION cannot contain IFS whitespace, comma (,), semicolon (;),
+       pipe (|), or ampersand (&).
 
        Defining an abbreviation with global scope is slightly faster than
        universal scope (which is the default).
@@ -703,7 +711,7 @@ _zsh_abbr_expand_widget() {
   local current_word
   local expansion
 
-  current_word="${LBUFFER/*[,;|&[:IFSSPACE:]]/}"
+  current_word="${LBUFFER/*[$ZSH_ABBR_DELIMITING_PREFIXES]/}"
   expansion=$(_zsh_abbr_expansion "$current_word")
 
   if [[ -n "$expansion" ]]; then
