@@ -703,7 +703,7 @@ _zsh_abbr_expand_widget() {
   local current_word
   local expansion
 
-  current_word="${LBUFFER/*[ ,;|&]/}"
+  current_word="${LBUFFER/*[,;|&[:IFSSPACE:]]/}"
   expansion=$(_zsh_abbr_expansion "$current_word")
 
   if [[ -n "$expansion" ]]; then
