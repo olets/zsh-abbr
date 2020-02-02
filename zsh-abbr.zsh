@@ -11,10 +11,6 @@
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
 ZSH_ABBR_DEFAULT_BINDINGS="${ZSH_ABBR_DEFAULT_BINDINGS=true}"
 
-# The non-whitespace characters which are considered a word break for purposes
-# of recognizing abbreviations.
-ZSH_ABBR_DELIMITING_PREFIXES="${ZSH_ABBR_DELIMITING_PREFIXES=',;|&[:IFSSPACE:]'}"
-
 # File abbreviations are stored in
 ZSH_ABBR_UNIVERSALS_FILE="${ZSH_ABBR_UNIVERSALS_FILE="${HOME}/.config/zsh/universal-abbreviations"}"
 
@@ -381,6 +377,12 @@ _zsh_abbr() {
       local abbreviation
       local expansion
       abbreviation="$1"
+
+      if [ $(util_contains_delimiters $abbreviation) = true ]; then
+        util_error " add: ABBREVIATION may not contain delimiting prefixes"
+        return
+      fi
+
       shift
       expansion="$*"
 
@@ -407,6 +409,16 @@ _zsh_abbr() {
 
     function util_bad_options() {
       util_error ": Illegal combination of options"
+    }
+
+    function util_contains_delimiters() {
+      local contains
+      contains=false
+      if [[ ${=1} != $(_zsh_abbr_last_word $1) ]]; then
+        contains=true
+      fi
+
+      echo "$contains"
     }
 
     function util_error() {
@@ -662,6 +674,11 @@ _zsh_abbr_bind_widgets() {
   bindkey "^M" _zsh_abbr_expand_accept
 }
 
+_zsh_abbr_last_word() {
+  # delimited by `&&`, `|`, `;`, and whitespace
+  echo ${${1//*(\&\&|[;\|[:IFSSPACE:]])}}
+}
+
 _zsh_abbr_expand_accept() {
   zle _zsh_abbr_expand_widget
   zle autosuggest-clear # if using zsh-autosuggestions, clear any suggestion
@@ -717,7 +734,7 @@ _zsh_abbr_expand_widget() {
   local current_word
   local expansion
 
-  current_word="${LBUFFER/*[$ZSH_ABBR_DELIMITING_PREFIXES]/}"
+  current_word=$(_zsh_abbr_last_word "$LBUFFER")
   expansion=$(_zsh_abbr_expansion "$current_word")
 
   if [[ -n "$expansion" ]]; then

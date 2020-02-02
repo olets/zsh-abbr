@@ -177,12 +177,13 @@ The following are equivalent:
 % abbr gcm git checkout master
 ```
 
-See [Delimiters](#delimiters) for details on what characters are legal in the ABBREVIATION.
+A `--` may optionally follow the last option.
 
-To include a hyphen (-) in an EXPANSION, wrap the EXPANSION in double quotation marks:
+The following are not allowed in the abbreviation: `;`, `||`, `&&`, and whitespace.
 
 ```shell
-abbr g- "git checkout -"
+abbr a\;b c # will error
+abbr 'a||b' c # will error
 ```
 
 Abbreviations can also be manually added to the `ZSH_ABBR_UNIVERSALS_FILE`.
@@ -407,30 +408,6 @@ bindkey "^A" _zsh_abbr_expand_space
 # -- snip --
 # load zsh-abbr
 ```
-
-### Delimiters
-
-By default, IFS whitespace and the characters comma (`,`), semicolon (`;`), pipe (`|`), ampersand (`&`) are ABBREVIATION-delimiting prefixes. That means that given the abbreviation `m my abbreviation` the following will expand:
-
-```shell
-% x,m[Space]
-% x;m[Space]
-% x|m[Space]
-% x&m[Space]
-% x[Space]m[Space]
-% x[Return]
-m[Space]
-% x[Tab]m[Space]
-```
-
-Accordingly, those characters are not legal in ABBREVIATIONs:
-
-```shell
-% abbr g\; test
-% g;[Space] # does not expand
-```
-
-If you want to customize the delimiting prefixes, set `ZSH_ABBR_DELIMITING_PREFIXES` to you custom match string in your `.zshrc` (can be before or after loading zsh-abbr; default is `'',;|&[:IFSSPACE:]'`).
 
 ## Uninstalling
 
