@@ -130,7 +130,7 @@ _zsh_abbr() {
          automatically visible to other shells unless the same command is run
          in those shells.
 
-       ${text_bold}abbr${text_reset} g- \'git checkout -\'
+       ${text_bold}abbr${text_reset} -- g- git checkout -
 
          If the EXPANSION includes a hyphen (-), the --add command\'s
          entire EXPANSION must be quoted.
@@ -573,6 +573,10 @@ _zsh_abbr() {
           action_set=true
           opt_print_version=true
           ((number_opts++))
+          ;;
+        "--")
+          ((number_opts++))
+          break
           ;;
         "-"*)
           util_error ": Unknown option '$opt'"
