@@ -517,6 +517,7 @@ _zsh_abbr() {
         "--global"|\
         "-g")
           [ "$scope_set" = true ] && util_bad_options
+          scope_set=true
           opt_global=true
           ((number_opts++))
           ;;
@@ -563,6 +564,7 @@ _zsh_abbr() {
         "--universal"|\
         "-U")
           [ "$scope_set" = true ] && util_bad_options
+          scope_set=true
           ((number_opts++))
           ;;
         "--version"|\
