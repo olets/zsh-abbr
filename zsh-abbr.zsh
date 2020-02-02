@@ -590,9 +590,6 @@ _zsh_abbr() {
           ((number_opts++))
           break
           ;;
-        "-"*)
-          util_error ": Unknown option '$opt'"
-          ;;
       esac
     done
 
