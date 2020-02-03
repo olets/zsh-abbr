@@ -133,14 +133,14 @@ Default is universal.
 
 ```
 abbr [(--add | -a)
-      | (--create-aliases | -c)
       | (--erase | -e)
       | (--erase-all-globals | -E)
       | (--expand | -x)
+      | (--git-populate | -i)
       | (--global | -g)
       | (--help | -h)
-      | (--git-populate | -i)
       | (--list | -l)
+      | (--output-aliases | -o)
       | (--populate | -p)
       | (--rename | -r)
       | (--show | -s)
@@ -187,33 +187,6 @@ abbr 'a||b' c # will error
 ```
 
 Abbreviations can also be manually added to the `ZSH_ABBR_UNIVERSALS_FILE`.
-
-#### Create Aliases
-
-```
-abbr (--create-aliases | -c) [DESTINATION]
-```
-
-Export abbreviations as aliases declarations. To export global abbreviations, use  **--global**. Othewise, or if the **--universal** scope is used, universal abbreviations are exported.
-
-```shell
-% abbr --add gcm git checkout master
-% abbr --add --global g git
-```
-```shell
-% abbr --create-aliases
-alias -g gcm='git checkout master'
-```
-```shell
-% abbr --create-aliases --global
-alias -g g='git'
-```
-```shell
-% abbr --create-aliases ~/.zshrc
-% cat ~/.zshrc
-# -- snip --
-alias -g g='git'
-```
 
 #### Erase
 
@@ -304,6 +277,33 @@ c
 % abbr -l
 a
 b
+```
+
+#### Output Aliases
+
+```
+abbr (--output-aliases | -o) [DESTINATION]
+```
+
+Export abbreviations as aliases declarations. To export global abbreviations, use  **--global**. Othewise, or if the **--universal** scope is used, universal abbreviations are exported.
+
+```shell
+% abbr --add gcm git checkout master
+% abbr --add --global g git
+```
+```shell
+% abbr --output-aliases
+alias -g gcm='git checkout master'
+```
+```shell
+% abbr --output-aliases --global
+alias -g g='git'
+```
+```shell
+% abbr --output-aliases ~/.zshrc
+% cat ~/.zshrc
+# -- snip --
+alias -g g='git'
 ```
 
 #### Populate

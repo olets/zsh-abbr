@@ -23,16 +23,16 @@ _zsh_abbr() {
     local action_set=false
     local number_opts=0
     local opt_add=false
-    local opt_create_aliases=false
     local opt_erase_all_globals=false
     local opt_erase=false
     local opt_expand=false
     local opt_git_populate=false
     local opt_global=false
     local opt_list=false
+    local opt_output_aliases=false
+    local opt_populate=false
     local opt_rename=false
     local opt_show=false
-    local opt_populate=false
     local opt_universal=false
     local opt_print_version=false
     local release_date="January 19 2020"
@@ -45,7 +45,7 @@ _zsh_abbr() {
 
    ${text_bold}Synopsis${text_reset}
        ${text_bold}abbr${text_reset} --add|-a [SCOPE] ABBREVIATION EXPANSION
-       ${text_bold}abbr${text_reset} --create-aliases|-c [SCOPE] [DESTINATION]
+       ${text_bold}abbr${text_reset} --output-aliases|-o [SCOPE] [DESTINATION]
        ${text_bold}abbr${text_reset} --erase|-e [SCOPE] ABBREVIATION
        ${text_bold}abbr${text_reset} --expand|-x ABBREVIATION
        ${text_bold}abbr${text_reset} --git-populate|-i [SCOPE]
@@ -73,12 +73,6 @@ _zsh_abbr() {
        o --add ABBREVIATION EXPANSION or -a ABBREVIATION EXPANSION Adds a new
          abbreviation, causing ABBREVIATION to be expanded to EXPANSION.
 
-       o --create-aliases [-g] [DESTINATION_FILE] or -c [-g] [DESTINATION_FILE]
-         Outputs a list of alias command for universal abbreviations, suitable
-         for pasting or piping to whereever you keep aliases. Add -g to output
-         alias commands for global abbreviations. If a DESTINATION_FILE is
-         provided, the commands will be appended to it.
-
        o --erase ABBREVIATION or -e ABBREVIATION Erases the
          abbreviation ABBREVIATION.
 
@@ -95,6 +89,12 @@ _zsh_abbr() {
 
        o --list -l Lists all ABBREVIATIONs.
 
+       o --output-aliases [-g] [DESTINATION_FILE] or -o [-g] [DESTINATION_FILE]
+         Outputs a list of alias command for universal abbreviations, suitable
+         for pasting or piping to whereever you keep aliases. Add -g to output
+         alias commands for global abbreviations. If a DESTINATION_FILE is
+         provided, the commands will be appended to it.
+
        o --populate or -p Adds abbreviations for all aliases.
 
        o --rename OLD_ABBREVIATION NEW_ABBREVIATION
@@ -106,7 +106,7 @@ _zsh_abbr() {
 
        o --version or -v Show the current version.
 
-       In addition, when adding abbreviations, creating aliases, erasing,
+       In addition, when adding abbreviations, erasing, outputting aliases,
        [git] populating, or renaming use
 
        o --global or -g to create a global abbreviation, available only in the
@@ -137,20 +137,20 @@ _zsh_abbr() {
          Add a new abbreviation where l will be replaced with less universal so
          all shells. Note that you omit the -U since it is the default.
 
-       ${text_bold}abbr${text_reset} -c -g
-       ${text_bold}abbr${text_reset} --create-aliases -global
+       ${text_bold}abbr${text_reset} -o -g
+       ${text_bold}abbr${text_reset} --output-aliases -global
 
          Output alias declaration commands for each *global* abbreviation.
          Output lines look like alias -g <ABBREVIATION>='<EXPANSION>'
 
-       ${text_bold}abbr${text_reset} -c
-       ${text_bold}abbr${text_reset} --create-aliases
+       ${text_bold}abbr${text_reset} -o
+       ${text_bold}abbr${text_reset} --output-aliases
 
          Output alias declaration commands for each *universal* abbreviation.
          Output lines look like alias -g <ABBREVIATION>='<EXPANSION>'
 
-       ${text_bold}abbr${text_reset} -c ~/aliases
-       ${text_bold}abbr${text_reset} --create-aliases ~/aliases
+       ${text_bold}abbr${text_reset} -o ~/aliases
+       ${text_bold}abbr${text_reset} --output-aliases ~/aliases
 
          Add alias definitions to ~/aliases
 
@@ -188,7 +188,7 @@ _zsh_abbr() {
        the scope. If you want it to be visible only to the current shell
        use the -g flag.
 
-       The options add, create-aliases, erase, expand, git-populate, list,
+       The options add, output-aliases, erase, expand, git-populate, list,
        populate, rename, and show are mutually exclusive, as are the global
        and universal scopes.
 
@@ -202,32 +202,6 @@ _zsh_abbr() {
       fi
 
       util_add $* # must not be quoted
-    }
-
-    function create_aliases() {
-      local source
-      local alias_definition
-
-      if [ $# -gt 1 ]; then
-        util_error " create-aliases: Unexpected argument"
-        return
-      fi
-
-      if $opt_global; then
-        source=ZSH_ABBR_GLOBALS
-      else
-        source=ZSH_ABBR_UNIVERSALS
-      fi
-
-      for abbreviation expansion in ${(kv)${(P)source}}; do
-        alias_definition="alias -g $abbreviation='$expansion'"
-
-        if [ $# -gt 0 ]; then
-          echo "$alias_definition" >> "$1"
-        else
-          print "$alias_definition"
-        fi
-      done
     }
 
     function erase() {
@@ -307,6 +281,32 @@ _zsh_abbr() {
 
       print -l ${(k)ZSH_ABBR_UNIVERSALS}
       print -l ${(k)ZSH_ABBR_GLOBALS}
+    }
+
+    function output_aliases() {
+      local source
+      local alias_definition
+
+      if [ $# -gt 1 ]; then
+        util_error " output-aliases: Unexpected argument"
+        return
+      fi
+
+      if $opt_global; then
+        source=ZSH_ABBR_GLOBALS
+      else
+        source=ZSH_ABBR_UNIVERSALS
+      fi
+
+      for abbreviation expansion in ${(kv)${(P)source}}; do
+        alias_definition="alias -g $abbreviation='$expansion'"
+
+        if [ $# -gt 0 ]; then
+          echo "$alias_definition" >> "$1"
+        else
+          print "$alias_definition"
+        fi
+      done
     }
 
     function populate() {
@@ -487,13 +487,6 @@ _zsh_abbr() {
           opt_add=true
           ((number_opts++))
           ;;
-        "--create-aliases"|\
-        "-c")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_create_aliases=true
-          ((number_opts++))
-          ;;
         "--erase"|\
         "-e")
           [ "$action_set" = true ] && util_bad_options
@@ -539,6 +532,13 @@ _zsh_abbr() {
           [ "$action_set" = true ] && util_bad_options
           action_set=true
           opt_list=true
+          ((number_opts++))
+          ;;
+        "--output-aliases"|\
+        "-o")
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_output_aliases=true
           ((number_opts++))
           ;;
         "--populate"|\
@@ -623,12 +623,12 @@ _zsh_abbr() {
     fi
   } always {
     unfunction -m "add"
-    unfunction -m "create_aliases"
     unfunction -m "erase"
     unfunction -m "erase-all-globals"
     unfunction -m "expand"
     unfunction -m "git_populate"
     unfunction -m "list"
+    unfunction -m "output_aliases"
     unfunction -m "populate"
     unfunction -m "print_version"
     unfunction -m "rename"
