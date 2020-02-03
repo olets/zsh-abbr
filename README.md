@@ -52,8 +52,6 @@ Or install zsh-abbr with your favorite plugin manager:
     plugins=( [plugins...] zsh-syntax-highlighting)
     ```
 
-- **[Prezto](https://github.com/sorin-ionescu/prezto)**: if you know, open a PR!
-
 - **[zgen](https://github.com/tarjoilija/zgen)**: add `zgen load olets/zsh-abbr` to your `.zshrc`.
 
 - **[zplug](https://github.com/zplug/zplug)**: add `zplug "olets/zsh-abbr"` to your `.zshrc`.
