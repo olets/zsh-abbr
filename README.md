@@ -54,9 +54,13 @@ Or install zsh-abbr with your favorite plugin manager:
 
 - **[zgen](https://github.com/tarjoilija/zgen)**: add `zgen load olets/zsh-abbr` to your `.zshrc`.
 
-- **[zplug](https://github.com/zplug/zplug)**: add `zplug "olets/zsh-abbr"` to your `.zshrc`.
+- **[zinit](https://github.com/zdharma/zinit)** (formerly **zplugin**): add this to your `.zshrc`:
+  ```shell
+  zinit ice wait lucid
+  zinit light olets/zsh-abbr # or `load` instead of `light` to enable zinit reporting
+  ```
 
-- **[zplugin](https://github.com/zplug/zplug)**: add `zplugin load olets/zsh-abbr` to your `.zshrc`.
+- **[zplug](https://github.com/zplug/zplug)**: add `zplug "olets/zsh-abbr"` to your `.zshrc`.
 
 If running `abbr` gives an error "zsh: permission denied: abbr", reload zsh:
 
