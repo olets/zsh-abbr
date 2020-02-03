@@ -133,8 +133,8 @@ Default is universal.
 
 ```shell
 abbr [(--add | -a)
+      | (--clear-globals | -c)
       | (--erase | -e)
-      | (--erase-all-globals | -E)
       | (--expand | -x)
       | (--git-populate | -i)
       | (--global | -g)
@@ -188,6 +188,14 @@ abbr 'a||b' c # will error
 
 Abbreviations can also be manually added to the `ZSH_ABBR_UNIVERSALS_FILE`.
 
+#### Clear Globals
+
+```shell
+abbr (--clear-globals | -c)
+```
+
+Erase all global abbreviations.
+
 #### Erase
 
 ```
@@ -213,14 +221,6 @@ Already on 'master'
 ```
 
 Universal abbreviations can also be manually erased from the `ZSH_ABBR_UNIVERSALS_FILE`.
-
-#### Erase All Globals
-
-```shell
-abbr (--erase-all-globals | -E)
-```
-
-Erase all global abbreviations.
 
 #### Expand
 

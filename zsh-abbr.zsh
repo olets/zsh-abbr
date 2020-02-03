@@ -23,7 +23,7 @@ _zsh_abbr() {
     local action_set=false
     local number_opts=0
     local opt_add=false
-    local opt_erase_all_globals=false
+    local opt_clear_globals=false
     local opt_erase=false
     local opt_expand=false
     local opt_git_populate=false
@@ -45,11 +45,12 @@ _zsh_abbr() {
 
    ${text_bold}Synopsis${text_reset}
        ${text_bold}abbr${text_reset} --add|-a [SCOPE] ABBREVIATION EXPANSION
-       ${text_bold}abbr${text_reset} --output-aliases|-o [SCOPE] [DESTINATION]
+       ${text_bold}abbr${text_reset} --clear-globals|-c [SCOPE] ABBREVIATION
        ${text_bold}abbr${text_reset} --erase|-e [SCOPE] ABBREVIATION
        ${text_bold}abbr${text_reset} --expand|-x ABBREVIATION
        ${text_bold}abbr${text_reset} --git-populate|-i [SCOPE]
        ${text_bold}abbr${text_reset} --list|-l
+       ${text_bold}abbr${text_reset} --output-aliases|-o [SCOPE] [DESTINATION]
        ${text_bold}abbr${text_reset} --populate|-p [SCOPE]
        ${text_bold}abbr${text_reset} --rename|-r [SCOPE] OLD_ABBREVIATION NEW
        ${text_bold}abbr${text_reset} --show|-s
@@ -73,10 +74,10 @@ _zsh_abbr() {
        o --add ABBREVIATION EXPANSION or -a ABBREVIATION EXPANSION Adds a new
          abbreviation, causing ABBREVIATION to be expanded to EXPANSION.
 
+       o --clear-globals or -E Erases all global abbreviations.
+
        o --erase ABBREVIATION or -e ABBREVIATION Erases the
          abbreviation ABBREVIATION.
-
-       o --erase-all-globals or -E Erases all global abbreviations.
 
        o --expand ABBREVIATION or -x ABBREVIATION Returns the abbreviation
          ABBREVIATION's EXPANSION.
@@ -204,6 +205,15 @@ _zsh_abbr() {
       util_add $* # must not be quoted
     }
 
+    function clear_globals() {
+      if [ $# -gt 0 ]; then
+        util_error " clear-globals: Unexpected argument"
+        return
+      fi
+
+      ZSH_ABBR_GLOBALS=()
+    }
+
     function erase() {
       if [ $# -gt 1 ]; then
         util_error " erase: Expected one argument"
@@ -231,15 +241,6 @@ _zsh_abbr() {
           return
         fi
       fi
-    }
-
-    function erase_all_globals() {
-      if [ $# -gt 0 ]; then
-        util_error " erase-all-globals: Unexpected argument"
-        return
-      fi
-
-      ZSH_ABBR_GLOBALS=()
     }
 
     function expand() {
@@ -512,18 +513,18 @@ _zsh_abbr() {
           opt_add=true
           ((number_opts++))
           ;;
+        "--clear-globals"|\
+        "-c")
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_clear_globals=true
+          ((number_opts++))
+          ;;
         "--erase"|\
         "-e")
           [ "$action_set" = true ] && util_bad_options
           action_set=true
           opt_erase=true
-          ((number_opts++))
-          ;;
-        "--erase-all-globals"|\
-        "-E")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_erase_all_globals=true
           ((number_opts++))
           ;;
         "--expand"|\
@@ -622,8 +623,8 @@ _zsh_abbr() {
        add "$@"
     elif $opt_create_aliases; then
       create_aliases "$@"
-    elif $opt_erase_all_globals; then
-      erase_all_globals "$@"
+    elif $opt_clear_globals; then
+      clear_globals "$@"
     elif $opt_erase; then
       erase "$@"
     elif $opt_expand; then
@@ -648,8 +649,8 @@ _zsh_abbr() {
     fi
   } always {
     unfunction -m "add"
+    unfunction -m "clear-globals"
     unfunction -m "erase"
-    unfunction -m "erase-all-globals"
     unfunction -m "expand"
     unfunction -m "git_populate"
     unfunction -m "list"
