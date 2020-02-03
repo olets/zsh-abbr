@@ -20,28 +20,32 @@ ZSH_ABBR_UNIVERSALS_FILE="${ZSH_ABBR_UNIVERSALS_FILE="${HOME}/.config/zsh/univer
 
 _zsh_abbr() {
   {
-    local action_set=false
-    local number_opts=0
-    local opt
-    local opt_add=false
-    local opt_clear_globals=false
-    local opt_erase=false
-    local opt_expand=false
-    local opt_git_populate=false
-    local opt_global=false
-    local opt_list=false
-    local opt_output_aliases=false
-    local opt_populate=false
-    local opt_rename=false
-    local opt_show=false
-    local opt_universal=false
-    local opt_print_version=false
-    local release_date="January 19 2020"
-    local scope_set=false
-    local should_exit=false
-    local text_bold="\\033[1m"
-    local text_reset="\\033[0m"
-    local util_usage="
+    local action_set number_opts opt opt_add opt_clear_globals opt_erase \
+          opt_expand opt_git_populate opt_global opt_list opt_output_aliases \
+          opt_populate opt_rename opt_show opt_universal opt_print_version \
+          release_date scope_set should_exit text_bold text_reset util_usage \
+          version
+    action_set=false
+    number_opts=0
+    opt_add=false
+    opt_clear_globals=false
+    opt_erase=false
+    opt_expand=false
+    opt_git_populate=false
+    opt_global=false
+    opt_list=false
+    opt_output_aliases=false
+    opt_populate=false
+    opt_rename=false
+    opt_show=false
+    opt_universal=false
+    opt_print_version=false
+    release_date="January 19 2020"
+    scope_set=false
+    should_exit=false
+    text_bold="\\033[1m"
+    text_reset="\\033[0m"
+    util_usage="
        ${text_bold}abbr${text_reset}: fish shell-like abbreviations for zsh
 
    ${text_bold}Synopsis${text_reset}
@@ -195,7 +199,7 @@ _zsh_abbr() {
        and universal scopes.
 
        $version $release_date"
-    local version="zsh-abbr version 2.0.0"
+    version="zsh-abbr version 2.0.0"
 
     function add() {
       if [[ $# -lt 2 ]]; then
@@ -467,11 +471,13 @@ _zsh_abbr() {
     }
 
     function util_sync_universal() {
+      local abbr_universals_updated
+
       if [ "$ZSH_ABBR_SYNC_UNIVERSALS" = false ]; then
         return
       fi
 
-      local abbr_universals_updated="$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"_updated
+      abbr_universals_updated="$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"_updated
 
       typeset -p ZSH_ABBR_UNIVERSALS > "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
 
@@ -720,7 +726,8 @@ _zsh_abbr_expansion() {
 
 _zsh_abbr_init() {
   local line
-  local shwordsplit_off=false
+  local shwordsplit_off
+  shwordsplit_off=false
 
   typeset -gA ZSH_ABBR_UNIVERSALS
   typeset -gA ZSH_ABBR_GLOBALS
@@ -768,7 +775,8 @@ _zsh_abbr_expand_widget() {
   expansion=$(_zsh_abbr_expansion "$current_word")
 
   if [[ -n "$expansion" ]]; then
-    local preceding_lbuffer="${LBUFFER%%$current_word}"
+    local preceding_lbuffer
+    preceding_lbuffer="${LBUFFER%%$current_word}"
     LBUFFER="$preceding_lbuffer$expansion"
     _zsh_highlight # if using zsh-syntax-highlighting, update the highlighting
   fi
