@@ -22,6 +22,7 @@ _zsh_abbr() {
   {
     local action_set=false
     local number_opts=0
+    local opt
     local opt_add=false
     local opt_clear_globals=false
     local opt_erase=false
@@ -649,7 +650,8 @@ _zsh_abbr() {
     fi
   } always {
     unfunction -m "add"
-    unfunction -m "clear-globals"
+    unfunction -m "util_bad_options"
+    unfunction -m "clear_globals"
     unfunction -m "erase"
     unfunction -m "expand"
     unfunction -m "git_populate"
@@ -662,6 +664,7 @@ _zsh_abbr() {
     unfunction -m "util_add"
     unfunction -m "util_error"
     unfunction -m "util_exists"
+    unfunction -m "util_other_exists"
     unfunction -m "util_rename_modify"
     unfunction -m "util_sync_universal"
     unfunction -m "util_type"
@@ -716,12 +719,14 @@ _zsh_abbr_expansion() {
 }
 
 _zsh_abbr_init() {
+  local line
+  local shwordsplit_off=false
+
   typeset -gA ZSH_ABBR_UNIVERSALS
   typeset -gA ZSH_ABBR_GLOBALS
   ZSH_ABBR_UNIVERSALS=()
   ZSH_ABBR_GLOBALS=()
 
-  local shwordsplit_off=false
   if [[ $options[shwordsplit] = off ]]; then
     shwordsplit_off=true
   fi
