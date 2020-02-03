@@ -125,24 +125,24 @@ abbr <OPTION> <SCOPE> <ANY OPTION ARGUMENTS>
 ### Scope
 
 ```shell
-[(--global | -g) | (--universal | -U)]
+[(--session | -g) | (--user | -U)]
 ```
 
-A given abbreviation can be made available in the current zsh session (i.e. in the current terminal) —these are called *global* abbreviations— or to all terminals —these are called *universal* abbreviations.
+A given abbreviation can be made available in the current zsh session (i.e. in the current terminal) —these are called *session* abbreviations— or to all terminals —these are called *user* abbreviations.
 
-Newly added universal abbreviations are available to all open sessions immediately.
+Newly added user abbreviations are available to all open sessions immediately.
 
-Default is universal.
+Default is user.
 
 ### Options
 
 ```shell
 abbr [(--add | -a)
-      | (--clear-globals | -c)
+      | (--clear-sessions | -c)
       | (--erase | -e)
       | (--expand | -x)
       | (--git-populate | -i)
-      | (--global | -g)
+      | (--session | -g)
       | (--help | -h)
       | (--list | -l)
       | (--output-aliases | -o)
@@ -162,7 +162,7 @@ abbr [(--add | -a)
 abbr [(--add | -a)] ABBREVIATION EXPANSION
 ```
 
-Add a new abbreviation. To add a global abbreviation, use **--global**. Otherwise, or if the **--universal** scope is used, the new abbreviation will be universal.
+Add a new abbreviation. To add a session abbreviation, use **--session**. Otherwise, or if the **--user** scope is used, the new abbreviation will be user.
 
 ```shell
 % abbr --add gcm git checkout master
@@ -173,9 +173,9 @@ Add a new abbreviation. To add a global abbreviation, use **--global**. Otherwis
 The following are equivalent:
 
 ```shell
-% abbr --add --universal gcm git checkout master
-% abbr -a --universal gcm git checkout master
-% abbr --universal gcm git checkout master
+% abbr --add --user gcm git checkout master
+% abbr -a --user gcm git checkout master
+% abbr --user gcm git checkout master
 % abbr --add -U gcm git checkout master
 % abbr -a -U gcm git checkout master
 % abbr -U gcm git checkout master
@@ -191,15 +191,15 @@ abbr a\;b c # will error
 abbr 'a||b' c # will error
 ```
 
-Abbreviations can also be manually added to the `ZSH_ABBR_UNIVERSALS_FILE`.
+Abbreviations can also be manually added to the `ZSH_ABBR_USER_FILE`.
 
-#### Clear Globals
+#### Clear Sessions
 
 ```shell
-abbr (--clear-globals | -c)
+abbr (--clear-sessions | -c)
 ```
 
-Erase all global abbreviations.
+Erase all session abbreviations.
 
 #### Erase
 
@@ -207,7 +207,7 @@ Erase all global abbreviations.
 abbr (--erase | -e) ABBREVIATION
 ```
 
-Erase an abbreviation. Specify **--global** scope to erase a global abbreviation. Otherwise, or if the **--universal** scope is used, a universal abbreviation will be erased.
+Erase an abbreviation. Specify **--session** scope to erase a session abbreviation. Otherwise, or if the **--user** scope is used, a user abbreviation will be erased.
 
 ```shell
 % abbr --add gcm git commit master
@@ -215,15 +215,15 @@ Erase an abbreviation. Specify **--global** scope to erase a global abbreviation
 Switched to branch 'master'
 % abbr --erase gcm[Ctrl-Space][Enter]
 % gcm[Space|Enter] # nothing
-% abbr --add --global gcm echo gimme cookie monster
+% abbr --add --session gcm echo gimme cookie monster
 % gcm[Enter]
 gimme cookie monster
-% abbr --erase --global gcm[Ctrl-Space][Enter]
+% abbr --erase --session gcm[Ctrl-Space][Enter]
 % gcm[Enter]
 Already on 'master'
 ```
 
-Universal abbreviations can also be manually erased from the `ZSH_ABBR_UNIVERSALS_FILE`.
+User abbreviations can also be manually erased from the `ZSH_ABBR_USER_FILE`.
 
 #### Expand
 
@@ -245,13 +245,13 @@ git checkout
 abbr (--git-populate | -i)
 ```
 
-Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--global** scope to create global abbreviations. Otherwise, or if the **--universal** scope is used, the Git abbreviations will be universal.
+Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--session** scope to create session abbreviations. Otherwise, or if the **--user** scope is used, the Git abbreviations will be user.
 
 This command is useful for migrating from aliases to abbreviations.
 
 ```shell
 % git config alias.co checkout
-% abbr --git-populate --global
+% abbr --git-populate --session
 % gco[Space] # expands to git checkout
 % source ~/.zshrc
 % gco[Space] # no expansion
@@ -268,7 +268,7 @@ Note for users migrating from Oh-My-Zsh: [OMZ's Git aliases are shell aliases](h
 abbr (--list|-l)
 ```
 
-List all abbreviations available in the current shell. Universal abbreviations appear first.
+List all abbreviations available in the current shell. User abbreviations appear first.
 
 ```shell
 % abbr a apple
@@ -290,18 +290,18 @@ b
 abbr (--output-aliases | -o) [DESTINATION]
 ```
 
-Export abbreviations as aliases declarations. To export global abbreviations, use  **--global**. Otherwise, or if the **--universal** scope is used, universal abbreviations are exported.
+Export abbreviations as aliases declarations. To export session abbreviations, use  **--session**. Otherwise, or if the **--user** scope is used, user abbreviations are exported.
 
 ```shell
 % abbr --add gcm git checkout master
-% abbr --add --global g git
+% abbr --add --session g git
 ```
 ```shell
 % abbr --output-aliases
 alias -g gcm='git checkout master'
 ```
 ```shell
-% abbr --output-aliases --global
+% abbr --output-aliases --session
 alias -g g='git'
 ```
 ```shell
@@ -317,7 +317,7 @@ alias -g g='git'
 abbr (--git-populate | -i)
 ```
 
-Add abbreviations for every alias available in the current session. Use the **--global** scope to create global abbreviations. Otherwise, or if the **--universal** scope is used, the abbreviations will be universal.
+Add abbreviations for every alias available in the current session. Use the **--session** scope to create session abbreviations. Otherwise, or if the **--user** scope is used, the abbreviations will be user.
 
 This command is useful for migrating from aliases to abbreviations.
 
@@ -328,7 +328,7 @@ See also **Git Populate**.
 # --snip--
 alias -g d='bin/deploy'
 # --snip--
-% abbr --populate --global
+% abbr --populate --session
 % d[Space] # expands to bin/deploy
 % source ~/.zshrc
 % d[Space] # no expansion
@@ -343,7 +343,7 @@ alias -g d='bin/deploy'
 abbr (--rename | -r) OLD_WORD NEW_WORD
 ```
 
-Rename an abbreviation. Use the **--global** scope to rename a global abbreviation. Otherwise, or if the **--universal** scope is used, a universal abbreviation will be renamed.
+Rename an abbreviation. Use the **--session** scope to rename a session abbreviation. Otherwise, or if the **--user** scope is used, a user abbreviation will be renamed.
 
 ```shell
 % abbr --add gcm git checkout master
@@ -354,7 +354,7 @@ Rename an abbreviation. Use the **--global** scope to rename a global abbreviati
 % gm[Space] # expands to git checkout master
 ```
 
-Abbreviations can also be manually renamed in the `ZSH_ABBR_UNIVERSALS_FILE`.
+Abbreviations can also be manually renamed in the `ZSH_ABBR_USER_FILE`.
 
 #### Show
 
@@ -362,11 +362,11 @@ Abbreviations can also be manually renamed in the `ZSH_ABBR_UNIVERSALS_FILE`.
 abbr [(--show|-s)]
 ```
 
-Show all the abbreviations available in the current session, along with their expansions. _**Show** does not take a scope._ Global abbreviations are marked `-g` and follow universal abbreviations, which are marked `-U`.
+Show all the abbreviations available in the current session, along with their expansions. _**Show** does not take a scope._ Session abbreviations are marked `-g` and follow user abbreviations, which are marked `-U`.
 
 ```shell
 % abbr --add gcm git checkout master
-% abbr --add --global a apple
+% abbr --add --session a apple
 % abbr --show # or `abbr` with no arguments
 abbr -a -U -- gcm git checkout master
 abbr -a -g -- a apple
@@ -379,12 +379,12 @@ abbr -a -U -- gcm git checkout master
 
 ### Storage
 
-Universal abbreviations live in a plain text file which you can manually edit, shared, etc. Its default location is `${HOME}/.config/zsh/universal-abbreviations`. Customize this by setting the `ZSH_ABBR_UNIVERSALS_FILE` variable in your `.zshrc` before loading zsh-abbr.
+User abbreviations live in a plain text file which you can manually edit, shared, etc. Its default location is `${HOME}/.config/zsh/user-abbreviations`. Customize this by setting the `ZSH_ABBR_USER_FILE` variable in your `.zshrc` before loading zsh-abbr.
 
 ```shell
 % cat ~/.zshrc
 # -- snip --
-ZSH_ABBR_UNIVERSALS_FILE="path/to/my/universal/abbreviations"
+ZSH_ABBR_USER_FILE="path/to/my/user/abbreviations"
 # -- snip --
 # load zsh-abbr
 ```
@@ -416,10 +416,10 @@ bindkey "^A" _zsh_abbr_expand_space
 
 ## Uninstalling
 
-Delete the zsh-abbr configuration directory. Note that this will permanently delete the universal abbreviations file.
+Delete the zsh-abbr configuration directory. Note that this will permanently delete the user abbreviations file.
 
 ```shell
-% rm -rf $(dirname "$ZSH_ABBR_UNIVERSALS_FILE")
+% rm -rf $(dirname "$ZSH_ABBR_USER_FILE")
 ```
 
 Then follow the standard uninstallation procedure for your installation method. This is typically the reverse of what you did to install.

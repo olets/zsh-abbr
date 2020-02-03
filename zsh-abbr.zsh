@@ -12,7 +12,7 @@
 ZSH_ABBR_DEFAULT_BINDINGS="${ZSH_ABBR_DEFAULT_BINDINGS=true}"
 
 # File abbreviations are stored in
-ZSH_ABBR_UNIVERSALS_FILE="${ZSH_ABBR_UNIVERSALS_FILE="${HOME}/.config/zsh/universal-abbreviations"}"
+ZSH_ABBR_USER_FILE="${ZSH_ABBR_USER_FILE="${HOME}/.config/zsh/abbreviations"}"
 
 
 # FUNCTIONS
@@ -20,25 +20,25 @@ ZSH_ABBR_UNIVERSALS_FILE="${ZSH_ABBR_UNIVERSALS_FILE="${HOME}/.config/zsh/univer
 
 _zsh_abbr() {
   {
-    local action_set number_opts opt opt_add opt_clear_globals opt_erase \
-          opt_expand opt_git_populate opt_global opt_list opt_output_aliases \
-          opt_populate opt_rename opt_show opt_universal opt_print_version \
+    local action_set number_opts opt opt_add opt_clear_session opt_erase \
+          opt_expand opt_git_populate opt_session opt_list opt_output_aliases \
+          opt_populate opt_rename opt_show opt_user opt_print_version \
           release_date scope_set should_exit text_bold text_reset util_usage \
           version
     action_set=false
     number_opts=0
     opt_add=false
-    opt_clear_globals=false
+    opt_clear_session=false
     opt_erase=false
     opt_expand=false
     opt_git_populate=false
-    opt_global=false
+    opt_session=false
     opt_list=false
     opt_output_aliases=false
     opt_populate=false
     opt_rename=false
     opt_show=false
-    opt_universal=false
+    opt_user=false
     opt_print_version=false
     release_date="February 26 2020"
     scope_set=false
@@ -50,7 +50,7 @@ _zsh_abbr() {
 
    ${text_bold}Synopsis${text_reset}
        ${text_bold}abbr${text_reset} --add|-a [SCOPE] ABBREVIATION EXPANSION
-       ${text_bold}abbr${text_reset} --clear-globals|-c [SCOPE] ABBREVIATION
+       ${text_bold}abbr${text_reset} --clear-session|-c [SCOPE] ABBREVIATION
        ${text_bold}abbr${text_reset} --erase|-e [SCOPE] ABBREVIATION
        ${text_bold}abbr${text_reset} --expand|-x ABBREVIATION
        ${text_bold}abbr${text_reset} --git-populate|-i [SCOPE]
@@ -79,7 +79,7 @@ _zsh_abbr() {
        o --add ABBREVIATION EXPANSION or -a ABBREVIATION EXPANSION Adds a new
          abbreviation, causing ABBREVIATION to be expanded to EXPANSION.
 
-       o --clear-globals or -E Erases all global abbreviations.
+       o --clear-session or -E Erases all session abbreviations.
 
        o --erase ABBREVIATION or -e ABBREVIATION Erases the
          abbreviation ABBREVIATION.
@@ -96,9 +96,9 @@ _zsh_abbr() {
        o --list -l Lists all ABBREVIATIONs.
 
        o --output-aliases [-g] [DESTINATION_FILE] or -o [-g] [DESTINATION_FILE]
-         Outputs a list of alias command for universal abbreviations, suitable
+         Outputs a list of alias command for user abbreviations, suitable
          for pasting or piping to whereever you keep aliases. Add -g to output
-         alias commands for global abbreviations. If a DESTINATION_FILE is
+         alias commands for session abbreviations. If a DESTINATION_FILE is
          provided, the commands will be appended to it.
 
        o --populate or -p Adds abbreviations for all aliases.
@@ -115,20 +115,20 @@ _zsh_abbr() {
        In addition, when adding abbreviations, erasing, outputting aliases,
        [git] populating, or renaming use
 
-       o --global or -g to create a global abbreviation, available only in the
+       o --session or -g to create a session abbreviation, available only in the
          current session.
 
-       o --universal or -U to create a universal abbreviation (default),
+       o --user or -U to create a user abbreviation (default),
          immediately available to all sessions.
 
        See the 'Internals' section for more on them.
 
    ${text_bold}Examples${text_reset}
        ${text_bold}abbr${text_reset} -a -g gco git checkout
-       ${text_bold}abbr${text_reset} --add --global gco git checkout
+       ${text_bold}abbr${text_reset} --add --session gco git checkout
 
          Add a new abbreviation where gco will be replaced with git checkout
-         global to the current shell. This abbreviation will not be
+         session to the current shell. This abbreviation will not be
          automatically visible to other shells unless the same command is run
          in those shells.
 
@@ -140,19 +140,19 @@ _zsh_abbr() {
        ${text_bold}abbr${text_reset} -a l less
        ${text_bold}abbr${text_reset} --add l less
 
-         Add a new abbreviation where l will be replaced with less universal so
+         Add a new abbreviation where l will be replaced with less user so
          all shells. Note that you omit the -U since it is the default.
 
        ${text_bold}abbr${text_reset} -o -g
-       ${text_bold}abbr${text_reset} --output-aliases -global
+       ${text_bold}abbr${text_reset} --output-aliases -session
 
-         Output alias declaration commands for each *global* abbreviation.
+         Output alias declaration commands for each *session* abbreviation.
          Output lines look like alias -g <ABBREVIATION>='<EXPANSION>'
 
        ${text_bold}abbr${text_reset} -o
        ${text_bold}abbr${text_reset} --output-aliases
 
-         Output alias declaration commands for each *universal* abbreviation.
+         Output alias declaration commands for each *user* abbreviation.
          Output lines look like alias -g <ABBREVIATION>='<EXPANSION>'
 
        ${text_bold}abbr${text_reset} -o ~/aliases
@@ -161,19 +161,19 @@ _zsh_abbr() {
          Add alias definitions to ~/aliases
 
        ${text_bold}abbr${text_reset} -e -g gco
-       ${text_bold}abbr${text_reset} --erase --global gco
+       ${text_bold}abbr${text_reset} --erase --session gco
 
-         Erase the global gco abbreviation.
+         Erase the session gco abbreviation.
 
        ${text_bold}abbr${text_reset} -r -g gco gch
-       ${text_bold}abbr${text_reset} --rename --global gco gch
+       ${text_bold}abbr${text_reset} --rename --session gco gch
 
-         Rename the existing global abbreviation from gco to gch.
+         Rename the existing session abbreviation from gco to gch.
 
        ${text_bold}abbr${text_reset} -r l le
        ${text_bold}abbr${text_reset} --rename l le
 
-        Rename the existing universal abbreviation from l to le. Note that you
+        Rename the existing user abbreviation from l to le. Note that you
         can omit the -U since it is the default.
 
        ${text_bold}abbr${text_reset} -x gco
@@ -186,8 +186,8 @@ _zsh_abbr() {
        The ABBREVIATION cannot contain IFS whitespace, comma (,), semicolon (;),
        pipe (|), or ampersand (&).
 
-       Defining an abbreviation with global scope is slightly faster than
-       universal scope (which is the default).
+       Defining an abbreviation with session scope is slightly faster than
+       user scope (which is the default).
 
        You can create abbreviations interactively and they will be visible to
        other zsh sessions if you use the -U flag or don't explicitly specify
@@ -195,8 +195,8 @@ _zsh_abbr() {
        use the -g flag.
 
        The options add, output-aliases, erase, expand, git-populate, list,
-       populate, rename, and show are mutually exclusive, as are the global
-       and universal scopes.
+       populate, rename, and show are mutually exclusive, as are the session
+       and user scopes.
 
        $version $release_date"
     version="zsh-abbr version 2.1.3"
@@ -210,13 +210,13 @@ _zsh_abbr() {
       util_add $* # must not be quoted
     }
 
-    function clear_globals() {
+    function clear_session() {
       if [ $# -gt 0 ]; then
-        util_error " clear-globals: Unexpected argument"
+        util_error " clear-session: Unexpected argument"
         return
       fi
 
-      ZSH_ABBR_GLOBALS=()
+      ZSH_ABBR_SESSION=()
     }
 
     function erase() {
@@ -228,21 +228,21 @@ _zsh_abbr() {
         return
       fi
 
-      if $opt_global; then
-        if (( ${+ZSH_ABBR_GLOBALS[$1]} )); then
-          unset "ZSH_ABBR_GLOBALS[${(b)1}]"
+      if $opt_session; then
+        if (( ${+ZSH_ABBR_SESSION[$1]} )); then
+          unset "ZSH_ABBR_SESSION[${(b)1}]"
         else
-          util_error " erase: No global abbreviation named $1"
+          util_error " erase: No session abbreviation named $1"
           return
         fi
       else
-        source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
+        source "$ZSH_ABBR_USER_SCRATCH_FILE"
 
-        if (( ${+ZSH_ABBR_UNIVERSALS[$1]} )); then
-          unset "ZSH_ABBR_UNIVERSALS[${(b)1}]"
-          util_sync_universal
+        if (( ${+ZSH_ABBR_USER[$1]} )); then
+          unset "ZSH_ABBR_USER[${(b)1}]"
+          util_sync_user
         else
-          util_error " erase: No universal abbreviation named $1"
+          util_error " erase: No user abbreviation named $1"
           return
         fi
       fi
@@ -283,10 +283,10 @@ _zsh_abbr() {
         return
       fi
 
-      source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
+      source "$ZSH_ABBR_USER_SCRATCH_FILE"
 
-      print -l ${(k)ZSH_ABBR_UNIVERSALS}
-      print -l ${(k)ZSH_ABBR_GLOBALS}
+      print -l ${(k)ZSH_ABBR_USER}
+      print -l ${(k)ZSH_ABBR_SESSION}
     }
 
     function output_aliases() {
@@ -298,10 +298,10 @@ _zsh_abbr() {
         return
       fi
 
-      if $opt_global; then
-        source=ZSH_ABBR_GLOBALS
+      if $opt_session; then
+        source=ZSH_ABBR_SESSION
       else
-        source=ZSH_ABBR_UNIVERSALS
+        source=ZSH_ABBR_USER
       fi
 
       for abbreviation expansion in ${(kv)${(P)source}}; do
@@ -337,10 +337,10 @@ _zsh_abbr() {
 
     function rename() {
       local err source
-      source="ZSH_ABBR_GLOBALS"
+      source="ZSH_ABBR_SESSION"
 
-      if $opt_global; then
-        source="ZSH_ABBR_GLOBALS"
+      if $opt_session; then
+        source="ZSH_ABBR_SESSION"
       fi
 
       if [ $# -ne 2 ]; then
@@ -354,14 +354,14 @@ _zsh_abbr() {
         if [ $(util_other_exists $1) = true ]; then
           local action other_type
           action="add"
-          other_type="global"
+          other_type="session"
 
-          if $opt_global; then
+          if $opt_session; then
             action="do not use"
-            other_type="universal"
+            other_type="user"
           fi
 
-          err+=" A $other_type abbrevation named $1 does exist. To rename it, $action the -g/--global option."
+          err+=" A $other_type abbrevation named $1 does exist. To rename it, $action the -g/--session option."
         fi
 
         util_error $err
@@ -381,9 +381,9 @@ _zsh_abbr() {
         return
       fi
 
-      cat $ZSH_ABBR_UNIVERSALS_FILE
+      cat $ZSH_ABBR_USER_FILE
 
-      for abbreviation expansion in ${(kv)ZSH_ABBR_GLOBALS}; do
+      for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION}; do
         printf "abbr -a -g -- %s %s\\n" "$abbreviation" "$expansion"
       done
     }
@@ -405,12 +405,12 @@ _zsh_abbr() {
         return
       fi
 
-      if $opt_global; then
-        ZSH_ABBR_GLOBALS[$abbreviation]="$expansion"
+      if $opt_session; then
+        ZSH_ABBR_SESSION[$abbreviation]="$expansion"
       else
-        source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
-        ZSH_ABBR_UNIVERSALS[$abbreviation]="$expansion"
-        util_sync_universal
+        source "$ZSH_ABBR_USER_SCRATCH_FILE"
+        ZSH_ABBR_USER[$abbreviation]="$expansion"
+        util_sync_user
       fi
     }
 
@@ -428,10 +428,10 @@ _zsh_abbr() {
       local exists
       exists=false
 
-      if $opt_global; then
-        abbreviation="${ZSH_ABBR_GLOBALS[(I)$1]}"
+      if $opt_session; then
+        abbreviation="${ZSH_ABBR_SESSION[(I)$1]}"
       else
-        abbreviation="${ZSH_ABBR_UNIVERSALS[(I)$1]}"
+        abbreviation="${ZSH_ABBR_USER[(I)$1]}"
       fi
 
       if [[ -n "$abbreviation" ]]; then
@@ -446,10 +446,10 @@ _zsh_abbr() {
       local exists
       exists=false
 
-      if $opt_global; then
-        abbreviation="${ZSH_ABBR_UNIVERSALS[(I)$1]}"
+      if $opt_session; then
+        abbreviation="${ZSH_ABBR_USER[(I)$1]}"
       else
-        abbreviation="${ZSH_ABBR_GLOBALS[(I)$1]}"
+        abbreviation="${ZSH_ABBR_SESSION[(I)$1]}"
       fi
 
       if [[ -n "$abbreviation" ]]; then
@@ -460,44 +460,44 @@ _zsh_abbr() {
     }
 
     function util_rename_modify {
-      if $opt_global; then
-        util_add "$2" "${ZSH_ABBR_GLOBALS[$1]}"
-        unset "ZSH_ABBR_GLOBALS[${(b)1}]"
+      if $opt_session; then
+        util_add "$2" "${ZSH_ABBR_SESSION[$1]}"
+        unset "ZSH_ABBR_SESSION[${(b)1}]"
       else
-        util_add "$2" "${ZSH_ABBR_UNIVERSALS[$1]}"
-        unset "ZSH_ABBR_UNIVERSALS[${(b)1}]"
-        util_sync_universal
+        util_add "$2" "${ZSH_ABBR_USER[$1]}"
+        unset "ZSH_ABBR_USER[${(b)1}]"
+        util_sync_user
       fi
     }
 
-    function util_sync_universal() {
-      local abbr_universals_updated
+    function util_sync_user() {
+      local user_updated
 
-      if [ "$ZSH_ABBR_SYNC_UNIVERSALS" = false ]; then
+      if [ "$ZSH_ABBR_SYNC_USER" = false ]; then
         return
       fi
 
-      abbr_universals_updated="$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"_updated
+      user_updated="$ZSH_ABBR_USER_SCRATCH_FILE"_updated
 
-      typeset -p ZSH_ABBR_UNIVERSALS > "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
+      typeset -p ZSH_ABBR_USER > "$ZSH_ABBR_USER_SCRATCH_FILE"
 
-      rm "$abbr_universals_updated" 2> /dev/null
-      touch "$abbr_universals_updated"
-      chmod 600 "$abbr_universals_updated"
+      rm "$user_updated" 2> /dev/null
+      touch "$user_updated"
+      chmod 600 "$user_updated"
 
-      for abbreviation expansion in ${(kv)ZSH_ABBR_UNIVERSALS}; do
-        echo "abbr -a -U -- $abbreviation $expansion" >> "$abbr_universals_updated"
+      for abbreviation expansion in ${(kv)ZSH_ABBR_USER}; do
+        echo "abbr -a -U -- $abbreviation $expansion" >> "$user_updated"
       done
 
-      mv "$abbr_universals_updated" "$ZSH_ABBR_UNIVERSALS_FILE"
+      mv "$user_updated" "$ZSH_ABBR_USER_FILE"
     }
 
     function util_type() {
       local type
-      type="universal"
+      type="user"
 
-      if $opt_global; then
-        type="global"
+      if $opt_session; then
+        type="session"
       fi
 
       echo $type
@@ -521,11 +521,11 @@ _zsh_abbr() {
           opt_add=true
           ((number_opts++))
           ;;
-        "--clear-globals"|\
+        "--clear-session"|\
         "-c")
           [ "$action_set" = true ] && util_bad_options
           action_set=true
-          opt_clear_globals=true
+          opt_clear_session=true
           ((number_opts++))
           ;;
         "--erase"|\
@@ -542,11 +542,11 @@ _zsh_abbr() {
           opt_expand=true
           ((number_opts++))
           ;;
-        "--global"|\
+        "--session"|\
         "-g")
           [ "$scope_set" = true ] && util_bad_options
           scope_set=true
-          opt_global=true
+          opt_session=true
           ((number_opts++))
           ;;
         "--help"|\
@@ -596,7 +596,7 @@ _zsh_abbr() {
           opt_show=true
           ((number_opts++))
           ;;
-        "--universal"|\
+        "--user"|\
         "-U")
           [ "$scope_set" = true ] && util_bad_options
           scope_set=true
@@ -623,16 +623,16 @@ _zsh_abbr() {
 
     shift $number_opts
 
-    if ! $opt_global; then
-      opt_universal=true
+    if ! $opt_session; then
+      opt_user=true
     fi
 
     if $opt_add; then
        add "$@"
     elif $opt_output_aliases; then
       output_aliases "$@"
-    elif $opt_clear_globals; then
-      clear_globals "$@"
+    elif $opt_clear_session; then
+      clear_session "$@"
     elif $opt_erase; then
       erase "$@"
     elif $opt_expand; then
@@ -658,7 +658,7 @@ _zsh_abbr() {
   } always {
     unfunction -m "add"
     unfunction -m "util_bad_options"
-    unfunction -m "clear_globals"
+    unfunction -m "clear_session"
     unfunction -m "erase"
     unfunction -m "expand"
     unfunction -m "git_populate"
@@ -673,7 +673,7 @@ _zsh_abbr() {
     unfunction -m "util_exists"
     unfunction -m "util_other_exists"
     unfunction -m "util_rename_modify"
-    unfunction -m "util_sync_universal"
+    unfunction -m "util_sync_user"
     unfunction -m "util_type"
     unfunction -m "util_usage"
   }
@@ -714,11 +714,11 @@ _zsh_abbr_expand_space() {
 
 _zsh_abbr_expansion() {
   local expansion
-  expansion="${ZSH_ABBR_GLOBALS[$1]}"
+  expansion="${ZSH_ABBR_SESSION[$1]}"
 
   if [[ ! -n $expansion ]]; then
-    source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
-    expansion="${ZSH_ABBR_UNIVERSALS[$1]}"
+    source "$ZSH_ABBR_USER_SCRATCH_FILE"
+    expansion="${ZSH_ABBR_USER[$1]}"
   fi
 
   echo "$expansion"
@@ -729,39 +729,39 @@ _zsh_abbr_init() {
   local shwordsplit_off
   shwordsplit_off=false
 
-  typeset -gA ZSH_ABBR_UNIVERSALS
-  typeset -gA ZSH_ABBR_GLOBALS
-  ZSH_ABBR_UNIVERSALS=()
-  ZSH_ABBR_GLOBALS=()
+  typeset -gA ZSH_ABBR_USER
+  typeset -gA ZSH_ABBR_SESSION
+  ZSH_ABBR_USER=()
+  ZSH_ABBR_SESSION=()
 
   if [[ $options[shwordsplit] = off ]]; then
     shwordsplit_off=true
   fi
 
   # Scratch file
-  ZSH_ABBR_UNIVERSALS_SCRATCH_FILE="${TMPDIR:-/tmp}/abbr_universals"
+  ZSH_ABBR_USER_SCRATCH_FILE="${TMPDIR:-/tmp}/zsh-user-abbreviations"
 
-  rm "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE" 2> /dev/null
-  touch "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
-  chmod 600 "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
+  rm "$ZSH_ABBR_USER_SCRATCH_FILE" 2> /dev/null
+  touch "$ZSH_ABBR_USER_SCRATCH_FILE"
+  chmod 600 "$ZSH_ABBR_USER_SCRATCH_FILE"
 
-  # Load saved universal abbreviations
-  if [ -f "$ZSH_ABBR_UNIVERSALS_FILE" ]; then
+  # Load saved user abbreviations
+  if [ -f "$ZSH_ABBR_USER_FILE" ]; then
     setopt shwordsplit
     while read -r line; do
       $line
-    done < $ZSH_ABBR_UNIVERSALS_FILE
+    done < $ZSH_ABBR_USER_FILE
 
     # reset if necessary
     if [ $shwordsplit_off = true ]; then
       unsetopt shwordsplit
     fi
   else
-    mkdir -p $(dirname "$ZSH_ABBR_UNIVERSALS_FILE")
-    touch "$ZSH_ABBR_UNIVERSALS_FILE"
+    mkdir -p $(dirname "$ZSH_ABBR_USER_FILE")
+    touch "$ZSH_ABBR_USER_FILE"
   fi
 
-  typeset -p ZSH_ABBR_UNIVERSALS > "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
+  typeset -p ZSH_ABBR_USER > "$ZSH_ABBR_USER_SCRATCH_FILE"
 }
 
 
@@ -796,9 +796,9 @@ abbr() {
 # INITIALIZATION
 # --------------
 
-ZSH_ABBR_SYNC_UNIVERSALS=false
+ZSH_ABBR_SYNC_USER=false
 _zsh_abbr_init
-ZSH_ABBR_SYNC_UNIVERSALS=true
+ZSH_ABBR_SYNC_USER=true
 
 if [ "$ZSH_ABBR_DEFAULT_BINDINGS" = true ]; then
   _zsh_abbr_bind_widgets
