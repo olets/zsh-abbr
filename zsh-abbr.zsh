@@ -330,7 +330,7 @@ _zsh_abbr() {
     }
 
     function rename() {
-      local source type
+      local err source type
       source="ZSH_ABBR_GLOBALS"
       type="universal"
 
@@ -345,7 +345,22 @@ _zsh_abbr() {
       fi
 
       if [ $(util_exists $1) != true ]; then
-        util_error " rename: No $type abbreviation $1 exists"
+        err=" rename: No $type abbreviation $1 exists."
+
+        if [ $(util_other_exists $1) = true ]; then
+          local action other_type
+          action="add"
+          other_type="global"
+
+          if $opt_global; then
+            action="do not use"
+            other_type="universal"
+          fi
+
+          err+=" A $other_type abbrevation named $1 does exist. To rename it, $action the -g/--global option."
+        fi
+
+        util_error $err
         return
       fi
 
@@ -429,24 +444,32 @@ _zsh_abbr() {
       echo "$exists"
     }
 
+    function util_other_exists() {
+      local abbreviation
+      local exists
+      exists=false
+
+      if $opt_global; then
+        abbreviation="${ZSH_ABBR_UNIVERSALS[(I)$1]}"
+      else
+        abbreviation="${ZSH_ABBR_GLOBALS[(I)$1]}"
+      fi
+
+      if [[ -n "$abbreviation" ]]; then
+        exists=true
+      fi
+
+      echo "$exists"
+    }
+
     function util_rename_modify {
       if $opt_global; then
-        if (( ${+ZSH_ABBR_GLOBALS[$1]} )); then
-          util_add "$2" "${ZSH_ABBR_GLOBALS[$1]}"
-          unset "ZSH_ABBR_GLOBALS[${(b)1}]"
-        else
-          util_error " rename: No global abbreviation named $1"
-        fi
+        util_add "$2" "${ZSH_ABBR_GLOBALS[$1]}"
+        unset "ZSH_ABBR_GLOBALS[${(b)1}]"
       else
-        source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
-
-        if (( ${+ZSH_ABBR_UNIVERSALS[$1]} )); then
-          util_add "$2" "${ZSH_ABBR_UNIVERSALS[$1]}"
-          unset "ZSH_ABBR_UNIVERSALS[${(b)1}]"
-          util_sync_universal
-        else
-          util_error " rename: No universal abbreviation named $1"
-        fi
+        util_add "$2" "${ZSH_ABBR_UNIVERSALS[$1]}"
+        unset "ZSH_ABBR_UNIVERSALS[${(b)1}]"
+        util_sync_universal
       fi
     }
 
