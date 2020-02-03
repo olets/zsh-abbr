@@ -330,13 +330,11 @@ _zsh_abbr() {
     }
 
     function rename() {
-      local err source type
+      local err source
       source="ZSH_ABBR_GLOBALS"
-      type="universal"
 
       if $opt_global; then
         source="ZSH_ABBR_GLOBALS"
-        type="global"
       fi
 
       if [ $# -ne 2 ]; then
@@ -345,7 +343,7 @@ _zsh_abbr() {
       fi
 
       if [ $(util_exists $1) != true ]; then
-        err=" rename: No $type abbreviation $1 exists."
+        err=" rename: No $(util_type) abbreviation $1 exists."
 
         if [ $(util_other_exists $1) = true ]; then
           local action other_type
@@ -365,7 +363,7 @@ _zsh_abbr() {
       fi
 
       if [ $(util_exists $2) = true ]; then
-        util_error " rename: A $type abbreviation $2 already exists"
+        util_error " rename: A $(util_type) abbreviation $2 already exists"
       else
         util_rename_modify $1 $2
       fi
@@ -397,14 +395,7 @@ _zsh_abbr() {
       fi
 
       if [ $(util_exists $abbreviation) = true ]; then
-        local type
-        type="universal"
-
-        if $opt_global; then
-          type="global"
-        fi
-
-        util_error " add: A $type abbreviation $abbreviation already exists"
+        util_error " add: A $(util_type) abbreviation $abbreviation already exists"
         return
       fi
 
@@ -490,6 +481,17 @@ _zsh_abbr() {
       done
 
       mv "$abbr_universals_updated" "$ZSH_ABBR_UNIVERSALS_FILE"
+    }
+
+    function util_type() {
+      local type
+      type="universal"
+
+      if $opt_global; then
+        type="global"
+      fi
+
+      echo $type
     }
 
     function util_usage() {
@@ -661,6 +663,7 @@ _zsh_abbr() {
     unfunction -m "util_exists"
     unfunction -m "util_rename_modify"
     unfunction -m "util_sync_universal"
+    unfunction -m "util_type"
     unfunction -m "util_usage"
   }
 }
