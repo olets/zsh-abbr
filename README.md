@@ -107,19 +107,19 @@ Clone this repo and add `source path/to/zsh-abbr.zsh` to your `.zshrc`.
 
 ## Usage
 
-```
+```shell
 abbr <SCOPE> <OPTION> <ANY OPTION ARGUMENTS>
 ```
 
 or
 
-```
+```shell
 abbr <OPTION> <SCOPE> <ANY OPTION ARGUMENTS>
 ```
 
 ### Scope
 
-```
+```shell
 [(--global | -g) | (--universal | -U)]
 ```
 
@@ -131,7 +131,7 @@ Default is universal.
 
 ### Options
 
-```
+```shell
 abbr [(--add | -a)
       | (--erase | -e)
       | (--erase-all-globals | -E)
@@ -153,7 +153,7 @@ abbr [(--add | -a)
 
 #### Add
 
-```
+```shell
 abbr [(--add | -a)] ABBREVIATION EXPANSION
 ```
 
@@ -191,6 +191,8 @@ Abbreviations can also be manually added to the `ZSH_ABBR_UNIVERSALS_FILE`.
 #### Erase
 
 ```
+
+```shell
 abbr (--erase | -e) ABBREVIATION
 ```
 
@@ -214,7 +216,7 @@ Universal abbreviations can also be manually erased from the `ZSH_ABBR_UNIVERSAL
 
 #### Erase All Globals
 
-```
+```shell
 abbr (--erase-all-globals | -E)
 ```
 
@@ -222,7 +224,7 @@ Erase all global abbreviations.
 
 #### Expand
 
-```
+```shell
 abbr (--expand | -x) ABBREVIATION
 ```
 
@@ -236,7 +238,7 @@ git checkout
 
 #### Git Populate
 
-```
+```shell
 abbr (--git-populate | -i)
 ```
 
@@ -281,7 +283,7 @@ b
 
 #### Output Aliases
 
-```
+```shell
 abbr (--output-aliases | -o) [DESTINATION]
 ```
 
@@ -308,7 +310,7 @@ alias -g g='git'
 
 #### Populate
 
-```
+```shell
 abbr (--git-populate | -i)
 ```
 
@@ -334,7 +336,7 @@ alias -g d='bin/deploy'
 
 #### Rename
 
-```
+```shell
 abbr (--rename | -r) OLD_WORD NEW_WORD
 ```
 
@@ -353,7 +355,7 @@ Abbreviations can also be manually renamed in the `ZSH_ABBR_UNIVERSALS_FILE`.
 
 #### Show
 
-```
+```shell
 abbr [(--show|-s)]
 ```
 
