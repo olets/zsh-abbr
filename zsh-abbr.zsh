@@ -362,11 +362,7 @@ _zsh_abbr() {
         return
       fi
 
-      source "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
-
-      for abbreviation expansion in ${(kv)ZSH_ABBR_UNIVERSALS}; do
-        printf "abbr -a -U -- %s %s\\n" "$abbreviation" "$expansion"
-      done
+      cat $ZSH_ABBR_UNIVERSALS_FILE
 
       for abbreviation expansion in ${(kv)ZSH_ABBR_GLOBALS}; do
         printf "abbr -a -g -- %s %s\\n" "$abbreviation" "$expansion"
@@ -377,14 +373,13 @@ _zsh_abbr() {
       local abbreviation
       local expansion
       abbreviation="$1"
-
-      if [ $(util_contains_delimiters $abbreviation) = true ]; then
-        util_error " add: ABBREVIATION may not contain delimiting prefixes"
-        return
-      fi
-
       shift
       expansion="$*"
+
+      if [[ $abbreviation != $(_zsh_abbr_last_word $abbreviation) ]]; then
+        util_error " add: ABBREVIATION ('$abbreviation') may not contain delimiting prefixes"
+        return
+      fi
 
       if [ $(util_exists $abbreviation) = true ]; then
         local type
@@ -409,16 +404,6 @@ _zsh_abbr() {
 
     function util_bad_options() {
       util_error ": Illegal combination of options"
-    }
-
-    function util_contains_delimiters() {
-      local contains
-      contains=false
-      if [[ ${=1} != $(_zsh_abbr_last_word $1) ]]; then
-        contains=true
-      fi
-
-      echo "$contains"
     }
 
     function util_error() {
@@ -466,6 +451,10 @@ _zsh_abbr() {
     }
 
     function util_sync_universal() {
+      if [ "$ZSH_ABBR_SYNC_UNIVERSALS" = false ]; then
+        return
+      fi
+
       local abbr_universals_updated="$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"_updated
 
       typeset -p ZSH_ABBR_UNIVERSALS > "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
@@ -474,7 +463,7 @@ _zsh_abbr() {
       mktemp "$abbr_universals_updated" 1> /dev/null
 
       for abbreviation expansion in ${(kv)ZSH_ABBR_UNIVERSALS}; do
-        echo "$abbreviation $expansion" >> "$abbr_universals_updated"
+        echo "abbr -a -U -- $abbreviation $expansion" >> "$abbr_universals_updated"
       done
 
       mv "$abbr_universals_updated" "$ZSH_ABBR_UNIVERSALS_FILE"
@@ -705,14 +694,9 @@ _zsh_abbr_init() {
   ZSH_ABBR_UNIVERSALS=()
   ZSH_ABBR_GLOBALS=()
 
-  # Load saved universal abbreviations
-  if [ -f "$ZSH_ABBR_UNIVERSALS_FILE" ]; then
-    while read -r abbreviation expansion; do
-      ZSH_ABBR_UNIVERSALS[$abbreviation]="$expansion"
-    done < "$ZSH_ABBR_UNIVERSALS_FILE"
-  else
-    mkdir -p $(dirname "$ZSH_ABBR_UNIVERSALS_FILE")
-    touch "$ZSH_ABBR_UNIVERSALS_FILE"
+  local shwordsplit_off=false
+  if [[ $options[shwordsplit] = off ]]; then
+    shwordsplit_off=true
   fi
 
   # Scratch file
@@ -720,6 +704,23 @@ _zsh_abbr_init() {
 
   rm "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE" 2> /dev/null
   mktemp "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE" 1> /dev/null
+
+  # Load saved universal abbreviations
+  if [ -f "$ZSH_ABBR_UNIVERSALS_FILE" ]; then
+    setopt shwordsplit
+    while read -r line; do
+      $line
+    done < $ZSH_ABBR_UNIVERSALS_FILE
+
+    # reset if necessary
+    if [ $shwordsplit_off = true ]; then
+      unsetopt shwordsplit
+    fi
+  else
+    mkdir -p $(dirname "$ZSH_ABBR_UNIVERSALS_FILE")
+    touch "$ZSH_ABBR_UNIVERSALS_FILE"
+  fi
+
   typeset -p ZSH_ABBR_UNIVERSALS > "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
 }
 
@@ -744,18 +745,21 @@ _zsh_abbr_expand_widget() {
 zle -N _zsh_abbr_expand_widget
 
 
-# INITIALIZATION
-# --------------
-
-_zsh_abbr_init
-if [ "$ZSH_ABBR_DEFAULT_BINDINGS" = true ]; then
-  _zsh_abbr_bind_widgets
-fi
-
-
 # SHARE
 # -----
 
 abbr() {
   _zsh_abbr $*
 }
+
+
+# INITIALIZATION
+# --------------
+
+ZSH_ABBR_SYNC_UNIVERSALS=false
+_zsh_abbr_init
+ZSH_ABBR_SYNC_UNIVERSALS=true
+if [ "$ZSH_ABBR_DEFAULT_BINDINGS" = true ]; then
+  _zsh_abbr_bind_widgets
+fi
+
