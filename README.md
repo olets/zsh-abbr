@@ -191,7 +191,7 @@ abbr a\;b c # will error
 abbr 'a||b' c # will error
 ```
 
-Abbreviations can also be manually added to the `ZSH_ABBR_USER_FILE`.
+Abbreviations can also be manually added to the `ZSH_USER_ABBREVIATIONS_PATH`.
 
 #### Clear Sessions
 
@@ -223,7 +223,7 @@ gimme cookie monster
 Already on 'master'
 ```
 
-User abbreviations can also be manually erased from the `ZSH_ABBR_USER_FILE`.
+User abbreviations can also be manually erased from the `ZSH_USER_ABBREVIATIONS_PATH`.
 
 #### Expand
 
@@ -354,7 +354,7 @@ Rename an abbreviation. Use the **--session** scope to rename a session abbrevia
 % gm[Space] # expands to git checkout master
 ```
 
-Abbreviations can also be manually renamed in the `ZSH_ABBR_USER_FILE`.
+Abbreviations can also be manually renamed in the `ZSH_USER_ABBREVIATIONS_PATH`.
 
 #### Show
 
@@ -379,12 +379,12 @@ abbr -a -U -- gcm git checkout master
 
 ### Storage
 
-User abbreviations live in a plain text file which you can manually edit, shared, etc. Its default location is `${HOME}/.config/zsh/user-abbreviations`. Customize this by setting the `ZSH_ABBR_USER_FILE` variable in your `.zshrc` before loading zsh-abbr.
+User abbreviations live in a plain text file which you can manually edit, shared, etc. Its default location is `${HOME}/.config/zsh/user-abbreviations`. Customize this by setting the `ZSH_USER_ABBREVIATIONS_PATH` variable in your `.zshrc` before loading zsh-abbr.
 
 ```shell
 % cat ~/.zshrc
 # -- snip --
-ZSH_ABBR_USER_FILE="path/to/my/user/abbreviations"
+ZSH_USER_ABBREVIATIONS_PATH="path/to/my/user/abbreviations"
 # -- snip --
 # load zsh-abbr
 ```
@@ -419,7 +419,7 @@ bindkey "^A" _zsh_abbr_expand_space
 Delete the zsh-abbr configuration directory. Note that this will permanently delete the user abbreviations file.
 
 ```shell
-% rm -rf $(dirname "$ZSH_ABBR_USER_FILE")
+% rm -rf $(dirname "$ZSH_USER_ABBREVIATIONS_PATH")
 ```
 
 Then follow the standard uninstallation procedure for your installation method. This is typically the reverse of what you did to install.

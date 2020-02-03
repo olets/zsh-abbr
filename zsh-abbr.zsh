@@ -12,7 +12,7 @@
 ZSH_ABBR_DEFAULT_BINDINGS="${ZSH_ABBR_DEFAULT_BINDINGS=true}"
 
 # File abbreviations are stored in
-ZSH_ABBR_USER_FILE="${ZSH_ABBR_USER_FILE="${HOME}/.config/zsh/abbreviations"}"
+ZSH_USER_ABBREVIATIONS_PATH="${ZSH_USER_ABBREVIATIONS_PATH="${HOME}/.config/zsh/abbreviations"}"
 
 
 # FUNCTIONS
@@ -216,7 +216,7 @@ _zsh_abbr() {
         return
       fi
 
-      ZSH_ABBR_SESSION=()
+      ZSH_SESSION_ABBREVIATIONS=()
     }
 
     function erase() {
@@ -229,17 +229,17 @@ _zsh_abbr() {
       fi
 
       if $opt_session; then
-        if (( ${+ZSH_ABBR_SESSION[$1]} )); then
-          unset "ZSH_ABBR_SESSION[${(b)1}]"
+        if (( ${+ZSH_SESSION_ABBREVIATIONS[$1]} )); then
+          unset "ZSH_SESSION_ABBREVIATIONS[${(b)1}]"
         else
           util_error " erase: No session abbreviation named $1"
           return
         fi
       else
-        source "$ZSH_ABBR_USER_SCRATCH_FILE"
+        source "$ZSH_USER_ABBREVIATIONS_SCRATCH_FILE"
 
-        if (( ${+ZSH_ABBR_USER[$1]} )); then
-          unset "ZSH_ABBR_USER[${(b)1}]"
+        if (( ${+ZSH_USER_ABBREVIATIONS[$1]} )); then
+          unset "ZSH_USER_ABBREVIATIONS[${(b)1}]"
           util_sync_user
         else
           util_error " erase: No user abbreviation named $1"
@@ -283,10 +283,10 @@ _zsh_abbr() {
         return
       fi
 
-      source "$ZSH_ABBR_USER_SCRATCH_FILE"
+      source "$ZSH_USER_ABBREVIATIONS_SCRATCH_FILE"
 
-      print -l ${(k)ZSH_ABBR_USER}
-      print -l ${(k)ZSH_ABBR_SESSION}
+      print -l ${(k)ZSH_USER_ABBREVIATIONS}
+      print -l ${(k)ZSH_SESSION_ABBREVIATIONS}
     }
 
     function output_aliases() {
@@ -299,9 +299,9 @@ _zsh_abbr() {
       fi
 
       if $opt_session; then
-        source=ZSH_ABBR_SESSION
+        source=ZSH_SESSION_ABBREVIATIONS
       else
-        source=ZSH_ABBR_USER
+        source=ZSH_USER_ABBREVIATIONS
       fi
 
       for abbreviation expansion in ${(kv)${(P)source}}; do
@@ -337,10 +337,10 @@ _zsh_abbr() {
 
     function rename() {
       local err source
-      source="ZSH_ABBR_SESSION"
+      source="ZSH_SESSION_ABBREVIATIONS"
 
       if $opt_session; then
-        source="ZSH_ABBR_SESSION"
+        source="ZSH_SESSION_ABBREVIATIONS"
       fi
 
       if [ $# -ne 2 ]; then
@@ -381,9 +381,9 @@ _zsh_abbr() {
         return
       fi
 
-      cat $ZSH_ABBR_USER_FILE
+      cat $ZSH_USER_ABBREVIATIONS_PATH
 
-      for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION}; do
+      for abbreviation expansion in ${(kv)ZSH_SESSION_ABBREVIATIONS}; do
         printf "abbr -a -g -- %s %s\\n" "$abbreviation" "$expansion"
       done
     }
@@ -406,10 +406,10 @@ _zsh_abbr() {
       fi
 
       if $opt_session; then
-        ZSH_ABBR_SESSION[$abbreviation]="$expansion"
+        ZSH_SESSION_ABBREVIATIONS[$abbreviation]="$expansion"
       else
-        source "$ZSH_ABBR_USER_SCRATCH_FILE"
-        ZSH_ABBR_USER[$abbreviation]="$expansion"
+        source "$ZSH_USER_ABBREVIATIONS_SCRATCH_FILE"
+        ZSH_USER_ABBREVIATIONS[$abbreviation]="$expansion"
         util_sync_user
       fi
     }
@@ -429,9 +429,9 @@ _zsh_abbr() {
       exists=false
 
       if $opt_session; then
-        abbreviation="${ZSH_ABBR_SESSION[(I)$1]}"
+        abbreviation="${ZSH_SESSION_ABBREVIATIONS[(I)$1]}"
       else
-        abbreviation="${ZSH_ABBR_USER[(I)$1]}"
+        abbreviation="${ZSH_USER_ABBREVIATIONS[(I)$1]}"
       fi
 
       if [[ -n "$abbreviation" ]]; then
@@ -447,9 +447,9 @@ _zsh_abbr() {
       exists=false
 
       if $opt_session; then
-        abbreviation="${ZSH_ABBR_USER[(I)$1]}"
+        abbreviation="${ZSH_USER_ABBREVIATIONS[(I)$1]}"
       else
-        abbreviation="${ZSH_ABBR_SESSION[(I)$1]}"
+        abbreviation="${ZSH_SESSION_ABBREVIATIONS[(I)$1]}"
       fi
 
       if [[ -n "$abbreviation" ]]; then
@@ -461,11 +461,11 @@ _zsh_abbr() {
 
     function util_rename_modify {
       if $opt_session; then
-        util_add "$2" "${ZSH_ABBR_SESSION[$1]}"
-        unset "ZSH_ABBR_SESSION[${(b)1}]"
+        util_add "$2" "${ZSH_SESSION_ABBREVIATIONS[$1]}"
+        unset "ZSH_SESSION_ABBREVIATIONS[${(b)1}]"
       else
-        util_add "$2" "${ZSH_ABBR_USER[$1]}"
-        unset "ZSH_ABBR_USER[${(b)1}]"
+        util_add "$2" "${ZSH_USER_ABBREVIATIONS[$1]}"
+        unset "ZSH_USER_ABBREVIATIONS[${(b)1}]"
         util_sync_user
       fi
     }
@@ -477,19 +477,19 @@ _zsh_abbr() {
         return
       fi
 
-      user_updated="$ZSH_ABBR_USER_SCRATCH_FILE"_updated
+      user_updated="$ZSH_USER_ABBREVIATIONS_SCRATCH_FILE"_updated
 
-      typeset -p ZSH_ABBR_USER > "$ZSH_ABBR_USER_SCRATCH_FILE"
+      typeset -p ZSH_USER_ABBREVIATIONS > "$ZSH_USER_ABBREVIATIONS_SCRATCH_FILE"
 
       rm "$user_updated" 2> /dev/null
       touch "$user_updated"
       chmod 600 "$user_updated"
 
-      for abbreviation expansion in ${(kv)ZSH_ABBR_USER}; do
+      for abbreviation expansion in ${(kv)ZSH_USER_ABBREVIATIONS}; do
         echo "abbr -a -U -- $abbreviation $expansion" >> "$user_updated"
       done
 
-      mv "$user_updated" "$ZSH_ABBR_USER_FILE"
+      mv "$user_updated" "$ZSH_USER_ABBREVIATIONS_PATH"
     }
 
     function util_type() {
@@ -714,11 +714,11 @@ _zsh_abbr_expand_space() {
 
 _zsh_abbr_expansion() {
   local expansion
-  expansion="${ZSH_ABBR_SESSION[$1]}"
+  expansion="${ZSH_SESSION_ABBREVIATIONS[$1]}"
 
   if [[ ! -n $expansion ]]; then
-    source "$ZSH_ABBR_USER_SCRATCH_FILE"
-    expansion="${ZSH_ABBR_USER[$1]}"
+    source "$ZSH_USER_ABBREVIATIONS_SCRATCH_FILE"
+    expansion="${ZSH_USER_ABBREVIATIONS[$1]}"
   fi
 
   echo "$expansion"
@@ -729,39 +729,39 @@ _zsh_abbr_init() {
   local shwordsplit_off
   shwordsplit_off=false
 
-  typeset -gA ZSH_ABBR_USER
-  typeset -gA ZSH_ABBR_SESSION
-  ZSH_ABBR_USER=()
-  ZSH_ABBR_SESSION=()
+  typeset -gA ZSH_USER_ABBREVIATIONS
+  typeset -gA ZSH_SESSION_ABBREVIATIONS
+  ZSH_USER_ABBREVIATIONS=()
+  ZSH_SESSION_ABBREVIATIONS=()
 
   if [[ $options[shwordsplit] = off ]]; then
     shwordsplit_off=true
   fi
 
   # Scratch file
-  ZSH_ABBR_USER_SCRATCH_FILE="${TMPDIR:-/tmp}/zsh-user-abbreviations"
+  ZSH_USER_ABBREVIATIONS_SCRATCH_FILE="${TMPDIR:-/tmp}/zsh-user-abbreviations"
 
-  rm "$ZSH_ABBR_USER_SCRATCH_FILE" 2> /dev/null
-  touch "$ZSH_ABBR_USER_SCRATCH_FILE"
-  chmod 600 "$ZSH_ABBR_USER_SCRATCH_FILE"
+  rm "$ZSH_USER_ABBREVIATIONS_SCRATCH_FILE" 2> /dev/null
+  touch "$ZSH_USER_ABBREVIATIONS_SCRATCH_FILE" 1> /dev/null
+  chmod 600 "$ZSH_USER_ABBREVIATIONS_SCRATCH_FILE"
 
   # Load saved user abbreviations
-  if [ -f "$ZSH_ABBR_USER_FILE" ]; then
+  if [ -f "$ZSH_USER_ABBREVIATIONS_PATH" ]; then
     setopt shwordsplit
     while read -r line; do
       $line
-    done < $ZSH_ABBR_USER_FILE
+    done < $ZSH_USER_ABBREVIATIONS_PATH
 
     # reset if necessary
     if [ $shwordsplit_off = true ]; then
       unsetopt shwordsplit
     fi
   else
-    mkdir -p $(dirname "$ZSH_ABBR_USER_FILE")
-    touch "$ZSH_ABBR_USER_FILE"
+    mkdir -p $(dirname "$ZSH_USER_ABBREVIATIONS_PATH")
+    touch "$ZSH_USER_ABBREVIATIONS_PATH"
   fi
 
-  typeset -p ZSH_ABBR_USER > "$ZSH_ABBR_USER_SCRATCH_FILE"
+  typeset -p ZSH_USER_ABBREVIATIONS > "$ZSH_USER_ABBREVIATIONS_SCRATCH_FILE"
 }
 
 
