@@ -138,7 +138,7 @@ Default is user.
 
 ```shell
 abbr [(--add | -a)
-      | (--clear-sessions | -c)
+      | (--clear-session | -c)
       | (--erase | -e)
       | (--expand | -x)
       | (--git-populate | -i)
@@ -195,7 +195,7 @@ Abbreviations can also be manually added to the `ZSH_USER_ABBREVIATIONS_PATH`.
 #### Clear Sessions
 
 ```shell
-abbr (--clear-sessions | -c)
+abbr (--clear-session | -c)
 ```
 
 Erase all session abbreviations.
