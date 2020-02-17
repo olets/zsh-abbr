@@ -92,7 +92,7 @@ Clone this repo and add `source path/to/zsh-abbr.zsh` to your `.zshrc`.
 
 # The above will in other open sessions, and in future sessions.
 # Add an abbreviation only available in the current terminal
-% abbr -g gco[Ctrl-Space] https://en.wikipedia.org/wiki/GCO
+% abbr -S gco[Ctrl-Space] https://en.wikipedia.org/wiki/GCO
 # (Note that Ctrl-Space opts out of space-triggered expansion)
 % gco[Space] # expands to `https://en.wikipedia.org/wiki/GCO`
 
@@ -102,7 +102,7 @@ Clone this repo and add `source path/to/zsh-abbr.zsh` to your `.zshrc`.
 % wgco[Space] # expands to `https://en.wikipedia.org/wiki/GCO`
 
 # Delete it
-% abbr -g wgco[Ctrl-Space]
+% abbr -S wgco[Ctrl-Space]
 % wgco[Space] # no expansion
 
 # Migrate your aliases to abbreviations
@@ -125,7 +125,7 @@ abbr <OPTION> <SCOPE> <ANY OPTION ARGUMENTS>
 ### Scope
 
 ```shell
-[(--session | -g) | (--user | -U)]
+[(--session | -S) | (--user | -U)]
 ```
 
 A given abbreviation can be made available in the current zsh session (i.e. in the current terminal) —these are called *session* abbreviations— or to all terminals —these are called *user* abbreviations.
@@ -142,7 +142,6 @@ abbr [(--add | -a)
       | (--erase | -e)
       | (--expand | -x)
       | (--git-populate | -i)
-      | (--session | -g)
       | (--help | -h)
       | (--list | -l)
       | (--output-aliases | -o)
@@ -273,7 +272,7 @@ List all abbreviations available in the current shell. User abbreviations appear
 ```shell
 % abbr a apple
 % abbr b ball
-% abbr -g c cat
+% abbr -S c cat
 % abbr -l
 a
 b
@@ -298,17 +297,17 @@ Export abbreviations as aliases declarations. To export session abbreviations, u
 ```
 ```shell
 % abbr --output-aliases
-alias -g gcm='git checkout master'
+alias -S gcm='git checkout master'
 ```
 ```shell
 % abbr --output-aliases --session
-alias -g g='git'
+alias -S g='git'
 ```
 ```shell
 % abbr --output-aliases ~/.zshrc
 % cat ~/.zshrc
 # -- snip --
-alias -g g='git'
+alias -S g='git'
 ```
 
 #### Populate
@@ -326,7 +325,7 @@ See also **Git Populate**.
 ```shell
 % cat ~/.zshrc
 # --snip--
-alias -g d='bin/deploy'
+alias -S d='bin/deploy'
 # --snip--
 % abbr --populate --session
 % d[Space] # expands to bin/deploy
@@ -369,7 +368,7 @@ Show all the abbreviations available in the current session, along with their ex
 % abbr --add --session a apple
 % abbr --show # or `abbr` with no arguments
 abbr -a -U -- gcm git checkout master
-abbr -a -g -- a apple
+abbr -a -S -- a apple
 % source ~/.zshrc
 % abbr --show
 abbr -a -U -- gcm git checkout master

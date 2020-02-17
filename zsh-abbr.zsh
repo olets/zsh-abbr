@@ -115,7 +115,7 @@ _zsh_abbr() {
        In addition, when adding abbreviations, erasing, outputting aliases,
        [git] populating, or renaming use
 
-       o --session or -g to create a session abbreviation, available only in the
+       o --session or -S to create a session abbreviation, available only in the
          current session.
 
        o --user or -U to create a user abbreviation (default),
@@ -542,13 +542,6 @@ _zsh_abbr() {
           opt_expand=true
           ((number_opts++))
           ;;
-        "--session"|\
-        "-g")
-          [ "$scope_set" = true ] && util_bad_options
-          scope_set=true
-          opt_session=true
-          ((number_opts++))
-          ;;
         "--help"|\
         "-h")
           util_usage
@@ -587,6 +580,13 @@ _zsh_abbr() {
           [ "$action_set" = true ] && util_bad_options
           action_set=true
           opt_rename=true
+          ((number_opts++))
+          ;;
+        "--session"|\
+        "-S")
+          [ "$scope_set" = true ] && util_bad_options
+          scope_set=true
+          opt_session=true
           ((number_opts++))
           ;;
         "--show"|\
