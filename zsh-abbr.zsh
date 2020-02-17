@@ -729,6 +729,8 @@ _zsh_abbr_init() {
   local shwordsplit_off
   shwordsplit_off=false
 
+  ZSH_ABBR_SYNC_USER=false
+
   typeset -gA ZSH_USER_ABBREVIATIONS
   typeset -gA ZSH_SESSION_ABBREVIATIONS
   ZSH_USER_ABBREVIATIONS=()
@@ -749,6 +751,7 @@ _zsh_abbr_init() {
     while read -r line; do
       $line
     done < $ZSH_USER_ABBREVIATIONS_PATH
+    unset ZSH_ABBR_SYNC_USER
 
     # reset if necessary
     if [ $shwordsplit_off = true ]; then
@@ -794,9 +797,7 @@ abbr() {
 # INITIALIZATION
 # --------------
 
-ZSH_ABBR_SYNC_USER=false
 _zsh_abbr_init
-ZSH_ABBR_SYNC_USER=true
 
 if [ "$ZSH_ABBR_DEFAULT_BINDINGS" = true ]; then
   _zsh_abbr_bind_widgets
