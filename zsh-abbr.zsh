@@ -304,15 +304,7 @@ _zsh_abbr() {
         source=ZSH_USER_ABBREVIATIONS
       fi
 
-      for abbreviation expansion in ${(kv)${(P)source}}; do
-        alias_definition="alias -g $abbreviation='$expansion'"
-
-        if [ $# -gt 0 ]; then
-          echo "$alias_definition" >> "$1"
-        else
-          print "$alias_definition"
-        fi
-      done
+      util_alias $source
     }
 
     function populate() {
@@ -412,6 +404,18 @@ _zsh_abbr() {
         ZSH_USER_ABBREVIATIONS[$abbreviation]="$expansion"
         util_sync_user
       fi
+    }
+
+    util_alias() {
+      for abbreviation expansion in ${(kv)${(P)1}}; do
+        alias_definition="alias -g $abbreviation='$expansion'"
+
+        if [ $# -gt 0 ]; then
+          echo "$alias_definition" >> "$1"
+        else
+          print "$alias_definition"
+        fi
+      done
     }
 
     function util_bad_options() {
@@ -669,6 +673,7 @@ _zsh_abbr() {
     unfunction -m "rename"
     unfunction -m "show"
     unfunction -m "util_add"
+    unfunction -m "util_alias"
     unfunction -m "util_error"
     unfunction -m "util_exists"
     unfunction -m "util_other_exists"
