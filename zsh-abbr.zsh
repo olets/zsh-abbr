@@ -261,7 +261,7 @@ _zsh_abbr() {
         return
       fi
 
-      _zsh_abbr_expansion "$1" true
+      _zsh_abbr_expansion "$1" false
     }
 
     function git_populate() {
@@ -372,43 +372,37 @@ _zsh_abbr() {
     }
 
     function rename() {
-      local err source
-      source="ZSH_SESSION_COMMAND_ABBREVIATIONS"
-
-      if $opt_session; then
-        source="ZSH_SESSION_COMMAND_ABBREVIATIONS"
-      fi
+      local err
 
       if [ $# -ne 2 ]; then
         util_error " rename: Requires exactly two arguments"
         return
       fi
 
-      if [ $(util_exists $1) != true ]; then
-        err=" rename: No $(util_type) abbreviation $1 exists."
+      # oldexists=false
+      # newavailable=true
+      # opt_global=false
+      #
+      # if session
+      #   check to see if there's a global session abbreviation $1
+      #     if there is, oldexists=true and opt_global=true
+      #     else check to see if there's a regular session abbreviation $1
+      #       if there is, oldexists=true
+      #   check to see if there's a global or regular session abbreviation $2
+      #     if there is, newavailable=false
+      # else check to see if there's a global user abbreviation $1
+      #   if there is, oldexists=true and opt_global=true
+      #   else check to see if there's a regular user abbreviation $1
+      #     if there is, oldexists=true
+      #   check to see if there's a global or regular user abbreviation $2
+      #     if there is, newavailable=false
+      #
+      # if oldexists and newavailable
+      #   add $2 $(_zsh_abbr_expansion $1 false ${${session:+-1}:-1)
+      #   unset ""ZSH${${session:+_SESSION}:-_USER}{$opt_global:+_GLOBAL}_ABBREVIATIONS"[${(b)1}]"
 
-        if [ $(util_other_exists $1) = true ]; then
-          local action other_type
-          action="add"
-          other_type="session"
-
-          if $opt_session; then
-            action="do not use"
-            other_type="user"
-          fi
-
-          err+=" A $other_type abbrevation named $1 does exist. To rename it, $action the --session/-S option."
-        fi
-
-        util_error $err
-        return
-      fi
-
-      if [ $(util_exists $2) = true ]; then
-        util_error " rename: A $(util_type) abbreviation $2 already exists"
-      else
-        util_rename_modify $1 $2
-      fi
+      # get rid of util_rename_modify
+      # get rid of the other place util_exists is used, use _zsh_abbr_expansion instead
     }
 
     function show() {
@@ -442,7 +436,7 @@ _zsh_abbr() {
         return
       fi
 
-      if [ $(util_exists $abbreviation) = true ]; then
+      if $(util_exists $abbreviation); then
         util_error " add: A $(util_type) abbreviation $abbreviation already exists"
         return
       fi
@@ -548,9 +542,9 @@ _zsh_abbr() {
       scope='USER'
       sync=true
 
-      if $opt_global; then
-        is_global=1
-      fi
+      # if $opt_global; then
+      #   is_global=1
+      # fi
 
       if $opt_session; then
         scope='SESSION'
@@ -820,20 +814,40 @@ _zsh_abbr_expand_space() {
 }
 
 _zsh_abbr_expansion() {
+  local abbreviation
+  local command_position
+  local scope
   local cmd_expansion
   local expansion
 
-  expansion="${ZSH_SESSION_GLOBAL_ABBREVIATIONS[$1]}"
+  abbreviation="$1"
 
-  if $2 && [[ ! -n "$expansion" ]]; then
-    cmd_expansion="${ZSH_SESSION_COMMAND_ABBREVIATIONS[$1]}"
+  command_position=false
+  if [ "$#" -gt 1 ]; then
+    command_position=$2
+  fi
 
-    if [[ -n "$cmd_expansion" ]]; then
-      expansion="$cmd_expansion"
+  # If scope is 0 (default), both session and global abbreviations are considered.
+  # If scope is -1, only session abbreviations are considered;
+  # if scope is 1, only global abbreviations are considered.
+  scope=0
+  if [ "$#" -gt 2 ]; then
+    scope="$3"
+  fi
+
+  if [[ $scope <= 0 ]]; then
+    expansion="${ZSH_SESSION_GLOBAL_ABBREVIATIONS[$1]}"
+
+    if $2 && [[ ! -n "$expansion" ]]; then
+      cmd_expansion="${ZSH_SESSION_COMMAND_ABBREVIATIONS[$1]}"
+
+      if [[ -n "$cmd_expansion" ]]; then
+        expansion="$cmd_expansion"
+      fi
     fi
   fi
 
-  if [[ ! -n "$expansion" ]]; then
+  if [[ $scope >= 0 && ! -n "$expansion" ]]; then
     expansion="${ZSH_USER_GLOBAL_ABBREVIATIONS[$1]}"
 
     if $2 && [[ ! -n "$expansion" ]]; then
