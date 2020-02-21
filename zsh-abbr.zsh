@@ -222,6 +222,8 @@ _zsh_abbr() {
     }
 
     function erase() {
+      local success=false
+
       if [ $# -gt 1 ]; then
         util_error " erase: Expected one argument"
         return
@@ -231,37 +233,55 @@ _zsh_abbr() {
       fi
 
       if $opt_session; then
-        if (( ${+ZSH_SESSION_COMMAND_ABBREVIATIONS[$1]} )); then
+        if $opt_global; then
+          if (( ${+ZSH_SESSION_GLOBAL_ABBREVIATIONS[$1]} )); then
+            unset "ZSH_SESSION_GLOBAL_ABBREVIATIONS[${(b)1}]"
+            success=true
+          fi
+        elif (( ${+ZSH_SESSION_COMMAND_ABBREVIATIONS[$1]} )); then
           unset "ZSH_SESSION_COMMAND_ABBREVIATIONS[${(b)1}]"
-        elif (( ${+ZSH_SESSION_GLOBAL_ABBREVIATIONS[$1]} )); then
-          unset "ZSH_SESSION_GLOBAL_ABBREVIATIONS[${(b)1}]"
-        else
-          util_error " erase: No session abbreviation named $1"
-          return
+          success=true
         fi
       else
-        source "${TMPDIR:-/tmp}/zsh-user-abbreviations"
+        if $opt_global; then
+          source "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
 
-        if (( ${+ZSH_USER_COMMAND_ABBREVIATIONS[$1]} )); then
-          unset "ZSH_USER_COMMAND_ABBREVIATIONS[${(b)1}]"
-          util_sync_user
-        elif (( ${+ZSH_USER_GLOBAL_ABBREVIATIONS[$1]} )); then
-          unset "ZSH_USER_GLOBAL_ABBREVIATIONS[${(b)1}]"
-          util_sync_user
+          if ! (( ${+ZSH_USER_GLOBAL_ABBREVIATIONS[$1]} )); then
+            unset "ZSH_USER_GLOBAL_ABBREVIATIONS[${(b)1}]"
+            util_sync_user
+            success=true
+          fi
         else
-          util_error " erase: No user abbreviation named $1"
-          return
+          source "${TMPDIR:-/tmp}/zsh-user-abbreviations"
+
+          if ! (( ${+ZSH_USER_COMMAND_ABBREVIATIONS[$1]} )); then
+            unset "ZSH_USER_GLOBAL_ABBREVIATIONS[${(b)1}]"
+            util_sync_user
+            success=true
+          fi
         fi
+      fi
+
+      if ! $success; then
+        util_error " erase: No matching abbreviation $1 exists"
       fi
     }
 
     function expand() {
+      local expansion
+
       if [ $# -ne 1 ]; then
         printf "expand requires exactly one argument\\n"
         return
       fi
 
-      _zsh_abbr_expansion "$1" false
+      expansion=$(_zsh_abbr_cmd_expansion "$1")
+
+      if [[ ! -n "$expansion" ]]; then
+        expansion=$(_zsh_abbr_global_expansion "$1")
+      fi
+
+      echo "$expansion"
     }
 
     function git_populate() {
@@ -373,36 +393,32 @@ _zsh_abbr() {
 
     function rename() {
       local err
+      local expansion
 
       if [ $# -ne 2 ]; then
         util_error " rename: Requires exactly two arguments"
         return
       fi
 
-      # oldexists=false
-      # newavailable=true
-      # opt_global=false
-      #
-      # if session
-      #   check to see if there's a global session abbreviation $1
-      #     if there is, oldexists=true and opt_global=true
-      #     else check to see if there's a regular session abbreviation $1
-      #       if there is, oldexists=true
-      #   check to see if there's a global or regular session abbreviation $2
-      #     if there is, newavailable=false
-      # else check to see if there's a global user abbreviation $1
-      #   if there is, oldexists=true and opt_global=true
-      #   else check to see if there's a regular user abbreviation $1
-      #     if there is, oldexists=true
-      #   check to see if there's a global or regular user abbreviation $2
-      #     if there is, newavailable=false
-      #
-      # if oldexists and newavailable
-      #   add $2 $(_zsh_abbr_expansion $1 false ${${session:+-1}:-1)
-      #   unset ""ZSH${${session:+_SESSION}:-_USER}{$opt_global:+_GLOBAL}_ABBREVIATIONS"[${(b)1}]"
+      if $opt_session; then
+        if $opt_global; then
+          expansion=${ZSH_SESSION_GLOBAL_ABBREVIATIONS[$1]}
+        else
+          expansion=${ZSH_SESSION_COMMAND_ABBREVIATIONS[$1]}
+        fi
+      else
+        if $opt_global; then
+          expansion=${ZSH_USER_GLOBAL_ABBREVIATIONS[$1]}
+        else
+          expansion=${ZSH_USER_COMMAND_ABBREVIATIONS[$1]}
+        fi
+      fi
 
-      # get rid of util_rename_modify
-      # get rid of the other place util_exists is used, use _zsh_abbr_expansion instead
+      if [[ -n "$expansion" ]]; then
+        util_add $2 $expansion && erase $1
+      else
+        util_error " rename: No matching abbreviation $1 exists"
+      fi
     }
 
     function show() {
@@ -421,11 +437,7 @@ _zsh_abbr() {
     function util_add() {
       local abbreviation
       local expansion
-      local is_global
-
-      if $opt_global; then
-        is_global=true
-      fi
+      local success=false
 
       abbreviation="$1"
       shift
@@ -436,27 +448,38 @@ _zsh_abbr() {
         return
       fi
 
-      if $(util_exists $abbreviation); then
-        util_error " add: A $(util_type) abbreviation $abbreviation already exists"
-        return
-      fi
-
       if $opt_session; then
         if $opt_global; then
-          ZSH_SESSION_GLOBAL_ABBREVIATIONS[$abbreviation]="$expansion"
-        else
-          ZSH_SESSION_COMMAND_ABBREVIATIONS[$abbreviation]="$expansion"
+          if ! (( ${+ZSH_SESSION_GLOBAL_ABBREVIATIONS[$1]} )); then
+            ZSH_SESSION_GLOBAL_ABBREVIATIONS[$abbreviation]=$expansion
+            success=true
+          fi
+        elif ! (( ${+ZSH_SESSION_COMMAND_ABBREVIATIONS[$1]} )); then
+          ZSH_SESSION_COMMAND_ABBREVIATIONS[$abbreviation]=$expansion
+          success=true
         fi
       else
         if $opt_global; then
           source "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
-          ZSH_USER_GLOBAL_ABBREVIATIONS[$abbreviation]="$expansion"
+
+          if ! (( ${+ZSH_USER_GLOBAL_ABBREVIATIONS[$1]} )); then
+            ZSH_USER_GLOBAL_ABBREVIATIONS[$abbreviation]=$expansion
+            util_sync_user
+            success=true
+          fi
         else
           source "${TMPDIR:-/tmp}/zsh-user-abbreviations"
-          ZSH_USER_COMMAND_ABBREVIATIONS[$abbreviation]="$expansion"
-        fi
 
-        util_sync_user
+          if ! (( ${+ZSH_USER_COMMAND_ABBREVIATIONS[$1]} )); then
+            ZSH_USER_COMMAND_ABBREVIATIONS[$abbreviation]=$expansion
+            util_sync_user
+            success=true
+          fi
+        fi
+      fi
+
+      if ! $success; then
+        util_error " add: A matching abbreviation $1 already exists"
       fi
     }
 
@@ -479,86 +502,6 @@ _zsh_abbr() {
     function util_error() {
       printf "abbr%s\\nFor help run abbr --help\\n" "$@"
       should_exit=true
-    }
-
-    function util_exists() {
-      local abbreviation
-      local exists
-      exists=false
-
-      if $opt_session; then
-        abbreviation="${ZSH_SESSION_COMMAND_ABBREVIATIONS[(I)$1]}"
-
-        if [[ ! -n $abbreviation ]]; then
-          abbreviation="${ZSH_SESSION_GLOBAL_ABBREVIATIONS[(I)$1]}"
-        fi
-      else
-        abbreviation="${ZSH_USER_COMMAND_ABBREVIATIONS[(I)$1]}"
-
-        if [[ ! -n $abbreviation ]]; then
-          abbreviation="${ZSH_USER_GLOBAL_ABBREVIATIONS[(I)$1]}"
-        fi
-      fi
-
-      if [[ -n "$abbreviation" ]]; then
-        exists=true
-      fi
-
-      echo "$exists"
-    }
-
-    function util_other_exists() {
-      local abbreviation
-      local exists
-      exists=false
-
-      if $opt_session; then
-        abbreviation="${ZSH_USER_COMMAND_ABBREVIATIONS[(I)$1]}"
-
-        if ! [[ -n $abbreviation ]]; then
-          abbreviation="${ZSH_USER_GLOBAL_ABBREVIATIONS[(I)$1]}"
-        fi
-      else
-        abbreviation="${ZSH_SESSION_COMMAND_ABBREVIATIONS[(I)$1]}"
-
-        if ! [[ -n $abbreviation ]]; then
-          abbreviation="${ZSH_SESSION_GLOBAL_ABBREVIATIONS[(I)$1]}"
-        fi
-      fi
-
-      if [[ -n "$abbreviation" ]]; then
-        exists=true
-      fi
-
-      echo "$exists"
-    }
-
-    function util_rename_modify {
-      local abbreviations
-      local is_global
-      local scope
-      local sync
-
-      scope='USER'
-      sync=true
-
-      # if $opt_global; then
-      #   is_global=1
-      # fi
-
-      if $opt_session; then
-        scope='SESSION'
-        sync=false
-      fi
-
-      abbreviations="ZSH_${scope}{$is_global:+_GLOBAL}_ABBREVIATIONS"
-
-      util_add "$2" "${${(P)abbreviations}[$1]}"
-      unset "${abbreviations}[${(b)1}]"
-
-      if $sync; then
-        util_sync_user
-      fi
     }
 
     function util_sync_user() {
@@ -771,9 +714,6 @@ _zsh_abbr() {
     unfunction -m "util_add"
     unfunction -m "util_alias"
     unfunction -m "util_error"
-    unfunction -m "util_exists"
-    unfunction -m "util_other_exists"
-    unfunction -m "util_rename_modify"
     unfunction -m "util_sync_user"
     unfunction -m "util_type"
     unfunction -m "util_usage"
@@ -798,9 +738,18 @@ _zsh_abbr_bind_widgets() {
   bindkey "^M" _zsh_abbr_expand_accept
 }
 
-_zsh_abbr_last_word() {
-  # delimited by `&&`, `|`, `;`, and whitespace
-  echo ${${1//*(\&\&|[;\|[:IFSSPACE:]])}}
+_zsh_abbr_cmd_expansion() {
+  local abbreviation
+  local expansion
+
+  abbreviation="$1"
+  expansion="${ZSH_SESSION_COMMAND_ABBREVIATIONS[$1]}"
+
+  if [[ ! -n "$expansion" ]]; then
+    expansion="${ZSH_USER_COMMAND_ABBREVIATIONS[$1]}"
+  fi
+
+  echo "$expansion"
 }
 
 _zsh_abbr_expand_accept() {
@@ -813,50 +762,15 @@ _zsh_abbr_expand_space() {
   zle self-insert
 }
 
-_zsh_abbr_expansion() {
+_zsh_abbr_global_expansion() {
   local abbreviation
-  local command_position
-  local scope
-  local cmd_expansion
   local expansion
 
   abbreviation="$1"
+  expansion="${ZSH_SESSION_GLOBAL_ABBREVIATIONS[$1]}"
 
-  command_position=false
-  if [ "$#" -gt 1 ]; then
-    command_position=$2
-  fi
-
-  # If scope is 0 (default), both session and global abbreviations are considered.
-  # If scope is -1, only session abbreviations are considered;
-  # if scope is 1, only global abbreviations are considered.
-  scope=0
-  if [ "$#" -gt 2 ]; then
-    scope="$3"
-  fi
-
-  if [[ $scope <= 0 ]]; then
-    expansion="${ZSH_SESSION_GLOBAL_ABBREVIATIONS[$1]}"
-
-    if $2 && [[ ! -n "$expansion" ]]; then
-      cmd_expansion="${ZSH_SESSION_COMMAND_ABBREVIATIONS[$1]}"
-
-      if [[ -n "$cmd_expansion" ]]; then
-        expansion="$cmd_expansion"
-      fi
-    fi
-  fi
-
-  if [[ $scope >= 0 && ! -n "$expansion" ]]; then
+  if [[ ! -n "$expansion" ]]; then
     expansion="${ZSH_USER_GLOBAL_ABBREVIATIONS[$1]}"
-
-    if $2 && [[ ! -n "$expansion" ]]; then
-      cmd_expansion="${ZSH_USER_COMMAND_ABBREVIATIONS[$1]}"
-
-      if [[ -n "$cmd_expansion" ]]; then
-        expansion="$cmd_expansion"
-      fi
-    fi
   fi
 
   echo "$expansion"
@@ -912,23 +826,28 @@ _zsh_abbr_init() {
   typeset -p ZSH_USER_GLOBAL_ABBREVIATIONS > "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
 }
 
+_zsh_abbr_last_word() {
+  # delimited by `&&`, `|`, `;`, and whitespace
+  echo ${${1//*(\&\&|[;\|[:IFSSPACE:]])}}
+}
+
 
 # WIDGETS
 # -------
 
 _zsh_abbr_expand_widget() {
-  local command_position
   local current_word
   local expansion
 
   current_word=$(_zsh_abbr_last_word "$LBUFFER")
 
-  command_position=false
   if [[ "$current_word" == "$LBUFFER" ]]; then
-    command_position=true
+    expansion=$(_zsh_abbr_cmd_expansion "$current_word")
   fi
 
-  expansion=$(_zsh_abbr_expansion "$current_word" "$command_position")
+  if ! [[ -n "$expansion" ]]; then
+    expansion=$(_zsh_abbr_global_expansion "$current_word")
+  fi
 
   if [[ -n "$expansion" ]]; then
     local preceding_lbuffer
