@@ -1,6 +1,6 @@
 # zsh-abbr ![GitHub release (latest by date)](https://img.shields.io/github/v/release/olets/zsh-abbr)
 
-zsh abbreviations — an enhanced [zsh](http://www.zsh.org/) port of [fish shell](http://www.fishshell.com/)'s `abbr`'s auto-expanding abbreviations.
+The zsh manager for auto-expanding abbreviations manager.
 
 **abbr** manages abbreviations - user-defined words that are replaced with longer phrases after they are entered.
 
@@ -137,16 +137,16 @@ Default is user.
 ### Options
 
 ```shell
-abbr [(--add | -a)
+abbr [(--add [(--global | -g)] | -a [(--global | -g)])
       | (--clear-session | -c)
-      | (--erase | -e)
+      | (--erase [(--global | -g)] | -e [(--global | -g)])
       | (--expand | -x)
       | (--git-populate | -i)
       | (--help | -h)
       | (--list | -l)
       | (--output-aliases | -o)
       | (--populate | -p)
-      | (--rename | -r)
+      | (--rename [(--global | -g)] | -r [(--global | -g)])
       | (--show | -s)
      ]
 ```
@@ -158,10 +158,14 @@ abbr [(--add | -a)
 #### Add
 
 ```shell
-abbr [(--add | -a)] ABBREVIATION EXPANSION
+abbr [(--add  [(--global | -g)] | -a [(--global | -g)] )] ABBREVIATION EXPANSION
 ```
 
-Add a new abbreviation. To add a session abbreviation, use **--session**. Otherwise, or if the **--user** scope is used, the new abbreviation will be user.
+Add a new abbreviation.
+
+To add a session abbreviation, use the **--session** flag. Otherwise, or if the **--user** flag is used, the new abbreviation will be available to all sessions.
+
+To add a global abbreviation, use the **--global** flag. Otherwise the new abbreviation will be a command abbreviation.
 
 ```shell
 % abbr --add gcm git checkout master
@@ -203,10 +207,14 @@ Erase all session abbreviations.
 #### Erase
 
 ```shell
-abbr (--erase | -e) ABBREVIATION
+abbr (--erase [(--global | -g)] | -e [(--global | -g)]) ABBREVIATION
 ```
 
-Erase an abbreviation. Specify **--session** scope to erase a session abbreviation. Otherwise, or if the **--user** scope is used, a user abbreviation will be erased.
+Erase an abbreviation.
+
+Use the **--session** flag to erase a session abbreviation. Otherwise, or if the **--user** flag is used, a cross-session abbreviation will be erased.
+
+Use the **--global** flag to erase a session abbreviation. Otherwise a cross-session abbreviation will be erased.
 
 ```shell
 % abbr --add gcm git commit master
@@ -244,7 +252,7 @@ git checkout
 abbr (--git-populate | -i)
 ```
 
-Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--session** scope to create session abbreviations. Otherwise, or if the **--user** scope is used, the Git abbreviations will be user.
+Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--session** scope to create session abbreviations. Otherwise, or if the **--user** flag is used, the Git abbreviations will be user.
 
 This command is useful for migrating from aliases to abbreviations.
 
@@ -289,7 +297,9 @@ b
 abbr (--output-aliases | -o) [DESTINATION]
 ```
 
-Export abbreviations as aliases declarations. To export session abbreviations, use  **--session**. Otherwise, or if the **--user** scope is used, user abbreviations are exported.
+Export abbreviations as aliases declarations.
+
+To export session abbreviations, use the **--session** flag. Otherwise, or if the **--user** flag is used, cross-session abbreviations are exported.
 
 ```shell
 % abbr --add gcm git checkout master
@@ -316,7 +326,9 @@ alias -S g='git'
 abbr (--git-populate | -i)
 ```
 
-Add abbreviations for every alias available in the current session. Use the **--session** scope to create session abbreviations. Otherwise, or if the **--user** scope is used, the abbreviations will be user.
+Add abbreviations for every alias available in the current session.
+
+Use the **--session** flag to create session abbreviations. Otherwise, or if the **--user** flag is used, the abbreviations will be cross-session.
 
 This command is useful for migrating from aliases to abbreviations.
 
@@ -339,10 +351,14 @@ alias -S d='bin/deploy'
 #### Rename
 
 ```shell
-abbr (--rename | -r) OLD_WORD NEW_WORD
+abbr (--rename [(--global | -g)] | -r [(--global | -g)]) OLD_WORD NEW_WORD
 ```
 
-Rename an abbreviation. Use the **--session** scope to rename a session abbreviation. Otherwise, or if the **--user** scope is used, a user abbreviation will be renamed.
+Rename an abbreviation.
+
+Use the **--session** flag to rename a session abbreviation. Otherwise, or if the **--user** flag is used, a cross-session abbreviation will be renamed.
+
+Use the **--global** flag to rename a global abbreviation. Otherwise a command abbreviation will be renamed.
 
 ```shell
 % abbr --add gcm git checkout master

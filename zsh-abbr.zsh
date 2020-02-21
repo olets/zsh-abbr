@@ -116,11 +116,16 @@ _zsh_abbr() {
        In addition, when adding abbreviations, erasing, outputting aliases,
        [git] populating, or renaming use
 
-       o --session or -S to create a session abbreviation, available only in the
-         current session.
+       o --session or -S to create a session abbreviation, available only in
+         the current session.
 
        o --user or -U to create a user abbreviation (default),
          immediately available to all sessions.
+
+       and
+
+       o --global or -g to create a global abbreviation, which expand anywhere
+         on a line.
 
        See the 'Internals' section for more on them.
 
