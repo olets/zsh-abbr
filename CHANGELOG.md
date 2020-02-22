@@ -1,3 +1,27 @@
+# [v2.1.0](https://github.com/olets/zsh-abbr/compare/v2.0.0...v2.1.0) (2020-02-03)
+
+Under the hood polish; cut down on what is made available to the session; and
+
+### Noteworthy changes
+
+* **aliases:** flag changed to --output-aliases (shorthand -o) from --create-aliases (-c) ([6b922c2](https://github.com/olets/zsh-abbr/commit/6b922c209700060253c42385e9c01795fd72c406))
+* **clear globals:** flag changed to --clear-globals (shorthand -c) from --erase-all-globals (-E) ([bf90f87](https://github.com/olets/zsh-abbr/commit/bf90f878287fec6bcb397f9a33713d5ac262c9f1))
+* **storage:** universals file is a list of 'abbr -a' commands ([2e191d1](https://github.com/olets/zsh-abbr/commit/2e191d15288b2e43dbaab63bde4886a6dbb43ac7))
+
+### Bug Fixes
+
+* **scope:** only a single scope flag is allowed ([7114a1b](https://github.com/olets/zsh-abbr/commit/7114a1b9798312db156a4c9c47f478b1776e5421))
+* **scope:** no internal variables or functions bleed ([4358c2b](https://github.com/olets/zsh-abbr/commit/4358c2b417036ac69ec3bb98697491bbbc09d4c0))
+
+### Features
+
+* **add:** support explicit end of options with -- ([1085a29](https://github.com/olets/zsh-abbr/commit/1085a296edba45bc9435f697de19f552138fa113))
+* **options:** no error on hyphen ([a25c7da](https://github.com/olets/zsh-abbr/commit/a25c7daee656cdcc86acc1edbb452ce3bea90d72))
+* **rename:** suggest changing scope if abbreviation exists in the other scope but not in the specified one ([0473fb7](https://github.com/olets/zsh-abbr/commit/0473fb730b4d47ef023bf19e1dadf16ef327346a))
+* **word:** delimit by '&&', '|', ';', and whitespace ([44b3740](https://github.com/olets/zsh-abbr/commit/44b37405d70ea458a92c62e679a4f788c5fcd622))
+* **zinit:** verified installation documentation ([7890320](https://github.com/olets/zsh-abbr/commit/7890320a540153cfcfdc0f7ddc556cba897e7773))
+
+
 # [v2.0.0](https://github.com/olets/zsh-abbr/compare/v1.2.0...v2.0.0) (2020-01-19)
 
 
