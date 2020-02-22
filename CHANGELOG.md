@@ -1,4 +1,4 @@
-# v2.0.0
+# [v2.0.0](https://github.com/olets/zsh-abbr/compare/v1.2.0...v2.0.0) (2020-01-19)
 
 
 ### Breaking changes
@@ -18,7 +18,7 @@
 * **universals:** change default path ([c7ba374](https://github.com/olets/zsh-abbr/commit/c7ba3745e8b51dd1e70cb61031182d0334e0c811))
 
 
-# v1.2.0
+# [v1.2.0](https://github.com/olets/zsh-abbr/compare/v1.1.0...v1.2.0) (2020-01-12)
 
 
 ### Bug Fixes
@@ -42,7 +42,7 @@
 
 
 
-# v1.1.0
+# [v1.1.0](https://github.com/olets/zsh-abbr/compare/v1.0.0...v1.1.0) (2019-01-26)
 
 Bug fixes and
 
@@ -54,6 +54,6 @@ Bug fixes and
 
 
 
-# v1.0.0
+# [v1.0.0](https://github.com/olets/zsh-abbr/compare/initial...v1.0.0) (2019-01-26)
 
 Feature parity with fish's abbr
