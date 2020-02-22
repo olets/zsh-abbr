@@ -482,7 +482,8 @@ _zsh_abbr() {
       typeset -p ZSH_ABBR_UNIVERSALS > "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
 
       rm "$abbr_universals_updated" 2> /dev/null
-      mktemp "$abbr_universals_updated" 1> /dev/null
+      touch "$abbr_universals_updated"
+      chmod 600 "$abbr_universals_updated"
 
       for abbreviation expansion in ${(kv)ZSH_ABBR_UNIVERSALS}; do
         echo "abbr -a -U -- $abbreviation $expansion" >> "$abbr_universals_updated"
@@ -739,10 +740,11 @@ _zsh_abbr_init() {
   fi
 
   # Scratch file
-  ZSH_ABBR_UNIVERSALS_SCRATCH_FILE="${TMPDIR}/abbr_universals"
+  ZSH_ABBR_UNIVERSALS_SCRATCH_FILE="${TMPDIR:-/tmp}/abbr_universals"
 
   rm "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE" 2> /dev/null
-  mktemp "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE" 1> /dev/null
+  touch "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
+  chmod 600 "$ZSH_ABBR_UNIVERSALS_SCRATCH_FILE"
 
   # Load saved universal abbreviations
   if [ -f "$ZSH_ABBR_UNIVERSALS_FILE" ]; then
