@@ -525,11 +525,11 @@ _zsh_abbr() {
       chmod 600 "$user_updated"
 
       for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
-        echo "abbr -a -U -- $abbreviation $expansion" >> "$user_updated"
+        echo "abbr -- $abbreviation $expansion" >> "$user_updated"
       done
 
       for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
-        echo "abbr -a -U -g -- $abbreviation $expansion" >> "$user_updated"
+        echo "abbr -g -- $abbreviation $expansion" >> "$user_updated"
       done
 
       mv "$user_updated" "$ZSH_ABBR_USER_PATH"
