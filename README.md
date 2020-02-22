@@ -137,18 +137,18 @@ Default is user.
 ### Options
 
 ```shell
-abbr [(--add [(--global | -g)] | -a [(--global | -g)])
-      | (--clear-session | -c)
-      | (--erase [(--global | -g)] | -e [(--global | -g)])
-      | (--expand | -x)
-      | (--git-populate | -i)
-      | (--help | -h)
-      | (--list | -l)
-      | (--output-aliases | -o)
-      | (--populate | -p)
-      | (--rename [(--global | -g)] | -r [(--global | -g)])
-      | (--show | -s)
-     ]
+[(--add [(--global | -g)] | -a [(--global | -g)])
+  | (--clear-session | -c)
+  | (--erase [(--global | -g)] | -e [(--global | -g)])
+  | (--expand | -x)
+  | (--git-populate | -i)
+  | (--help | -h)
+  | (--list | -l)
+  | (--output-aliases | -o)
+  | (--populate | -p)
+  | (--rename [(--global | -g)] | -r [(--global | -g)])
+  | (--show | -s)
+]
 ```
 
 `zsh-abbr` has options to add, rename, and erase abbreviations; to add abbreviations for every alias or Git alias; to list the available abbreviations with or without their expansions; and to create aliases from abbreviations.
