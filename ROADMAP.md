@@ -3,6 +3,11 @@
 - [x] checked is completed
 - [ ] unchecked is to-do
 
+## ASAP
+
+- [ ] Identify someone who contributors can contact if olets violates the code of conduct (note: not looking for volunteers)
+- [ ] Update code of conduct with their information
+
 ## 3.0.0
 
 Zsh `abbr`, not the zsh port of fish `abbr`
