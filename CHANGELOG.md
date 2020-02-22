@@ -1,3 +1,15 @@
+# [v2.1.1](https://github.com/olets/zsh-abbr/compare/v2.1.0...v2.1.1) (2020-02-22)
+
+### Bug Fixes
+
+* **scratch file:** Linux compatibility (#3 by @ifreund) ([0e647cd](https://github.com/olets/zsh-abbr/commit/0e647cdf2d07c55b14fb98a6b3a39911c9bdb49d))
+
+### Features
+
+* **code of conduct:** add Contributor Covenant ([87333c5](https://github.com/olets/zsh-abbr/commit/87333c55d1246ea8075d4980cee8fb4ffbb48d11))
+* **contributing:** add guidelines ([33b5fcd](https://github.com/olets/zsh-abbr/commit/33b5fcd07c137fae1a2608aa2d980cbc8f185b22))
+
+
 # [v2.1.0](https://github.com/olets/zsh-abbr/compare/v2.0.0...v2.1.0) (2020-02-03)
 
 Under the hood polish; cut down on what is made available to the session; and
