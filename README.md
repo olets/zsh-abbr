@@ -16,6 +16,8 @@ Run `abbr --help` (or `abbr -h`) for documentation.
 1. [Quick Start](#quick-start)
 1. [Usage](#usage)
 1. [Configuration](#configuration)
+1. [Changelog](#changelog)
+1. [Roadmap](#roadmap)
 1. [Uninstalling](#uninstalling)
 
 ## Installation
@@ -422,6 +424,14 @@ Delete the zsh-abbr configuration directory. Note that this will permanently del
 ```
 
 Then follow the standard uninstallation procedure for your installation method. This is typically the reverse of what you did to install.
+
+## Changelog
+
+See the [CHANGELOG](CHANGELOG.md) file.
+
+## Roadmap
+
+See the [ROADMAP](ROADMAP.md) file.
 
 ## License
 
