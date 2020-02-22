@@ -181,7 +181,7 @@ The following are equivalent:
 
 A `--` may optionally follow the last option.
 
-The following are not allowed in the abbreviation: `;`, `||`, `&&`, and whitespace.
+The following are not allowed in the abbreviation: `;`, `|`, `&&`, and whitespace.
 
 ```shell
 abbr a\;b c # will error
