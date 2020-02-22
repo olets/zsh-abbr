@@ -18,6 +18,7 @@ Run `abbr --help` (or `abbr -h`) for documentation.
 1. [Configuration](#configuration)
 1. [Changelog](#changelog)
 1. [Roadmap](#roadmap)
+1. [Contributing](#contributing)
 1. [Uninstalling](#uninstalling)
 
 ## Installation
@@ -161,7 +162,7 @@ abbr [(--add | -a)
 abbr [(--add | -a)] ABBREVIATION EXPANSION
 ```
 
-Add a new abbreviation. To add a global abbreviation, use **--global**. Othewise, or if the **--universal** scope is used, the new abbreviation will be universal.
+Add a new abbreviation. To add a global abbreviation, use **--global**. Otherwise, or if the **--universal** scope is used, the new abbreviation will be universal.
 
 ```shell
 % abbr --add gcm git checkout master
@@ -202,13 +203,11 @@ Erase all global abbreviations.
 
 #### Erase
 
-```
-
 ```shell
 abbr (--erase | -e) ABBREVIATION
 ```
 
-Erase an abbreviation. Specify **--global** scope to erase a global abbreviation. Othewise, or if the **--universal** scope is used, a universal abbreviation will be erased.
+Erase an abbreviation. Specify **--global** scope to erase a global abbreviation. Otherwise, or if the **--universal** scope is used, a universal abbreviation will be erased.
 
 ```shell
 % abbr --add gcm git commit master
@@ -246,7 +245,7 @@ git checkout
 abbr (--git-populate | -i)
 ```
 
-Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--global** scope to create global abbreviations. Othewise, or if the **--universal** scope is used, the Git abbreviations will be universal.
+Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--global** scope to create global abbreviations. Otherwise, or if the **--universal** scope is used, the Git abbreviations will be universal.
 
 This command is useful for migrating from aliases to abbreviations.
 
@@ -291,7 +290,7 @@ b
 abbr (--output-aliases | -o) [DESTINATION]
 ```
 
-Export abbreviations as aliases declarations. To export global abbreviations, use  **--global**. Othewise, or if the **--universal** scope is used, universal abbreviations are exported.
+Export abbreviations as aliases declarations. To export global abbreviations, use  **--global**. Otherwise, or if the **--universal** scope is used, universal abbreviations are exported.
 
 ```shell
 % abbr --add gcm git checkout master
@@ -318,7 +317,7 @@ alias -g g='git'
 abbr (--git-populate | -i)
 ```
 
-Add abbreviations for every alias available in the current session. Use the **--global** scope to create global abbreviations. Othewise, or if the **--universal** scope is used, the abbreviations will be universal.
+Add abbreviations for every alias available in the current session. Use the **--global** scope to create global abbreviations. Otherwise, or if the **--universal** scope is used, the abbreviations will be universal.
 
 This command is useful for migrating from aliases to abbreviations.
 
@@ -344,7 +343,7 @@ alias -g d='bin/deploy'
 abbr (--rename | -r) OLD_WORD NEW_WORD
 ```
 
-Rename an abbreviation. Use the **--global** scope to rename a global abbreviation. Othewise, or if the **--universal** scope is used, a universal abbreviation will be renamed.
+Rename an abbreviation. Use the **--global** scope to rename a global abbreviation. Otherwise, or if the **--universal** scope is used, a universal abbreviation will be renamed.
 
 ```shell
 % abbr --add gcm git checkout master
@@ -432,6 +431,16 @@ See the [CHANGELOG](CHANGELOG.md) file.
 ## Roadmap
 
 See the [ROADMAP](ROADMAP.md) file.
+
+## Contributing
+
+Thanks for your interest. Contributions are welcome!
+
+> Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+
+Check the [Issues](https://github.com/olets/zsh-abbr/issues) to see if your topic has been discussed before or if it is being worked on. You may also want to check the roadmap (see above). Discussing in an Issue before opening a Pull Request means future contributors only have to search in one place.
+
+This project loosely follows the [Angular commit message conventions](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit). This helps with searchability and with the changelog, which is generated automatically and touched up by hand only if necessary. Use the commit message format `<type>(<scope>): <subject>`, where `<type>` is **feat** for new or changed behavior, **fix** for fixes, **docs** for documentation, **style** for under the hood changes related to for example zshisms, **refactor** for other refactors, **test** for tests, or **chore** chore for general maintenance (this will be used primarily by maintainers not contributors, for example for version bumps). `<scope>` is more loosely defined. Look at the [commit history](https://github.com/olets/zsh-abbr/commits/master) for ideas.
 
 ## License
 
