@@ -628,8 +628,8 @@ _zsh_abbr() {
 
     if $opt_add; then
        add "$@"
-    elif $opt_create_aliases; then
-      create_aliases "$@"
+    elif $opt_output_aliases; then
+      output_aliases "$@"
     elif $opt_clear_globals; then
       clear_globals "$@"
     elif $opt_erase; then
