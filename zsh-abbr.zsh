@@ -251,7 +251,7 @@ _zsh_abbr() {
         if $opt_global; then
           source "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
 
-          if ! (( ${+ZSH_ABBR_USER_GLOBALS[$1]} )); then
+          if (( ${+ZSH_ABBR_USER_GLOBALS[$1]} )); then
             unset "ZSH_ABBR_USER_GLOBALS[${(b)1}]"
             util_sync_user
             success=true
@@ -259,8 +259,8 @@ _zsh_abbr() {
         else
           source "${TMPDIR:-/tmp}/zsh-user-abbreviations"
 
-          if ! (( ${+ZSH_ABBR_USER_COMMANDS[$1]} )); then
-            unset "ZSH_ABBR_USER_GLOBALS[${(b)1}]"
+          if (( ${+ZSH_ABBR_USER_COMMANDS[$1]} )); then
+            unset "ZSH_ABBR_USER_COMMANDS[${(b)1}]"
             util_sync_user
             success=true
           fi
