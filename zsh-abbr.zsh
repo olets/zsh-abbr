@@ -751,6 +751,7 @@ _zsh_abbr_cmd_expansion() {
   expansion="${ZSH_ABBR_SESSION_COMMANDS[$1]}"
 
   if [[ ! -n "$expansion" ]]; then
+    source "${TMPDIR:-/tmp}/zsh-user-abbreviations"
     expansion="${ZSH_ABBR_USER_COMMANDS[$1]}"
   fi
 
@@ -775,6 +776,7 @@ _zsh_abbr_global_expansion() {
   expansion="${ZSH_ABBR_SESSION_GLOBALS[$1]}"
 
   if [[ ! -n "$expansion" ]]; then
+    source "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
     expansion="${ZSH_ABBR_USER_GLOBALS[$1]}"
   fi
 
