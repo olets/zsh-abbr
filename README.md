@@ -52,7 +52,7 @@ Or install zsh-abbr with your favorite plugin manager:
   - Add to the OMZ plugins array in your `.zshrc`:
 
     ```shell
-    plugins=( [plugins...] zsh-syntax-highlighting)
+    plugins=( [plugins...] zsh-abbr)
     ```
 
 - **[zgen](https://github.com/tarjoilija/zgen)**: add `zgen load olets/zsh-abbr` to your `.zshrc`.
