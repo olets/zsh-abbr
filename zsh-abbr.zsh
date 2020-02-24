@@ -780,7 +780,6 @@ _zsh_abbr_expand_widget() {
     local preceding_lbuffer
     preceding_lbuffer="${LBUFFER%%$current_word}"
     LBUFFER="$preceding_lbuffer$expansion"
-    _zsh_highlight # if using zsh-syntax-highlighting, update the highlighting
   fi
 }
 
