@@ -1,3 +1,13 @@
+# [v2.1.2](https://github.com/olets/zsh-abbr/compare/v2.1.1...v2.1.2) (2020-02-24)
+
+### Bug Fixes
+
+* **expansion:** only clear autosuggestions if they are supported [[#6](https://github.com/olets/zsh-abbr/issues/6)] ([21e35b6](https://github.com/olets/zsh-abbr/commit/21e35b66c49b77e7ea72a909ebd60f06b99350b3))
+
+### Features
+
+* **expansion:** highlighting call is not necessary... ([5d1fde0](https://github.com/olets/zsh-abbr/commit/5d1fde0287337d8a5502dae249a309d58a0e00d9))
+
 # [v2.1.1](https://github.com/olets/zsh-abbr/compare/v2.1.0...v2.1.1) (2020-02-22)
 
 ### Bug Fixes
