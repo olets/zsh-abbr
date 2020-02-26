@@ -1,3 +1,11 @@
+# [v2.1.3](https://github.com/olets/zsh-abbr/compare/v2.1.2...v2.1.3) (2020-02-26)
+
+### Features
+
+* **expansion:** refresh and style autosuggestions after space ([73fc250](https://github.com/olets/zsh-abbr/commit/73fc2505042b4142c14ca20e958d4043f1cd7572))
+
+
+
 # [v2.1.2](https://github.com/olets/zsh-abbr/compare/v2.1.1...v2.1.2) (2020-02-24)
 
 ### Bug Fixes
