@@ -704,18 +704,12 @@ _zsh_abbr_last_word() {
 
 _zsh_abbr_expand_accept() {
   zle _zsh_abbr_expand_widget
-
-  # if using zsh-autosuggestions, clear any suggestion
-  if $ZSH_ABBR_USE_AUTOSUGGESTIONS; then
-    _zsh_autosuggest_clear
-  fi
-
   zle accept-line
 }
 
 _zsh_abbr_expand_space() {
   zle _zsh_abbr_expand_widget
-  LBUFFER="$LBUFFER "
+  zle self-insert
 }
 
 _zsh_abbr_expansion() {
@@ -805,11 +799,6 @@ abbr() {
 ZSH_ABBR_SYNC_UNIVERSALS=false
 _zsh_abbr_init
 ZSH_ABBR_SYNC_UNIVERSALS=true
-
-ZSH_ABBR_USE_AUTOSUGGESTIONS=false
-if command -v _zsh_autosuggest_clear 1>/dev/null; then
-  ZSH_ABBR_USE_AUTOSUGGESTIONS=true
-fi
 
 if [ "$ZSH_ABBR_DEFAULT_BINDINGS" = true ]; then
   _zsh_abbr_bind_widgets
