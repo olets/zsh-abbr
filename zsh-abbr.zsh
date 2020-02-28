@@ -77,7 +77,7 @@ _zsh_abbr() {
    ${text_bold}Options${text_reset}
        The following options are available:
 
-       o --add ABBREVIATION EXPANSION or -a ABBREVIATION EXPANSION Adds a new
+       o --add ABBREVIATION=EXPANSION or -a ABBREVIATION=EXPANSION Adds a new
          abbreviation, causing ABBREVIATION to be expanded to EXPANSION.
 
        o --clear-session or -E Erases all session abbreviations.
@@ -130,21 +130,21 @@ _zsh_abbr() {
        See the 'Internals' section for more on them.
 
    ${text_bold}Examples${text_reset}
-       ${text_bold}abbr${text_reset} -a -g gco git checkout
-       ${text_bold}abbr${text_reset} --add --session gco git checkout
+       ${text_bold}abbr${text_reset} -a -g gco=\"git checkout\"
+       ${text_bold}abbr${text_reset} --add --session gco=\"git checkout\"
 
          Add a new abbreviation where gco will be replaced with git checkout
          session to the current shell. This abbreviation will not be
          automatically visible to other shells unless the same command is run
          in those shells.
 
-       ${text_bold}abbr${text_reset} -- g- git checkout -
+       ${text_bold}abbr${text_reset} -- g-=\"git checkout -\"
 
          If the EXPANSION includes a hyphen (-), the --add command\'s
          entire EXPANSION must be quoted.
 
-       ${text_bold}abbr${text_reset} -a l less
-       ${text_bold}abbr${text_reset} --add l less
+       ${text_bold}abbr${text_reset} -a l=less
+       ${text_bold}abbr${text_reset} --add l=less
 
          Add a new abbreviation where l will be replaced with less user so
          all shells. Note that you omit the -U since it is the default.
@@ -208,12 +208,23 @@ _zsh_abbr() {
     version="zsh-abbr version 2.1.3"
 
     function add() {
-      if [[ $# -lt 2 ]]; then
-        util_error " add: Requires at least two arguments"
+      local abbreviation
+      local expansion
+
+      if [[ $# -gt 1 ]]; then
+        util_error " add: Expected one argument, got $*"
         return
       fi
 
-      util_add $* # must not be quoted
+      abbreviation="${1%%=*}"
+      expansion="${1#*=}"
+
+      if [[ -z $abbreviation || -z $expansion || $abbreviation == $1 ]]; then
+        util_error " add: Requires abbreviation and expansion"
+        return
+      fi
+
+      util_add $abbreviation $expansion
     }
 
     function clear_session() {
@@ -444,13 +455,16 @@ _zsh_abbr() {
       local expansion
       local success=false
 
-      abbreviation="$1"
-      shift
-      expansion="$*"
+      abbreviation=$1
+      expansion=$2
 
       if [[ $abbreviation != $(_zsh_abbr_last_word $abbreviation) ]]; then
         util_error " add: ABBREVIATION ('$abbreviation') may not contain delimiting prefixes"
         return
+      fi
+
+      if [[ ${abbreviation%=*} != $abbreviation ]]; then
+        util_error " add: ABBREVIATION ('$abbreviation') may not contain an equals sign"
       fi
 
       if $opt_session; then
@@ -512,7 +526,7 @@ _zsh_abbr() {
     function util_sync_user() {
       local user_updated
 
-      if [ "$ZSH_ABBR_SYNC_USER" = false ]; then
+      if [[ -n "$ZSH_ABBR_NO_SYNC_USER" ]]; then
         return
       fi
 
@@ -525,11 +539,11 @@ _zsh_abbr() {
       chmod 600 "$user_updated"
 
       for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
-        echo "abbr -- $abbreviation $expansion" >> "$user_updated"
+        echo "abbr ${abbreviation}=\"$expansion\"" >> "$user_updated"
       done
 
       for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
-        echo "abbr -g -- $abbreviation $expansion" >> "$user_updated"
+        echo "abbr -g ${abbreviation}=\"$expansion\"" >> "$user_updated"
       done
 
       mv "$user_updated" "$ZSH_ABBR_USER_PATH"
@@ -785,10 +799,10 @@ _zsh_abbr_global_expansion() {
 
 _zsh_abbr_init() {
   local line
-  local shwordsplit_off
-  shwordsplit_off=false
+  local session_shwordsplit_on
 
-  ZSH_ABBR_SYNC_USER=false
+  session_shwordsplit_on=false
+  ZSH_ABBR_NO_SYNC_USER=true
 
   typeset -gA ZSH_ABBR_USER_COMMANDS
   typeset -gA ZSH_ABBR_SESSION_COMMANDS
@@ -799,8 +813,8 @@ _zsh_abbr_init() {
   ZSH_ABBR_USER_GLOBALS=()
   ZSH_ABBR_SESSION_GLOBALS=()
 
-  if [[ $options[shwordsplit] = off ]]; then
-    shwordsplit_off=true
+  if [[ $options[shwordsplit] = on ]]; then
+    session_shwordsplit_on=true
   fi
 
   # Scratch files
@@ -814,20 +828,19 @@ _zsh_abbr_init() {
 
   # Load saved user abbreviations
   if [ -f "$ZSH_ABBR_USER_PATH" ]; then
-    setopt shwordsplit
-    while read -r line; do
-      $line
-    done < $ZSH_ABBR_USER_PATH
-    unset ZSH_ABBR_SYNC_USER
+    unsetopt shwordsplit
 
-    # reset if necessary
-    if [ $shwordsplit_off = true ]; then
-      unsetopt shwordsplit
+    source "$ZSH_ABBR_USER_PATH"
+
+    if $session_shwordsplit_on; then
+      setopt shwordsplit
     fi
   else
     mkdir -p $(dirname "$ZSH_ABBR_USER_PATH")
     touch "$ZSH_ABBR_USER_PATH"
   fi
+
+  unset ZSH_ABBR_NO_SYNC_USER
 
   typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp}/zsh-user-abbreviations"
   typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"

@@ -158,7 +158,7 @@ Default is user.
 #### Add
 
 ```shell
-abbr [(--add  [(--global | -g)] | -a [(--global | -g)] )] ABBREVIATION EXPANSION
+abbr [(--add  [(--global | -g)] | -a [(--global | -g)] )] ABBREVIATION=EXPANSION
 ```
 
 Add a new abbreviation.
@@ -168,7 +168,7 @@ To add a session abbreviation, use the **--session** flag. Otherwise, or if the 
 To add a global abbreviation, use the **--global** flag. Otherwise the new abbreviation will be a command abbreviation.
 
 ```shell
-% abbr --add gcm git checkout master
+% abbr --add gcm='git checkout master'
 % gcm[Space] # expands as git checkout master
 % gcm[Enter] # expands and accepts git checkout master
 ```
@@ -176,22 +176,27 @@ To add a global abbreviation, use the **--global** flag. Otherwise the new abbre
 The following are equivalent:
 
 ```shell
-% abbr --add --user gcm git checkout master
-% abbr -a --user gcm git checkout master
-% abbr --user gcm git checkout master
-% abbr --add -U gcm git checkout master
-% abbr -a -U gcm git checkout master
-% abbr -U gcm git checkout master
-% abbr gcm git checkout master
+% abbr --add --user gcm='git checkout master'
+% abbr -a --user gcm='git checkout master'
+% abbr --user gcm='git checkout master'
+% abbr --add -U gcm='git checkout master'
+% abbr -a -U gcm='git checkout master'
+% abbr -U gcm='git checkout master'
+% abbr gcm='git checkout master'
 ```
 
-A `--` may optionally follow the last option.
-
-The following are not allowed in the abbreviation: `;`, `|`, `&&`, and whitespace.
+The following are not allowed in the abbreviation: `;`, `|`, `&&`, `=`, and whitespace.
 
 ```shell
-abbr a\;b c # will error
-abbr 'a||b' c # will error
+abbr a\;b=c   # will error
+abbr 'a||b'=c # will error
+```
+
+As with aliases, to include whitespace, quotation marks, or other special characters like `;`, `|`, or `&` in the EXPANSION, quote the EXPANSION or `\`-escape the characters as necessary.
+
+```shell
+abbr a=b\;c  # allowed
+abbr a="b|c" # allowed
 ```
 
 Abbreviations can also be manually added to the `ZSH_USER_ABBREVIATIONS_PATH`.

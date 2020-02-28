@@ -31,9 +31,9 @@ Zsh `abbr`, not the zsh port of fish `abbr`
   - [x] in `--erase`
   - [x] in `--rename`
 - [x] in user file, no `-a -U`
-- [ ] in user file, no `--`
-- [ ] `add` syntax is `abbreviation='word'`/`abbreviation="word"`
-	- [ ] confirm that quotes can be included by escaping them (`abbreviation="the \"full\" \'word\'"`)
+- [x] in user file, no `--`
+- [x] `add` syntax is `abbreviation='word'`/`abbreviation="word"`
+	- [x] confirm that quotes can be included by escaping them (`abbreviation="the \"full\" \'word\'"`)
 - [ ] support importing from fish / migrating from <3.x
 
 ### Other
@@ -63,6 +63,6 @@ Chrome
 More idiomatic zsh
 
 - [ ] don't use quotation marks when not needed
-- [ ] use (( ${+var} )) instead of [[ -n "$var" ]]
+- [ ] rework variable values to support using (( ${+var} )) instead of [[ -n "$var" ]]
 - [ ] no `if [[ $var == true ]]` where just  `if $var` would work
 - [ ] any other places to tighten up boolean checks
