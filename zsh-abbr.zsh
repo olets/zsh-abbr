@@ -328,13 +328,16 @@ _zsh_abbr() {
 
       source "${TMPDIR:-/tmp}/zsh-user-abbreviations"
 
-      echo "user global\\n"
+      echo "User global abbreviations:\\n"
       print -l ${(k)ZSH_ABBR_USER_GLOBALS}
-      echo "user regular\\n"
+      echo
+      echo "User regular abbreviations\\n"
       print -l ${(k)ZSH_ABBR_USER_COMMANDS}
-      echo "session global\\n"
+      echo
+      echo "Session global abbreviations\\n"
       print -l ${(k)ZSH_ABBR_SESSION_GLOBALS}
-      echo "session regular\\n"
+      echo
+      echo "Session regular abbreviations\\n"
       print -l ${(k)ZSH_ABBR_SESSION_COMMANDS}
     }
 

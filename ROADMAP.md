@@ -1,7 +1,11 @@
 # ROADMAP
 
+Key:
+
 - [x] checked is completed
 - [ ] unchecked is to-do
+
+---
 
 ## ASAP
 
@@ -54,6 +58,10 @@ Look like zsh's `alias` not fish's `abbr`
 
 
 ## 3.x
+
+Github
+
+- [ ] move contribution documentation to a CONTRIBUTING.md
 
 Chrome
 
