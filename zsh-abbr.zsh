@@ -531,17 +531,16 @@ _zsh_abbr() {
       fi
 
       user_updated="${TMPDIR:-/tmp}/zsh-user-abbreviations"_updated
-
-      typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp}/zsh-user-abbreviations"
-
       rm "$user_updated" 2> /dev/null
       touch "$user_updated"
       chmod 600 "$user_updated"
 
+      typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp}/zsh-user-abbreviations"
       for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
         echo "abbr ${abbreviation}=\"$expansion\"" >> "$user_updated"
       done
 
+      typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
       for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
         echo "abbr -g ${abbreviation}=\"$expansion\"" >> "$user_updated"
       done
