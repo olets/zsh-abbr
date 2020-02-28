@@ -199,7 +199,7 @@ abbr a=b\;c  # allowed
 abbr a="b|c" # allowed
 ```
 
-Abbreviations can also be manually added to the `ZSH_USER_ABBREVIATIONS_PATH`.
+User-scope abbreviations can also be manually to the user abbreviations file. See the Storage documentation, below.
 
 #### Clear Sessions
 
@@ -399,7 +399,13 @@ abbr -a -U -- gcm git checkout master
 
 ### Storage
 
-User abbreviations live in a plain text file which you can manually edit, shared, etc. Its default location is `${HOME}/.config/zsh/user-abbreviations`. Customize this by setting the `ZSH_USER_ABBREVIATIONS_PATH` variable in your `.zshrc` before loading zsh-abbr.
+User abbreviations live in a plain text file which you can edit directly, share, keep in version control, etc. This file is `source`d when each new session is opened.
+
+When zsh-abbr updates the user abbreviations storage file, global user abbreviations are moved to the top of the file.
+
+_It is possible for direct edits to the storage file to be lost_ if you make a change to the user abbreviations in a session that opened before the manual change was made. Run `source ~/.zshrc` in all open sessions after directly editing the user abbreviations storage file.
+
+The user abbreviations storage file's default location is `${HOME}/.config/zsh/user-abbreviations`. Customize this by setting the `ZSH_USER_ABBREVIATIONS_PATH` variable in your `.zshrc` before loading zsh-abbr.
 
 ```shell
 % cat ~/.zshrc
@@ -410,8 +416,6 @@ ZSH_USER_ABBREVIATIONS_PATH="path/to/my/user/abbreviations"
 ```
 
 The default file is created the first time zsh-abbr is run. If you customize the path, you may want to delete the default file or even the default zsh-abbr config directory.
-
-_Note: order in the file will not necessarily be preserved, as zsh does not order associative arrays._
 
 ### Bindings
 
