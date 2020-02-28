@@ -535,14 +535,14 @@ _zsh_abbr() {
       touch "$user_updated"
       chmod 600 "$user_updated"
 
-      typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp}/zsh-user-abbreviations"
-      for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
-        echo "abbr ${abbreviation}=\"$expansion\"" >> "$user_updated"
-      done
-
       typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
       for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
         echo "abbr -g ${abbreviation}=\"$expansion\"" >> "$user_updated"
+      done
+
+      typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp}/zsh-user-abbreviations"
+      for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
+        echo "abbr ${abbreviation}=\"$expansion\"" >> "$user_updated"
       done
 
       mv "$user_updated" "$ZSH_ABBR_USER_PATH"
