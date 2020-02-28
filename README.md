@@ -137,16 +137,16 @@ Default is user.
 ### Options
 
 ```shell
-[(--add [(--global | -g)] | -a [(--global | -g)])
+[(--add [(--global | -g)] | -a [(--global | -g)] ) arg
   | (--clear-session | -c)
-  | (--erase [(--global | -g)] | -e [(--global | -g)])
-  | (--expand | -x)
+  | (--erase [(--global | -g)] | -e [(--global | -g)]) arg
+  | (--expand | -x) arg
   | (--git-populate | -i)
   | (--help | -h)
   | (--list | -l)
   | (--output-aliases | -o)
   | (--populate | -p)
-  | (--rename [(--global | -g)] | -r [(--global | -g)])
+  | (--rename [(--global | -g)] | -r [(--global | -g)]) args
   | (--show | -s)
 ]
 ```
