@@ -137,16 +137,17 @@ Default is user.
 ### Options
 
 ```shell
-[(--add [(--global | -g)] | -a [(--global | -g)] ) arg
+[(--add | -a ) [(--global | -g)] arg
   | (--clear-session | -c)
-  | (--erase [(--global | -g)] | -e [(--global | -g)]) arg
+  | (--erase | -e ) [(--global | -g)] arg
   | (--expand | -x) arg
   | (--git-populate | -i)
+  | --import-fish [(--global | -g)] arg
   | (--help | -h)
   | (--list | -l)
   | (--output-aliases | -o)
   | (--populate | -p)
-  | (--rename [(--global | -g)] | -r [(--global | -g)]) args
+  | (--rename | -r ) [(--global | -g)] args
   | (--show | -s)
 ]
 ```
@@ -273,6 +274,35 @@ This command is useful for migrating from aliases to abbreviations.
 ```
 
 Note for users migrating from Oh-My-Zsh: [OMZ's Git aliases are shell aliases](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh), not aliases in the Git config. To add abbreviations for them, use **Populate**.
+
+### Import Fish
+
+```shell
+abbr --import-fish FILE
+```
+
+Import fish abbr-syntax abbreviations (`abbreviation expansion` as compared to zsh abbr's `abbreviation=expansion`).
+
+To migrate from fish:
+
+```shell
+fish
+abbr -s > file/to/save/fish/abbreviations/to
+zsh
+abbr [(--global|-g)] [SCOPE] --import-fish file/to/save/fish/abbreviations/to
+# file is no longer needed, so feel free to
+# rm file/to/save/fish/abbreviations/to
+```
+
+To migrate from zsh-abbr < 3:
+
+```shell
+zsh
+abbr [(--global|-g)] [SCOPE] ${HOME}/.config/zsh/universal-abbreviations
+# zsh-abbr > 2 no longer uses that file
+# If not customizing `ZSH_USER_ABBREVIATIONS_PATH=${HOME}/.config/zsh/universal-abbreviations` feel free to
+# rm ${HOME}/.config/zsh/universal-abbreviations
+```
 
 #### List
 
@@ -405,7 +435,7 @@ When zsh-abbr updates the user abbreviations storage file, global user abbreviat
 
 _It is possible for direct edits to the storage file to be lost_ if you make a change to the user abbreviations in a session that opened before the manual change was made. Run `source ~/.zshrc` in all open sessions after directly editing the user abbreviations storage file.
 
-The user abbreviations storage file's default location is `${HOME}/.config/zsh/user-abbreviations`. Customize this by setting the `ZSH_USER_ABBREVIATIONS_PATH` variable in your `.zshrc` before loading zsh-abbr.
+The user abbreviations storage file's default location is `${HOME}/.config/zsh/abbreviations`. Customize this by setting the `ZSH_USER_ABBREVIATIONS_PATH` variable in your `.zshrc` before loading zsh-abbr.
 
 ```shell
 % cat ~/.zshrc

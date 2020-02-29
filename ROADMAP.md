@@ -38,7 +38,7 @@ Zsh `abbr`, not the zsh port of fish `abbr`
 - [x] in user file, no `--`
 - [x] `add` syntax is `abbreviation='word'`/`abbreviation="word"`
 	- [x] confirm that quotes can be included by escaping them (`abbreviation="the \"full\" \'word\'"`)
-- [ ] support importing from fish / migrating from <3.x
+- [x] support importing from fish / migrating from <3.x
 
 ### Other
 

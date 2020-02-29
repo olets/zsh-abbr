@@ -21,10 +21,10 @@ ZSH_ABBR_USER_PATH="${ZSH_ABBR_USER_PATH="${HOME}/.config/zsh/abbreviations"}"
 _zsh_abbr() {
   {
     local action_set number_opts opt opt_add opt_clear_session opt_erase \
-          opt_expand opt_git_populate opt_global opt_session opt_list \
-          opt_output_aliases opt_populate opt_rename opt_show opt_user \
-          opt_print_version release_date scope_set should_exit text_bold \
-          text_reset util_usage version
+          opt_expand opt_git_populate opt_global opt_import_fish \
+          opt_session opt_list opt_output_aliases opt_populate opt_rename \
+          opt_show opt_user opt_print_version release_date scope_set \
+          should_exit text_bold text_reset util_usage version
     action_set=false
     number_opts=0
     opt_add=false
@@ -33,6 +33,7 @@ _zsh_abbr() {
     opt_expand=false
     opt_git_populate=false
     opt_global=false
+    opt_import_fish=false
     opt_session=false
     opt_list=false
     opt_output_aliases=false
@@ -93,6 +94,8 @@ _zsh_abbr() {
          with git[Space].
 
        o --help or -h Show this documentation.
+
+       o --import-fish FILE Import from fish shell or zsh-abbr < 3.
 
        o --list -l Lists all ABBREVIATIONs.
 
@@ -318,6 +321,31 @@ _zsh_abbr() {
 
         util_add "g$key" "git ${value# }"
       done
+    }
+
+    function import_fish() {
+      local abbreviation
+      local expansion
+      local input_file
+
+      if [ $# -ne 1 ]; then
+        printf "expand requires exactly one argument\\n"
+        return
+      fi
+
+      input_file=$1
+
+      while read -r line; do
+        def=${line#* -- }
+        abbreviation=${def%% *}
+        expansion=${def#* }
+
+        if [[ ${expansion:0:1} == ${expansion: -1} && ${expansion:0:1} == [\'\"] ]]; then
+          expansion=${expansion:1:-1}
+        fi
+
+        util_add $abbreviation $expansion
+      done < $input_file
     }
 
     function list() {
@@ -606,6 +634,12 @@ _zsh_abbr() {
           opt_global=true
           ((number_opts++))
           ;;
+        "--import-fish")
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_import_fish=true
+          ((number_opts++))
+          ;;
         "--help"|\
         "-h")
           util_usage
@@ -699,6 +733,8 @@ _zsh_abbr() {
       erase "$@"
     elif $opt_expand; then
       expand "$@"
+    elif $opt_import_fish; then
+      import_fish "$@"
     elif $opt_git_populate; then
       git_populate "$@"
     elif $opt_list; then
