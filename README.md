@@ -145,7 +145,7 @@ Default is user.
   | --import-fish [(--global | -g)] arg
   | (--help | -h)
   | (--list | -l)
-  | (--output-aliases | -o)
+  | --export-aliases arg
   | (--populate | -p)
   | (--rename | -r ) [(--global | -g)] args
   | (--show | -s)
@@ -326,10 +326,10 @@ a
 b
 ```
 
-#### Output Aliases
+#### Export Aliases
 
 ```shell
-abbr (--output-aliases | -o) [DESTINATION]
+abbr --export-aliases [DESTINATION]
 ```
 
 Export abbreviations as aliases declarations.
@@ -341,15 +341,15 @@ To export session abbreviations, use the **--session** flag. Otherwise, or if th
 % abbr --add --session g git
 ```
 ```shell
-% abbr --output-aliases
+% abbr --export-aliases
 alias -S gcm='git checkout master'
 ```
 ```shell
-% abbr --output-aliases --session
+% abbr --export-aliases --session
 alias -S g='git'
 ```
 ```shell
-% abbr --output-aliases ~/.zshrc
+% abbr --export-aliases ~/.zshrc
 % cat ~/.zshrc
 # -- snip --
 alias -S g='git'

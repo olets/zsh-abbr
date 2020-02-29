@@ -22,7 +22,7 @@ _zsh_abbr() {
   {
     local action_set number_opts opt opt_add opt_clear_session opt_erase \
           opt_expand opt_git_populate opt_global opt_import_fish \
-          opt_session opt_list opt_output_aliases opt_populate opt_rename \
+          opt_session opt_list opt_export_aliases opt_populate opt_rename \
           opt_show opt_user opt_print_version release_date scope_set \
           should_exit text_bold text_reset util_usage version
     action_set=false
@@ -36,7 +36,7 @@ _zsh_abbr() {
     opt_import_fish=false
     opt_session=false
     opt_list=false
-    opt_output_aliases=false
+    opt_export_aliases=false
     opt_populate=false
     opt_rename=false
     opt_show=false
@@ -57,7 +57,7 @@ _zsh_abbr() {
        ${text_bold}abbr${text_reset} --expand|-x ABBREVIATION
        ${text_bold}abbr${text_reset} --git-populate|-i [SCOPE]
        ${text_bold}abbr${text_reset} --list|-l
-       ${text_bold}abbr${text_reset} --output-aliases|-o [SCOPE] [DESTINATION]
+       ${text_bold}abbr${text_reset} --export-aliases|-o [SCOPE] [DESTINATION]
        ${text_bold}abbr${text_reset} --populate|-p [SCOPE]
        ${text_bold}abbr${text_reset} --rename|-r [SCOPE] OLD_ABBREVIATION NEW
        ${text_bold}abbr${text_reset} --show|-s
@@ -99,9 +99,9 @@ _zsh_abbr() {
 
        o --list -l Lists all ABBREVIATIONs.
 
-       o --output-aliases [-g] [DESTINATION_FILE] or -o [-g] [DESTINATION_FILE]
-         Outputs a list of alias command for user abbreviations, suitable
-         for pasting or piping to whereever you keep aliases. Add -g to output
+       o --export-aliases [-g] [DESTINATION_FILE] or -o [-g] [DESTINATION_FILE]
+         Exports a list of alias command for user abbreviations, suitable
+         for pasting or piping to whereever you keep aliases. Add -g to export
          alias commands for session abbreviations. If a DESTINATION_FILE is
          provided, the commands will be appended to it.
 
@@ -116,7 +116,7 @@ _zsh_abbr() {
 
        o --version or -v Show the current version.
 
-       In addition, when adding abbreviations, erasing, outputting aliases,
+       In addition, when adding abbreviations, erasing, exporting aliases,
        [git] populating, or renaming use
 
        o --session or -S to create a session abbreviation, available only in
@@ -152,20 +152,17 @@ _zsh_abbr() {
          Add a new abbreviation where l will be replaced with less user so
          all shells. Note that you omit the -U since it is the default.
 
-       ${text_bold}abbr${text_reset} -o -g
-       ${text_bold}abbr${text_reset} --output-aliases -session
+       ${text_bold}abbr${text_reset} --export-aliases -session
 
-         Output alias declaration commands for each *session* abbreviation.
-         Output lines look like alias -g <ABBREVIATION>='<EXPANSION>'
+         Export alias declaration commands for each *session* abbreviation.
+         Export lines look like alias -g <ABBREVIATION>='<EXPANSION>'
 
-       ${text_bold}abbr${text_reset} -o
-       ${text_bold}abbr${text_reset} --output-aliases
+       ${text_bold}abbr${text_reset} --export-aliases
 
-         Output alias declaration commands for each *user* abbreviation.
-         Output lines look like alias -g <ABBREVIATION>='<EXPANSION>'
+         Export alias declaration commands for each *user* abbreviation.
+         Export lines look like alias -g <ABBREVIATION>='<EXPANSION>'
 
-       ${text_bold}abbr${text_reset} -o ~/aliases
-       ${text_bold}abbr${text_reset} --output-aliases ~/aliases
+       ${text_bold}abbr${text_reset} --export-aliases ~/aliases
 
          Add alias definitions to ~/aliases
 
@@ -203,7 +200,7 @@ _zsh_abbr() {
        the scope. If you want it to be visible only to the current shell
        use the -g flag.
 
-       The options add, output-aliases, erase, expand, git-populate, list,
+       The options add, export-aliases, erase, expand, git-populate, list,
        populate, rename, and show are mutually exclusive, as are the session
        and user scopes.
 
@@ -369,21 +366,21 @@ _zsh_abbr() {
       print -l ${(k)ZSH_ABBR_SESSION_COMMANDS}
     }
 
-    function output_aliases() {
+    function export_aliases() {
       local source
       local alias_definition
 
       if [ $# -gt 1 ]; then
-        util_error " output-aliases: Unexpected argument"
+        util_error " export-aliases: Unexpected argument"
         return
       fi
 
       if $opt_session; then
-        util_alias ZSH_ABBR_SESSION_GLOBALS
-        util_alias ZSH_ABBR_SESSION_COMMANDS
+        util_alias ZSH_ABBR_SESSION_GLOBALS $1
+        util_alias ZSH_ABBR_SESSION_COMMANDS $1
       else
-        util_alias ZSH_ABBR_USER_GLOBALS
-        util_alias ZSH_ABBR_USER_COMMANDS
+        util_alias ZSH_ABBR_USER_GLOBALS $1
+        util_alias ZSH_ABBR_USER_COMMANDS $1
       fi
 
     }
@@ -535,9 +532,13 @@ _zsh_abbr() {
 
     util_alias() {
       for abbreviation expansion in ${(kv)${(P)1}}; do
-        alias_definition="alias -g $abbreviation='$expansion'"
+        alias_definition="alias "
+        if [[ $opt_global == true ]]; then
+          alias_definition+="-g "
+        fi
+        alias_definition+="$abbreviation='$expansion'"
 
-        if [ $# -gt 0 ]; then
+        if [[ $# > 1 ]]; then
           echo "$alias_definition" >> "$1"
         else
           print "$alias_definition"
@@ -659,11 +660,10 @@ _zsh_abbr() {
           opt_list=true
           ((number_opts++))
           ;;
-        "--output-aliases"|\
-        "-o")
+        "--export-aliases")
           [ "$action_set" = true ] && util_bad_options
           action_set=true
-          opt_output_aliases=true
+          opt_export_aliases=true
           ((number_opts++))
           ;;
         "--populate"|\
@@ -739,8 +739,8 @@ _zsh_abbr() {
       git_populate "$@"
     elif $opt_list; then
       list "$@"
-    elif $opt_output_aliases; then
-      output_aliases "$@"
+    elif $opt_export_aliases; then
+      export_aliases "$@"
     elif $opt_populate; then
       populate "$@"
     elif $opt_print_version; then
@@ -763,7 +763,7 @@ _zsh_abbr() {
     unfunction -m "expand"
     unfunction -m "git_populate"
     unfunction -m "list"
-    unfunction -m "output_aliases"
+    unfunction -m "export_aliases"
     unfunction -m "populate"
     unfunction -m "print_version"
     unfunction -m "rename"
