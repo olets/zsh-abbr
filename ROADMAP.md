@@ -12,45 +12,6 @@ Key:
 - [ ] Identify someone who contributors can contact if olets violates the code of conduct (note: not looking for volunteers)
 - [ ] Update code of conduct with their information
 
-## 3.0.0
-
-Zsh `abbr`, not the zsh port of fish `abbr`
-
-1. Like zsh `alias`, distinguish between command (aka "regular") abbreviations and global abbreviations
-1. Like zsh `alias`, define abbreviations with `x="yz"` rather than `x yz` like fish `abbr`
-
-### Breaking changes
-
-- [x] instead of fish `abbr`'s global/universal terminology use less jargony session/user
-	- [x] update scope flags
-	- [x] adjust other flags as necessary to not collide
-	- [x] update variable names
-	- [x] update file names
-- [x] abbreviations are by default command abbreviations not global abbreviations
-
-### Features
-
-- [x] support command/global abbreviations
-  - [x] in `--add`
-  - [x] in `--erase`
-  - [x] in `--rename`
-- [x] in user file, no `-a -U`
-- [x] in user file, no `--`
-- [x] `add` syntax is `abbreviation='word'`/`abbreviation="word"`
-	- [x] confirm that quotes can be included by escaping them (`abbreviation="the \"full\" \'word\'"`)
-- [x] support importing from fish / migrating from <3.x
-- [x] rename output aliases to export aliases
-- [x] rename populate to import aliases
-- [x] import aliases (formerly populate) preserves alias's globalness
-  - [x] if -g|--global is supplied, make all of them global
-- [x] rename git populate to import git aliases
-	- [x] support global
-
-### Other
-
-- [x] tighten up initialization
-- [x] tests
-
 ## 3.1.0
 
 Look like zsh's `alias` not fish's `abbr`
