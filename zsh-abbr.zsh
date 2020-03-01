@@ -21,10 +21,10 @@ ZSH_ABBR_USER_PATH="${ZSH_ABBR_USER_PATH="${HOME}/.config/zsh/abbreviations"}"
 _zsh_abbr() {
   {
     local action_set number_opts opt opt_add opt_clear_session opt_erase \
-          opt_expand opt_git_populate opt_global opt_import_fish \
-          opt_session opt_list opt_export_aliases opt_populate opt_rename \
-          opt_show opt_user opt_print_version release_date scope_set \
-          should_exit text_bold text_reset util_usage version
+          opt_expand opt_export_aliases opt_git_populate opt_global \
+          opt_import_aliases opt_import_fish opt_session opt_list \
+          opt_rename opt_show opt_user opt_print_version release_date \
+          scope_set should_exit text_bold text_reset util_usage version
     action_set=false
     number_opts=0
     opt_add=false
@@ -37,7 +37,7 @@ _zsh_abbr() {
     opt_session=false
     opt_list=false
     opt_export_aliases=false
-    opt_populate=false
+    opt_import_aliases=false
     opt_rename=false
     opt_show=false
     opt_user=false
@@ -55,10 +55,10 @@ _zsh_abbr() {
        ${text_bold}abbr${text_reset} --clear-session|-c [SCOPE] ABBREVIATION
        ${text_bold}abbr${text_reset} --erase|-e [SCOPE] ABBREVIATION
        ${text_bold}abbr${text_reset} --expand|-x ABBREVIATION
-       ${text_bold}abbr${text_reset} --git-populate|-i [SCOPE]
-       ${text_bold}abbr${text_reset} --list|-l
        ${text_bold}abbr${text_reset} --export-aliases|-o [SCOPE] [DESTINATION]
-       ${text_bold}abbr${text_reset} --populate|-p [SCOPE]
+       ${text_bold}abbr${text_reset} --git-populate|-i [SCOPE]
+       ${text_bold}abbr${text_reset} --import-aliases [SCOPE]
+       ${text_bold}abbr${text_reset} --list|-l
        ${text_bold}abbr${text_reset} --rename|-r [SCOPE] OLD_ABBREVIATION NEW
        ${text_bold}abbr${text_reset} --show|-s
 
@@ -105,7 +105,7 @@ _zsh_abbr() {
          alias commands for session abbreviations. If a DESTINATION_FILE is
          provided, the commands will be appended to it.
 
-       o --populate or -p Adds abbreviations for all aliases.
+       o --import-aliases Adds abbreviations for all aliases.
 
        o --rename OLD_ABBREVIATION NEW_ABBREVIATION
          or -r OLD_ABBREVIATION NEW_ABBREVIATION Renames an abbreviation,
@@ -117,7 +117,7 @@ _zsh_abbr() {
        o --version or -v Show the current version.
 
        In addition, when adding abbreviations, erasing, exporting aliases,
-       [git] populating, or renaming use
+       [git] importing, or renaming use
 
        o --session or -S to create a session abbreviation, available only in
          the current session.
@@ -200,8 +200,8 @@ _zsh_abbr() {
        the scope. If you want it to be visible only to the current shell
        use the -g flag.
 
-       The options add, export-aliases, erase, expand, git-populate, list,
-       populate, rename, and show are mutually exclusive, as are the session
+       The options add, export-aliases, erase, expand, git-populate, import,
+       list, rename, and show are mutually exclusive, as are the session
        and user scopes.
 
        $version $release_date"
@@ -381,11 +381,11 @@ _zsh_abbr() {
 
     }
 
-    function populate() {
+    function import_aliases() {
       local _alias
 
       if [ $# -gt 0 ]; then
-        util_error " populate: Unexpected argument"
+        util_error " import-aliases: Unexpected argument"
         return
       fi
 
@@ -651,11 +651,10 @@ _zsh_abbr() {
           opt_export_aliases=true
           ((number_opts++))
           ;;
-        "--populate"|\
-        "-p")
+        "--import-aliases")
           [ "$action_set" = true ] && util_bad_options
           action_set=true
-          opt_populate=true
+          opt_import_aliases=true
           ((number_opts++))
           ;;
         "--rename"|\
@@ -726,8 +725,8 @@ _zsh_abbr() {
       list "$@"
     elif $opt_export_aliases; then
       export_aliases "$@"
-    elif $opt_populate; then
-      populate "$@"
+    elif $opt_import_aliases; then
+      import_aliases "$@"
     elif $opt_print_version; then
       print_version "$@"
     elif $opt_rename; then
@@ -749,7 +748,7 @@ _zsh_abbr() {
     unfunction -m "git_populate"
     unfunction -m "list"
     unfunction -m "export_aliases"
-    unfunction -m "populate"
+    unfunction -m "import_aliases"
     unfunction -m "print_version"
     unfunction -m "rename"
     unfunction -m "show"

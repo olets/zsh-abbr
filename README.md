@@ -142,11 +142,11 @@ Default is user.
   | (--erase | -e ) [(--global | -g)] arg
   | (--expand | -x) arg
   | (--git-populate | -i)
-  | --import-fish [(--global | -g)] arg
   | (--help | -h)
+  | --import-fish [(--global | -g)] arg
+  | --import-aliases
   | (--list | -l)
   | --export-aliases arg
-  | (--populate | -p)
   | (--rename | -r ) [(--global | -g)] args
   | (--show | -s)
 ]
@@ -355,10 +355,10 @@ alias -S g='git'
 alias -S g='git'
 ```
 
-#### Populate
+#### Import Aliases
 
 ```shell
-abbr (--git-populate | -i)
+abbr (--import-aliases | -i)
 ```
 
 Add abbreviations for every alias available in the current session.
@@ -374,12 +374,8 @@ See also **Git Populate**.
 # --snip--
 alias -S d='bin/deploy'
 # --snip--
-% abbr --populate --session
-% d[Space] # expands to bin/deploy
-% source ~/.zshrc
-% d[Space] # no expansion
-% abbr --git-populate
-% source ~/.zshrc
+
+% abbr --import-aliases
 % d[Space] # expands to bin/deploy
 ```
 

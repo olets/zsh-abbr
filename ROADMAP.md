@@ -40,9 +40,9 @@ Zsh `abbr`, not the zsh port of fish `abbr`
 	- [x] confirm that quotes can be included by escaping them (`abbreviation="the \"full\" \'word\'"`)
 - [x] support importing from fish / migrating from <3.x
 - [x] rename output aliases to export aliases
-- [ ] rename populate to import aliases
-- [ ] import aliases (formerly populate) preserves alias's globalness
-  - [ ] if -g|--global is supplied, make all of them global
+- [x] rename populate to import aliases
+- [x] import aliases (formerly populate) preserves alias's globalness
+  - [x] if -g|--global is supplied, make all of them global
 - [ ] rename git populate to import git aliases
 	- [ ] support global
 
