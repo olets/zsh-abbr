@@ -89,6 +89,12 @@ _zsh_abbr() {
        o --expand ABBREVIATION or -x ABBREVIATION Returns the abbreviation
          ABBREVIATION's EXPANSION.
 
+       o --export-aliases [-g] [DESTINATION_FILE] or -o [-g] [DESTINATION_FILE]
+         Exports a list of alias command for user abbreviations, suitable
+         for pasting or piping to whereever you keep aliases. Add -g to export
+         alias commands for session abbreviations. If a DESTINATION_FILE is
+         provided, the commands will be appended to it.
+
        o --help or -h Show this documentation.
 
        o --import-aliases Adds abbreviations for all aliases.
@@ -100,12 +106,6 @@ _zsh_abbr() {
          with git[Space].
 
        o --list -l Lists all ABBREVIATIONs.
-
-       o --export-aliases [-g] [DESTINATION_FILE] or -o [-g] [DESTINATION_FILE]
-         Exports a list of alias command for user abbreviations, suitable
-         for pasting or piping to whereever you keep aliases. Add -g to export
-         alias commands for session abbreviations. If a DESTINATION_FILE is
-         provided, the commands will be appended to it.
 
        o --rename OLD_ABBREVIATION NEW_ABBREVIATION
          or -r OLD_ABBREVIATION NEW_ABBREVIATION Renames an abbreviation,
@@ -152,6 +152,12 @@ _zsh_abbr() {
          Add a new abbreviation where l will be replaced with less user so
          all shells. Note that you omit the -U since it is the default.
 
+       ${text_bold}abbr${text_reset} -x gco
+       \$(${text_bold}abbr${text_reset} -expand gco)
+
+         Output the expansion for gco (in the above --add example,
+         git checkout). Useful in scripting.
+
        ${text_bold}abbr${text_reset} --export-aliases -session
 
          Export alias declaration commands for each *session* abbreviation.
@@ -181,12 +187,6 @@ _zsh_abbr() {
 
         Rename the existing user abbreviation from l to le. Note that you
         can omit the -U since it is the default.
-
-       ${text_bold}abbr${text_reset} -x gco
-       \$(${text_bold}abbr${text_reset} -expand gco)
-
-         Output the expansion for gco (in the above --add example,
-         git checkout). Useful in scripting.
 
    ${text_bold}Internals${text_reset}
        The ABBREVIATION cannot contain IFS whitespace, comma (,), semicolon (;),
@@ -299,24 +299,41 @@ _zsh_abbr() {
       echo - "$expansion"
     }
 
-    function import_git_aliases() {
-      local git_aliases
-      local abbr_git_aliases
+    function export_aliases() {
+      local source
+      local alias_definition
 
-      if [ $# -gt 0 ]; then
-        util_error " import-git-aliases: Unexpected argument"
+      if [ $# -gt 1 ]; then
+        util_error " export-aliases: Unexpected argument"
         return
       fi
 
-      git_aliases=("${(@f)$(git config --get-regexp '^alias\.')}")
-      typeset -A abbr_git_aliases
+      if $opt_session; then
+        util_alias ZSH_ABBR_SESSION_GLOBALS $1
+        util_alias ZSH_ABBR_SESSION_COMMANDS $1
+      else
+        util_alias ZSH_ABBR_USER_GLOBALS $1
+        util_alias ZSH_ABBR_USER_COMMANDS $1
+      fi
+    }
 
-      for i in $git_aliases; do
-        key="${$(echo - $i | awk '{print $1;}')##alias.}"
-        value="${$(echo - $i)##alias.$key }"
+    function import_aliases() {
+      local _alias
 
-        util_add "g$key" "git ${value# }"
-      done
+      if [ $# -gt 0 ]; then
+        util_error " import-aliases: Unexpected argument"
+        return
+      fi
+
+      while read -r _alias; do
+        add $_alias
+      done < <(alias -r)
+
+      opt_global=true
+
+      while read -r _alias; do
+        add $_alias
+      done < <(alias -g)
     }
 
     function import_fish() {
@@ -340,6 +357,26 @@ _zsh_abbr() {
       done < $input_file
     }
 
+    function import_git_aliases() {
+      local git_aliases
+      local abbr_git_aliases
+
+      if [ $# -gt 0 ]; then
+        util_error " import-git-aliases: Unexpected argument"
+        return
+      fi
+
+      git_aliases=("${(@f)$(git config --get-regexp '^alias\.')}")
+      typeset -A abbr_git_aliases
+
+      for i in $git_aliases; do
+        key="${$(echo - $i | awk '{print $1;}')##alias.}"
+        value="${$(echo - $i)##alias.$key }"
+
+        util_add "g$key" "git ${value# }"
+      done
+    }
+
     function list() {
       if [ $# -gt 0 ]; then
         util_error " list: Unexpected argument"
@@ -359,44 +396,6 @@ _zsh_abbr() {
       echo
       echo "Session regular abbreviations\\n"
       print -l ${(k)ZSH_ABBR_SESSION_COMMANDS}
-    }
-
-    function export_aliases() {
-      local source
-      local alias_definition
-
-      if [ $# -gt 1 ]; then
-        util_error " export-aliases: Unexpected argument"
-        return
-      fi
-
-      if $opt_session; then
-        util_alias ZSH_ABBR_SESSION_GLOBALS $1
-        util_alias ZSH_ABBR_SESSION_COMMANDS $1
-      else
-        util_alias ZSH_ABBR_USER_GLOBALS $1
-        util_alias ZSH_ABBR_USER_COMMANDS $1
-      fi
-
-    }
-
-    function import_aliases() {
-      local _alias
-
-      if [ $# -gt 0 ]; then
-        util_error " import-aliases: Unexpected argument"
-        return
-      fi
-
-      while read -r _alias; do
-        add $_alias
-      done < <(alias -r)
-
-      opt_global=true
-
-      while read -r _alias; do
-        add $_alias
-      done < <(alias -g)
     }
 
     function print_version() {
@@ -715,16 +714,16 @@ _zsh_abbr() {
       erase "$@"
     elif $opt_expand; then
       expand "$@"
+    elif $opt_export_aliases; then
+      export_aliases "$@"
+    elif $opt_import_aliases; then
+      import_aliases "$@"
     elif $opt_import_fish; then
       import_fish "$@"
     elif $opt_import_git_aliases; then
       import_git_aliases "$@"
     elif $opt_list; then
       list "$@"
-    elif $opt_export_aliases; then
-      export_aliases "$@"
-    elif $opt_import_aliases; then
-      import_aliases "$@"
     elif $opt_print_version; then
       print_version "$@"
     elif $opt_rename; then
@@ -743,10 +742,11 @@ _zsh_abbr() {
     unfunction -m "clear_session"
     unfunction -m "erase"
     unfunction -m "expand"
-    unfunction -m "import_git_aliases"
-    unfunction -m "list"
     unfunction -m "export_aliases"
     unfunction -m "import_aliases"
+    unfunction -m "import_fish"
+    unfunction -m "import_git_aliases"
+    unfunction -m "list"
     unfunction -m "print_version"
     unfunction -m "rename"
     unfunction -m "show"
