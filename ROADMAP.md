@@ -83,4 +83,3 @@ More idiomatic zsh
 - [ ] rework variable values to support using (( ${+var} )) instead of [[ -n "$var" ]]
 - [ ] no `if [[ $var == true ]]` where just  `if $var` would work
 - [ ] any other places to tighten up boolean checks
-- [ ] use ${(w)var: -1} for last word if it gives the same result

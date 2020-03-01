@@ -479,6 +479,7 @@ _zsh_abbr() {
 
     function util_add() {
       local abbreviation
+      local abbreviation_last_word
       local expansion
       local quote
       local success=false
@@ -492,10 +493,8 @@ _zsh_abbr() {
         expansion="${expansion:1:-1}"
       fi
 
-      if [[ $abbreviation != $(_zsh_abbr_last_word $abbreviation) ]]; then
-        echo - $abbreviation
-        echo - $(_zsh_abbr_last_word $abbreviation)
-        util_error " add: ABBREVIATION ('$abbreviation') may not contain delimiting prefixes"
+      if [[ ${(w)#abbreviation} > 1 ]]; then
+        util_error " add: ABBREVIATION ('$abbreviation') must be only one word"
         return
       fi
 
@@ -914,26 +913,26 @@ _zsh_abbr_init() {
   typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
 }
 
-_zsh_abbr_last_word() {
-  # delimited by `&&`, `|`, `;`, and whitespace
-  echo - ${${1//*(\&\&|[;\|[:IFSSPACE:]])}}
-}
-
-
 # WIDGETS
 # -------
 
 _zsh_abbr_expand_widget() {
   local current_word
   local expansion
+  local word_count
 
-  current_word=$(_zsh_abbr_last_word "$LBUFFER")
+  current_word=$LBUFFER
+  word_count=${(w)#LBUFFER}
 
-  if [[ "$current_word" == "$LBUFFER" ]]; then
+  if [[ $word_count == 1 ]]; then
     expansion=$(_zsh_abbr_cmd_expansion "$current_word")
   fi
 
   if ! [[ -n "$expansion" ]]; then
+    if [[ $word_count > 1 ]]; then
+      current_word=${${(z)LBUFFER}: -1}
+    fi
+
     expansion=$(_zsh_abbr_global_expansion "$current_word")
   fi
 
