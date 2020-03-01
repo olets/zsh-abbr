@@ -1,3 +1,29 @@
+# [v3.0.0](https://github.com/olets/zsh-abbr/compare/v2.1.3...v3.0.0) (2020-03-01)
+
+Parity with zsh alias's behavior: syntax is `abbreviation=word` instead of fish abbr-like `abbreviation word`. Distinguish between command-position abbreviations and global abbreviations. User abbreviations file is now at `${HOME}/.config/zsh/abbreviations`. Check the README documentation for `--import-fish` to move from fish abbr and zsh-abbr<\v3 to zsh-abbr v3.
+
+* **erase, rename:** support global expansions ([bab6341](https://github.com/olets/zsh-abbr/commit/bab63410770d2e1d515e78d933a91c5b681dd712))
+* **expansion:** shell grammar word splitting determines current word ([a3c00f5](https://github.com/olets/zsh-abbr/commit/a3c00f58e29370ba294ed3e3d6064af0767fa1ca))
+* **global abbreviations:** distinct from command abbreviations ([cd58e0d](https://github.com/olets/zsh-abbr/commit/cd58e0db949f8863393ded51eaa5a894d3e0aae7))
+* **import aliases:** rename from populate ([2d4153a](https://github.com/olets/zsh-abbr/commit/2d4153a9fd7002f9710a68a16a1cf1f3ac6063ef))
+* **import git aliases:** rename from git populate ([2f8e7bf](https://github.com/olets/zsh-abbr/commit/2f8e7bf6859c9562b6ec5561b668de28e649de99))
+* **init,add,erase,rename:** use abbr=expansion syntax ([455dc75](https://github.com/olets/zsh-abbr/commit/455dc75784e57a9481a818cc0bf9300d2729cfeb))
+* **scope:** shorthand for --session is now -S ([cf2f3b8](https://github.com/olets/zsh-abbr/commit/cf2f3b8564ce6f8295fc7396131e4fb171fbe2cf))
+* **user file:** no '-a -U' ([ecb367e](https://github.com/olets/zsh-abbr/commit/ecb367e484ac3337b42cbdde9504d129aa26431e))
+* **user file, exported variables:** style(env functions, env variables): more consistent naming ([2f52f9f](https://github.com/olets/zsh-abbr/commit/2f52f9f6810a8b77a9a923168d5e703e20e0d38e))
+
+
+### Features
+
+* **abbreviation, expansion:** can be just a hyphen ([be1a0c9](https://github.com/olets/zsh-abbr/commit/be1a0c914e97f60983909d64ed6515226f492dd2))
+* **dry run:** support for add, import, and rename ([59cbdee](https://github.com/olets/zsh-abbr/commit/59cbdee7601be7aa80c61357eb41d3a1bf71675e))
+* **import fish:** new option + documentation ([6d674bb](https://github.com/olets/zsh-abbr/commit/6d674bb738b03b057f488d6c2eb13284eaef0976))
+* **list:** sections are divided with a newline ([055e378](https://github.com/olets/zsh-abbr/commit/055e3789ab7f6ffbd4b2be6963cd80eaf44f4b76))
+* **storage:** globals are at top of file ([79a920b](https://github.com/olets/zsh-abbr/commit/79a920b8f9014bd1acf5657664e1a9bf74069edc))
+* **sync:** use latest user globals ([44b8281](https://github.com/olets/zsh-abbr/commit/44b8281115e9c36ff145b9df94aa8a307cf71318))
+* **tests:** add basic test suite ([af08727](https://github.com/olets/zsh-abbr/commit/af08727778043954b7b69000d45d517dd790cd44))
+
+
 # [v2.1.3](https://github.com/olets/zsh-abbr/compare/v2.1.2...v2.1.3) (2020-02-26)
 
 ### Features
