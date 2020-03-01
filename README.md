@@ -141,12 +141,12 @@ Default is user.
   | (--clear-session | -c)
   | (--erase | -e ) [(--global | -g)] arg
   | (--expand | -x) arg
-  | (--git-populate | -i)
+  | --export-aliases arg
   | (--help | -h)
   | --import-fish [(--global | -g)] arg
   | --import-aliases
+  | --import-git-aliases
   | (--list | -l)
-  | --export-aliases arg
   | (--rename | -r ) [(--global | -g)] args
   | (--show | -s)
 ]
@@ -252,10 +252,10 @@ Output the ABBREVIATION's EXPANSION. Useful in scripting.
 git checkout
 ```
 
-#### Git Populate
+#### Import Git Aliases
 
 ```shell
-abbr (--git-populate | -i)
+abbr --import-git-aliases
 ```
 
 Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--session** scope to create session abbreviations. Otherwise, or if the **--user** flag is used, the Git abbreviations will be user.
@@ -264,11 +264,11 @@ This command is useful for migrating from aliases to abbreviations.
 
 ```shell
 % git config alias.co checkout
-% abbr --git-populate --session
+% abbr --import-git-aliases --session
 % gco[Space] # expands to git checkout
 % source ~/.zshrc
 % gco[Space] # no expansion
-% abbr --git-populate
+% abbr --import-git-aliases
 % source ~/.zshrc
 % gco[Space] # expands to git checkout
 ```
@@ -367,7 +367,7 @@ Use the **--session** flag to create session abbreviations. Otherwise, or if the
 
 This command is useful for migrating from aliases to abbreviations.
 
-See also **Git Populate**.
+See also **Import Git Aliases**.
 
 ```shell
 % cat ~/.zshrc

@@ -43,8 +43,8 @@ Zsh `abbr`, not the zsh port of fish `abbr`
 - [x] rename populate to import aliases
 - [x] import aliases (formerly populate) preserves alias's globalness
   - [x] if -g|--global is supplied, make all of them global
-- [ ] rename git populate to import git aliases
-	- [ ] support global
+- [x] rename git populate to import git aliases
+	- [x] support global
 
 ### Other
 
