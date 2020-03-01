@@ -337,10 +337,6 @@ _zsh_abbr() {
         abbreviation=${def%% *}
         expansion=${def#* }
 
-        if [[ ${expansion:0:1} == ${expansion: -1} && ${expansion:0:1} == [\'\"] ]]; then
-          expansion=${expansion:1:-1}
-        fi
-
         util_add $abbreviation $expansion
       done < $input_file
     }
@@ -386,44 +382,22 @@ _zsh_abbr() {
     }
 
     function populate() {
-      local abbreviation
-      local expansion
-      local global_aliases
-      local regular_aliases
+      local _alias
 
       if [ $# -gt 0 ]; then
         util_error " populate: Unexpected argument"
         return
       fi
 
-      regular_aliases=("${(@f)$(alias -L -r)}")
-      global_aliases=("${(@f)$(alias -L -g)}")
+      while read -r _alias; do
+        add $_alias
+      done < <(alias -r)
 
-      for regular_alias in ${(kv)regular_aliases}; do
-        abbreviation=${${regular_alias%%=*}#alias -g }
-        expansion=${regular_alias#*=}
-
-        if [[ ${expansion[1]} == "'" && ${${:-$expansion}[-1]} == "'" ]]; then
-          expansion=${${expansion#\'}%\'}
-        fi
-
-        util_add "$abbreviation" "${expansion# }"
-      done
-
-      abbreviation=
-      expansion=
       opt_global=true
 
-      for global_aliases in ${(kv)global_aliaseses}; do
-        abbreviation=${${global_aliases%%=*}#alias -g }
-        expansion=${global_aliases#*=}
-
-        if [[ ${expansion[1]} == "'" && ${${:-$expansion}[-1]} == "'" ]]; then
-          expansion=${${expansion#\'}%\'}
-        fi
-
-        util_add "$abbreviation" "${expansion# }"
-      done
+      while read -r _alias; do
+        add $_alias
+      done < <(alias -g)
     }
 
     function print_version() {
@@ -481,12 +455,20 @@ _zsh_abbr() {
     function util_add() {
       local abbreviation
       local expansion
+      local quote
       local success=false
 
       abbreviation=$1
       expansion=$2
 
+      if [[ "${expansion:0:1}" == "${expansion: -1}" && "${expansion:0:1}" == [\'\"] ]]; then
+        quote=${expansion:0:1}
+        expansion="${expansion:1:-1}"
+      fi
+
       if [[ $abbreviation != $(_zsh_abbr_last_word $abbreviation) ]]; then
+        echo $abbreviation
+        echo $(_zsh_abbr_last_word $abbreviation)
         util_error " add: ABBREVIATION ('$abbreviation') may not contain delimiting prefixes"
         return
       fi
@@ -511,7 +493,7 @@ _zsh_abbr() {
 
           if ! (( ${+ZSH_ABBR_USER_GLOBALS[$1]} )); then
             ZSH_ABBR_USER_GLOBALS[$abbreviation]=$expansion
-            util_sync_user
+            util_sync_user $quote
             success=true
           fi
         else
@@ -519,7 +501,7 @@ _zsh_abbr() {
 
           if ! (( ${+ZSH_ABBR_USER_COMMANDS[$1]} )); then
             ZSH_ABBR_USER_COMMANDS[$abbreviation]=$expansion
-            util_sync_user
+            util_sync_user $quote
             success=true
           fi
         fi
@@ -556,11 +538,14 @@ _zsh_abbr() {
     }
 
     function util_sync_user() {
+      local quote
       local user_updated
 
       if [[ -n "$ZSH_ABBR_NO_SYNC_USER" ]]; then
         return
       fi
+
+      quote="${1:-\"}"
 
       user_updated="${TMPDIR:-/tmp}/zsh-user-abbreviations"_updated
       rm "$user_updated" 2> /dev/null
@@ -569,12 +554,12 @@ _zsh_abbr() {
 
       typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
       for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
-        echo "abbr -g ${abbreviation}=\"$expansion\"" >> "$user_updated"
+        echo "abbr -g ${abbreviation}=${quote}$expansion${quote}" >> "$user_updated"
       done
 
       typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp}/zsh-user-abbreviations"
       for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
-        echo "abbr ${abbreviation}=\"$expansion\"" >> "$user_updated"
+        echo "abbr ${abbreviation}=${quote}$expansion${quote}" >> "$user_updated"
       done
 
       mv "$user_updated" "$ZSH_ABBR_USER_PATH"
