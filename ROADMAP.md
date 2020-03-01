@@ -49,6 +49,7 @@ Zsh `abbr`, not the zsh port of fish `abbr`
 ### Other
 
 - [x] tighten up initialization
+- [x] tests
 
 ## 3.1.0
 
@@ -65,6 +66,8 @@ Look like zsh's `alias` not fish's `abbr`
 
 ## 3.x
 
+- [ ] stronger tests?
+
 Github
 
 - [ ] move contribution documentation to a CONTRIBUTING.md
@@ -80,3 +83,4 @@ More idiomatic zsh
 - [ ] rework variable values to support using (( ${+var} )) instead of [[ -n "$var" ]]
 - [ ] no `if [[ $var == true ]]` where just  `if $var` would work
 - [ ] any other places to tighten up boolean checks
+- [ ] use ${(w)var: -1} for last word if it gives the same result
