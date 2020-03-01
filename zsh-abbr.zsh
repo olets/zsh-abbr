@@ -445,6 +445,10 @@ _zsh_abbr() {
 
       cat $ZSH_ABBR_USER_PATH
 
+      for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_GLOBALS}; do
+        printf "abbr -g %s=\"%s\"\\n" "$abbreviation" "$expansion"
+      done
+
       for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_COMMANDS}; do
         printf "abbr %s=\"%s\"\\n" "$abbreviation" "$expansion"
       done
