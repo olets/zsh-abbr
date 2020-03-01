@@ -143,8 +143,8 @@ Default is user.
   | (--expand | -x) arg
   | --export-aliases arg
   | (--help | -h)
-  | --import-fish [(--global | -g)] arg
   | --import-aliases
+  | --import-fish [(--global | -g)] arg
   | --import-git-aliases
   | (--list | -l)
   | (--rename | -r ) [(--global | -g)] args
@@ -252,6 +252,59 @@ Output the ABBREVIATION's EXPANSION. Useful in scripting.
 git checkout
 ```
 
+#### Export Aliases
+
+```shell
+abbr --export-aliases [DESTINATION]
+```
+
+Export abbreviations as aliases declarations.
+
+To export session abbreviations, use the **--session** flag. Otherwise, or if the **--user** flag is used, cross-session abbreviations are exported.
+
+```shell
+% abbr --add gcm git checkout master
+% abbr --add --session g git
+```
+```shell
+% abbr --export-aliases
+alias -S gcm='git checkout master'
+```
+```shell
+% abbr --export-aliases --session
+alias -S g='git'
+```
+```shell
+% abbr --export-aliases ~/.zshrc
+% cat ~/.zshrc
+# -- snip --
+alias -S g='git'
+```
+
+#### Import Aliases
+
+```shell
+abbr (--import-aliases | -i)
+```
+
+Add abbreviations for every alias available in the current session.
+
+Use the **--session** flag to create session abbreviations. Otherwise, or if the **--user** flag is used, the abbreviations will be cross-session.
+
+This command is useful for migrating from aliases to abbreviations.
+
+See also **Import Git Aliases**.
+
+```shell
+% cat ~/.zshrc
+# --snip--
+alias -S d='bin/deploy'
+# --snip--
+
+% abbr --import-aliases
+% d[Space] # expands to bin/deploy
+```
+
 #### Import Git Aliases
 
 ```shell
@@ -324,59 +377,6 @@ c
 % abbr -l
 a
 b
-```
-
-#### Export Aliases
-
-```shell
-abbr --export-aliases [DESTINATION]
-```
-
-Export abbreviations as aliases declarations.
-
-To export session abbreviations, use the **--session** flag. Otherwise, or if the **--user** flag is used, cross-session abbreviations are exported.
-
-```shell
-% abbr --add gcm git checkout master
-% abbr --add --session g git
-```
-```shell
-% abbr --export-aliases
-alias -S gcm='git checkout master'
-```
-```shell
-% abbr --export-aliases --session
-alias -S g='git'
-```
-```shell
-% abbr --export-aliases ~/.zshrc
-% cat ~/.zshrc
-# -- snip --
-alias -S g='git'
-```
-
-#### Import Aliases
-
-```shell
-abbr (--import-aliases | -i)
-```
-
-Add abbreviations for every alias available in the current session.
-
-Use the **--session** flag to create session abbreviations. Otherwise, or if the **--user** flag is used, the abbreviations will be cross-session.
-
-This command is useful for migrating from aliases to abbreviations.
-
-See also **Import Git Aliases**.
-
-```shell
-% cat ~/.zshrc
-# --snip--
-alias -S d='bin/deploy'
-# --snip--
-
-% abbr --import-aliases
-% d[Space] # expands to bin/deploy
 ```
 
 #### Rename
