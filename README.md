@@ -137,17 +137,17 @@ Default is user.
 ### Options
 
 ```shell
-[(--add | -a ) [(--global | -g)] arg
+[(--add | -a ) [(--global | -g)] [--dry-run] arg
   | (--clear-session | -c)
   | (--erase | -e ) [(--global | -g)] arg
   | (--expand | -x) arg
   | --export-aliases arg
   | (--help | -h)
-  | --import-aliases
-  | --import-fish [(--global | -g)] arg
-  | --import-git-aliases
+  | --import-aliases [--dry-run]
+  | --import-fish [(--global | -g)] [--dry-run] arg
+  | --import-git-aliases [--dry-run]
   | (--list | -l)
-  | (--rename | -r ) [(--global | -g)] args
+  | (--rename | -r ) [(--global | -g)] [--dry-run] args
   | (--show | -s)
 ]
 ```
@@ -159,7 +159,7 @@ Default is user.
 #### Add
 
 ```shell
-abbr [(--add  [(--global | -g)] | -a [(--global | -g)] )] ABBREVIATION=EXPANSION
+abbr [(--add  [(--global | -g)] | -a [(--global | -g)] )] [--dry-run] ABBREVIATION=EXPANSION
 ```
 
 Add a new abbreviation.
@@ -201,6 +201,8 @@ abbr a="b|c" # allowed
 ```
 
 User-scope abbreviations can also be manually to the user abbreviations file. See the Storage documentation, below.
+
+Use `--dry-run` to see what would result, without making any actual changes.
 
 #### Clear Sessions
 
@@ -307,6 +309,8 @@ alias -S d='bin/deploy'
 
 Note that zsh-abbr does not lint the imported abbreviations. An effort is made to correctly wrap the expansion in single or double quotes, but it is possible that importing will add an abbreviation with a quotation mark problem in the expansion. It is up to the user to double check the result before taking further actions.
 
+Use `--dry-run` to see what would result, without making any actual changes.
+
 #### Import Git Aliases
 
 ```shell
@@ -331,6 +335,8 @@ This command is useful for migrating from aliases to abbreviations.
 Note for users migrating from Oh-My-Zsh: [OMZ's Git aliases are shell aliases](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh), not aliases in the Git config. To add abbreviations for them, use **Populate**.
 
 Note that zsh-abbr does not lint the imported abbreviations. An effort is made to correctly wrap the expansion in single or double quotes, but it is possible that importing will add an abbreviation with a quotation mark problem in the expansion. It is up to the user to double check the result before taking further actions.
+
+Use `--dry-run` to see what would result, without making any actual changes.
 
 ### Import Fish
 
@@ -362,6 +368,8 @@ abbr [(--global|-g)] [SCOPE] ${HOME}/.config/zsh/universal-abbreviations
 ```
 
 Note that zsh-abbr does not lint the imported abbreviations. An effort is made to correctly wrap the expansion in single or double quotes, but it is possible that importing will add an abbreviation with a quotation mark problem in the expansion. It is up to the user to double check the result before taking further actions.
+
+Use `--dry-run` to see what would result, without making any actual changes.
 
 #### List
 
@@ -405,6 +413,8 @@ Use the **--global** flag to rename a global abbreviation. Otherwise a command a
 % gcm[Space] # no expansion
 % gm[Space] # expands to git checkout master
 ```
+
+Use `--dry-run` to see what would result, without making any actual changes..
 
 Abbreviations can also be manually renamed in the `ZSH_USER_ABBREVIATIONS_PATH`.
 
