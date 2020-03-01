@@ -6,7 +6,7 @@ The zsh manager for auto-expanding abbreviations manager.
 
 For example, a frequently-run command like `git checkout` can be abbreviated to `gco`. After entering `gco` and pressing <kbd>Space</kbd>, the full text `git checkout` will appear in the command line. To prevent expansion, press <kbd>Ctrl</kbd><kbd>Space</kbd> in place of <kbd>Space</kbd>. Pressing <kbd>Enter</kbd> after an abbreviation will expand the abbreviation and accept the current line.
 
-Abbreviations are expanded whether or not they are the first word on the line, like zsh's global aliases. Cross-session abbreviations are stored in the clear in a plaintext configuration file.
+Like zsh's `alias`, zsh-abbr supports "regular" (i.e. command-position) and global (anywhere on the line) abbreviations. Like fish abbr, zsh-abbr supports session-specific and cross-session abbreviations.
 
 Run `abbr --help` (or `abbr -h`) for documentation.
 
