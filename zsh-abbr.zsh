@@ -334,6 +334,8 @@ _zsh_abbr() {
       while read -r _alias; do
         add $_alias
       done < <(alias -g)
+
+      echo "Aliases imported. It is recommended that you look over \$ZSH_ABBR_USER_PATH to confirm there are no quotation mark-related problems\\n"
     }
 
     function import_fish() {
@@ -355,6 +357,8 @@ _zsh_abbr() {
 
         util_add $abbreviation $expansion
       done < $input_file
+
+      echo "Abbreviations imported. It is recommended that you look over \$ZSH_ABBR_USER_PATH to confirm there are no quotation mark-related problems\\n"
     }
 
     function import_git_aliases() {
@@ -375,6 +379,8 @@ _zsh_abbr() {
 
         util_add "g$key" "git ${value# }"
       done
+
+      echo "Aliases imported. It is recommended that you look over \$ZSH_ABBR_USER_PATH to confirm there are no quotation mark-related problems\\n"
     }
 
     function list() {

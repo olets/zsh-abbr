@@ -305,6 +305,8 @@ alias -S d='bin/deploy'
 % d[Space] # expands to bin/deploy
 ```
 
+Note that zsh-abbr does not lint the imported abbreviations. An effort is made to correctly wrap the expansion in single or double quotes, but it is possible that importing will add an abbreviation with a quotation mark problem in the expansion. It is up to the user to double check the result before taking further actions.
+
 #### Import Git Aliases
 
 ```shell
@@ -327,6 +329,8 @@ This command is useful for migrating from aliases to abbreviations.
 ```
 
 Note for users migrating from Oh-My-Zsh: [OMZ's Git aliases are shell aliases](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh), not aliases in the Git config. To add abbreviations for them, use **Populate**.
+
+Note that zsh-abbr does not lint the imported abbreviations. An effort is made to correctly wrap the expansion in single or double quotes, but it is possible that importing will add an abbreviation with a quotation mark problem in the expansion. It is up to the user to double check the result before taking further actions.
 
 ### Import Fish
 
@@ -356,6 +360,8 @@ abbr [(--global|-g)] [SCOPE] ${HOME}/.config/zsh/universal-abbreviations
 # If not customizing `ZSH_USER_ABBREVIATIONS_PATH=${HOME}/.config/zsh/universal-abbreviations` feel free to
 # rm ${HOME}/.config/zsh/universal-abbreviations
 ```
+
+Note that zsh-abbr does not lint the imported abbreviations. An effort is made to correctly wrap the expansion in single or double quotes, but it is possible that importing will add an abbreviation with a quotation mark problem in the expansion. It is up to the user to double check the result before taking further actions.
 
 #### List
 
