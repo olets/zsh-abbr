@@ -297,7 +297,7 @@ _zsh_abbr() {
         expansion=$(_zsh_abbr_global_expansion "$1")
       fi
 
-      echo "$expansion"
+      echo - "$expansion"
     }
 
     function git_populate() {
@@ -313,8 +313,8 @@ _zsh_abbr() {
       typeset -A abbr_git_aliases
 
       for i in $git_aliases; do
-        key="${$(echo $i | awk '{print $1;}')##alias.}"
-        value="${$(echo $i)##alias.$key }"
+        key="${$(echo - $i | awk '{print $1;}')##alias.}"
+        value="${$(echo - $i)##alias.$key }"
 
         util_add "g$key" "git ${value# }"
       done
@@ -467,8 +467,8 @@ _zsh_abbr() {
       fi
 
       if [[ $abbreviation != $(_zsh_abbr_last_word $abbreviation) ]]; then
-        echo $abbreviation
-        echo $(_zsh_abbr_last_word $abbreviation)
+        echo - $abbreviation
+        echo - $(_zsh_abbr_last_word $abbreviation)
         util_error " add: ABBREVIATION ('$abbreviation') may not contain delimiting prefixes"
         return
       fi
@@ -791,7 +791,7 @@ _zsh_abbr_cmd_expansion() {
     expansion="${ZSH_ABBR_USER_COMMANDS[$1]}"
   fi
 
-  echo "$expansion"
+  echo - "$expansion"
 }
 
 _zsh_abbr_expand_and_accept() {
@@ -816,7 +816,7 @@ _zsh_abbr_global_expansion() {
     expansion="${ZSH_ABBR_USER_GLOBALS[$1]}"
   fi
 
-  echo "$expansion"
+  echo - "$expansion"
 }
 
 _zsh_abbr_init() {
@@ -870,7 +870,7 @@ _zsh_abbr_init() {
 
 _zsh_abbr_last_word() {
   # delimited by `&&`, `|`, `;`, and whitespace
-  echo ${${1//*(\&\&|[;\|[:IFSSPACE:]])}}
+  echo - ${${1//*(\&\&|[;\|[:IFSSPACE:]])}}
 }
 
 
