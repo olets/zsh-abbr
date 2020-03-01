@@ -202,6 +202,8 @@ abbr a="b|c" # allowed
 
 User-scope abbreviations can also be manually to the user abbreviations file. See the Storage documentation, below.
 
+The session regular, session global, user regular, and user global abbreviation sets are independent. Order of precedence is "session command > user command > session global > user global".
+
 Use `--dry-run` to see what would result, without making any actual changes.
 
 #### Clear Sessions
@@ -413,6 +415,8 @@ Use the **--global** flag to rename a global abbreviation. Otherwise a command a
 % gcm[Space] # no expansion
 % gm[Space] # expands to git checkout master
 ```
+
+Rename is session/user- and regular/global-specific. If you get a "no matching abbreviation" error, make sure you added the right flags.
 
 Use `--dry-run` to see what would result, without making any actual changes..
 
