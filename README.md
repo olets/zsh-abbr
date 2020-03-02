@@ -104,10 +104,6 @@ Clone this repo and add `source path/to/zsh-abbr.zsh` to your `.zshrc`.
 # Delete it
 % abbr -S wgco[Ctrl-Space]
 % wgco[Space] # no expansion
-
-# Migrate your aliases to abbreviations
-% abbr -p # creates abbreviations from all aliases
-% abbr -i # creates abbreviations from all Git aliases, adding 'g' prefix
 ```
 
 ## Usage
@@ -288,7 +284,7 @@ alias -S g='git'
 #### Import Aliases
 
 ```shell
-abbr (--import-aliases | -i)
+abbr --import-aliases [--dry-run]
 ```
 
 Add abbreviations for every alias available in the current session.
@@ -316,7 +312,7 @@ Use `--dry-run` to see what would result, without making any actual changes.
 #### Import Git Aliases
 
 ```shell
-abbr --import-git-aliases
+abbr --import-git-aliases [--dry-run]
 ```
 
 Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--session** scope to create session abbreviations. Otherwise, or if the **--user** flag is used, the Git abbreviations will be user.
@@ -343,7 +339,7 @@ Use `--dry-run` to see what would result, without making any actual changes.
 ### Import Fish
 
 ```shell
-abbr --import-fish FILE
+abbr --import-fish FILE [--dry-run]
 ```
 
 Import fish abbr-syntax abbreviations (`abbreviation expansion` as compared to zsh abbr's `abbreviation=expansion`).
@@ -398,7 +394,7 @@ b
 #### Rename
 
 ```shell
-abbr (--rename [(--global | -g)] | -r [(--global | -g)]) OLD_WORD NEW_WORD
+abbr (--rename [(--global | -g)] | -r [(--global | -g)]) [--dry-run] OLD_WORD NEW_WORD
 ```
 
 Rename an abbreviation.
