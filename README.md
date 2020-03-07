@@ -422,11 +422,11 @@ abbr [(--list-commands | -L | -s)] [(--session | -S) | (--user | -U)] [(--global
 
 List all the abbreviations available in the current session as commands. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
 
-Use the **--session** or **-S** flag to list only a session abbreviations.
+Use the **--session** or **-S** scope flag to list only a session abbreviations. Use the **--user** or **-U** scope flag to list only a session abbreviations.
 
-Use the **--global** or **-g** flag to list only global abbreviations.
+Use the **--global** or **-g** type flag to list only global abbreviations. Use the **--regular** or **-r** type flag to list only global abbreviations.
 
-Use the **--regular** or **-r** flag to list only global abbreviations.
+Combine a scope flag and a type flag to further limit the output.
 
 ```shell
 % abbr --add gcm="git checkout master"

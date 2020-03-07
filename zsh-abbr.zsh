@@ -22,10 +22,10 @@ _zsh_abbr() {
   {
     local action_set number_opts opt opt_add opt_clear_session opt_dry_run \
           opt_erase opt_expand opt_export_aliases opt_import_git_aliases \
-          opt_type_global opt_import_aliases opt_import_fish opt_session opt_list \
-          opt_type_regular opt_rename opt_list_commands opt_user \
-          opt_print_version type_set release_date scope_set should_exit \
-          text_bold text_reset util_usage version
+          opt_import_aliases opt_import_fish opt_list opt_list_commands \
+          opt_print_version opt_rename opt_scope_session opt_scope_user \
+          opt_type_global opt_type_regular type_set release_date scope_set \
+          should_exit text_bold text_reset util_usage version
     action_set=false
     number_opts=0
     opt_add=false
@@ -42,8 +42,8 @@ _zsh_abbr() {
     opt_list_commands=false
     opt_type_regular=false
     opt_rename=false
-    opt_session=false
-    opt_user=false
+    opt_scope_session=false
+    opt_scope_user=false
     opt_print_version=false
     type_set=false
     release_date="March 7 2020"
@@ -256,7 +256,7 @@ _zsh_abbr() {
         return
       fi
 
-      if $opt_session; then
+      if $opt_scope_session; then
         if $opt_type_global; then
           if (( ${+ZSH_ABBR_SESSION_GLOBALS[$1]} )); then
             unset "ZSH_ABBR_SESSION_GLOBALS[${(b)1}]"
@@ -317,7 +317,7 @@ _zsh_abbr() {
         return
       fi
 
-      if $opt_session; then
+      if $opt_scope_session; then
         util_alias ZSH_ABBR_SESSION_GLOBALS $1
         util_alias ZSH_ABBR_SESSION_COMMANDS $1
       else
@@ -425,7 +425,7 @@ _zsh_abbr() {
         return
       fi
 
-      if ! $opt_session; then
+      if ! $opt_scope_session; then
         if ! $opt_type_regular; then
           for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
             printf "abbr -g %s=\"%s\"\\n" "$abbreviation" "$expansion"
@@ -439,16 +439,18 @@ _zsh_abbr() {
         fi
       fi
 
-      if ! $opt_type_regular; then
-        for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_GLOBALS}; do
-          printf "abbr -S -g %s=\"%s\"\\n" "$abbreviation" "$expansion"
-        done
-      fi
+      if ! $opt_scope_user; then
+        if ! $opt_type_regular; then
+          for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_GLOBALS}; do
+            printf "abbr -S -g %s=\"%s\"\\n" "$abbreviation" "$expansion"
+          done
+        fi
 
-      if ! $opt_type_global; then
-        for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_COMMANDS}; do
-          printf "abbr -S %s=\"%s\"\\n" "$abbreviation" "$expansion"
-        done
+        if ! $opt_type_global; then
+          for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_COMMANDS}; do
+            printf "abbr -S %s=\"%s\"\\n" "$abbreviation" "$expansion"
+          done
+        fi
       fi
     }
 
@@ -470,7 +472,7 @@ _zsh_abbr() {
         return
       fi
 
-      if $opt_session; then
+      if $opt_scope_session; then
         if $opt_type_global; then
           expansion=${ZSH_ABBR_SESSION_GLOBALS[$1]}
         else
@@ -522,7 +524,7 @@ _zsh_abbr() {
         util_error " add: ABBREVIATION ('$abbreviation') may not contain an equals sign"
       fi
 
-      if $opt_session; then
+      if $opt_scope_session; then
         if $opt_type_global; then
           if ! (( ${+ZSH_ABBR_SESSION_GLOBALS[$1]} )); then
             if $opt_dry_run; then
@@ -630,7 +632,7 @@ _zsh_abbr() {
       local type
       type="user"
 
-      if $opt_session; then
+      if $opt_scope_session; then
         type="session"
       fi
 
@@ -750,13 +752,14 @@ _zsh_abbr() {
         "-S")
           [ "$scope_set" = true ] && util_bad_options
           scope_set=true
-          opt_session=true
+          opt_scope_session=true
           ((number_opts++))
           ;;
         "--user"|\
         "-U")
           [ "$scope_set" = true ] && util_bad_options
           scope_set=true
+          opt_scope_user=true
           ((number_opts++))
           ;;
         "--version"|\
@@ -779,10 +782,6 @@ _zsh_abbr() {
     fi
 
     shift $number_opts
-
-    if ! $opt_session; then
-      opt_user=true
-    fi
 
     if $opt_add; then
        add "$@"
