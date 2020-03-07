@@ -312,20 +312,37 @@ _zsh_abbr() {
     }
 
     function export_aliases() {
-      local source
-      local alias_definition
+      local global_only
+
+      global_only=$opt_type_global
 
       if [ $# -gt 1 ]; then
         util_error " export-aliases: Unexpected argument"
         return
       fi
 
-      if $opt_scope_session; then
-        util_alias ZSH_ABBR_SESSION_GLOBALS $1
-        util_alias ZSH_ABBR_SESSION_COMMANDS $1
-      else
-        util_alias ZSH_ABBR_USER_GLOBALS $1
-        util_alias ZSH_ABBR_USER_COMMANDS $1
+      if ! $opt_scope_user; then
+        if ! $opt_type_regular; then
+          opt_type_global=true
+          util_alias ZSH_ABBR_SESSION_GLOBALS $1
+        fi
+
+        if ! $global_only; then
+          opt_type_global=false
+          util_alias ZSH_ABBR_SESSION_COMMANDS $1
+        fi
+      fi
+
+      if ! $opt_scope_session; then
+        if ! $opt_type_regular; then
+          opt_type_global=true
+          util_alias ZSH_ABBR_USER_GLOBALS $1
+        fi
+
+        if ! $global_only; then
+          opt_type_global=false
+          util_alias ZSH_ABBR_USER_COMMANDS $1
+        fi
       fi
     }
 

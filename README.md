@@ -270,12 +270,16 @@ git checkout
 #### Export Aliases
 
 ```shell
-abbr --export-aliases [DESTINATION]
+abbr --export-aliases [(--session | -S) | (--user | -U)] [(--global | -g)] [DESTINATION]
 ```
 
-Export abbreviations as aliases declarations.
+Export abbreviations as alias commands. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
 
-To export session abbreviations, use the **--session** or **-S** scope flag. Otherwise, or if the **--user** or **-U** scope flag is used, cross-session abbreviations are exported.
+Use the **--session** or **-S** scope flag to export only session abbreviations. Use the **--user** or **-U** scope flag to export only user abbreviations.
+
+Use the **--global** or **-g** type flag to export only global abbreviations. Use the **--regular** or **-r** type flag to export only regular abbreviations.
+
+Combine a scope flag and a type flag to further limit the output.
 
 ```shell
 % abbr gcm="git checkout master"
