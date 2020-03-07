@@ -884,6 +884,14 @@ _zsh_abbr_init() {
     session_shwordsplit_on=true
   fi
 
+  # prevent collisions with other initializing sessions
+  while [ -f "${TMPDIR:-/tmp}/zsh-abbr-initializing" ]; do
+    sleep 0.01
+  done
+
+  touch "${TMPDIR:-/tmp}/zsh-abbr-initializing"
+  chmod 600 "${TMPDIR:-/tmp}/zsh-user-abbreviations"
+
   # Scratch files
   rm "${TMPDIR:-/tmp}/zsh-user-abbreviations" 2> /dev/null
   touch "${TMPDIR:-/tmp}/zsh-user-abbreviations"
@@ -911,6 +919,8 @@ _zsh_abbr_init() {
 
   typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp}/zsh-user-abbreviations"
   typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
+
+  rm "${TMPDIR:-/tmp}/zsh-abbr-initializing"
 }
 
 # WIDGETS
