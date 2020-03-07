@@ -12,20 +12,6 @@ Key:
 - [ ] Identify someone who contributors can contact if olets violates the code of conduct (note: not looking for volunteers)
 - [ ] Update code of conduct with their information
 
-## 3.1.0
-
-Look like zsh's `alias` not fish's `abbr`
-
-- [x] same flags as zsh's `alias`:
-	- [x] `-L` list in the form of commands
-	- [x] `-g` list/define global aliases
-	- [x] support `-L -g`
-	- [x] maybe? `-r` list/define regular aliases
-	- [x] abbr on its own (or with -g or -r) lists like alias [-g|-r]
-	- don't do this one: `-m` list aliases that match a pattern
-	- don't do this one: `-s` list/define suffix aliases
-
-
 ## 3.x
 
 - [ ] stronger tests?

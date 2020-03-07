@@ -1,3 +1,27 @@
+# [v3.1.0](https://github.com/olets/zsh-abbr/compare/v3.0.2...v3.1.0) (2020-03-07)
+
+Look like zsh's `alias` not fish's `abbr`
+
+### Changes
+
+* **list commands:** rename from show ([45b9a69](https://github.com/olets/zsh-abbr/commit/45b9a690a4688eb039d261fb463b1d03c00a0cbf))
+* **rename:** shorthand is now capital -R and update tests ([c0cdce2](https://github.com/olets/zsh-abbr/commit/c0cdce22f06ffc282b6975893e6ae602b1b51f73))
+
+
+### Bug Fixes
+
+* **show:** listed session abbreviation commands include -S ([57f98ea](https://github.com/olets/zsh-abbr/commit/57f98eade5fa2f25c65f5df0131e5ac5d15ce1a8))
+
+
+### Features
+
+* **list commands:** support listing globals only ([7418fac](https://github.com/olets/zsh-abbr/commit/7418facc8353dabbbc3ad886f05b32ffcf499ace))
+* **list commands:** support listing regulars only ([a5cab16](https://github.com/olets/zsh-abbr/commit/a5cab1620200240bc716da61f0da7f8cc12d241f))
+* **list commands:** support listing users only ([9544e98](https://github.com/olets/zsh-abbr/commit/9544e98133f9b4789627ca7e08e21bed7ced1d5d))
+* **list definitions:** with no arguments, behaves like zsh alias ([6c1a7a8](https://github.com/olets/zsh-abbr/commit/6c1a7a802dff9eebcdab8b0625695b85c25c2a6f))
+
+
+
 # [v3.0.2](https://github.com/olets/zsh-abbr/compare/v3.0.1...v3.0.2) (2020-03-07)
 
 
