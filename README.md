@@ -162,7 +162,7 @@ Default is regular.
   | (--expand | -x) arg
   | --export-aliases arg
   | (--help | -h)
-  | --import-aliases [--dry-run]
+  | --import-aliases [(--global | -g)] [--dry-run]
   | --import-fish [(--global | -g)] [--dry-run] arg
   | --import-git-aliases [--dry-run]
   | (--list | -l)
