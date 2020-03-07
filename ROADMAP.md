@@ -20,10 +20,10 @@ Look like zsh's `alias` not fish's `abbr`
 	- [x] `-L` list in the form of commands
 	- [x] `-g` list/define global aliases
 	- [x] support `-L -g`
-	- [ ] maybe? `-r` list/define regular aliases
+	- [x] maybe? `-r` list/define regular aliases
 	- [ ] abbr on its own (or with -g or -r) lists like alias [-g|-r]
-	- [ ] don't do this one: `-m` list aliases that match a pattern
-	- [ ] don't do this one: `-s` list/define suffix aliases
+	- don't do this one: `-m` list aliases that match a pattern
+	- don't do this one: `-s` list/define suffix aliases
 
 
 ## 3.x

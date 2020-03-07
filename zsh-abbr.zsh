@@ -22,9 +22,10 @@ _zsh_abbr() {
   {
     local action_set number_opts opt opt_add opt_clear_session opt_dry_run \
           opt_erase opt_expand opt_export_aliases opt_import_git_aliases \
-          opt_global opt_import_aliases opt_import_fish opt_session opt_list \
-          opt_rename opt_list_commands opt_user opt_print_version release_date \
-          scope_set should_exit text_bold text_reset util_usage version
+          opt_type_global opt_import_aliases opt_import_fish opt_session opt_list \
+          opt_type_regular opt_rename opt_list_commands opt_user \
+          opt_print_version type_set release_date scope_set should_exit \
+          text_bold text_reset util_usage version
     action_set=false
     number_opts=0
     opt_add=false
@@ -32,17 +33,19 @@ _zsh_abbr() {
     opt_dry_run=false
     opt_erase=false
     opt_expand=false
-    opt_import_git_aliases=false
-    opt_global=false
-    opt_import_fish=false
-    opt_session=false
-    opt_list=false
     opt_export_aliases=false
+    opt_type_global=false
     opt_import_aliases=false
-    opt_rename=false
+    opt_import_fish=false
+    opt_import_git_aliases=false
+    opt_list=false
     opt_list_commands=false
+    opt_type_regular=false
+    opt_rename=false
+    opt_session=false
     opt_user=false
     opt_print_version=false
+    type_set=false
     release_date="March 7 2020"
     scope_set=false
     should_exit=false
@@ -61,7 +64,7 @@ _zsh_abbr() {
        ${text_bold}abbr${text_reset} --import-aliases [SCOPE]
        ${text_bold}abbr${text_reset} --list|-l
        ${text_bold}abbr${text_reset} --list-commands|-L|-s
-       ${text_bold}abbr${text_reset} --rename|-r [SCOPE] OLD_ABBREVIATION NEW
+       ${text_bold}abbr${text_reset} --rename|-R [SCOPE] OLD_ABBREVIATION NEW
 
        ${text_bold}abbr${text_reset} --help|-h
        ${text_bold}abbr${text_reset} --version|-v
@@ -254,7 +257,7 @@ _zsh_abbr() {
       fi
 
       if $opt_session; then
-        if $opt_global; then
+        if $opt_type_global; then
           if (( ${+ZSH_ABBR_SESSION_GLOBALS[$1]} )); then
             unset "ZSH_ABBR_SESSION_GLOBALS[${(b)1}]"
             success=true
@@ -264,7 +267,7 @@ _zsh_abbr() {
           success=true
         fi
       else
-        if $opt_global; then
+        if $opt_type_global; then
           source "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
 
           if (( ${+ZSH_ABBR_USER_GLOBALS[$1]} )); then
@@ -335,7 +338,7 @@ _zsh_abbr() {
         add $_alias
       done < <(alias -r)
 
-      opt_global=true
+      opt_type_global=true
 
       while read -r _alias; do
         add $_alias
@@ -416,6 +419,39 @@ _zsh_abbr() {
       print -l ${(k)ZSH_ABBR_SESSION_COMMANDS}
     }
 
+    function list_commands() {
+      if [ $# -gt 0 ]; then
+        util_error " list commands: Unexpected argument"
+        return
+      fi
+
+      if ! $opt_session; then
+        if ! $opt_type_regular; then
+          for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
+            printf "abbr -g %s=\"%s\"\\n" "$abbreviation" "$expansion"
+          done
+        fi
+
+        if ! $opt_type_global; then
+          for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
+            printf "abbr %s=\"%s\"\\n" "$abbreviation" "$expansion"
+          done
+        fi
+      fi
+
+      if ! $opt_type_regular; then
+        for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_GLOBALS}; do
+          printf "abbr -S -g %s=\"%s\"\\n" "$abbreviation" "$expansion"
+        done
+      fi
+
+      if ! $opt_type_global; then
+        for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_COMMANDS}; do
+          printf "abbr -S %s=\"%s\"\\n" "$abbreviation" "$expansion"
+        done
+      fi
+    }
+
     function print_version() {
       if [ $# -gt 0 ]; then
         util_error " version: Unexpected argument"
@@ -435,13 +471,13 @@ _zsh_abbr() {
       fi
 
       if $opt_session; then
-        if $opt_global; then
+        if $opt_type_global; then
           expansion=${ZSH_ABBR_SESSION_GLOBALS[$1]}
         else
           expansion=${ZSH_ABBR_SESSION_COMMANDS[$1]}
         fi
       else
-        if $opt_global; then
+        if $opt_type_global; then
           expansion=${ZSH_ABBR_USER_GLOBALS[$1]}
         else
           expansion=${ZSH_ABBR_USER_COMMANDS[$1]}
@@ -458,35 +494,6 @@ _zsh_abbr() {
         fi
       else
         util_error " rename: No matching abbreviation $1 exists"
-      fi
-    }
-
-    function list_commands() {
-      if [ $# -gt 0 ]; then
-        util_error " list commands: Unexpected argument"
-        return
-      fi
-
-      if ! $opt_session; then
-        for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
-          printf "abbr -g %s=\"%s\"\\n" "$abbreviation" "$expansion"
-        done
-
-        if ! $opt_global; then
-          for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
-            printf "abbr %s=\"%s\"\\n" "$abbreviation" "$expansion"
-          done
-        fi
-      fi
-
-      for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_GLOBALS}; do
-        printf "abbr -S -g %s=\"%s\"\\n" "$abbreviation" "$expansion"
-      done
-
-      if ! $opt_global; then
-        for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_COMMANDS}; do
-          printf "abbr -S %s=\"%s\"\\n" "$abbreviation" "$expansion"
-        done
       fi
     }
 
@@ -516,7 +523,7 @@ _zsh_abbr() {
       fi
 
       if $opt_session; then
-        if $opt_global; then
+        if $opt_type_global; then
           if ! (( ${+ZSH_ABBR_SESSION_GLOBALS[$1]} )); then
             if $opt_dry_run; then
               echo "abbr -S -g $abbreviation=${quote}${expansion}${quote}"
@@ -534,7 +541,7 @@ _zsh_abbr() {
           success=true
         fi
       else
-        if $opt_global; then
+        if $opt_type_global; then
           source "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
 
           if ! (( ${+ZSH_ABBR_USER_GLOBALS[$1]} )); then
@@ -569,7 +576,7 @@ _zsh_abbr() {
     util_alias() {
       for abbreviation expansion in ${(kv)${(P)1}}; do
         alias_definition="alias "
-        if [[ $opt_global == true ]]; then
+        if [[ $opt_type_global == true ]]; then
           alias_definition+="-g "
         fi
         alias_definition+="$abbreviation='$expansion'"
@@ -675,7 +682,9 @@ _zsh_abbr() {
           ;;
         "--global"|\
         "-g")
-          opt_global=true
+          [ "$type_set" = true ] && util_bad_options
+          type_set=true
+          opt_type_global=true
           ((number_opts++))
           ;;
         "--import-fish")
@@ -721,6 +730,13 @@ _zsh_abbr() {
           [ "$action_set" = true ] && util_bad_options
           action_set=true
           opt_list_commands=true
+          ((number_opts++))
+          ;;
+        "--regular"|\
+        "-r")
+          [ "$type_set" = true ] && util_bad_options
+          type_set=true
+          opt_type_regular=true
           ((number_opts++))
           ;;
         "--rename"|\

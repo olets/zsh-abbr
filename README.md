@@ -137,11 +137,21 @@ abbr <OPTION> <SCOPE> <ANY OPTION ARGUMENTS>
 [(--session | -S) | (--user | -U)]
 ```
 
-A given abbreviation can be made available in the current zsh session (i.e. in the current terminal) —these are called *session* abbreviations— or to all terminals —these are called *user* abbreviations.
+A given abbreviation can be made available in the current zsh session (i.e. in the current terminal) —these are called *session* abbreviations— or to all terminals —these are called *user* abbreviations. Select options take **scope** as an argument.
 
 Newly added user abbreviations are available to all open sessions immediately.
 
 Default is user.
+
+### Type
+
+```shell
+[(--global | -g) | (--regular | -r)]
+```
+
+zsh-abbr supports regular abbreviations, which match the word at the start of the command line, and global abbreviations, which match any word on the line. Select options take **type** as an argument.
+
+Default is regular.
 
 ### Options
 
@@ -156,7 +166,7 @@ Default is user.
   | --import-fish [(--global | -g)] [--dry-run] arg
   | --import-git-aliases [--dry-run]
   | (--list | -l)
-  | (--list-commands | -L | -s) [(--session | -S) | (--user | -U)] [(--global | -g)]
+  | (--list-commands | -L | -s) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
   | (--rename | -R ) [(--global | -g)] [--dry-run] args
 ]
 ```
@@ -404,6 +414,31 @@ a
 b
 ```
 
+#### List Commands
+
+```shell
+abbr [(--list-commands | -L | -s)] [(--session | -S) | (--user | -U)] [(--global | -g)]
+```
+
+List all the abbreviations available in the current session as commands. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
+
+Use the **--session** or **-S** flag to list only a session abbreviations.
+
+Use the **--global** or **-g** flag to list only global abbreviations.
+
+Use the **--regular** or **-r** flag to list only global abbreviations.
+
+```shell
+% abbr --add gcm="git checkout master"
+% abbr --add --session a="apple"
+% abbr --list-commands # or `abbr` with no arguments
+abbr gcm="git checkout master"
+abbr -S a="apple"
+% source ~/.zshrc
+% abbr --list-commands
+abbr gcm="git checkout master"
+```
+
 #### Rename
 
 ```shell
@@ -430,29 +465,6 @@ Rename is session/user- and regular/global-specific. If you get a "no matching a
 Use `--dry-run` to see what would result, without making any actual changes..
 
 Abbreviations can also be manually renamed in the `ZSH_USER_ABBREVIATIONS_PATH`.
-
-#### List Commands
-
-```shell
-abbr [(--list-commands | -L | -s)] [(--session | -S) | (--user | -U)] [(--global | -g)]
-```
-
-List all the abbreviations available in the current session as commands. Session abbreviations are marked `-S` and follow user abbreviations.
-
-Use the **--session** or **-S** flag to list only a session abbreviations.
-
-Use the **--global** flag to list only global abbreviations.
-
-```shell
-% abbr --add gcm git checkout master
-% abbr --add --session a apple
-% abbr --list-commands # or `abbr` with no arguments
-abbr gcm="git checkout master"
-abbr -S a="apple"
-% source ~/.zshrc
-% abbr --list-commands
-abbr gcm="git checkout master"
-```
 
 ## Configuration
 
