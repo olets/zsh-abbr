@@ -1,6 +1,6 @@
 # zsh-abbr ![GitHub release (latest by date)](https://img.shields.io/github/v/release/olets/zsh-abbr)
 
-The zsh manager for auto-expanding abbreviations manager.
+The zsh manager for auto-expanding abbreviations.
 
 **abbr** manages abbreviations - user-defined words that are replaced with longer phrases after they are entered.
 
