@@ -109,7 +109,7 @@ _zsh_abbr() {
        o --list -l Lists all ABBREVIATIONs.
 
        o --rename OLD_ABBREVIATION NEW_ABBREVIATION
-         or -r OLD_ABBREVIATION NEW_ABBREVIATION Renames an abbreviation,
+         or -R OLD_ABBREVIATION NEW_ABBREVIATION Renames an abbreviation,
          from OLD_ABBREVIATION to NEW_ABBREVIATION.
 
        o --list-commands or -L (or fishy -s) Show all abbreviations in a
@@ -182,12 +182,12 @@ _zsh_abbr() {
 
          Erase the session gco abbreviation.
 
-       ${text_bold}abbr${text_reset} -r -g gco gch
+       ${text_bold}abbr${text_reset} -R -g gco gch
        ${text_bold}abbr${text_reset} --rename --session gco gch
 
          Rename the existing session abbreviation from gco to gch.
 
-       ${text_bold}abbr${text_reset} -r l le
+       ${text_bold}abbr${text_reset} -R l le
        ${text_bold}abbr${text_reset} --rename l le
 
         Rename the existing user abbreviation from l to le. Note that you
@@ -724,7 +724,7 @@ _zsh_abbr() {
           ((number_opts++))
           ;;
         "--rename"|\
-        "-r")
+        "-R")
           [ "$action_set" = true ] && util_bad_options
           action_set=true
           opt_rename=true

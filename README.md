@@ -157,7 +157,7 @@ Default is user.
   | --import-git-aliases [--dry-run]
   | (--list | -l)
   | (--list-commands | -L | -s) [(--session | -S) | (--user | -U)] [(--global | -g)]
-  | (--rename | -r ) [(--global | -g)] [--dry-run] args
+  | (--rename | -R ) [(--global | -g)] [--dry-run] args
 ]
 ```
 
@@ -407,7 +407,7 @@ b
 #### Rename
 
 ```shell
-abbr (--rename | -r) [(--global | -g)] [--dry-run] OLD_WORD NEW_WORD
+abbr (--rename | -R) [(--global | -g)] [--dry-run] OLD_WORD NEW_WORD
 ```
 
 Rename an abbreviation.

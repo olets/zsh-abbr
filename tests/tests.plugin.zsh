@@ -89,9 +89,9 @@ fi
 echo $message
 abbr -e $test_abbr_abbreviation
 
-message="abbr -r "
+message="abbr -R "
 abbr $test_abbr
-abbr -r $test_abbr_abbreviation ${test_abbr_abbreviation}_new
+abbr -R $test_abbr_abbreviation ${test_abbr_abbreviation}_new
 if [[ $(abbr -x ${test_abbr_abbreviation}_new) == $test_abbr_expansion ]]; then
 	message+="passed"
 else
