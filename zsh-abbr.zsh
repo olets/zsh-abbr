@@ -933,28 +933,26 @@ _zsh_abbr_init() {
 # -------
 
 _zsh_abbr_expand_widget() {
-  local current_word
   local expansion
+  local word
+  local words
   local word_count
 
-  current_word=$LBUFFER
-  word_count=${(w)#LBUFFER}
+  words=(${(z)LBUFFER})
+  word=$words[-1]
+  word_count=${#words}
 
   if [[ $word_count == 1 ]]; then
-    expansion=$(_zsh_abbr_cmd_expansion "$current_word")
+    expansion=$(_zsh_abbr_cmd_expansion "$word")
   fi
 
   if ! [[ -n "$expansion" ]]; then
-    if [[ $word_count > 1 ]]; then
-      current_word=${${(z)LBUFFER}: -1}
-    fi
-
-    expansion=$(_zsh_abbr_global_expansion "$current_word")
+    expansion=$(_zsh_abbr_global_expansion "$word")
   fi
 
   if [[ -n "$expansion" ]]; then
     local preceding_lbuffer
-    preceding_lbuffer="${LBUFFER%%$current_word}"
+    preceding_lbuffer="${LBUFFER%%$word}"
     LBUFFER="$preceding_lbuffer$expansion"
   fi
 }
