@@ -1,6 +1,6 @@
 # fish shell-like abbreviation management for zsh.
 # https://github.com/olets/zsh-abbr
-# v3.0.0
+# v3.0.1
 # Copyright (c) 2019-2020 Henry Bley-Vroman
 
 
@@ -43,7 +43,7 @@ _zsh_abbr() {
     opt_show=false
     opt_user=false
     opt_print_version=false
-    release_date="March 1 2020"
+    release_date="March 7 2020"
     scope_set=false
     should_exit=false
     text_bold="\\033[1m"
@@ -209,7 +209,7 @@ _zsh_abbr() {
        and show are mutually exclusive, as are the session and user scopes.
 
        $version $release_date"
-    version="zsh-abbr version 3.0.0"
+    version="zsh-abbr version 3.0.1"
 
     function add() {
       local abbreviation

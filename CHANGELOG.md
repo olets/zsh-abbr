@@ -1,3 +1,10 @@
+# [v3.0.1](https://github.com/olets/zsh-abbr/compare/v3.0.0...v3.0.1) (2020-03-07)
+
+### Bug Fixes
+
+* **init:** prevent collision with other initializing sessions [[#8](https://github.com/olets/zsh-abbr/issues/8)] ([f02fe24](https://github.com/olets/zsh-abbr/commit/f02fe2414b07f2a84dff887db91cd6c0465a0546))
+
+
 # [v3.0.0](https://github.com/olets/zsh-abbr/compare/v2.1.3...v3.0.0) (2020-03-01)
 
 Parity with zsh alias's behavior: syntax is `abbreviation=word` instead of fish abbr-like `abbreviation word`. Distinguish between command-position abbreviations and global abbreviations. User abbreviations file is now at `${HOME}/.config/zsh/abbreviations`. Check the README documentation for `--import-fish` to move from fish abbr and zsh-abbr<\v3 to zsh-abbr v3.
