@@ -62,8 +62,9 @@ _zsh_abbr() {
        ${text_bold}abbr${text_reset} --export-aliases|-o [SCOPE] [DESTINATION]
        ${text_bold}abbr${text_reset} --import-git-aliases [SCOPE]
        ${text_bold}abbr${text_reset} --import-aliases [SCOPE]
-       ${text_bold}abbr${text_reset} --list|-l
+       ${text_bold}abbr${text_reset} --list-abbreviations|-l
        ${text_bold}abbr${text_reset} --list-commands|-L|-s
+       ${text_bold}abbr${text_reset} --list-definitions
        ${text_bold}abbr${text_reset} --rename|-R [SCOPE] OLD_ABBREVIATION NEW
 
        ${text_bold}abbr${text_reset} --help|-h
@@ -109,14 +110,16 @@ _zsh_abbr() {
          ABBREVIATIONs are prefixed with g, EXPANSIONs are prefixed
          with git[Space].
 
-       o --list -l Lists all ABBREVIATIONs.
+       o --list-abbreviations or -l Lists all ABBREVIATIONs.
+
+       o --list-commands or -L (or fishy -s) Lists all abbreviations as
+         commands suitable for export and import.
+
+       o --list-definitions Lists all ABBREVIATIONs and their EXPANSIONs.
 
        o --rename OLD_ABBREVIATION NEW_ABBREVIATION
          or -R OLD_ABBREVIATION NEW_ABBREVIATION Renames an abbreviation,
          from OLD_ABBREVIATION to NEW_ABBREVIATION.
-
-       o --list-commands or -L (or fishy -s) Show all abbreviations in a
-         manner suitable for export and import.
 
        o --version or -v Show the current version.
 
@@ -404,19 +407,7 @@ _zsh_abbr() {
         return
       fi
 
-      source "${TMPDIR:-/tmp}/zsh-user-abbreviations"
-
-      echo "User global abbreviations:\\n"
-      print -l ${(k)ZSH_ABBR_USER_GLOBALS}
-      echo
-      echo "User regular abbreviations\\n"
-      print -l ${(k)ZSH_ABBR_USER_COMMANDS}
-      echo
-      echo "Session global abbreviations\\n"
-      print -l ${(k)ZSH_ABBR_SESSION_GLOBALS}
-      echo
-      echo "Session regular abbreviations\\n"
-      print -l ${(k)ZSH_ABBR_SESSION_COMMANDS}
+      util_list 0
     }
 
     function list_commands() {
@@ -425,33 +416,16 @@ _zsh_abbr() {
         return
       fi
 
-      if ! $opt_scope_session; then
-        if ! $opt_type_regular; then
-          for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
-            printf "abbr -g %s=\"%s\"\\n" "$abbreviation" "$expansion"
-          done
-        fi
+      util_list 2
+    }
 
-        if ! $opt_type_global; then
-          for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
-            printf "abbr %s=\"%s\"\\n" "$abbreviation" "$expansion"
-          done
-        fi
+    function list_definitions() {
+      if [ $# -gt 0 ]; then
+        util_error " list definitions: Unexpected argument"
+        return
       fi
 
-      if ! $opt_scope_user; then
-        if ! $opt_type_regular; then
-          for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_GLOBALS}; do
-            printf "abbr -S -g %s=\"%s\"\\n" "$abbreviation" "$expansion"
-          done
-        fi
-
-        if ! $opt_type_global; then
-          for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_COMMANDS}; do
-            printf "abbr -S %s=\"%s\"\\n" "$abbreviation" "$expansion"
-          done
-        fi
-      fi
+      util_list 1
     }
 
     function print_version() {
@@ -598,6 +572,69 @@ _zsh_abbr() {
     function util_error() {
       printf "abbr%s\\nFor help run abbr --help\\n" "$@"
       should_exit=true
+    }
+
+    function util_list() {
+      local result
+      local include_expansion
+      local include_cmd
+
+      if [[ $1 > 0 ]]; then
+        include_expansion=1
+      fi
+
+      if [[ $1 > 1 ]]; then
+        include_cmd=1
+      fi
+
+      if ! $opt_scope_session; then
+        if ! $opt_type_regular; then
+          for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
+            util_list_item "$abbreviation" "$expansion" "abbr -g"
+          done
+        fi
+
+        if ! $opt_type_global; then
+          for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
+            util_list_item "$abbreviation" "$expansion" "abbr"
+          done
+        fi
+      fi
+
+      if ! $opt_scope_user; then
+        if ! $opt_type_regular; then
+          for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_GLOBALS}; do
+            util_list_item "$abbreviation" "$expansion" "abbr -S -g"
+          done
+        fi
+
+        if ! $opt_type_global; then
+          for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_COMMANDS}; do
+            util_list_item "$abbreviation" "$expansion" "abbr -S"
+          done
+        fi
+      fi
+    }
+
+    function util_list_item() {
+      local abbreviation
+      local cmd
+      local expansion
+
+      abbreviation=$1
+      expansion=$2
+      cmd=$3
+
+      result=$abbreviation
+      if (( $include_expansion )); then
+        result+="=\"$expansion\""
+      fi
+
+      if (( $include_cmd )); then
+        result="$cmd $result"
+      fi
+
+      echo $result
     }
 
     function util_sync_user() {
@@ -801,6 +838,8 @@ _zsh_abbr() {
       import_git_aliases "$@"
     elif $opt_list; then
       list "$@"
+    elif $opt_list_commands; then
+      list_commands "$@"
     elif $opt_print_version; then
       print_version "$@"
     elif $opt_rename; then
@@ -811,7 +850,7 @@ _zsh_abbr() {
        add "$@"
     # default if no argument is provided
     else
-      list_commands "$@"
+      list_definitions "$@"
     fi
   } always {
     unfunction -m "add"
@@ -825,11 +864,14 @@ _zsh_abbr() {
     unfunction -m "import_git_aliases"
     unfunction -m "list"
     unfunction -m "list_commands"
+    unfunction -m "list_definitions"
     unfunction -m "print_version"
     unfunction -m "rename"
     unfunction -m "util_add"
     unfunction -m "util_alias"
     unfunction -m "util_error"
+    unfunction -m "util_list"
+    unfunction -m "util_list_item"
     unfunction -m "util_sync_user"
     unfunction -m "util_type"
     unfunction -m "util_usage"

@@ -165,8 +165,9 @@ Default is regular.
   | --import-aliases [(--global | -g)] [--dry-run]
   | --import-fish [(--global | -g)] [--dry-run] arg
   | --import-git-aliases [--dry-run]
-  | (--list | -l)
+  | (--list-abbreviations | -l) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
   | (--list-commands | -L | -s) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
+  | [--list-definitions] [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
   | (--rename | -R ) [(--global | -g)] [--dry-run] args
 ]
 ```
@@ -394,33 +395,7 @@ Use `--dry-run` to see what would result, without making any actual changes.
 
 #### List
 
-```shell
-abbr (--list|-l)
-```
-
-List all abbreviations available in the current shell. User abbreviations appear first.
-
-```shell
-% abbr a apple
-% abbr b ball
-% abbr -S c cat
-% abbr -l
-a
-b
-c
-% source ~/.zshrc
-% abbr -l
-a
-b
-```
-
-#### List Commands
-
-```shell
-abbr [(--list-commands | -L | -s)] [(--session | -S) | (--user | -U)] [(--global | -g)]
-```
-
-List all the abbreviations available in the current session as commands. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
+List all the abbreviations available in the current session. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
 
 Use the **--session** or **-S** scope flag to list only a session abbreviations. Use the **--user** or **-U** scope flag to list only a session abbreviations.
 
@@ -428,15 +403,76 @@ Use the **--global** or **-g** type flag to list only global abbreviations. Use 
 
 Combine a scope flag and a type flag to further limit the output.
 
+##### Abbreviations
+
 ```shell
-% abbr --add gcm="git checkout master"
-% abbr --add --session a="apple"
-% abbr --list-commands # or `abbr` with no arguments
-abbr gcm="git checkout master"
-abbr -S a="apple"
+abbr (--list-abbreviations|-l) [(--session | -S) | (--user | -U)] [(--global | -g)]
+```
+
+List the abbreviations only, like fish's `abbr -l`.
+
+```shell
+% abbr a=apple
+% abbr -g b=ball
+% abbr -S c=cat
+% abbr -S -g d=dog
+% abbr --list-abbreviations
+a
+b
+c
+d
 % source ~/.zshrc
-% abbr --list-commands
-abbr gcm="git checkout master"
+% abbr --list-abbreviations
+a
+b
+```
+
+##### Commands
+
+```shell
+abbr (--list-commands | -L | -s) [(--session | -S) | (--user | -U)] [(--global | -g)]
+```
+
+List as commands, like zsh's `alias -L`.
+
+```shell
+% abbr a=apple
+% abbr -g b=ball
+% abbr -S c=cat
+% abbr -S -g d=dog
+% abbr --list-abbreviations
+abbr a="apple"
+abbr -g b="ball"
+abbr -S c="cat"
+abbr -S -g d="dog"
+% source ~/.zshrc
+% abbr --list-abbreviations
+abbr a="apple"
+abbr -g b="ball"
+```
+
+##### Definitions
+
+```shell
+abbr [--list-definitions] [(--session | -S) | (--user | -U)] [(--global | -g)]
+```
+
+List as commands, like zsh's `alias`.
+
+```shell
+% abbr a=apple
+% abbr -g b=ball
+% abbr -S c=cat
+% abbr -S -g d=dog
+% abbr # or abbr --list-abbreviations
+a="apple"
+b="ball"
+c="cat"
+d="dog"
+% source ~/.zshrc
+% abbr # or abbr --list-abbreviations
+a="apple"
+b="ball"
 ```
 
 #### Rename
