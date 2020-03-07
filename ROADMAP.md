@@ -16,10 +16,6 @@ Key:
 
 - [ ] stronger tests?
 
-Github
-
-- [x] move contribution documentation to a CONTRIBUTING.md
-
 Chrome
 
 - [ ] Completion

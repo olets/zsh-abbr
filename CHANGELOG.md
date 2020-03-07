@@ -1,3 +1,16 @@
+# [v3.1.1](https://github.com/olets/zsh-abbr/compare/v3.1.0...v3.1.1) (2020-03-07)
+
+### Bug Fixes
+
+* **export aliases:** respect the abbreviation's type ([69fb7a3](https://github.com/olets/zsh-abbr/commit/69fb7a32416fdc5a15945850db7d985370166b44))
+
+
+### Features
+
+* **CONTRIBUTING:** new file for GitHub friendliness ([6d04986](https://github.com/olets/zsh-abbr/commit/6d04986e754a77da4ff8cb221180e76baeb49627))
+
+
+
 # [v3.1.0](https://github.com/olets/zsh-abbr/compare/v3.0.2...v3.1.0) (2020-03-07)
 
 Look like zsh's `alias` not fish's `abbr`
