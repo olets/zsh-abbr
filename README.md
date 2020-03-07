@@ -79,31 +79,44 @@ Clone this repo and add `source path/to/zsh-abbr.zsh` to your `.zshrc`.
 
 ```shell
 # Add and use an abbreviation
-% abbr m master
-% m[Space] # expands to `master`
-% git checkout m[Space] # becomes `git checkout master`
-% git checkout m[Enter]
-# expands to and runs `git checkout master`
+% abbr g=git
+% g[Space] # expands to `git `
+# It is saved for your user and immediately available to open sessions
+% source ~/.zshrc # or switch to different session
+% g[Space] # expands to `git `
 
-% abbr gcm git checkout master
-# Note the `m`s in `gcm` and `master` did not expand. Expansion only run on entire words
+# Add a session-specific abbreviation
+% abbr -S x=git
+% x[Space] # expands to `git `
+% source ~/.zshrc # or switch to different session
+% x[Space] # no special treatment
+
+# Erase an abbreviation
+% abbr -e g; # the `;` prevents expansion. Ctrl-Space would work too
+% g[Space] # no expansion
+
+# Add a global abbreviation
+% abbr -g g=git
+% echo hello world && g[Space] # expands
+
+# Enter expands and accepts
+% abbr gcm="git checkout master"
 % gcm[Enter]
-# expands to and runs `git checkout master`
+Switched to branch 'master'
+Your branch is up to date with 'origin/master'.
+%
 
-# The above will in other open sessions, and in future sessions.
-# Add an abbreviation only available in the current terminal
-% abbr -S gco[Ctrl-Space] https://en.wikipedia.org/wiki/GCO
-# (Note that Ctrl-Space opts out of space-triggered expansion)
-% gco[Space] # expands to `https://en.wikipedia.org/wiki/GCO`
+# Rename an abbreviation
+% abbr -r gcm gm # note: scope- and type- specific. See below
+% gcm[Space] # does not expand
+% gm[Space] # expands to `git checkout master `
 
-# Rename it
-% abbr -r gco[Ctrl-Space] wgco
-% gco[Space] # expands to `git checkout`
-% wgco[Space] # expands to `https://en.wikipedia.org/wiki/GCO`
+# Make the switch from aliases
+% abbr --import-aliases
+% abbr --import-git-aliases
 
-# Delete it
-% abbr -S wgco[Ctrl-Space]
-% wgco[Space] # no expansion
+# Make the switch from fish
+% abbr --import-git-aliases
 ```
 
 ## Usage
