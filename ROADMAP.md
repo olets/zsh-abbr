@@ -18,7 +18,7 @@ Key:
 
 Github
 
-- [ ] move contribution documentation to a CONTRIBUTING.md
+- [x] move contribution documentation to a CONTRIBUTING.md
 
 Chrome
 
