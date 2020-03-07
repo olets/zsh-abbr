@@ -394,7 +394,7 @@ b
 #### Rename
 
 ```shell
-abbr (--rename [(--global | -g)] | -r [(--global | -g)]) [--dry-run] OLD_WORD NEW_WORD
+abbr (--rename | -r) [(--global | -g)] [--dry-run] OLD_WORD NEW_WORD
 ```
 
 Rename an abbreviation.
