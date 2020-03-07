@@ -114,9 +114,6 @@ Your branch is up to date with 'origin/master'.
 # Make the switch from aliases
 % abbr --import-aliases
 % abbr -g --import-git-aliases
-
-# Make the switch from fish
-% abbr --import-git-aliases
 ```
 
 ## Usage
