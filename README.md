@@ -156,7 +156,7 @@ Default is user.
   | --import-fish [(--global | -g)] [--dry-run] arg
   | --import-git-aliases [--dry-run]
   | (--list | -l)
-  | (--list-commands | -L | -s) [(--global | -g)]
+  | (--list-commands | -L | -s) [(--session | -S) | (--user | -U)] [(--global | -g)]
   | (--rename | -r ) [(--global | -g)] [--dry-run] args
 ]
 ```
@@ -434,10 +434,14 @@ Abbreviations can also be manually renamed in the `ZSH_USER_ABBREVIATIONS_PATH`.
 #### List Commands
 
 ```shell
-abbr [(--list-commands | -L | -s)] [(--global | -g)]
+abbr [(--list-commands | -L | -s)] [(--session | -S) | (--user | -U)] [(--global | -g)]
 ```
 
-List all the abbreviations available in the current session as commands. _**Show** does not take a scope._ Session abbreviations are marked `-S` and follow user abbreviations.
+List all the abbreviations available in the current session as commands. Session abbreviations are marked `-S` and follow user abbreviations.
+
+Use the **--session** or **-S** flag to list only a session abbreviations.
+
+Use the **--global** flag to list only global abbreviations.
 
 ```shell
 % abbr --add gcm git checkout master

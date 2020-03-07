@@ -467,15 +467,27 @@ _zsh_abbr() {
         return
       fi
 
-      cat $ZSH_ABBR_USER_PATH
+      if ! $opt_session; then
+        for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
+          printf "abbr -g %s=\"%s\"\\n" "$abbreviation" "$expansion"
+        done
+
+        if ! $opt_global; then
+          for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
+            printf "abbr %s=\"%s\"\\n" "$abbreviation" "$expansion"
+          done
+        fi
+      fi
 
       for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_GLOBALS}; do
         printf "abbr -S -g %s=\"%s\"\\n" "$abbreviation" "$expansion"
       done
 
-      for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_COMMANDS}; do
-        printf "abbr -S %s=\"%s\"\\n" "$abbreviation" "$expansion"
-      done
+      if ! $opt_global; then
+        for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_COMMANDS}; do
+          printf "abbr -S %s=\"%s\"\\n" "$abbreviation" "$expansion"
+        done
+      fi
     }
 
     function util_add() {
