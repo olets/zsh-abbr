@@ -305,7 +305,9 @@ alias -S g='git'
 alias -S g='git'
 ```
 
-#### Import Aliases
+#### Import
+
+##### Aliases
 
 ```shell
 abbr --import-aliases [--dry-run]
@@ -313,11 +315,8 @@ abbr --import-aliases [--dry-run]
 
 Add abbreviations for every alias available in the current session.
 
-Use the **--session** flag to create session abbreviations. Otherwise, or if the **--user** flag is used, the abbreviations will be cross-session.
+Use the **--session** or **-S** flag to create session abbreviations. Otherwise, or if the **--user** or **-U** flag is used, the abbreviations will be cross-session.
 
-This command is useful for migrating from aliases to abbreviations.
-
-See also **Import Git Aliases**.
 
 ```shell
 % cat ~/.zshrc
@@ -333,15 +332,13 @@ Note that zsh-abbr does not lint the imported abbreviations. An effort is made t
 
 Use `--dry-run` to see what would result, without making any actual changes.
 
-#### Import Git Aliases
+##### Git Aliases
 
 ```shell
 abbr --import-git-aliases [--dry-run]
 ```
 
 Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--session** scope to create session abbreviations. Otherwise, or if the **--user** flag is used, the Git abbreviations will be user.
-
-This command is useful for migrating from aliases to abbreviations.
 
 ```shell
 % git config alias.co checkout
@@ -360,7 +357,7 @@ Note that zsh-abbr does not lint the imported abbreviations. An effort is made t
 
 Use `--dry-run` to see what would result, without making any actual changes.
 
-### Import Fish
+##### Fish Abbreviations
 
 ```shell
 abbr --import-fish FILE [--dry-run]
