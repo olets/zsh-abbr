@@ -437,7 +437,7 @@ Abbreviations can also be manually renamed in the `ZSH_USER_ABBREVIATIONS_PATH`.
 abbr [(--show|-s)]
 ```
 
-Show all the abbreviations available in the current session, along with their expansions. _**Show** does not take a scope._ Session abbreviations are marked `-g` and follow user abbreviations, which are marked `-U`.
+Show all the abbreviations available in the current session, along with their expansions. _**Show** does not take a scope._ Session abbreviations are marked `-S` and follow user abbreviations.
 
 ```shell
 % abbr --add gcm git checkout master
