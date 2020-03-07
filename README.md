@@ -113,7 +113,7 @@ Your branch is up to date with 'origin/master'.
 
 # Make the switch from aliases
 % abbr --import-aliases
-% abbr --import-git-aliases
+% abbr -g --import-git-aliases
 
 # Make the switch from fish
 % abbr --import-git-aliases
@@ -313,10 +313,9 @@ alias -S g='git'
 abbr --import-aliases [--dry-run]
 ```
 
-Add abbreviations for every alias available in the current session.
+Add regular abbreviations for every regular alias in the session, and global abbreviations for every global alias in the session.
 
 Use the **--session** or **-S** flag to create session abbreviations. Otherwise, or if the **--user** or **-U** flag is used, the abbreviations will be cross-session.
-
 
 ```shell
 % cat ~/.zshrc
