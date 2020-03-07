@@ -156,14 +156,14 @@ Default is user.
   | --import-fish [(--global | -g)] [--dry-run] arg
   | --import-git-aliases [--dry-run]
   | (--list | -l)
+  | (--list-commands | -L | -s) [(--global | -g)]
   | (--rename | -r ) [(--global | -g)] [--dry-run] args
-  | (--show | -s)
 ]
 ```
 
 `zsh-abbr` has options to add, rename, and erase abbreviations; to add abbreviations for every alias or Git alias; to list the available abbreviations with or without their expansions; and to create aliases from abbreviations.
 
-`abbr` with no arguments is shorthand for `abbr --show`. `abbr ...` with arguments and no flags is shorthand for `abbr --add ...`.
+`abbr` with no arguments is shorthand for `abbr --list-commands`. `abbr ...` with arguments and no flags is shorthand for `abbr --add ...`.
 
 #### Add
 
@@ -431,22 +431,22 @@ Use `--dry-run` to see what would result, without making any actual changes..
 
 Abbreviations can also be manually renamed in the `ZSH_USER_ABBREVIATIONS_PATH`.
 
-#### Show
+#### List Commands
 
 ```shell
-abbr [(--show|-s)]
+abbr [(--list-commands | -L | -s)] [(--global | -g)]
 ```
 
-Show all the abbreviations available in the current session, along with their expansions. _**Show** does not take a scope._ Session abbreviations are marked `-S` and follow user abbreviations.
+List all the abbreviations available in the current session as commands. _**Show** does not take a scope._ Session abbreviations are marked `-S` and follow user abbreviations.
 
 ```shell
 % abbr --add gcm git checkout master
 % abbr --add --session a apple
-% abbr --show # or `abbr` with no arguments
+% abbr --list-commands # or `abbr` with no arguments
 abbr gcm="git checkout master"
 abbr -S a="apple"
 % source ~/.zshrc
-% abbr --show
+% abbr --list-commands
 abbr gcm="git checkout master"
 ```
 

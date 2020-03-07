@@ -17,7 +17,7 @@ Key:
 Look like zsh's `alias` not fish's `abbr`
 
 - [ ] same flags as zsh's `alias`:
-	- [ ] `-L` list in the form of commands
+	- [x] `-L` list in the form of commands
 	- [ ] `-g` list/define global aliases
 	- [ ] support `-L -g` and maybe `-L -r`
 	- [ ] maybe? `-r` list/define regular aliases

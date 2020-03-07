@@ -23,7 +23,7 @@ _zsh_abbr() {
     local action_set number_opts opt opt_add opt_clear_session opt_dry_run \
           opt_erase opt_expand opt_export_aliases opt_import_git_aliases \
           opt_global opt_import_aliases opt_import_fish opt_session opt_list \
-          opt_rename opt_show opt_user opt_print_version release_date \
+          opt_rename opt_list_commands opt_user opt_print_version release_date \
           scope_set should_exit text_bold text_reset util_usage version
     action_set=false
     number_opts=0
@@ -40,7 +40,7 @@ _zsh_abbr() {
     opt_export_aliases=false
     opt_import_aliases=false
     opt_rename=false
-    opt_show=false
+    opt_list_commands=false
     opt_user=false
     opt_print_version=false
     release_date="March 7 2020"
@@ -60,8 +60,8 @@ _zsh_abbr() {
        ${text_bold}abbr${text_reset} --import-git-aliases [SCOPE]
        ${text_bold}abbr${text_reset} --import-aliases [SCOPE]
        ${text_bold}abbr${text_reset} --list|-l
+       ${text_bold}abbr${text_reset} --list-commands|-L|-s
        ${text_bold}abbr${text_reset} --rename|-r [SCOPE] OLD_ABBREVIATION NEW
-       ${text_bold}abbr${text_reset} --show|-s
 
        ${text_bold}abbr${text_reset} --help|-h
        ${text_bold}abbr${text_reset} --version|-v
@@ -112,8 +112,8 @@ _zsh_abbr() {
          or -r OLD_ABBREVIATION NEW_ABBREVIATION Renames an abbreviation,
          from OLD_ABBREVIATION to NEW_ABBREVIATION.
 
-       o --show or -s Show all abbreviations in a manner suitable for export
-         and import.
+       o --list-commands or -L (or fishy -s) Show all abbreviations in a
+         manner suitable for export and import.
 
        o --version or -v Show the current version.
 
@@ -205,8 +205,9 @@ _zsh_abbr() {
        the scope. If you want it to be visible only to the current shell
        use the -g flag.
 
-       The options add, export-aliases, erase, expand, import, list, rename,
-       and show are mutually exclusive, as are the session and user scopes.
+       The options add, export-aliases, erase, expand, import, list,
+       list-commands, and rename are mutually exclusive, as are the session
+       and user scopes.
 
        $version $release_date"
     version="zsh-abbr version 3.0.2"
@@ -460,9 +461,9 @@ _zsh_abbr() {
       fi
     }
 
-    function show() {
+    function list_commands() {
       if [ $# -gt 0 ]; then
-        util_error " show: Unexpected argument"
+        util_error " list commands: Unexpected argument"
         return
       fi
 
@@ -682,13 +683,6 @@ _zsh_abbr() {
           opt_import_git_aliases=true
           ((number_opts++))
           ;;
-        "--list"|\
-        "-l")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_list=true
-          ((number_opts++))
-          ;;
         "--export-aliases")
           [ "$action_set" = true ] && util_bad_options
           action_set=true
@@ -699,6 +693,22 @@ _zsh_abbr() {
           [ "$action_set" = true ] && util_bad_options
           action_set=true
           opt_import_aliases=true
+          ((number_opts++))
+          ;;
+        "--list-abbreviations"|\
+        "-l")
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_list=true
+          ((number_opts++))
+          ;;
+        "--list-commands"|\
+        "-L"|\
+        "--show"|\
+        "-s") # "show" is for backwards compatability with v2
+          [ "$action_set" = true ] && util_bad_options
+          action_set=true
+          opt_list_commands=true
           ((number_opts++))
           ;;
         "--rename"|\
@@ -713,13 +723,6 @@ _zsh_abbr() {
           [ "$scope_set" = true ] && util_bad_options
           scope_set=true
           opt_session=true
-          ((number_opts++))
-          ;;
-        "--show"|\
-        "-s")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_show=true
           ((number_opts++))
           ;;
         "--user"|\
@@ -777,11 +780,11 @@ _zsh_abbr() {
       rename "$@"
 
     # default if arguments are provided
-    elif ! $opt_show && [ $# -gt 0 ]; then
+    elif ! $opt_list_commands && [ $# -gt 0 ]; then
        add "$@"
     # default if no argument is provided
     else
-      show "$@"
+      list_commands "$@"
     fi
   } always {
     unfunction -m "add"
@@ -794,9 +797,9 @@ _zsh_abbr() {
     unfunction -m "import_fish"
     unfunction -m "import_git_aliases"
     unfunction -m "list"
+    unfunction -m "list_commands"
     unfunction -m "print_version"
     unfunction -m "rename"
-    unfunction -m "show"
     unfunction -m "util_add"
     unfunction -m "util_alias"
     unfunction -m "util_error"
