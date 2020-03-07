@@ -68,7 +68,7 @@ Or install zsh-abbr with your favorite plugin manager:
 If running `abbr` gives an error "zsh: permission denied: abbr", reload zsh:
 
 ```shell
-% source ~/.zshrc # or your custom .zshrc path
+% source ~/.zshrc
 ```
 
 ### Manual
@@ -134,7 +134,7 @@ abbr <OPTION> <SCOPE> <ANY OPTION ARGUMENTS>
 [(--session | -S) | (--user | -U)]
 ```
 
-A given abbreviation can be made available in the current zsh session (i.e. in the current terminal) —these are called *session* abbreviations— or to all terminals —these are called *user* abbreviations. Select options take **scope** as an argument.
+A given abbreviation can be limited to the current zsh session (i.e. the current terminal) —these are called *session* abbreviations— or to all terminals —these are called *user* abbreviations. Select options take **scope** as an argument.
 
 Newly added user abbreviations are available to all open sessions immediately.
 
@@ -169,14 +169,14 @@ Default is regular.
 ]
 ```
 
-`zsh-abbr` has options to add, rename, and erase abbreviations; to add abbreviations for every alias or Git alias; to list the available abbreviations with or without their expansions; and to create aliases from abbreviations.
+zsh-abbr has options to add, rename, and erase abbreviations; to add abbreviations for every alias or Git alias; to list the available abbreviations with or without their expansions; and to create aliases from abbreviations.
 
-`abbr` with no arguments is shorthand for `abbr --list-commands`. `abbr ...` with arguments and no flags is shorthand for `abbr --add ...`.
+`abbr` with no arguments is shorthand for `abbr --list-commands`. `abbr ...` with arguments is shorthand for `abbr --add ...`.
 
 #### Add
 
 ```shell
-abbr [(--add | -a)] [(--global | -g)] [--dry-run] ABBREVIATION=EXPANSION
+abbr [(--add | -a)] [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] ABBREVIATION=EXPANSION
 ```
 
 Add a new abbreviation.
@@ -203,12 +203,7 @@ The following are equivalent:
 % abbr gcm='git checkout master'
 ```
 
-The following are not allowed in the abbreviation: `;`, `|`, `&&`, `=`, and whitespace.
-
-```shell
-abbr a\;b=c   # will error
-abbr 'a||b'=c # will error
-```
+The ABBREVIATION must be only one word long.
 
 As with aliases, to include whitespace, quotation marks, or other special characters like `;`, `|`, or `&` in the EXPANSION, quote the EXPANSION or `\`-escape the characters as necessary.
 
@@ -219,7 +214,7 @@ abbr a="b|c" # allowed
 
 User-scope abbreviations can also be manually to the user abbreviations file. See **Storage** below.
 
-The session regular, session global, user regular, and user global abbreviation sets are independent. Order of precedence is "session command > user command > session global > user global".
+The session regular, session global, user regular, and user global abbreviation sets are independent. If you wanted, you could have more than one abbreviation with the same ABBREVIATION. Order of precedence is "session command > user command > session global > user global".
 
 Use `--dry-run` to see what would result, without making any actual changes.
 
@@ -234,7 +229,7 @@ Erase all session abbreviations.
 #### Erase
 
 ```shell
-abbr (--erase | -e) [(--global | -g)] ABBREVIATION
+abbr (--erase | -e) [(--session | -S) | (--user | -U)] [(--global | -g)] ABBREVIATION
 ```
 
 Erase an abbreviation.
@@ -259,11 +254,11 @@ User abbreviations can also be manually erased from the `ZSH_USER_ABBREVIATIONS_
 abbr (--expand | -x) ABBREVIATION
 ```
 
-Output the ABBREVIATION's EXPANSION. Useful in scripting.
+Output the ABBREVIATION's EXPANSION.
 
 ```shell
 % abbr gc="git checkout"
-% abbr -x gc[Ctrl-Space]
+% abbr -x gc; # or `abbr -x gc[Ctrl-Space][Enter]`
 git checkout
 ```
 
@@ -304,8 +299,6 @@ abbr --import-aliases [--dry-run]
 
 Add regular abbreviations for every regular alias in the session, and global abbreviations for every global alias in the session.
 
-Use the **--session** or **-S** scope flag to create session abbreviations. Otherwise, or if the **--user** or **-U** scope flag is used, the abbreviations will be cross-session.
-
 ```shell
 % cat ~/.zshrc
 # --snip--
@@ -326,7 +319,11 @@ Use `--dry-run` to see what would result, without making any actual changes.
 abbr --import-git-aliases [(--global | -g)] [--dry-run]
 ```
 
-Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`. Use the **--session**  or **-S** scope flag to create session abbreviations. Otherwise, or if the **--user** or **-U** scope flag is used, the Git abbreviations will be user.
+Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`.
+
+Use the **--session**  or **-S** scope flag to create session abbreviations. Otherwise, or if the **--user** or **-U** scope flag is used, the Git abbreviations will be user.
+
+Use the **--global** or **-g** type flag to create global abbreviations.
 
 ```shell
 % git config alias.co checkout
@@ -339,7 +336,7 @@ Add abbreviations for every Git alias available in the current session. WORDs ar
 % gco[Space] # expands to git checkout
 ```
 
-Note for users migrating from Oh-My-Zsh: [OMZ's Git aliases are shell aliases](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh), not aliases in the Git config. To add abbreviations for them, use **Populate**.
+Note for users migrating from Oh-My-Zsh: [OMZ's Git aliases are shell aliases](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh), not aliases in the Git config. To add abbreviations for them, use **import-aliases**.
 
 Note that zsh-abbr does not lint the imported abbreviations. An effort is made to correctly wrap the expansion in single or double quotes, but it is possible that importing will add an abbreviation with a quotation mark problem in the expansion. It is up to the user to double check the result before taking further actions.
 
@@ -348,7 +345,7 @@ Use `--dry-run` to see what would result, without making any actual changes.
 ##### Fish Abbreviations
 
 ```shell
-abbr --import-fish FILE [--dry-run]
+abbr --import-fish [(--session | -S) | (--user | -U)] [(--global|-g)] FILE [--dry-run]
 ```
 
 Import fish abbr-syntax abbreviations (`abbreviation expansion` as compared to zsh abbr's `abbreviation=expansion`).
@@ -382,9 +379,9 @@ Use `--dry-run` to see what would result, without making any actual changes.
 
 List all the abbreviations available in the current session. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
 
-Use the **--session** or **-S** scope flag to list only a session abbreviations. Use the **--user** or **-U** scope flag to list only a session abbreviations.
+Use the **--session** or **-S** scope flag to list only session abbreviations. Use the **--user** or **-U** scope flag to list only user abbreviations.
 
-Use the **--global** or **-g** type flag to list only global abbreviations. Use the **--regular** or **-r** type flag to list only global abbreviations.
+Use the **--global** or **-g** type flag to list only global abbreviations. Use the **--regular** or **-r** type flag to list only regular abbreviations.
 
 Combine a scope flag and a type flag to further limit the output.
 
@@ -463,7 +460,7 @@ b="ball"
 #### Rename
 
 ```shell
-abbr (--rename | -R) [(--global | -g)] [--dry-run] OLD NEW
+abbr (--rename | -R) [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] OLD NEW
 ```
 
 Rename an abbreviation.
@@ -472,7 +469,7 @@ Use the **--session** or **-S** scope flag to rename a session abbreviation. Oth
 
 Use the **--global** flag to rename a global abbreviation. Otherwise a command abbreviation will be renamed.
 
-Rename is session/user- and regular/global-specific. If you get a "no matching abbreviation" error, make sure you added the right flags.
+Rename is scope- and type-specific. If you get a "no matching abbreviation" error, make sure you added the right flags (list abbreviations if you are not sure).
 
 ```shell
 % abbr --add gcm git checkout master
@@ -495,7 +492,7 @@ User abbreviations live in a plain text file which you can edit directly, share,
 
 When zsh-abbr updates the user abbreviations storage file, global user abbreviations are moved to the top of the file.
 
-_It is possible for direct edits to the storage file to be lost_ if you make a change to the user abbreviations in a session that opened before the manual change was made. Run `source ~/.zshrc` in all open sessions after directly editing the user abbreviations storage file.
+_It is possible for direct edits to the storage file to be lost_ if you start a zsh session, make a change in the file, and then make a change via the open session. Run `source ~/.zshrc` in all open sessions after directly editing the user abbreviations storage file.
 
 The user abbreviations storage file's default location is `${HOME}/.config/zsh/abbreviations`. Customize this by setting the `ZSH_USER_ABBREVIATIONS_PATH` variable in your `.zshrc` before loading zsh-abbr.
 
