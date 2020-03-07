@@ -443,11 +443,11 @@ Show all the abbreviations available in the current session, along with their ex
 % abbr --add gcm git checkout master
 % abbr --add --session a apple
 % abbr --show # or `abbr` with no arguments
-abbr -a -U -- gcm git checkout master
-abbr -a -S -- a apple
+abbr gcm="git checkout master"
+abbr -S a="apple"
 % source ~/.zshrc
 % abbr --show
-abbr -a -U -- gcm git checkout master
+abbr gcm="git checkout master"
 ```
 
 ## Configuration
