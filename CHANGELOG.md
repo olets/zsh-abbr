@@ -1,3 +1,13 @@
+# [v3.0.2](https://github.com/olets/zsh-abbr/compare/v3.0.1...v3.0.2) (2020-03-07)
+
+
+### Bug Fixes
+
+* **expand and accept:** respect trailing whitespace ([f027565](https://github.com/olets/zsh-abbr/commit/f0275653a93579ba66caa01abbeef950bef31b39))
+* **expansion:** no false positive expansions after (( ([2b53f6a](https://github.com/olets/zsh-abbr/commit/2b53f6adb262e08a45da6ec51938ad49d763c349))
+
+
+
 # [v3.0.1](https://github.com/olets/zsh-abbr/compare/v3.0.0...v3.0.1) (2020-03-07)
 
 ### Bug Fixes
