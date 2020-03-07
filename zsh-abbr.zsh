@@ -840,7 +840,13 @@ _zsh_abbr_cmd_expansion() {
 }
 
 _zsh_abbr_expand_and_accept() {
-  zle _zsh_abbr_expand_widget
+  local trailing_space
+  trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
+
+  if [[ -z $trailing_space ]]; then
+    zle _zsh_abbr_expand_widget
+  fi
+
   zle accept-line
 }
 
