@@ -212,6 +212,13 @@ abbr a=b\;c  # allowed
 abbr a="b|c" # allowed
 ```
 
+**Note:** when saved for cross-session use, user abbreviations' EXPANSIONs are wrapped in double quotes (`"`), _even if single quotes (`'`) were originally used._ For this reason, double quotation marks should always be escaped. See issue #10.
+
+```shell
+abbr a='a"b"c' # bad - will turn into `"a"b"c"`, which will error
+abbr a='a\"b\"c' # good
+```
+
 User-scope abbreviations can also be manually to the user abbreviations file. See **Storage** below.
 
 The session regular, session global, user regular, and user global abbreviation sets are independent. If you wanted, you could have more than one abbreviation with the same ABBREVIATION. Order of precedence is "session command > user command > session global > user global".
