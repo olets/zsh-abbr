@@ -5,6 +5,8 @@ test_abbr_abbreviation="zsh_abbr_test"
 test_abbr_expansion="zsh abbr test"
 test_abbr="$test_abbr_abbreviation=$test_abbr_expansion"
 
+# Can add an abbreviation with the --add flag,
+# and can list abbreviations
 message="abbr --add && abbr --list-commands "
 abbr --add $test_abbr
 if [[ $(abbr --list-commands) == "abbr $test_abbr_abbreviation=${(qqq)test_abbr_expansion}" ]]; then
@@ -14,6 +16,7 @@ else
 fi
 echo $message
 
+# Can erase an abbreviation
 message="abbr --erase "
 abbr --erase $test_abbr_abbreviation
 if [[ $(abbr --list-commands) == "" ]]; then
@@ -23,6 +26,7 @@ else
 fi
 echo $message
 
+# Can add an abbreviation without the --add flag
 message="abbr "
 abbr $test_abbr
 if [[ $(abbr --list-commands) == "abbr $test_abbr_abbreviation=${(qqq)test_abbr_expansion}" ]]; then
@@ -33,6 +37,7 @@ fi
 echo $message
 abbr -e $test_abbr_abbreviation
 
+# Can clear session abbreviations
 message="abbr --clear-session "
 abbr -S $test_abbr
 abbr --clear-session
@@ -43,6 +48,7 @@ else
 fi
 echo $message
 
+# Can expand an abbreviation in a script
 message="abbr --expand "
 abbr $test_abbr
 if [[ $(abbr --expand $test_abbr_abbreviation) == $test_abbr_expansion ]]; then
@@ -53,6 +59,7 @@ fi
 echo $message
 abbr -e $test_abbr_abbreviation
 
+# Can rename an abbreviation
 message="abbr --rename "
 abbr $test_abbr
 abbr --rename $test_abbr_abbreviation ${test_abbr_abbreviation}_new
@@ -64,6 +71,7 @@ fi
 echo $message
 abbr -e ${test_abbr_abbreviation}_new
 
+# Double-quoted single quotes are preserved
 abbreviation=a
 expansion="b'c'd"
 message="abbr a=$expansion "
@@ -76,6 +84,7 @@ fi
 echo $message
 abbr -e $abbreviation
 
+# Single-quoted double quotes are preserved
 abbreviation=a
 expansion='b"c"d'
 message="abbr a=$expansion "
@@ -88,6 +97,7 @@ fi
 echo $message
 abbr -e $abbreviation
 
+# Bare single quotes at the start of a string are swallowed
 abbreviation=a
 expansion='b'cd
 message="abbr a='b'cd "
@@ -100,6 +110,7 @@ fi
 echo $message
 abbr -e $abbreviation
 
+# Bare single quotes in the middle of a string are swallowed
 abbreviation=a
 expansion=b'c'd
 message="abbr a=b'c'd "
@@ -112,6 +123,7 @@ fi
 echo $message
 abbr -e $abbreviation
 
+# Bare double quotes at the start of a string are swallowed
 abbreviation=a
 expansion="b"cd
 message="abbr a=\"b\"cd "
@@ -124,6 +136,7 @@ fi
 echo $message
 abbr -e $abbreviation
 
+# Bare double quotes in the middle of a string are swallowed
 abbreviation=a
 expansion=b"c"d
 message="abbr a=b\"c\"d "
