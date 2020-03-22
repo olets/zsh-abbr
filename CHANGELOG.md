@@ -1,3 +1,11 @@
+# [3.1.2](https://github.com/olets/zsh-abbr/compare/v3.1.1...v3.1.2) (2020-03-22)
+
+### Features
+
+* **manpage**: brew users get manpage, rest get text copy ([ed35f49](https://github.com/olets/zsh-abbr/commit/ed35f49c40e1e503881aeb8023616a3c791cb51f))
+* **quotes**: quotation marks are preserved [[#10](https://github.com/olets/zsh-abbr/issues/10)] ([5a3b905](https://github.com/olets/zsh-abbr/commit/5a3b9056695fe8c852790d2cfc6f352959cbcfbf))
+
+
 # [v3.1.1](https://github.com/olets/zsh-abbr/compare/v3.1.0...v3.1.1) (2020-03-07)
 
 ### Bug Fixes

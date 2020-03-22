@@ -197,4 +197,4 @@ AUTHORS
 
 
 
-zsh-abbr 3.1.1                   March 7 2020                      ZSH-ABBR(1)
+abbr 3.1.2                       March 22 2020                      ZSH-ABBR(1)
