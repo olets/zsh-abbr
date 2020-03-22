@@ -1,6 +1,6 @@
 # zsh-abbr ![GitHub release (latest by date)](https://img.shields.io/github/v/release/olets/zsh-abbr)
 
-The zsh manager for auto-expanding abbreviations.
+The zsh manager for auto-expanding abbreviations, inspired by fish shell.
 
 **abbr** manages abbreviations - user-defined words that are replaced with longer phrases after they are entered.
 
@@ -64,6 +64,13 @@ Or install zsh-abbr with your favorite plugin manager:
   ```
 
 - **[zplug](https://github.com/zplug/zplug)**: add `zplug "olets/zsh-abbr"` to your `.zshrc`.
+
+If you prefer to manage the package with Homebrew but load it with a plugin manager, run the Homebrew installation command and then point the plugin manager to the file Homebrew logs to the console. For example with zinit:
+
+```shell
+zinit ice wait lucid
+zinit light /usr/local/share/zsh-abbr
+```
 
 If running `abbr` gives an error "zsh: permission denied: abbr", reload zsh:
 
