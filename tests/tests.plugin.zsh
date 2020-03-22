@@ -3,37 +3,11 @@ source ${0:A:h}/../zsh-abbr.zsh
 
 test_abbr_abbreviation="zsh_abbr_test"
 test_abbr_expansion="zsh abbr test"
-test_abbr="zsh_abbr_test=\"$test_abbr_expansion\""
+test_abbr="$test_abbr_abbreviation=$test_abbr_expansion"
 
-message="abbr --add && abbr -s "
+message="abbr --add && abbr --list-commands "
 abbr --add $test_abbr
-if [[ $(abbr -s) == "abbr $test_abbr" ]]; then
-	message+="passed"
-else
-	message+="failed"
-fi
-echo $message
-
-message="abbr --show "
-if [[ $(abbr -s) == $(abbr --show) ]]; then
-	message+="passed"
-else
-	message+="failed"
-fi
-echo $message
-
-message="abbr -e "
-abbr -e $test_abbr_abbreviation
-if [[ $(abbr -s) == "" ]]; then
-	message+="passed"
-else
-	message+="failed"
-fi
-echo $message
-
-message="abbr -a "
-abbr -a $test_abbr
-if [[ $(abbr -s) == "abbr $test_abbr" ]]; then
+if [[ $(abbr --list-commands) == "abbr $test_abbr_abbreviation=${(qqq)test_abbr_expansion}" ]]; then
 	message+="passed"
 else
 	message+="failed"
@@ -41,8 +15,8 @@ fi
 echo $message
 
 message="abbr --erase "
-abbr -e $test_abbr_abbreviation
-if [[ $(abbr -s) == "" ]]; then
+abbr --erase $test_abbr_abbreviation
+if [[ $(abbr --list-commands) == "" ]]; then
 	message+="passed"
 else
 	message+="failed"
@@ -51,37 +25,27 @@ echo $message
 
 message="abbr "
 abbr $test_abbr
-if [[ $(abbr -s) == "abbr $test_abbr" ]]; then
+if [[ $(abbr --list-commands) == "abbr $test_abbr_abbreviation=${(qqq)test_abbr_expansion}" ]]; then
 	message+="passed"
 else
 	message+="failed"
 fi
 echo $message
 abbr -e $test_abbr_abbreviation
-
-message="abbr -c "
-abbr -S $test_abbr
-abbr -c
-if [[ $(abbr -s) == "" ]]; then
-	message+="passed"
-else
-	message+="failed"
-fi
-echo $message
 
 message="abbr --clear-session "
 abbr -S $test_abbr
 abbr --clear-session
-if [[ $(abbr -s) == "" ]]; then
+if [[ $(abbr --list-commands) == "" ]]; then
 	message+="passed"
 else
 	message+="failed"
 fi
 echo $message
 
-message="abbr -x "
+message="abbr --expand "
 abbr $test_abbr
-if [[ $(abbr -x $test_abbr_abbreviation) == $test_abbr_expansion ]]; then
+if [[ $(abbr --expand $test_abbr_abbreviation) == $test_abbr_expansion ]]; then
 	message+="passed"
 else
 	message+="failed"
@@ -89,9 +53,9 @@ fi
 echo $message
 abbr -e $test_abbr_abbreviation
 
-message="abbr -R "
+message="abbr --rename "
 abbr $test_abbr
-abbr -R $test_abbr_abbreviation ${test_abbr_abbreviation}_new
+abbr --rename $test_abbr_abbreviation ${test_abbr_abbreviation}_new
 if [[ $(abbr -x ${test_abbr_abbreviation}_new) == $test_abbr_expansion ]]; then
 	message+="passed"
 else
@@ -99,5 +63,77 @@ else
 fi
 echo $message
 abbr -e ${test_abbr_abbreviation}_new
+
+abbreviation=a
+expansion="b'c'd"
+message="abbr a=$expansion "
+abbr $abbreviation=$expansion
+if [[ $(abbr --expand $abbreviation) == $(echo $expansion) ]]; then
+	message+="passed"
+else
+	message+="failed"
+fi
+echo $message
+abbr -e $abbreviation
+
+abbreviation=a
+expansion='b"c"d'
+message="abbr a=$expansion "
+abbr $abbreviation=$expansion
+if [[ $(abbr --expand $abbreviation) == $(echo $expansion) ]]; then
+	message+="passed"
+else
+	message+="failed"
+fi
+echo $message
+abbr -e $abbreviation
+
+abbreviation=a
+expansion='b'cd
+message="abbr a='b'cd "
+abbr $abbreviation=$expansion
+if [[ $(abbr --expand $abbreviation) == $(echo $expansion) ]]; then
+	message+="passed"
+else
+	message+="failed"
+fi
+echo $message
+abbr -e $abbreviation
+
+abbreviation=a
+expansion=b'c'd
+message="abbr a=b'c'd "
+abbr $abbreviation=$expansion
+if [[ $(abbr --expand $abbreviation) == $(echo $expansion) ]]; then
+	message+="passed"
+else
+	message+="failed"
+fi
+echo $message
+abbr -e $abbreviation
+
+abbreviation=a
+expansion="b"cd
+message="abbr a=\"b\"cd "
+abbr $abbreviation=$expansion
+if [[ $(abbr --expand $abbreviation) == $(echo $expansion) ]]; then
+	message+="passed"
+else
+	message+="failed"
+fi
+echo $message
+abbr -e $abbreviation
+
+abbreviation=a
+expansion=b"c"d
+message="abbr a=b\"c\"d "
+abbr $abbreviation=$expansion
+if [[ $(abbr --expand $abbreviation) == $(echo $expansion) ]]; then
+	message+="passed"
+else
+	message+="failed"
+fi
+echo $message
+abbr -e $abbreviation
 
 rm $ZSH_ABBR_USER_PATH

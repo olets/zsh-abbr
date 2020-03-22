@@ -227,8 +227,8 @@ _zsh_abbr() {
         return
       fi
 
-      abbreviation="${1%%=*}"
-      expansion="${1#*=}"
+      abbreviation="${(q)1%%=*}"
+      expansion="${(q)1#*=}"
 
       if [[ -z $abbreviation || -z $expansion || $abbreviation == $1 ]]; then
         util_error " add: Requires abbreviation and expansion"
@@ -308,7 +308,7 @@ _zsh_abbr() {
         expansion=$(_zsh_abbr_global_expansion "$1")
       fi
 
-      echo - "$expansion"
+      echo - "${(Q)expansion}"
     }
 
     function export_aliases() {
@@ -492,19 +492,11 @@ _zsh_abbr() {
 
     function util_add() {
       local abbreviation
-      local abbreviation_last_word
       local expansion
-      local quote
       local success=false
 
       abbreviation=$1
       expansion=$2
-      quote="\""
-
-      if [[ "${expansion:0:1}" == "${expansion: -1}" && "${expansion:0:1}" == [\'\"] ]]; then
-        quote=${expansion:0:1}
-        expansion="${expansion:1:-1}"
-      fi
 
       if [[ ${(w)#abbreviation} > 1 ]]; then
         util_error " add: ABBREVIATION ('$abbreviation') must be only one word"
@@ -517,17 +509,17 @@ _zsh_abbr() {
 
       if $opt_scope_session; then
         if $opt_type_global; then
-          if ! (( ${+ZSH_ABBR_SESSION_GLOBALS[$1]} )); then
+          if ! (( ${+ZSH_ABBR_SESSION_GLOBALS[$abbreviation]} )); then
             if $opt_dry_run; then
-              echo "abbr -S -g $abbreviation=${quote}${expansion}${quote}"
+              echo "abbr -S -g $abbreviation=${(Q)expansion}"
             else
               ZSH_ABBR_SESSION_GLOBALS[$abbreviation]=$expansion
             fi
             success=true
           fi
-        elif ! (( ${+ZSH_ABBR_SESSION_COMMANDS[$1]} )); then
+        elif ! (( ${+ZSH_ABBR_SESSION_COMMANDS[$abbreviation]} )); then
           if $opt_dry_run; then
-            echo "abbr -S $abbreviation=${quote}${expansion}${quote}"
+            echo "abbr -S $abbreviation=${(Q)expansion}"
           else
             ZSH_ABBR_SESSION_COMMANDS[$abbreviation]=$expansion
           fi
@@ -537,24 +529,24 @@ _zsh_abbr() {
         if $opt_type_global; then
           source "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
 
-          if ! (( ${+ZSH_ABBR_USER_GLOBALS[$1]} )); then
+          if ! (( ${+ZSH_ABBR_USER_GLOBALS[$abbreviation]} )); then
             if $opt_dry_run; then
-              echo "abbr -g $abbreviation=${quote}${expansion}${quote}"
+              echo "abbr -g $abbreviation=${(Q)expansion}"
             else
               ZSH_ABBR_USER_GLOBALS[$abbreviation]=$expansion
-              util_sync_user $quote
+              util_sync_user
             fi
             success=true
           fi
         else
           source "${TMPDIR:-/tmp}/zsh-user-abbreviations"
 
-          if ! (( ${+ZSH_ABBR_USER_COMMANDS[$1]} )); then
+          if ! (( ${+ZSH_ABBR_USER_COMMANDS[$abbreviation]} )); then
             if $opt_dry_run; then
-              echo "abbr $abbreviation=${quote}${expansion}${quote}"
+              echo "abbr ${(Q)abbreviation}=${(Q)expansion}"
             else
               ZSH_ABBR_USER_COMMANDS[$abbreviation]=$expansion
-              util_sync_user $quote
+              util_sync_user
             fi
             success=true
           fi
@@ -644,7 +636,7 @@ _zsh_abbr() {
 
       result=$abbreviation
       if (( $include_expansion )); then
-        result+="=\"$expansion\""
+        result+="=${(qqq)${(Q)expansion}}"
       fi
 
       if (( $include_cmd )); then
@@ -655,14 +647,11 @@ _zsh_abbr() {
     }
 
     function util_sync_user() {
-      local quote
       local user_updated
 
       if [[ -n "$ZSH_ABBR_NO_SYNC_USER" ]]; then
         return
       fi
-
-      quote="${1:-\"}"
 
       user_updated="${TMPDIR:-/tmp}/zsh-user-abbreviations"_updated
       rm "$user_updated" 2> /dev/null
@@ -671,12 +660,12 @@ _zsh_abbr() {
 
       typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
       for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
-        echo "abbr -g ${abbreviation}=${quote}$expansion${quote}" >> "$user_updated"
+        echo "abbr -g ${abbreviation}=${(qqq)${(Q)expansion}}" >> "$user_updated"
       done
 
       typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp}/zsh-user-abbreviations"
       for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
-        echo "abbr ${abbreviation}=${quote}$expansion${quote}" >> "$user_updated"
+        echo "abbr ${abbreviation}=${(qqq)${(Q)expansion}}" >> "$user_updated"
       done
 
       mv "$user_updated" "$ZSH_ABBR_USER_PATH"
@@ -1042,7 +1031,7 @@ _zsh_abbr_expand_widget() {
   if [[ -n "$expansion" ]]; then
     local preceding_lbuffer
     preceding_lbuffer="${LBUFFER%%$word}"
-    LBUFFER="$preceding_lbuffer$expansion"
+    LBUFFER="$preceding_lbuffer${(Q)expansion}"
   fi
 }
 
