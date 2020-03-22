@@ -1,0 +1,182 @@
+.TH "ZSH-ABBR" 1 "March 7 2020" "zsh\-abbr 3.1.1" "User Commands"
+.SH NAME
+zsh\-abbr \- manage zsh abbreviations
+.SH SYNOPSIS
+
+\fBabbr\fR (\fB\-\-add\fR | \fB\-a\fR) [\fIscope\fR] <\fIabbreviation\fR> <\fIexpansion\fR>
+
+\fBabbr\fR (\fB\-\-clear\-session\fR | \fB\-c\fR)
+
+\fBabbr\fR (\fB\-\-erase\fR | \fB\-e\fR) [\fIscope\fR] <\fIabbreviation\fR>
+
+\fBabbr\fR (\fB\-\-expand\fR | \fB\-x\fR) <\fIabbreviation\fR>
+
+\fBabbr\fR (\fB\-\-export\-aliases\fR | \fB\-o\fR) <\fIscope\fI> [<\fIdestination\fR>]
+
+\fBabbr \-\-import\-git\-aliases\fR [\fIscope\fR]
+
+\fBabbr \-\-import\-aliases\fR [\fIscope\fR]
+
+\fBabbr \-\-list\-abbreviations\fR | \fB\-l\fR
+
+\fBabbr\fR (\fB\-\-list\-commands\fR | \fB\-L\fR | \fB\-s\fR)
+
+\fBabbr \-\-list\-definitions\fR
+
+\fBabbr\fR (\fB\-\-rename\fR | \fB\-R\fR) [\fIscope\fR] <\fIold_abbreviation\fR> <\fInew_abbreviation\fR>
+
+\fBabbr\fR (\fB\-\-help\fR | \fB\-h\fR)
+
+\fBabbr\fR (\fB\-\-version\fR | \fB\-v)
+
+.SH DESCRIPTION
+\fBabbr\fR manages abbreviations \- user\-defined words that are replaced with longer phrases after they are entered.
+
+For example, a frequently\-run command like git checkout can be abbreviated to gco. After entering gco and pressing [\fBSpace\fR], the full text git checkout will appear in the command line.
+
+To prevent expansion, press [\fBCTRL\-SPACE\fR] in place of [\fBSPACE\fR].
+
+.SH Options
+The following options are available:
+
+.IP \(bu
+\fB\-\-add \fIabbreviation\fR \fIexpansion\fR or \fB\-a\fR \fIabbreviation\fR \fIexpansion\fR
+
+Adds a new abbreviation, causing \fIabbreviation\fR to be expanded as \fIexpansion\fR.
+
+.IP \(bu
+\fB\-\-clear\-session\fR or \fB\-c\fR
+
+Erases all session abbreviations.
+
+.IP \(bu
+\fB\-\-erase \fIabbreviation\fR or \fB\-e\fR \fIabbreviation\fR
+
+Erases the abbreviation \fIabbreviation\fR .
+
+.IP \(bu
+\fB\-\-expand \fIabbreviation\fR or \fB\-x \fIabbreviation\fR
+
+Returns the \fIexpansion\fR of the abbreviation \fIabbreviation\fR.
+
+.IP \(bu
+\fB\-\-export\-aliases\fR [<\fIdestination\fR>]
+
+Exports a list of alias command for user abbreviations, suitable for pasting or piping to whereever you keep aliases. If a <\fIdestination\fR> is provided, the commands will be appended to it.
+
+.IP \(bu
+\fB\-\-import\-git\-aliases\fR
+
+Adds abbreviations for all git aliases. Abbreviations are prefixed with "g", expansions are prefixed with "git ".
+
+.IP \(bu
+\fB\-\-import\-aliases\fR
+
+Adds abbreviations for all aliases.
+
+.IP \(bu
+\fB\-\-list\-abbreviations\fR or \fB\-l\fR
+
+Lists all abbreviations.
+
+.IP \(bu
+\fB\-\-list\-commands\fR or \fB\-L\fR (or \fB\-s\fR as in fish)
+
+Lists all abbreviations as commands suitable for export and import.
+
+.IP \(bu
+\fB\-\-list\-definitions\fR
+
+Lists all abbreviations and their expansions.
+
+.IP \(bu
+\fB\-\-rename\fR \fIold_abbreviation\fR \fInew_abbreviation\fR or \fB\-R\fR \fIold_abbreviation\fR \fInew_abbreviation\fR
+
+Renames an abbreviation, from \fIold_abbreviation\fR to \fInew_abbreviation\fR.
+
+.IP \(bu
+\fB\-\-version\fR or \fB\-v\fR
+
+Show the current version.
+
+.PP
+Some options (see \fBSYNOPSIS\fR) can take a \fIscope\fR:
+.RS
+.IP \(bu
+\fB\-\-session\fR
+or
+\fB\-S\fR
+
+Abbreviations available in the current session only.
+
+.IP \(bu
+\fB\-\-user\fR or \fB\-U\fR
+
+Abbreviations available to all current and future sessions.
+
+.RE
+
+and/or a position
+.RS
+
+.IP \(bu
+\fB\-\-global\fR or \fB\-g\fR
+
+Abbreviation will expand anywhere on a line, rather than only in command (first word) position.
+
+.RE
+
+and/or be trialed
+.RS
+
+.IP \(bu
+\fB\-\-dry\-run\fR
+Show whats the result of the command would be.
+
+.RE
+
+See \fBINTERNALS\fR for more information.
+
+.SH EXAMPLES
+
+.TP
+\fBabbr\fR gco="git checkout"
+
+"gco" will be expanded as "git checkout" when it is the first word in the command, in all open and future sessions.
+
+.TP
+\fBabbr \-g\fR gco="git checkout"
+
+"gco" will be replaced with "git checkout" anywhere on the line, in all open and future sessions.
+
+.TP
+\fBabbr \-g \-S\fR gco="git checkout"
+
+"gco" will be replaced with "git checkout" anywhere on the line, in the current session.
+
+.TP
+\fBabbr \-e \-S \-g\fR gco;
+
+Erase the global session abbreviation "gco". Note that because expansion is triggered by [\fBSPACE\fR] and [\fBENTER\fR], the semicolon (;) is necessary to prevent expansion when operating on global abbreviations.
+
+.TP
+\fBabbr \-e \-g\fR gco;
+
+Erase the global user abbreviation "gco".
+
+.TP
+\fBabbr \-e\fR gco
+
+Erase the regular user abbrevation "gco".
+
+.TP
+\fBabbr \-R \-g\fR gco gch
+
+Rename an existing global user abbreviation from "gco" to "gch".
+
+.SH HISTORY
+Inspired by \fBfish\fR shell's \fBabbr\fR.
+
+.SH AUTHORS
+
+Henry Bley\-Vroman <olets@olets.dev>

@@ -1,0 +1,200 @@
+ZSH-ABBR(1)                      User Commands                     ZSH-ABBR(1)
+
+
+
+NAME
+       zsh-abbr - manage zsh abbreviations
+
+SYNOPSIS
+       abbr (--add | -a) [scope] <abbreviation> <expansion>
+
+       abbr (--clear-session | -c)
+
+       abbr (--erase | -e) [scope] <abbreviation>
+
+       abbr (--expand | -x) <abbreviation>
+
+       abbr (--export-aliases | -o) <scope> [<destination>]
+
+       abbr --import-git-aliases [scope]
+
+       abbr --import-aliases [scope]
+
+       abbr --list-abbreviations | -l
+
+       abbr (--list-commands | -L | -s)
+
+       abbr --list-definitions
+
+       abbr (--rename | -R) [scope] <old_abbreviation> <new_abbreviation>
+
+       abbr (--help | -h)
+
+       abbr (--version | -v)
+
+
+DESCRIPTION
+       abbr  manages abbreviations - user-defined words that are replaced with
+       longer phrases after they are entered.
+
+       For example, a frequently-run command like git checkout can be abbrevi-
+       ated to gco. After entering gco and pressing [Space], the full text git
+       checkout will appear in the command line.
+
+       To prevent expansion, press [CTRL-SPACE] in place of [SPACE].
+
+
+Options
+       The following options are available:
+
+
+       o      --add abbreviation expansion or -a abbreviation expansion
+
+              Adds a new abbreviation, causing abbreviation to be expanded  as
+              expansion.
+
+
+       o      --clear-session or -c
+
+              Erases all session abbreviations.
+
+
+       o      --erase abbreviation or -e abbreviation
+
+              Erases the abbreviation abbreviation .
+
+
+       o      --expand abbreviation or -x abbreviation
+
+              Returns the expansion of the abbreviation abbreviation.
+
+
+       o      --export-aliases [<destination>]
+
+              Exports a list of alias command for user abbreviations, suitable
+              for pasting or piping to whereever you keep aliases. If a  <des-
+              tination> is provided, the commands will be appended to it.
+
+
+       o      --import-git-aliases
+
+              Adds  abbreviations  for all git aliases. Abbreviations are pre-
+              fixed with "g", expansions are prefixed with "git ".
+
+
+       o      --import-aliases
+
+              Adds abbreviations for all aliases.
+
+
+       o      --list-abbreviations or -l
+
+              Lists all abbreviations.
+
+
+       o      --list-commands or -L (or -s as in fish)
+
+              Lists all abbreviations as  commands  suitable  for  export  and
+              import.
+
+
+       o      --list-definitions
+
+              Lists all abbreviations and their expansions.
+
+
+       o      --rename  old_abbreviation  new_abbreviation or -R old_abbrevia-
+              tion new_abbreviation
+
+              Renames an abbreviation, from old_abbreviation to  new_abbrevia-
+              tion.
+
+
+       o      --version or -v
+
+              Show the current version.
+
+
+       Some options (see SYNOPSIS) can take a scope:
+
+              o      --session or -S
+
+                     Abbreviations available in the current session only.
+
+
+              o      --user or -U
+
+                     Abbreviations  available  to  all current and future ses-
+                     sions.
+
+
+       and/or a position
+
+
+              o      --global or -g
+
+                     Abbreviation will expand anywhere on a line, rather  than
+                     only in command (first word) position.
+
+
+       and/or be trialed
+
+
+              o      --dry-run  Show whats the result of the command would be.
+
+
+       See INTERNALS for more information.
+
+
+EXAMPLES
+       abbr gco="git checkout"
+
+              "gco" will be expanded as "git checkout" when it  is  the  first
+              word in the command, in all open and future sessions.
+
+
+       abbr -g gco="git checkout"
+
+              "gco" will be replaced with "git checkout" anywhere on the line,
+              in all open and future sessions.
+
+
+       abbr -g -S gco="git checkout"
+
+              "gco" will be replaced with "git checkout" anywhere on the line,
+              in the current session.
+
+
+       abbr -e -S -g gco;
+
+              Erase  the  global session abbreviation "gco". Note that because
+              expansion is triggered by [SPACE] and [ENTER], the semicolon (;)
+              is  necessary  to  prevent  expansion  when  operating on global
+              abbreviations.
+
+
+       abbr -e -g gco;
+
+              Erase the global user abbreviation "gco".
+
+
+       abbr -e gco
+
+              Erase the regular user abbrevation "gco".
+
+
+       abbr -R -g gco gch
+
+              Rename an existing global user abbreviation from "gco" to "gch".
+
+
+HISTORY
+       Inspired by fBfish shell's abbr.
+
+
+AUTHORS
+       Henry Bley-Vroman <olets@olets.dev>
+
+
+
+zsh-abbr 3.1.1                   March 7 2020                      ZSH-ABBR(1)

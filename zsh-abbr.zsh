@@ -25,7 +25,7 @@ _zsh_abbr() {
           opt_import_aliases opt_import_fish opt_list opt_list_commands \
           opt_print_version opt_rename opt_scope_session opt_scope_user \
           opt_type_global opt_type_regular type_set release_date scope_set \
-          should_exit text_bold text_reset util_usage version
+          should_exit text_bold text_reset version
     action_set=false
     number_opts=0
     opt_add=false
@@ -51,171 +51,6 @@ _zsh_abbr() {
     should_exit=false
     text_bold="\\033[1m"
     text_reset="\\033[0m"
-    util_usage="
-       ${text_bold}abbr${text_reset}: fish shell-like abbreviations for zsh
-
-   ${text_bold}Synopsis${text_reset}
-       ${text_bold}abbr${text_reset} --add|-a [SCOPE] ABBREVIATION EXPANSION
-       ${text_bold}abbr${text_reset} --clear-session|-c [SCOPE] ABBREVIATION
-       ${text_bold}abbr${text_reset} --erase|-e [SCOPE] ABBREVIATION
-       ${text_bold}abbr${text_reset} --expand|-x ABBREVIATION
-       ${text_bold}abbr${text_reset} --export-aliases|-o [SCOPE] [DESTINATION]
-       ${text_bold}abbr${text_reset} --import-git-aliases [SCOPE]
-       ${text_bold}abbr${text_reset} --import-aliases [SCOPE]
-       ${text_bold}abbr${text_reset} --list-abbreviations|-l
-       ${text_bold}abbr${text_reset} --list-commands|-L|-s
-       ${text_bold}abbr${text_reset} --list-definitions
-       ${text_bold}abbr${text_reset} --rename|-R [SCOPE] OLD_ABBREVIATION NEW
-
-       ${text_bold}abbr${text_reset} --help|-h
-       ${text_bold}abbr${text_reset} --version|-v
-
-   ${text_bold}Description${text_reset}
-       ${text_bold}abbr${text_reset} manages abbreviations - user-defined words
-       that are replaced with longer phrases after they are entered.
-
-       For example, a frequently-run command like git checkout can be
-       abbreviated to gco. After entering gco and pressing [${text_bold}Space${text_reset}],
-       the full text git checkout will appear in the command line.
-
-       To prevent expansion, press [${text_bold}CTRL-SPACE${text_reset}] in place of [${text_bold}SPACE${text_reset}].
-
-   ${text_bold}Options${text_reset}
-       The following options are available:
-
-       o --add ABBREVIATION=EXPANSION or -a ABBREVIATION=EXPANSION Adds a new
-         abbreviation, causing ABBREVIATION to be expanded to EXPANSION.
-
-       o --clear-session or -E Erases all session abbreviations.
-
-       o --erase ABBREVIATION or -e ABBREVIATION Erases the
-         abbreviation ABBREVIATION.
-
-       o --expand ABBREVIATION or -x ABBREVIATION Returns the abbreviation
-         ABBREVIATION's EXPANSION.
-
-       o --export-aliases [-g] [DESTINATION_FILE] or -o [-g] [DESTINATION_FILE]
-         Exports a list of alias command for user abbreviations, suitable
-         for pasting or piping to whereever you keep aliases. Add -g to export
-         alias commands for session abbreviations. If a DESTINATION_FILE is
-         provided, the commands will be appended to it.
-
-       o --help or -h Show this documentation.
-
-       o --import-aliases Adds abbreviations for all aliases.
-
-       o --import-fish FILE Import from fish shell or zsh-abbr < 3.
-
-       o --import-git-aliases Adds abbreviations for all git aliases.
-         ABBREVIATIONs are prefixed with g, EXPANSIONs are prefixed
-         with git[Space].
-
-       o --list-abbreviations or -l Lists all ABBREVIATIONs.
-
-       o --list-commands or -L (or fishy -s) Lists all abbreviations as
-         commands suitable for export and import.
-
-       o --list-definitions Lists all ABBREVIATIONs and their EXPANSIONs.
-
-       o --rename OLD_ABBREVIATION NEW_ABBREVIATION
-         or -R OLD_ABBREVIATION NEW_ABBREVIATION Renames an abbreviation,
-         from OLD_ABBREVIATION to NEW_ABBREVIATION.
-
-       o --version or -v Show the current version.
-
-       In addition, when adding abbreviations, erasing, exporting aliases,
-       [git] importing, or renaming use
-
-       o --session or -S to create a session abbreviation, available only in
-         the current session.
-
-       o --user or -U to create a user abbreviation (default),
-         immediately available to all sessions.
-
-       and
-
-       o --global or -g to create a global abbreviation, which expand anywhere
-         on a line.
-
-       and
-
-       o --dry-run with add, import, or rename to see what the result would be.
-
-       See the 'Internals' section for more on them.
-
-   ${text_bold}Examples${text_reset}
-       ${text_bold}abbr${text_reset} -a -g gco=\"git checkout\"
-       ${text_bold}abbr${text_reset} --add --session gco=\"git checkout\"
-
-         Add a new abbreviation where gco will be replaced with git checkout
-         session to the current shell. This abbreviation will not be
-         automatically visible to other shells unless the same command is run
-         in those shells.
-
-       ${text_bold}abbr${text_reset} -- g-=\"git checkout -\"
-
-         If the EXPANSION includes a hyphen (-), the --add command\'s
-         entire EXPANSION must be quoted.
-
-       ${text_bold}abbr${text_reset} -a l=less
-       ${text_bold}abbr${text_reset} --add l=less
-
-         Add a new abbreviation where l will be replaced with less user so
-         all shells. Note that you omit the -U since it is the default.
-
-       ${text_bold}abbr${text_reset} -x gco
-       \$(${text_bold}abbr${text_reset} -expand gco)
-
-         Output the expansion for gco (in the above --add example,
-         git checkout). Useful in scripting.
-
-       ${text_bold}abbr${text_reset} --export-aliases -session
-
-         Export alias declaration commands for each *session* abbreviation.
-         Export lines look like alias -g <ABBREVIATION>='<EXPANSION>'
-
-       ${text_bold}abbr${text_reset} --export-aliases
-
-         Export alias declaration commands for each *user* abbreviation.
-         Export lines look like alias -g <ABBREVIATION>='<EXPANSION>'
-
-       ${text_bold}abbr${text_reset} --export-aliases ~/aliases
-
-         Add alias definitions to ~/aliases
-
-       ${text_bold}abbr${text_reset} -e -g gco
-       ${text_bold}abbr${text_reset} --erase --session gco
-
-         Erase the session gco abbreviation.
-
-       ${text_bold}abbr${text_reset} -R -g gco gch
-       ${text_bold}abbr${text_reset} --rename --session gco gch
-
-         Rename the existing session abbreviation from gco to gch.
-
-       ${text_bold}abbr${text_reset} -R l le
-       ${text_bold}abbr${text_reset} --rename l le
-
-        Rename the existing user abbreviation from l to le. Note that you
-        can omit the -U since it is the default.
-
-   ${text_bold}Internals${text_reset}
-       The ABBREVIATION cannot contain IFS whitespace, comma (,), semicolon (;),
-       pipe (|), or ampersand (&).
-
-       Defining an abbreviation with session scope is slightly faster than
-       user scope (which is the default).
-
-       You can create abbreviations interactively and they will be visible to
-       other zsh sessions if you use the -U flag or don't explicitly specify
-       the scope. If you want it to be visible only to the current shell
-       use the -g flag.
-
-       The options add, export-aliases, erase, expand, import, list,
-       list-commands, and rename are mutually exclusive, as are the session
-       and user scopes.
-
-       $version $release_date"
     version="zsh-abbr version 3.1.1"
 
     function add() {
@@ -703,7 +538,7 @@ _zsh_abbr() {
     }
 
     function util_usage() {
-      print "$util_usage\\n"
+      man abbr 2>/dev/null || cat ${ZSH_ABBR_SOURCE_PATH}/man/abbr.txt | less -F
     }
 
     for opt in "$@"; do
@@ -1070,6 +905,7 @@ abbr() {
 # --------------
 
 _zsh_abbr_init
+ZSH_ABBR_SOURCE_PATH=${0:A:h}
 
 if [ "$ZSH_ABBR_DEFAULT_BINDINGS" = true ]; then
   _zsh_abbr_bind_widgets
