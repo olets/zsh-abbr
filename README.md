@@ -8,7 +8,7 @@ For example, a frequently-run command like `git checkout` can be abbreviated to 
 
 Like zsh's `alias`, zsh-abbr supports "regular" (i.e. command-position) and global (anywhere on the line) abbreviations. Like fish abbr, zsh-abbr supports session-specific and cross-session abbreviations.
 
-Run `abbr --help` (or `abbr -h`) for documentation.
+Run `abbr --help` (or `abbr -h`) for documentation; if the package is installed with Homebrew, `man abbr` is also available.
 
 ## Contents
 
@@ -16,10 +16,11 @@ Run `abbr --help` (or `abbr -h`) for documentation.
 1. [Quick Start](#quick-start)
 1. [Usage](#usage)
 1. [Configuration](#configuration)
+1. [Uninstalling](#uninstalling)
 1. [Changelog](#changelog)
 1. [Roadmap](#roadmap)
 1. [Contributing](#contributing)
-1. [Uninstalling](#uninstalling)
+1. [License](#license)
 
 ## Installation
 
