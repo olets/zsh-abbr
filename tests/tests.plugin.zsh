@@ -68,7 +68,7 @@ abbreviation=a
 expansion="b'c'd"
 message="abbr a=$expansion "
 abbr $abbreviation=$expansion
-if [[ $(abbr --expand $abbreviation) == $(echo $expansion) ]]; then
+if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
 	message+="passed"
 else
 	message+="failed"
@@ -80,7 +80,7 @@ abbreviation=a
 expansion='b"c"d'
 message="abbr a=$expansion "
 abbr $abbreviation=$expansion
-if [[ $(abbr --expand $abbreviation) == $(echo $expansion) ]]; then
+if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
 	message+="passed"
 else
 	message+="failed"
@@ -92,7 +92,7 @@ abbreviation=a
 expansion='b'cd
 message="abbr a='b'cd "
 abbr $abbreviation=$expansion
-if [[ $(abbr --expand $abbreviation) == $(echo $expansion) ]]; then
+if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
 	message+="passed"
 else
 	message+="failed"
@@ -104,7 +104,7 @@ abbreviation=a
 expansion=b'c'd
 message="abbr a=b'c'd "
 abbr $abbreviation=$expansion
-if [[ $(abbr --expand $abbreviation) == $(echo $expansion) ]]; then
+if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
 	message+="passed"
 else
 	message+="failed"
@@ -116,7 +116,7 @@ abbreviation=a
 expansion="b"cd
 message="abbr a=\"b\"cd "
 abbr $abbreviation=$expansion
-if [[ $(abbr --expand $abbreviation) == $(echo $expansion) ]]; then
+if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
 	message+="passed"
 else
 	message+="failed"
@@ -128,7 +128,7 @@ abbreviation=a
 expansion=b"c"d
 message="abbr a=b\"c\"d "
 abbr $abbreviation=$expansion
-if [[ $(abbr --expand $abbreviation) == $(echo $expansion) ]]; then
+if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
 	message+="passed"
 else
 	message+="failed"
