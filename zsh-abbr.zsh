@@ -829,7 +829,7 @@ _zsh_abbr_init() {
   done
 
   touch "${TMPDIR:-/tmp}/zsh-abbr-initializing"
-  chmod 600 "${TMPDIR:-/tmp}/zsh-user-abbreviations"
+  chmod 600 "${TMPDIR:-/tmp}/zsh-abbr-initializing"
 
   # Scratch files
   rm "${TMPDIR:-/tmp}/zsh-user-abbreviations" 2> /dev/null
