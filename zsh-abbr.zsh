@@ -85,10 +85,9 @@ _zsh_abbr() {
 
     function erase() {
       local abbreviation
+      local job
+      local job_group
       local success
-
-      abbreviation=$1
-      success=false
 
       if [ $# -gt 1 ]; then
         util_error " erase: Expected one argument"
@@ -97,6 +96,14 @@ _zsh_abbr() {
         util_error " erase: Erase needs a variable name"
         return
       fi
+
+      abbreviation=$1
+      job_group='erase'
+      success=false
+
+      echo $RANDOM >/dev/null
+      job=$(_zsh_abbr_job)
+      _zsh_abbr_job_begin $job $job_group
 
       if $opt_scope_session; then
         if $opt_type_global; then
@@ -127,6 +134,8 @@ _zsh_abbr() {
           fi
         fi
       fi
+
+      _zsh_abbr_job_finish $job $job_group
 
       if ! $success; then
         util_error " erase: No matching abbreviation $abbreviation exists"
@@ -301,6 +310,8 @@ _zsh_abbr() {
     function rename() {
       local err
       local expansion
+      local job
+      local job_group
       local new
       local old
 
@@ -311,6 +322,11 @@ _zsh_abbr() {
 
       current_abbreviation=$1
       new_abbreviation=$2
+      job_group='rename'
+
+      echo $RANDOM >/dev/null
+      job=$(_zsh_abbr_job)
+      _zsh_abbr_job_begin $job $job_group
 
       if $opt_scope_session; then
         if $opt_type_global; then
@@ -337,15 +353,25 @@ _zsh_abbr() {
       else
         util_error " rename: No matching abbreviation $current_abbreviation exists"
       fi
+
+      _zsh_abbr_job_finish $job $job_group
     }
 
     function util_add() {
       local abbreviation
       local expansion
-      local success=false
+      local job
+      local job_group
+      local success
 
       abbreviation=$1
       expansion=$2
+      job_group='util_add'
+      success=false
+
+      echo $RANDOM >/dev/null
+      job=$(_zsh_abbr_job)
+      _zsh_abbr_job_begin $job $job_group
 
       if [[ ${(w)#abbreviation} > 1 ]]; then
         util_error " add: ABBREVIATION ('$abbreviation') must be only one word"
@@ -401,6 +427,8 @@ _zsh_abbr() {
           fi
         fi
       fi
+
+      _zsh_abbr_job_finish $job $job_group
 
       if ! $success; then
         util_error " add: A matching abbreviation $1 already exists"
@@ -502,11 +530,19 @@ _zsh_abbr() {
     }
 
     function util_sync_user() {
+      local job
+      local job_group
       local user_updated
 
       if [[ -n "$ZSH_ABBR_NO_SYNC_USER" ]]; then
         return
       fi
+
+      job_group='util_sync_user'
+
+      echo $RANDOM >/dev/null
+      job=$(_zsh_abbr_job)
+      _zsh_abbr_job_begin $job $job_group
 
       user_updated="${TMPDIR:-/tmp}/zsh-user-abbreviations"_updated
       rm "$user_updated" 2> /dev/null
@@ -524,6 +560,8 @@ _zsh_abbr() {
       done
 
       mv "$user_updated" "$ZSH_ABBR_USER_PATH"
+
+      _zsh_abbr_job_finish $job $job_group
     }
 
     function util_type() {
@@ -805,8 +843,11 @@ _zsh_abbr_global_expansion() {
 
 _zsh_abbr_init() {
   local line
+  local job
+  local job_group
   local session_shwordsplit_on
 
+  job_group='init'
   session_shwordsplit_on=false
   ZSH_ABBR_NO_SYNC_USER=true
 
@@ -823,13 +864,9 @@ _zsh_abbr_init() {
     session_shwordsplit_on=true
   fi
 
-  # prevent collisions with other initializing sessions
-  while [ -f "${TMPDIR:-/tmp}/zsh-abbr-initializing" ]; do
-    sleep 0.01
-  done
-
-  touch "${TMPDIR:-/tmp}/zsh-abbr-initializing"
-  chmod 600 "${TMPDIR:-/tmp}/zsh-abbr-initializing"
+  echo $RANDOM >/dev/null
+  job=$(_zsh_abbr_job)
+  _zsh_abbr_job_begin $job $job_group
 
   # Scratch files
   rm "${TMPDIR:-/tmp}/zsh-user-abbreviations" 2> /dev/null
@@ -859,7 +896,59 @@ _zsh_abbr_init() {
   typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp}/zsh-user-abbreviations"
   typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
 
-  rm "${TMPDIR:-/tmp}/zsh-abbr-initializing"
+  _zsh_abbr_job_finish $job $job_group
+}
+
+_zsh_abbr_job_begin() {
+  local next_job
+  local next_job_age
+  local job
+  local job_group
+  local timeout_age
+
+  job=${(q)1}
+  job_group=$2
+  timeout_age=30 # seconds
+
+  if ! [ -d "${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}" ]; then
+    mkdir -p "${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}"
+  fi
+
+  echo "$2" > "${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}/${job}"
+
+  while [[ $(ls -t ${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group} | tail -1) != $job ]]; do
+    next_job=$(ls -t ${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group} | tail -1)
+    next_job_age=$(( $(date +%s) - ${next_job%.*} ))
+
+    if ((  $next_job_age > $timeout_age )); then
+      next_job_path=${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}/$next_job
+
+      echo "abbr: An job added at"
+      echo "  $(strftime '%A, %d %b %Y' ${next_job%.*})"
+      echo "has timed out. The job was related to"
+      echo "  $(cat $next_job_path)"
+      echo "Please report this at https://github.com/olets/zsh-abbr/issues/new"
+      echo
+
+      rm $next_job_path
+    fi
+
+    sleep 0.01
+  done
+}
+
+_zsh_abbr_job_finish() {
+  local job
+  local job_group
+
+  job=${(q)1}
+  job_group=$2
+
+  rm "${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}/${job}"
+}
+
+_zsh_abbr_job() {
+  echo "$(date +%s).$RANDOM"
 }
 
 # WIDGETS
