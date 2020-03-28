@@ -534,7 +534,7 @@ _zsh_abbr() {
       local job_group
       local user_updated
 
-      if [[ -n "$ZSH_ABBR_NO_SYNC_USER" ]]; then
+      if [[ -n $(ls ${TMPDIR:-/tmp/}zsh-abbr-jobs/current 2>/dev/null | grep 'init*') ]]; then
         return
       fi
 
@@ -850,7 +850,6 @@ _zsh_abbr_init() {
 
     job_group='init'
     session_shwordsplit_on=false
-    ZSH_ABBR_NO_SYNC_USER=true
 
     typeset -gA ZSH_ABBR_USER_COMMANDS
     typeset -gA ZSH_ABBR_SESSION_COMMANDS
@@ -890,8 +889,6 @@ _zsh_abbr_init() {
         mkdir -p $(dirname "$ZSH_ABBR_USER_PATH")
         touch "$ZSH_ABBR_USER_PATH"
       fi
-
-      unset ZSH_ABBR_NO_SYNC_USER
 
       typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp/}zsh-user-abbreviations"
       typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp/}zsh-user-global-abbreviations"
