@@ -842,61 +842,76 @@ _zsh_abbr_global_expansion() {
 }
 
 _zsh_abbr_init() {
-  local line
-  local job
-  local job_group
-  local session_shwordsplit_on
+  {
+    local line
+    local job
+    local job_group
+    local session_shwordsplit_on
 
-  job_group='init'
-  session_shwordsplit_on=false
-  ZSH_ABBR_NO_SYNC_USER=true
+    job_group='init'
+    session_shwordsplit_on=false
+    ZSH_ABBR_NO_SYNC_USER=true
 
-  typeset -gA ZSH_ABBR_USER_COMMANDS
-  typeset -gA ZSH_ABBR_SESSION_COMMANDS
-  typeset -gA ZSH_ABBR_USER_GLOBALS
-  typeset -gA ZSH_ABBR_SESSION_GLOBALS
-  ZSH_ABBR_USER_COMMANDS=()
-  ZSH_ABBR_SESSION_COMMANDS=()
-  ZSH_ABBR_USER_GLOBALS=()
-  ZSH_ABBR_SESSION_GLOBALS=()
+    typeset -gA ZSH_ABBR_USER_COMMANDS
+    typeset -gA ZSH_ABBR_SESSION_COMMANDS
+    typeset -gA ZSH_ABBR_USER_GLOBALS
+    typeset -gA ZSH_ABBR_SESSION_GLOBALS
+    ZSH_ABBR_USER_COMMANDS=()
+    ZSH_ABBR_SESSION_COMMANDS=()
+    ZSH_ABBR_USER_GLOBALS=()
+    ZSH_ABBR_SESSION_GLOBALS=()
 
-  if [[ $options[shwordsplit] = on ]]; then
-    session_shwordsplit_on=true
-  fi
+    function configure() {
+      if [[ $options[shwordsplit] = on ]]; then
+        session_shwordsplit_on=true
+      fi
 
-  echo $RANDOM >/dev/null
-  job=$(_zsh_abbr_job_name)
-  _zsh_abbr_job_push $job $job_group
+      # Scratch files
+      rm "${TMPDIR:-/tmp}/zsh-user-abbreviations" 2> /dev/null
+      touch "${TMPDIR:-/tmp}/zsh-user-abbreviations"
+      chmod 600 "${TMPDIR:-/tmp}/zsh-user-abbreviations"
 
-  # Scratch files
-  rm "${TMPDIR:-/tmp}/zsh-user-abbreviations" 2> /dev/null
-  touch "${TMPDIR:-/tmp}/zsh-user-abbreviations"
-  chmod 600 "${TMPDIR:-/tmp}/zsh-user-abbreviations"
+      rm "${TMPDIR:-/tmp}/zsh-user-global-abbreviations" 2> /dev/null
+      touch "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
+      chmod 600 "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
+    }
 
-  rm "${TMPDIR:-/tmp}/zsh-user-global-abbreviations" 2> /dev/null
-  touch "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
-  chmod 600 "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
+    function seed() {
+      # Load saved user abbreviations
+      if [ -f "$ZSH_ABBR_USER_PATH" ]; then
+        unsetopt shwordsplit
 
-  # Load saved user abbreviations
-  if [ -f "$ZSH_ABBR_USER_PATH" ]; then
-    unsetopt shwordsplit
+        source "$ZSH_ABBR_USER_PATH"
 
-    source "$ZSH_ABBR_USER_PATH"
+        if $session_shwordsplit_on; then
+          setopt shwordsplit
+        fi
+      else
+        mkdir -p $(dirname "$ZSH_ABBR_USER_PATH")
+        touch "$ZSH_ABBR_USER_PATH"
+      fi
 
-    if $session_shwordsplit_on; then
-      setopt shwordsplit
-    fi
-  else
-    mkdir -p $(dirname "$ZSH_ABBR_USER_PATH")
-    touch "$ZSH_ABBR_USER_PATH"
-  fi
+      unset ZSH_ABBR_NO_SYNC_USER
 
-  unset ZSH_ABBR_NO_SYNC_USER
+      typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp}/zsh-user-abbreviations"
+      typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
+    }
 
-  typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp}/zsh-user-abbreviations"
-  typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
+    # open job
+    echo $RANDOM >/dev/null
+    job=$(_zsh_abbr_job_name)
+    _zsh_abbr_job_push $job $job_group
 
-  _zsh_abbr_job_pop $job $job_group
+    # init
+    configure
+    seed
+
+    # close job
+    _zsh_abbr_job_pop $job $job_group
+  } always {
+    unfunction -m "configure"
+    unfunction -m "seed"
+  }
 }
 
 _zsh_abbr_job_push() {
