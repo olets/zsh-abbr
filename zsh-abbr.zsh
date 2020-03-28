@@ -102,8 +102,8 @@ _zsh_abbr() {
       success=false
 
       echo $RANDOM >/dev/null
-      job=$(_zsh_abbr_job)
-      _zsh_abbr_job_begin $job $job_group
+      job=$(_zsh_abbr_job_name)
+      _zsh_abbr_job_push $job $job_group
 
       if $opt_scope_session; then
         if $opt_type_global; then
@@ -135,7 +135,7 @@ _zsh_abbr() {
         fi
       fi
 
-      _zsh_abbr_job_finish $job $job_group
+      _zsh_abbr_job_pop $job $job_group
 
       if ! $success; then
         util_error " erase: No matching abbreviation $abbreviation exists"
@@ -325,8 +325,8 @@ _zsh_abbr() {
       job_group='rename'
 
       echo $RANDOM >/dev/null
-      job=$(_zsh_abbr_job)
-      _zsh_abbr_job_begin $job $job_group
+      job=$(_zsh_abbr_job_name)
+      _zsh_abbr_job_push $job $job_group
 
       if $opt_scope_session; then
         if $opt_type_global; then
@@ -354,7 +354,7 @@ _zsh_abbr() {
         util_error " rename: No matching abbreviation $current_abbreviation exists"
       fi
 
-      _zsh_abbr_job_finish $job $job_group
+      _zsh_abbr_job_pop $job $job_group
     }
 
     function util_add() {
@@ -370,8 +370,8 @@ _zsh_abbr() {
       success=false
 
       echo $RANDOM >/dev/null
-      job=$(_zsh_abbr_job)
-      _zsh_abbr_job_begin $job $job_group
+      job=$(_zsh_abbr_job_name)
+      _zsh_abbr_job_push $job $job_group
 
       if [[ ${(w)#abbreviation} > 1 ]]; then
         util_error " add: ABBREVIATION ('$abbreviation') must be only one word"
@@ -428,7 +428,7 @@ _zsh_abbr() {
         fi
       fi
 
-      _zsh_abbr_job_finish $job $job_group
+      _zsh_abbr_job_pop $job $job_group
 
       if ! $success; then
         util_error " add: A matching abbreviation $1 already exists"
@@ -541,8 +541,8 @@ _zsh_abbr() {
       job_group='util_sync_user'
 
       echo $RANDOM >/dev/null
-      job=$(_zsh_abbr_job)
-      _zsh_abbr_job_begin $job $job_group
+      job=$(_zsh_abbr_job_name)
+      _zsh_abbr_job_push $job $job_group
 
       user_updated="${TMPDIR:-/tmp}/zsh-user-abbreviations"_updated
       rm "$user_updated" 2> /dev/null
@@ -561,7 +561,7 @@ _zsh_abbr() {
 
       mv "$user_updated" "$ZSH_ABBR_USER_PATH"
 
-      _zsh_abbr_job_finish $job $job_group
+      _zsh_abbr_job_pop $job $job_group
     }
 
     function util_type() {
@@ -865,8 +865,8 @@ _zsh_abbr_init() {
   fi
 
   echo $RANDOM >/dev/null
-  job=$(_zsh_abbr_job)
-  _zsh_abbr_job_begin $job $job_group
+  job=$(_zsh_abbr_job_name)
+  _zsh_abbr_job_push $job $job_group
 
   # Scratch files
   rm "${TMPDIR:-/tmp}/zsh-user-abbreviations" 2> /dev/null
@@ -896,32 +896,39 @@ _zsh_abbr_init() {
   typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp}/zsh-user-abbreviations"
   typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
 
-  _zsh_abbr_job_finish $job $job_group
+  _zsh_abbr_job_pop $job $job_group
 }
 
-_zsh_abbr_job_begin() {
-  local next_job
-  local next_job_age
-  local job
-  local job_group
-  local timeout_age
+_zsh_abbr_job_push() {
+  {
+    local next_job
+    local next_job_age
+    local next_job_path
+    local job
+    local job_dir
+    local job_group
+    local timeout_age
 
-  job=${(q)1}
-  job_group=$2
-  timeout_age=30 # seconds
+    job=${(q)1}
+    job_group=${(q)2}
+    timeout_age=30 # seconds
 
-  if ! [ -d "${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}" ]; then
-    mkdir -p "${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}"
-  fi
+    job_dir=${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}
 
-  echo "$2" > "${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}/${job}"
+    function add_job() {
+      if ! [ -d $job_dir ]; then
+        mkdir -p $job_dir
+      fi
 
-  while [[ $(ls -t ${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group} | tail -1) != $job ]]; do
-    next_job=$(ls -t ${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group} | tail -1)
-    next_job_age=$(( $(date +%s) - ${next_job%.*} ))
+      echo $job_group > $job_dir/$job
+    }
 
-    if ((  $next_job_age > $timeout_age )); then
-      next_job_path=${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}/$next_job
+    function get_next_job() {
+      ls -t $job_dir | tail -1
+    }
+
+    function handle_timeout() {
+      next_job_path=$job_dir/$next_job
 
       echo "abbr: An job added at"
       echo "  $(strftime '%A, %d %b %Y' ${next_job%.*})"
@@ -931,13 +938,32 @@ _zsh_abbr_job_begin() {
       echo
 
       rm $next_job_path
-    fi
+    }
 
-    sleep 0.01
-  done
+    function wait_turn() {
+      while [[ $(get_next_job) != $job ]]; do
+        next_job=$(get_next_job)
+        next_job_age=$(( $(date +%s) - ${next_job%.*} ))
+
+        if ((  $next_job_age > $timeout_age )); then
+          handle_timeout
+        fi
+
+        sleep 0.01
+      done
+    }
+
+    add_job
+    wait_turn
+  } always {
+    unfunction -m "add_job"
+    unfunction -m "get_next_job"
+    unfunction -m "handle_timeout"
+    unfunction -m "wait_turn"
+  }
 }
 
-_zsh_abbr_job_finish() {
+_zsh_abbr_job_pop() {
   local job
   local job_group
 
@@ -947,7 +973,7 @@ _zsh_abbr_job_finish() {
   rm "${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}/${job}"
 }
 
-_zsh_abbr_job() {
+_zsh_abbr_job_name() {
   echo "$(date +%s).$RANDOM"
 }
 
