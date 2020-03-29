@@ -20,10 +20,10 @@ ZSH_ABBR_USER_PATH="${ZSH_ABBR_USER_PATH="${HOME}/.config/zsh/abbreviations"}"
 
 _zsh_abbr() {
   {
-    local action number_opts opt opt_dry_run release_date scope \
+    local action number_opts opt dry_run release_date scope \
           should_exit text_bold text_reset type version
+    dry_run=0
     number_opts=0
-    opt_dry_run=false
     release_date="March 22 2020"
     should_exit=false
     text_bold="\\033[1m"
@@ -206,7 +206,7 @@ _zsh_abbr() {
         add $_alias
       done < <(alias -g)
 
-      if ! $opt_dry_run; then
+      if ! (( dry_run )); then
         echo "Aliases imported. It is recommended that you look over \$ZSH_ABBR_USER_PATH to confirm there are no quotation mark-related problems\\n"
       fi
     }
@@ -233,7 +233,7 @@ _zsh_abbr() {
         util_add $abbreviation $expansion
       done < $input_file
 
-      if ! $opt_dry_run; then
+      if ! (( dry_run )); then
         echo "Abbreviations imported. It is recommended that you look over \$ZSH_ABBR_USER_PATH to confirm there are no quotation mark-related problems\\n"
       fi
     }
@@ -259,7 +259,7 @@ _zsh_abbr() {
         util_add "g$key" "git ${value# }"
       done
 
-      if ! $opt_dry_run; then
+      if ! (( dry_run )); then
         echo "Aliases imported. It is recommended that you look over \$ZSH_ABBR_USER_PATH to confirm there are no quotation mark-related problems\\n"
       fi
     }
@@ -348,7 +348,7 @@ _zsh_abbr() {
       if [[ -n "$expansion" ]]; then
         util_add $new_abbreviation $expansion
 
-        if ! $opt_dry_run; then
+        if ! (( dry_run )); then
           erase $current_abbreviation
         else
           echo "abbr -e $current_abbreviation"
@@ -390,7 +390,7 @@ _zsh_abbr() {
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
           if ! (( ${+ZSH_ABBR_SESSION_GLOBALS[$abbreviation]} )); then
-            if $opt_dry_run; then
+            if (( dry_run )); then
               echo "abbr -S -g $abbreviation=${(Q)expansion}"
             else
               ZSH_ABBR_SESSION_GLOBALS[$abbreviation]=$expansion
@@ -398,7 +398,7 @@ _zsh_abbr() {
             success=true
           fi
         elif ! (( ${+ZSH_ABBR_SESSION_COMMANDS[$abbreviation]} )); then
-          if $opt_dry_run; then
+          if (( dry_run )); then
             echo "abbr -S $abbreviation=${(Q)expansion}"
           else
             ZSH_ABBR_SESSION_COMMANDS[$abbreviation]=$expansion
@@ -410,7 +410,7 @@ _zsh_abbr() {
           source "${TMPDIR:-/tmp/}zsh-user-global-abbreviations"
 
           if ! (( ${+ZSH_ABBR_USER_GLOBALS[$abbreviation]} )); then
-            if $opt_dry_run; then
+            if (( dry_run )); then
               echo "abbr -g $abbreviation=${(Q)expansion}"
             else
               ZSH_ABBR_USER_GLOBALS[$abbreviation]=$expansion
@@ -422,7 +422,7 @@ _zsh_abbr() {
           source "${TMPDIR:-/tmp/}zsh-user-abbreviations"
 
           if ! (( ${+ZSH_ABBR_USER_COMMANDS[$abbreviation]} )); then
-            if $opt_dry_run; then
+            if (( dry_run )); then
               echo "abbr ${(Q)abbreviation}=${(Q)expansion}"
             else
               ZSH_ABBR_USER_COMMANDS[$abbreviation]=$expansion
@@ -618,7 +618,7 @@ _zsh_abbr() {
           util_set_once "action" "clear_session"
           ;;
         --dry-run)
-          opt_dry_run=true
+          dry_run=1
           ((number_opts++))
           ;;
         "--erase"|\
