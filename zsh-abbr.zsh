@@ -542,6 +542,23 @@ _zsh_abbr() {
       echo $result
     }
 
+    function util_set_once() {
+      local option value
+
+      option=$1
+      value=$2
+
+      [[ $ZSH_ABBR_DEBUG ]] && echo "util_set_once $option $value"
+
+      if [ ${(P)option} ]; then
+        util_bad_options
+        return
+      fi
+
+      eval $option=$value
+      ((number_opts++))
+    }
+
     function util_sync_user() {
       [[ $ZSH_ABBR_DEBUG ]] && echo "util_sync_user"
 
@@ -585,42 +602,6 @@ _zsh_abbr() {
       man abbr 2>/dev/null || cat ${ZSH_ABBR_SOURCE_PATH}/man/abbr.txt | less -F
     }
 
-    function set_action() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "set_action"
-
-      if [ $action ]; then
-        util_bad_options
-        return
-      fi
-
-      action=$1
-      ((number_opts++))
-    }
-
-    function set_scope() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "set_scope"
-
-      if [ $scope ]; then
-        util_bad_options
-        return
-      fi
-
-      scope=$1
-      ((number_opts++))
-    }
-
-    function set_type() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "set_type"
-
-      if [ $type ]; then
-        util_bad_options
-        return
-      fi
-
-      type=$1
-      ((number_opts++))
-    }
-
     for opt in "$@"; do
       if $should_exit; then
         should_exit=false
@@ -630,11 +611,11 @@ _zsh_abbr() {
       case "$opt" in
         "--add"|\
         "-a")
-          set_action "add"
+          util_set_once "action" "add"
           ;;
         "--clear-session"|\
         "-c")
-          set_action "clear_session"
+          util_set_once "action" "clear_session"
           ;;
         --dry-run)
           opt_dry_run=true
@@ -642,18 +623,18 @@ _zsh_abbr() {
           ;;
         "--erase"|\
         "-e")
-          set_action "erase"
+          util_set_once "action" "erase"
           ;;
         "--expand"|\
         "-x")
-          set_action "expand"
+          util_set_once "action" "expand"
           ;;
         "--export-aliases")
-          set_action "export_aliases"
+          util_set_once "action" "export_aliases"
           ;;
         "--global"|\
         "-g")
-          set_type "global"
+          util_set_once "type" "global"
           ;;
         "--help"|\
         "-h")
@@ -661,43 +642,43 @@ _zsh_abbr() {
           should_exit=true
           ;;
         "--import-aliases")
-          set_action "import_aliases"
+          util_set_once "action" "import_aliases"
           ;;
         "--import-fish")
-          set_action "import_fish"
+          util_set_once "action" "import_fish"
           ;;
         "--import-git-aliases")
-          set_action "import_git_aliases"
+          util_set_once "action" "import_git_aliases"
           ;;
         "--list-abbreviations"|\
         "-l")
-          set_action "list_abbreviations"
+          util_set_once "action" "list_abbreviations"
           ;;
         "--list-commands"|\
         "-L"|\
         "--show"|\
         "-s") # "show" is for backwards compatability with v2
-          set_action "list_commands"
+          util_set_once "action" "list_commands"
           ;;
         "--regular"|\
         "-r")
-          set_type "regular"
+          util_set_once "type" "regular"
           ;;
         "--rename"|\
         "-R")
-          set_action "rename"
+          util_set_once "action" "rename"
           ;;
         "--session"|\
         "-S")
-          set_scope "session"
+          util_set_once "scope" "session"
           ;;
         "--user"|\
         "-U")
-          set_scope "user"
+          util_set_once "scope" "user"
           ;;
         "--version"|\
         "-v")
-          set_action "print_version"
+          util_set_once "action" "print_version"
           ;;
         "--")
           ((number_opts++))
@@ -737,14 +718,12 @@ _zsh_abbr() {
     unfunction -m "list_abbreviations"
     unfunction -m "print_version"
     unfunction -m "rename"
-    unfunction -m "set_action"
-    unfunction -m "set_scope"
-    unfunction -m "set_type"
     unfunction -m "util_add"
     unfunction -m "util_alias"
     unfunction -m "util_error"
     unfunction -m "util_list"
     unfunction -m "util_list_item"
+    unfunction -m "util_set_once"
     unfunction -m "util_sync_user"
     unfunction -m "util_usage"
   }
