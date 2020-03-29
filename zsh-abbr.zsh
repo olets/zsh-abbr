@@ -91,11 +91,21 @@ _zsh_abbr() {
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
           if (( ${+ZSH_ABBR_SESSION_GLOBALS[$abbreviation]} )); then
-            unset "ZSH_ABBR_SESSION_GLOBALS[${(b)abbreviation}]"
+            if (( dry_run )); then
+              echo "Erase ${type:-regular} ${scope:-user} abbreviation $abbeviation"
+            else
+              unset "ZSH_ABBR_SESSION_GLOBALS[${(b)abbreviation}]"
+            fi
+
             success=1
           fi
         elif (( ${+ZSH_ABBR_SESSION_COMMANDS[$abbreviation]} )); then
-          unset "ZSH_ABBR_SESSION_COMMANDS[${(b)abbreviation}]"
+          if (( dry_run )); then
+            echo "Erase ${type:-regular} ${scope:-user} abbreviation $abbeviation"
+          else
+            unset "ZSH_ABBR_SESSION_COMMANDS[${(b)abbreviation}]"
+          fi
+
           success=1
         fi
       else
@@ -103,7 +113,12 @@ _zsh_abbr() {
           source "${TMPDIR:-/tmp/}zsh-user-global-abbreviations"
 
           if (( ${+ZSH_ABBR_USER_GLOBALS[$abbreviation]} )); then
-            unset "ZSH_ABBR_USER_GLOBALS[${(b)abbreviation}]"
+            if (( dry_run )); then
+              echo "Erase ${type:-regular} ${scope:-user} abbreviation $abbeviation"
+            else
+              unset "ZSH_ABBR_USER_GLOBALS[${(b)abbreviation}]"
+            fi
+
             util_sync_user
             success=1
           fi
@@ -111,7 +126,12 @@ _zsh_abbr() {
           source "${TMPDIR:-/tmp/}zsh-user-abbreviations"
 
           if (( ${+ZSH_ABBR_USER_COMMANDS[$abbreviation]} )); then
-            unset "ZSH_ABBR_USER_COMMANDS[${(b)abbreviation}]"
+            if (( dry_run )); then
+              echo "Erase ${type:-regular} ${scope:-user} abbreviation $abbeviation"
+            else
+              unset "ZSH_ABBR_USER_COMMANDS[${(b)abbreviation}]"
+            fi
+
             util_sync_user
             success=1
           fi
@@ -121,7 +141,7 @@ _zsh_abbr() {
       _zsh_abbr_job_pop $job $job_group
 
       if ! (( success )); then
-        util_error " erase: No $type $scope abbreviation $abbreviation found"
+        util_error " erase: No ${type:-regular} ${scope:-user} abbreviation $abbreviation found"
       fi
     }
 
@@ -345,14 +365,9 @@ _zsh_abbr() {
         fi
       fi
 
-      if [[ -n "$expansion" ]]; then
+      if [ $expansion ]; then
         util_add $new_abbreviation $expansion
-
-        if ! (( dry_run )); then
-          erase $current_abbreviation
-        else
-          echo "abbr -e $current_abbreviation"
-        fi
+        erase $current_abbreviation
       else
         util_error " rename: No matching abbreviation $current_abbreviation exists"
       fi
