@@ -979,6 +979,7 @@ _zsh_abbr_job_push() {
 _zsh_abbr_job_pop() {
   [[ $ZSH_ABBR_DEBUG ]] && echo "job_pop"
 
+  local current
   local currents
   local job
   local job_group
