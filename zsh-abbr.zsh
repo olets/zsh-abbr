@@ -369,7 +369,7 @@ _zsh_abbr() {
         util_add $new_abbreviation $expansion
         erase $current_abbreviation
       else
-        util_error " rename: No matching abbreviation $current_abbreviation exists"
+        util_error " rename: No ${type:-regular} ${scope:-user} abbreviation $current_abbreviation exists"
       fi
 
       _zsh_abbr_job_pop $job $job_group
@@ -451,7 +451,7 @@ _zsh_abbr() {
       _zsh_abbr_job_pop $job $job_group
 
       if ! (( success )); then
-        util_error " add: A $type $scope abbreviation $1 already exists"
+        util_error " add: A ${type:-regular} ${scope:-user} abbreviation $abbreviation already exists"
       fi
     }
 
