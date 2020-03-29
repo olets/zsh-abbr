@@ -20,15 +20,13 @@ ZSH_ABBR_USER_PATH="${ZSH_ABBR_USER_PATH="${HOME}/.config/zsh/abbreviations"}"
 
 _zsh_abbr() {
   {
-    local action number_opts opt opt_dry_run opt_scope_session \
-          opt_scope_user opt_type_global opt_type_regular type_set \
-          release_date scope_set should_exit text_bold text_reset version
+    local action number_opts opt opt_dry_run scope opt_type_global \
+          opt_type_regular type_set release_date scope_set should_exit \
+          text_bold text_reset version
     number_opts=0
     opt_dry_run=false
     opt_type_global=false
     opt_type_regular=false
-    opt_scope_session=false
-    opt_scope_user=false
     type_set=false
     release_date="March 22 2020"
     scope_set=false
@@ -95,7 +93,7 @@ _zsh_abbr() {
       job=$(_zsh_abbr_job_name)
       _zsh_abbr_job_push $job $job_group
 
-      if $opt_scope_session; then
+      if [[ $scope == 'session' ]]; then
         if $opt_type_global; then
           if (( ${+ZSH_ABBR_SESSION_GLOBALS[$abbreviation]} )); then
             unset "ZSH_ABBR_SESSION_GLOBALS[${(b)abbreviation}]"
@@ -168,7 +166,7 @@ _zsh_abbr() {
         return
       fi
 
-      if ! $opt_scope_user; then
+      if [[ $scope != 'user' ]]; then
         if ! $opt_type_regular; then
           opt_type_global=true
           util_alias ZSH_ABBR_SESSION_GLOBALS $output_path
@@ -180,7 +178,7 @@ _zsh_abbr() {
         fi
       fi
 
-      if ! $opt_scope_session; then
+      if [[ $scope != 'session' ]]; then
         if ! $opt_type_regular; then
           opt_type_global=true
           util_alias ZSH_ABBR_USER_GLOBALS $output_path
@@ -338,7 +336,7 @@ _zsh_abbr() {
       job=$(_zsh_abbr_job_name)
       _zsh_abbr_job_push $job $job_group
 
-      if $opt_scope_session; then
+      if [[ $scope == 'session' ]]; then
         if $opt_type_global; then
           expansion=${ZSH_ABBR_SESSION_GLOBALS[$current_abbreviation]}
         else
@@ -394,7 +392,7 @@ _zsh_abbr() {
         util_error " add: ABBREVIATION ('$abbreviation') may not contain an equals sign"
       fi
 
-      if $opt_scope_session; then
+      if [[ $scope == 'session' ]]; then
         if $opt_type_global; then
           if ! (( ${+ZSH_ABBR_SESSION_GLOBALS[$abbreviation]} )); then
             if $opt_dry_run; then
@@ -497,7 +495,7 @@ _zsh_abbr() {
         include_cmd=1
       fi
 
-      if ! $opt_scope_session; then
+      if [[ $scope != 'session' ]]; then
         if ! $opt_type_regular; then
           for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
             util_list_item "$abbreviation" "$expansion" "abbr -g"
@@ -511,7 +509,7 @@ _zsh_abbr() {
         fi
       fi
 
-      if ! $opt_scope_user; then
+      if [[ $scope != 'user' ]]; then
         if ! $opt_type_regular; then
           for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_GLOBALS}; do
             util_list_item "$abbreviation" "$expansion" "abbr -S -g"
@@ -592,7 +590,7 @@ _zsh_abbr() {
       local type
       type="user"
 
-      if $opt_scope_session; then
+      if [[ $scope == 'session' ]]; then
         type="session"
       fi
 
@@ -614,6 +612,18 @@ _zsh_abbr() {
       fi
 
       action=$1
+      ((number_opts++))
+    }
+
+    function set_scope() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "set_scope"
+
+      if [ $scope ]; then
+        util_bad_options
+        return
+      fi
+
+      scope=$1
       ((number_opts++))
     }
 
@@ -691,17 +701,11 @@ _zsh_abbr() {
           ;;
         "--session"|\
         "-S")
-          [ "$scope_set" = true ] && util_bad_options
-          scope_set=true
-          opt_scope_session=true
-          ((number_opts++))
+          set_scope "session"
           ;;
         "--user"|\
         "-U")
-          [ "$scope_set" = true ] && util_bad_options
-          scope_set=true
-          opt_scope_user=true
-          ((number_opts++))
+          set_scope "user"
           ;;
         "--version"|\
         "-v")
@@ -746,6 +750,7 @@ _zsh_abbr() {
     unfunction -m "print_version"
     unfunction -m "rename"
     unfunction -m "set_action"
+    unfunction -m "set_scope"
     unfunction -m "util_add"
     unfunction -m "util_alias"
     unfunction -m "util_error"
