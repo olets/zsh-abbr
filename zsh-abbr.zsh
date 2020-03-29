@@ -20,31 +20,15 @@ ZSH_ABBR_USER_PATH="${ZSH_ABBR_USER_PATH="${HOME}/.config/zsh/abbreviations"}"
 
 _zsh_abbr() {
   {
-    local action_set number_opts opt opt_add opt_clear_session opt_dry_run \
-          opt_erase opt_expand opt_export_aliases opt_import_git_aliases \
-          opt_import_aliases opt_import_fish opt_list opt_list_commands \
-          opt_print_version opt_rename opt_scope_session opt_scope_user \
-          opt_type_global opt_type_regular type_set release_date scope_set \
-          should_exit text_bold text_reset version
-    action_set=false
+    local action number_opts opt opt_dry_run opt_scope_session \
+          opt_scope_user opt_type_global opt_type_regular type_set \
+          release_date scope_set should_exit text_bold text_reset version
     number_opts=0
-    opt_add=false
-    opt_clear_session=false
     opt_dry_run=false
-    opt_erase=false
-    opt_expand=false
-    opt_export_aliases=false
     opt_type_global=false
-    opt_import_aliases=false
-    opt_import_fish=false
-    opt_import_git_aliases=false
-    opt_list=false
-    opt_list_commands=false
     opt_type_regular=false
-    opt_rename=false
     opt_scope_session=false
     opt_scope_user=false
-    opt_print_version=false
     type_set=false
     release_date="March 22 2020"
     scope_set=false
@@ -621,6 +605,18 @@ _zsh_abbr() {
       man abbr 2>/dev/null || cat ${ZSH_ABBR_SOURCE_PATH}/man/abbr.txt | less -F
     }
 
+    function set_action() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "set_action"
+
+      if [ $action ]; then
+        util_bad_options
+        return
+      fi
+
+      action=$1
+      ((number_opts++))
+    }
+
     for opt in "$@"; do
       if $should_exit; then
         should_exit=false
@@ -630,17 +626,11 @@ _zsh_abbr() {
       case "$opt" in
         "--add"|\
         "-a")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_add=true
-          ((number_opts++))
+          set_action "add"
           ;;
         "--clear-session"|\
         "-c")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_clear_session=true
-          ((number_opts++))
+          set_action "clear_session"
           ;;
         --dry-run)
           opt_dry_run=true
@@ -648,17 +638,14 @@ _zsh_abbr() {
           ;;
         "--erase"|\
         "-e")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_erase=true
-          ((number_opts++))
+          set_action "erase"
           ;;
         "--expand"|\
         "-x")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_expand=true
-          ((number_opts++))
+          set_action "expand"
+          ;;
+        "--export-aliases")
+          set_action "export_aliases"
           ;;
         "--global"|\
         "-g")
@@ -667,50 +654,29 @@ _zsh_abbr() {
           opt_type_global=true
           ((number_opts++))
           ;;
-        "--import-fish")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_import_fish=true
-          ((number_opts++))
-          ;;
         "--help"|\
         "-h")
           util_usage
           should_exit=true
           ;;
-        "--import-git-aliases")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_import_git_aliases=true
-          ((number_opts++))
-          ;;
-        "--export-aliases")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_export_aliases=true
-          ((number_opts++))
-          ;;
         "--import-aliases")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_import_aliases=true
-          ((number_opts++))
+          set_action "import_aliases"
+          ;;
+        "--import-fish")
+          set_action "import_fish"
+          ;;
+        "--import-git-aliases")
+          set_action "import_git_aliases"
           ;;
         "--list-abbreviations"|\
         "-l")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_list=true
-          ((number_opts++))
+          set_action "list_abbreviations"
           ;;
         "--list-commands"|\
         "-L"|\
         "--show"|\
         "-s") # "show" is for backwards compatability with v2
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_list_commands=true
-          ((number_opts++))
+          set_action "list_commands"
           ;;
         "--regular"|\
         "-r")
@@ -721,10 +687,7 @@ _zsh_abbr() {
           ;;
         "--rename"|\
         "-R")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_rename=true
-          ((number_opts++))
+          set_action "rename"
           ;;
         "--session"|\
         "-S")
@@ -742,10 +705,7 @@ _zsh_abbr() {
           ;;
         "--version"|\
         "-v")
-          [ "$action_set" = true ] && util_bad_options
-          action_set=true
-          opt_print_version=true
-          ((number_opts++))
+          set_action "print_version"
           ;;
         "--")
           ((number_opts++))
@@ -761,36 +721,13 @@ _zsh_abbr() {
 
     shift $number_opts
 
-    if $opt_add; then
+    if [ $action ]; then
+      $action "$@"
+    elif [[ $# > 0 ]]; then
+      # default if arguments are provided
        add "$@"
-    elif $opt_clear_session; then
-      clear_session "$@"
-    elif $opt_erase; then
-      erase "$@"
-    elif $opt_expand; then
-      expand "$@"
-    elif $opt_export_aliases; then
-      export_aliases "$@"
-    elif $opt_import_aliases; then
-      import_aliases "$@"
-    elif $opt_import_fish; then
-      import_fish "$@"
-    elif $opt_import_git_aliases; then
-      import_git_aliases "$@"
-    elif $opt_list; then
-      list "$@"
-    elif $opt_list_commands; then
-      list_commands "$@"
-    elif $opt_print_version; then
-      print_version "$@"
-    elif $opt_rename; then
-      rename "$@"
-
-    # default if arguments are provided
-    elif ! $opt_list_commands && [ $# -gt 0 ]; then
-       add "$@"
-    # default if no argument is provided
     else
+      # default if no argument is provided
       list_abbreviations "$@"
     fi
   } always {
@@ -808,6 +745,7 @@ _zsh_abbr() {
     unfunction -m "list_abbreviations"
     unfunction -m "print_version"
     unfunction -m "rename"
+    unfunction -m "set_action"
     unfunction -m "util_add"
     unfunction -m "util_alias"
     unfunction -m "util_error"
