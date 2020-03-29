@@ -9,7 +9,7 @@
 
 # Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
-ZSH_ABBR_DEFAULT_BINDINGS="${ZSH_ABBR_DEFAULT_BINDINGS=true}"
+ZSH_ABBR_DEFAULT_BINDINGS="${ZSH_ABBR_DEFAULT_BINDINGS=1}"
 
 # File abbreviations are stored in
 ZSH_ABBR_USER_PATH="${ZSH_ABBR_USER_PATH="${HOME}/.config/zsh/abbreviations"}"
@@ -25,7 +25,7 @@ _zsh_abbr() {
     dry_run=0
     number_opts=0
     release_date="March 22 2020"
-    should_exit=false
+    should_exit=0
     text_bold="\\033[1m"
     text_reset="\\033[0m"
     version="zsh-abbr version 3.1.2"
@@ -82,7 +82,7 @@ _zsh_abbr() {
 
       abbreviation=$1
       job_group='erase'
-      success=false
+      success=0
 
       echo $RANDOM >/dev/null
       job=$(_zsh_abbr_job_name)
@@ -92,11 +92,11 @@ _zsh_abbr() {
         if [[ $type == 'global' ]]; then
           if (( ${+ZSH_ABBR_SESSION_GLOBALS[$abbreviation]} )); then
             unset "ZSH_ABBR_SESSION_GLOBALS[${(b)abbreviation}]"
-            success=true
+            success=1
           fi
         elif (( ${+ZSH_ABBR_SESSION_COMMANDS[$abbreviation]} )); then
           unset "ZSH_ABBR_SESSION_COMMANDS[${(b)abbreviation}]"
-          success=true
+          success=1
         fi
       else
         if [[ $type == 'global' ]]; then
@@ -105,7 +105,7 @@ _zsh_abbr() {
           if (( ${+ZSH_ABBR_USER_GLOBALS[$abbreviation]} )); then
             unset "ZSH_ABBR_USER_GLOBALS[${(b)abbreviation}]"
             util_sync_user
-            success=true
+            success=1
           fi
         else
           source "${TMPDIR:-/tmp/}zsh-user-abbreviations"
@@ -113,15 +113,15 @@ _zsh_abbr() {
           if (( ${+ZSH_ABBR_USER_COMMANDS[$abbreviation]} )); then
             unset "ZSH_ABBR_USER_COMMANDS[${(b)abbreviation}]"
             util_sync_user
-            success=true
+            success=1
           fi
         fi
       fi
 
       _zsh_abbr_job_pop $job $job_group
 
-      if ! $success; then
-        util_error " erase: No matching abbreviation $abbreviation exists"
+      if ! (( success )); then
+        util_error " erase: No $type $scope abbreviation $abbreviation found"
       fi
     }
 
@@ -372,7 +372,7 @@ _zsh_abbr() {
       abbreviation=$1
       expansion=$2
       job_group='util_add'
-      success=false
+      success=0
 
       echo $RANDOM >/dev/null
       job=$(_zsh_abbr_job_name)
@@ -395,7 +395,7 @@ _zsh_abbr() {
             else
               ZSH_ABBR_SESSION_GLOBALS[$abbreviation]=$expansion
             fi
-            success=true
+            success=1
           fi
         elif ! (( ${+ZSH_ABBR_SESSION_COMMANDS[$abbreviation]} )); then
           if (( dry_run )); then
@@ -403,7 +403,7 @@ _zsh_abbr() {
           else
             ZSH_ABBR_SESSION_COMMANDS[$abbreviation]=$expansion
           fi
-          success=true
+          success=1
         fi
       else
         if [[ $type == 'global' ]]; then
@@ -416,7 +416,7 @@ _zsh_abbr() {
               ZSH_ABBR_USER_GLOBALS[$abbreviation]=$expansion
               util_sync_user
             fi
-            success=true
+            success=1
           fi
         else
           source "${TMPDIR:-/tmp/}zsh-user-abbreviations"
@@ -428,15 +428,15 @@ _zsh_abbr() {
               ZSH_ABBR_USER_COMMANDS[$abbreviation]=$expansion
               util_sync_user
             fi
-            success=true
+            success=1
           fi
         fi
       fi
 
       _zsh_abbr_job_pop $job $job_group
 
-      if ! $success; then
-        util_error " add: A matching abbreviation $1 already exists"
+      if ! (( success )); then
+        util_error " add: A $type $scope abbreviation $1 already exists"
       fi
     }
 
@@ -473,7 +473,7 @@ _zsh_abbr() {
 
       echo "abbr$@"
       echo "For help run abbr --help"
-      should_exit=true
+      should_exit=1
     }
 
     function util_list() {
@@ -604,8 +604,8 @@ _zsh_abbr() {
     }
 
     for opt in "$@"; do
-      if $should_exit; then
-        should_exit=false
+      if (( should_exit )); then
+        should_exit=0
         return
       fi
 
@@ -640,7 +640,7 @@ _zsh_abbr() {
         "--help"|\
         "-h")
           util_usage
-          should_exit=true
+          should_exit=1
           ;;
         "--import-aliases")
           util_set_once "action" "import_aliases"
@@ -688,8 +688,8 @@ _zsh_abbr() {
       esac
     done
 
-    if $should_exit; then
-      should_exit=false
+    if (( should_exit )); then
+      should_exit=0
       return
     fi
 
@@ -1032,7 +1032,7 @@ abbr() {
 _zsh_abbr_init
 ZSH_ABBR_SOURCE_PATH=${0:A:h}
 
-if [ "$ZSH_ABBR_DEFAULT_BINDINGS" = true ]; then
+if (( $ZSH_ABBR_DEFAULT_BINDINGS )) || [ $ZSH_ABBR_DEFAULT_BINDINGS = true ]; then
   _zsh_abbr_bind_widgets
 fi
 
