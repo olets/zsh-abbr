@@ -23,7 +23,7 @@ Chrome
 
 More idiomatic zsh
 
-- [ ] don't use quotation marks when not needed
+- [x] don't use quotation marks when not needed
 - [x] rework variable values to support using (( ${+var} )) instead of [[ -n "$var" ]]
 - [x] no `if [[ $var == true ]]` where just  `if $var` would work
 - [x] any other places to tighten up boolean checks

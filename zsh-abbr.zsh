@@ -44,7 +44,7 @@ _zsh_abbr() {
       abbreviation="${(q)1%%=*}"
       expansion="${(q)1#*=}"
 
-      if [[ -z $abbreviation || -z $expansion || $abbreviation == $1 ]]; then
+      if ! [[ $abbreviation && $expansion && $abbreviation != $1 ]]; then
         util_error " add: Requires abbreviation and expansion"
         return
       fi
