@@ -54,6 +54,8 @@ _zsh_abbr() {
     version="zsh-abbr version 3.1.2"
 
     function add() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "add"
+
       local abbreviation
       local expansion
 
@@ -74,6 +76,8 @@ _zsh_abbr() {
     }
 
     function clear_session() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "clear_session"
+
       if [ $# -gt 0 ]; then
         util_error " clear-session: Unexpected argument"
         return
@@ -84,6 +88,8 @@ _zsh_abbr() {
     }
 
     function erase() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "erase"
+
       local abbreviation
       local job
       local job_group
@@ -143,6 +149,8 @@ _zsh_abbr() {
     }
 
     function expand() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "expand"
+
       local abbreviation
       local expansion
 
@@ -163,6 +171,8 @@ _zsh_abbr() {
     }
 
     function export_aliases() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "export_aliases"
+
       local global_only
       local output_path
 
@@ -200,6 +210,8 @@ _zsh_abbr() {
     }
 
     function import_aliases() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "import_aliases"
+
       local _alias
 
       if [ $# -gt 0 ]; then
@@ -223,6 +235,8 @@ _zsh_abbr() {
     }
 
     function import_fish() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "import_fish"
+
       local abbreviation
       local expansion
       local input_file
@@ -248,6 +262,8 @@ _zsh_abbr() {
     }
 
     function import_git_aliases() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "import_git_aliases"
+
       local git_aliases
       local abbr_git_aliases
 
@@ -272,6 +288,8 @@ _zsh_abbr() {
     }
 
     function list() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "list"
+
       if [ $# -gt 0 ]; then
         util_error " list: Unexpected argument"
         return
@@ -281,6 +299,8 @@ _zsh_abbr() {
     }
 
     function list_commands() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "list_commands"
+
       if [ $# -gt 0 ]; then
         util_error " list commands: Unexpected argument"
         return
@@ -290,6 +310,8 @@ _zsh_abbr() {
     }
 
     function list_definitions() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "list_abbreviations"
+
       if [ $# -gt 0 ]; then
         util_error " list definitions: Unexpected argument"
         return
@@ -299,6 +321,8 @@ _zsh_abbr() {
     }
 
     function print_version() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "print_version"
+
       if [ $# -gt 0 ]; then
         util_error " version: Unexpected argument"
         return
@@ -308,6 +332,8 @@ _zsh_abbr() {
     }
 
     function rename() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "rename"
+
       local err
       local expansion
       local job
@@ -358,6 +384,8 @@ _zsh_abbr() {
     }
 
     function util_add() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "util_add"
+
       local abbreviation
       local expansion
       local job
@@ -458,15 +486,21 @@ _zsh_abbr() {
     }
 
     function util_bad_options() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "util_bad_options"
+
       util_error ": Illegal combination of options"
     }
 
     function util_error() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "util_error"
+
       printf "abbr%s\\nFor help run abbr --help\\n" "$@"
       should_exit=true
     }
 
     function util_list() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "util_list"
+
       local result
       local include_expansion
       local include_cmd
@@ -509,6 +543,8 @@ _zsh_abbr() {
     }
 
     function util_list_item() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "util_list_item"
+
       local abbreviation
       local cmd
       local expansion
@@ -530,6 +566,8 @@ _zsh_abbr() {
     }
 
     function util_sync_user() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "util_sync_user"
+
       local job
       local job_group
       local user_updated
@@ -565,6 +603,8 @@ _zsh_abbr() {
     }
 
     function util_type() {
+      # cannot support debug message
+
       local type
       type="user"
 
@@ -576,6 +616,8 @@ _zsh_abbr() {
     }
 
     function util_usage() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "util_usage"
+
       man abbr 2>/dev/null || cat ${ZSH_ABBR_SOURCE_PATH}/man/abbr.txt | less -F
     }
 
@@ -778,6 +820,8 @@ _zsh_abbr() {
 }
 
 _zsh_abbr_bind_widgets() {
+  [[ $ZSH_ABBR_DEBUG ]] && echo "bind_widgets"
+
   # spacebar expands abbreviations
   zle -N _zsh_abbr_expand_and_space
   bindkey " " _zsh_abbr_expand_and_space
@@ -796,6 +840,8 @@ _zsh_abbr_bind_widgets() {
 }
 
 _zsh_abbr_cmd_expansion() {
+  # cannout support debug message
+
   local abbreviation
   local expansion
 
@@ -811,6 +857,8 @@ _zsh_abbr_cmd_expansion() {
 }
 
 _zsh_abbr_expand_and_accept() {
+  # do not support debug message
+
   local trailing_space
   trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
 
@@ -827,6 +875,8 @@ _zsh_abbr_expand_and_space() {
 }
 
 _zsh_abbr_global_expansion() {
+  # cannout support debug message
+
   local abbreviation
   local expansion
 
@@ -843,6 +893,8 @@ _zsh_abbr_global_expansion() {
 
 _zsh_abbr_init() {
   {
+    [[ $ZSH_ABBR_DEBUG ]] && echo "init"
+
     local line
     local job
     local job_group
@@ -861,6 +913,8 @@ _zsh_abbr_init() {
     ZSH_ABBR_SESSION_GLOBALS=()
 
     function configure() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "configure"
+
       if [[ $options[shwordsplit] = on ]]; then
         session_shwordsplit_on=true
       fi
@@ -876,6 +930,8 @@ _zsh_abbr_init() {
     }
 
     function seed() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "seed"
+
       # Load saved user abbreviations
       if [ -f "$ZSH_ABBR_USER_PATH" ]; then
         unsetopt shwordsplit
@@ -913,6 +969,8 @@ _zsh_abbr_init() {
 
 _zsh_abbr_job_push() {
   {
+    [[ $ZSH_ABBR_DEBUG ]] && echo "job_push"
+
     local next_job
     local next_job_age
     local next_job_path
@@ -930,6 +988,8 @@ _zsh_abbr_job_push() {
     job_path=$job_dir/$job
 
     function add_job() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "add_job"
+
       if ! [ -d $job_dir ]; then
         mkdir -p $job_dir
       fi
@@ -942,10 +1002,14 @@ _zsh_abbr_job_push() {
     }
 
     function get_next_job() {
+      # cannout support debug message
+
       ls -t $job_dir | tail -1
     }
 
     function handle_timeout() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "handle_timeout"
+
       next_job_path=$job_dir/$next_job
 
       echo "abbr: An job added at"
@@ -962,6 +1026,8 @@ _zsh_abbr_job_push() {
     function wait_turn() {
       while [[ $(get_next_job) != $job ]]; do
         next_job=$(get_next_job)
+        echo "next_job $next_job"
+        echo "next_job_time ${next_job%.*}"
         next_job_age=$(( $(date +%s) - ${next_job%.*} ))
 
         if ((  $next_job_age > $timeout_age )); then
@@ -985,6 +1051,8 @@ _zsh_abbr_job_push() {
 }
 
 _zsh_abbr_job_pop() {
+  [[ $ZSH_ABBR_DEBUG ]] && echo "job_pop"
+
   local currents
   local job
   local job_group
@@ -1003,6 +1071,8 @@ _zsh_abbr_job_pop() {
 }
 
 _zsh_abbr_job_name() {
+  # cannout support debug message
+
   echo "$(date +%s).$RANDOM"
 }
 

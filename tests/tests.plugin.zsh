@@ -15,6 +15,7 @@ else
 	message+="failed"
 fi
 echo $message
+echo
 
 # Can erase an abbreviation
 message="abbr --erase "
@@ -25,6 +26,7 @@ else
 	message+="failed"
 fi
 echo $message
+echo
 
 # Can add an abbreviation without the --add flag
 message="abbr "
@@ -36,6 +38,7 @@ else
 fi
 echo $message
 abbr -e $test_abbr_abbreviation
+echo
 
 # Can clear session abbreviations
 message="abbr --clear-session "
@@ -47,6 +50,7 @@ else
 	message+="failed"
 fi
 echo $message
+echo
 
 # Can expand an abbreviation in a script
 message="abbr --expand "
@@ -58,6 +62,7 @@ else
 fi
 echo $message
 abbr -e $test_abbr_abbreviation
+echo
 
 # Can rename an abbreviation
 message="abbr --rename "
@@ -70,6 +75,7 @@ else
 fi
 echo $message
 abbr -e ${test_abbr_abbreviation}_new
+echo
 
 # Double-quoted single quotes are preserved
 abbreviation=a
@@ -83,6 +89,7 @@ else
 fi
 echo $message
 abbr -e $abbreviation
+echo
 
 # Single-quoted double quotes are preserved
 abbreviation=a
@@ -96,6 +103,7 @@ else
 fi
 echo $message
 abbr -e $abbreviation
+echo
 
 # Bare single quotes at the start of a string are swallowed
 abbreviation=a
@@ -109,6 +117,7 @@ else
 fi
 echo $message
 abbr -e $abbreviation
+echo
 
 # Bare single quotes in the middle of a string are swallowed
 abbreviation=a
@@ -122,6 +131,7 @@ else
 fi
 echo $message
 abbr -e $abbreviation
+echo
 
 # Bare double quotes at the start of a string are swallowed
 abbreviation=a
@@ -135,6 +145,7 @@ else
 fi
 echo $message
 abbr -e $abbreviation
+echo
 
 # Bare double quotes in the middle of a string are swallowed
 abbreviation=a
@@ -148,5 +159,6 @@ else
 fi
 echo $message
 abbr -e $abbreviation
+echo
 
 rm $ZSH_ABBR_USER_PATH
