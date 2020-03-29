@@ -20,16 +20,11 @@ ZSH_ABBR_USER_PATH="${ZSH_ABBR_USER_PATH="${HOME}/.config/zsh/abbreviations"}"
 
 _zsh_abbr() {
   {
-    local action number_opts opt opt_dry_run scope opt_type_global \
-          opt_type_regular type_set release_date scope_set should_exit \
-          text_bold text_reset version
+    local action number_opts opt opt_dry_run release_date scope \
+          should_exit text_bold text_reset type version
     number_opts=0
     opt_dry_run=false
-    opt_type_global=false
-    opt_type_regular=false
-    type_set=false
     release_date="March 22 2020"
-    scope_set=false
     should_exit=false
     text_bold="\\033[1m"
     text_reset="\\033[0m"
@@ -94,7 +89,7 @@ _zsh_abbr() {
       _zsh_abbr_job_push $job $job_group
 
       if [[ $scope == 'session' ]]; then
-        if $opt_type_global; then
+        if [[ $type == 'global' ]]; then
           if (( ${+ZSH_ABBR_SESSION_GLOBALS[$abbreviation]} )); then
             unset "ZSH_ABBR_SESSION_GLOBALS[${(b)abbreviation}]"
             success=true
@@ -104,7 +99,7 @@ _zsh_abbr() {
           success=true
         fi
       else
-        if $opt_type_global; then
+        if [[ $type == 'global' ]]; then
           source "${TMPDIR:-/tmp/}zsh-user-global-abbreviations"
 
           if (( ${+ZSH_ABBR_USER_GLOBALS[$abbreviation]} )); then
@@ -155,10 +150,10 @@ _zsh_abbr() {
     function export_aliases() {
       [[ $ZSH_ABBR_DEBUG ]] && echo "export_aliases"
 
-      local global_only
+      local type_saved
       local output_path
 
-      global_only=$opt_type_global
+      type_saved=$type
       output_path=$1
 
       if [ $# -gt 1 ]; then
@@ -167,25 +162,25 @@ _zsh_abbr() {
       fi
 
       if [[ $scope != 'user' ]]; then
-        if ! $opt_type_regular; then
-          opt_type_global=true
+        if [[ $type_saved != 'regular' ]]; then
+          type='global'
           util_alias ZSH_ABBR_SESSION_GLOBALS $output_path
         fi
 
-        if ! $global_only; then
-          opt_type_global=false
+        if [[ $type_saved != 'global' ]]; then
+          type='regular'
           util_alias ZSH_ABBR_SESSION_COMMANDS $output_path
         fi
       fi
 
       if [[ $scope != 'session' ]]; then
-        if ! $opt_type_regular; then
-          opt_type_global=true
+        if [[ $type_saved != 'regular' ]]; then
+          type='global'
           util_alias ZSH_ABBR_USER_GLOBALS $output_path
         fi
 
-        if ! $global_only; then
-          opt_type_global=false
+        if [[ $type_saved != 'global' ]]; then
+          type='regular'
           util_alias ZSH_ABBR_USER_COMMANDS $output_path
         fi
       fi
@@ -205,7 +200,7 @@ _zsh_abbr() {
         add $_alias
       done < <(alias -r)
 
-      opt_type_global=true
+      type='global'
 
       while read -r _alias; do
         add $_alias
@@ -337,13 +332,13 @@ _zsh_abbr() {
       _zsh_abbr_job_push $job $job_group
 
       if [[ $scope == 'session' ]]; then
-        if $opt_type_global; then
+        if [[ $type == 'global' ]]; then
           expansion=${ZSH_ABBR_SESSION_GLOBALS[$current_abbreviation]}
         else
           expansion=${ZSH_ABBR_SESSION_COMMANDS[$current_abbreviation]}
         fi
       else
-        if $opt_type_global; then
+        if [[ $type == 'global' ]]; then
           expansion=${ZSH_ABBR_USER_GLOBALS[$current_abbreviation]}
         else
           expansion=${ZSH_ABBR_USER_COMMANDS[$current_abbreviation]}
@@ -393,7 +388,7 @@ _zsh_abbr() {
       fi
 
       if [[ $scope == 'session' ]]; then
-        if $opt_type_global; then
+        if [[ $type == 'global' ]]; then
           if ! (( ${+ZSH_ABBR_SESSION_GLOBALS[$abbreviation]} )); then
             if $opt_dry_run; then
               echo "abbr -S -g $abbreviation=${(Q)expansion}"
@@ -411,7 +406,7 @@ _zsh_abbr() {
           success=true
         fi
       else
-        if $opt_type_global; then
+        if [[ $type == 'global' ]]; then
           source "${TMPDIR:-/tmp/}zsh-user-global-abbreviations"
 
           if ! (( ${+ZSH_ABBR_USER_GLOBALS[$abbreviation]} )); then
@@ -454,7 +449,7 @@ _zsh_abbr() {
 
       for abbreviation expansion in ${(kv)${(P)abbreviations_set}}; do
         alias_definition="alias "
-        if [[ $opt_type_global == true ]]; then
+        if [[ $type == 'global' ]]; then
           alias_definition+="-g "
         fi
         alias_definition+="$abbreviation='$expansion'"
@@ -496,13 +491,13 @@ _zsh_abbr() {
       fi
 
       if [[ $scope != 'session' ]]; then
-        if ! $opt_type_regular; then
+        if [[ $type != 'regular' ]]; then
           for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
             util_list_item "$abbreviation" "$expansion" "abbr -g"
           done
         fi
 
-        if ! $opt_type_global; then
+        if [[ $type != 'global' ]]; then
           for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
             util_list_item "$abbreviation" "$expansion" "abbr"
           done
@@ -510,13 +505,13 @@ _zsh_abbr() {
       fi
 
       if [[ $scope != 'user' ]]; then
-        if ! $opt_type_regular; then
+        if [[ $type != 'regular' ]]; then
           for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_GLOBALS}; do
             util_list_item "$abbreviation" "$expansion" "abbr -S -g"
           done
         fi
 
-        if ! $opt_type_global; then
+        if [[ $type != 'global' ]]; then
           for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_COMMANDS}; do
             util_list_item "$abbreviation" "$expansion" "abbr -S"
           done
@@ -584,19 +579,6 @@ _zsh_abbr() {
       _zsh_abbr_job_pop $job $job_group
     }
 
-    function util_type() {
-      # cannot support debug message
-
-      local type
-      type="user"
-
-      if [[ $scope == 'session' ]]; then
-        type="session"
-      fi
-
-      echo $type
-    }
-
     function util_usage() {
       [[ $ZSH_ABBR_DEBUG ]] && echo "util_usage"
 
@@ -624,6 +606,18 @@ _zsh_abbr() {
       fi
 
       scope=$1
+      ((number_opts++))
+    }
+
+    function set_type() {
+      [[ $ZSH_ABBR_DEBUG ]] && echo "set_type"
+
+      if [ $type ]; then
+        util_bad_options
+        return
+      fi
+
+      type=$1
       ((number_opts++))
     }
 
@@ -659,10 +653,7 @@ _zsh_abbr() {
           ;;
         "--global"|\
         "-g")
-          [ "$type_set" = true ] && util_bad_options
-          type_set=true
-          opt_type_global=true
-          ((number_opts++))
+          set_type "global"
           ;;
         "--help"|\
         "-h")
@@ -690,10 +681,7 @@ _zsh_abbr() {
           ;;
         "--regular"|\
         "-r")
-          [ "$type_set" = true ] && util_bad_options
-          type_set=true
-          opt_type_regular=true
-          ((number_opts++))
+          set_type "regular"
           ;;
         "--rename"|\
         "-R")
@@ -751,13 +739,13 @@ _zsh_abbr() {
     unfunction -m "rename"
     unfunction -m "set_action"
     unfunction -m "set_scope"
+    unfunction -m "set_type"
     unfunction -m "util_add"
     unfunction -m "util_alias"
     unfunction -m "util_error"
     unfunction -m "util_list"
     unfunction -m "util_list_item"
     unfunction -m "util_sync_user"
-    unfunction -m "util_type"
     unfunction -m "util_usage"
   }
 }
