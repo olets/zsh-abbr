@@ -309,7 +309,7 @@ _zsh_abbr() {
       util_list 2
     }
 
-    function list_definitions() {
+    function list_abbreviations() {
       [[ $ZSH_ABBR_DEBUG ]] && echo "list_abbreviations"
 
       if [ $# -gt 0 ]; then
@@ -791,7 +791,7 @@ _zsh_abbr() {
        add "$@"
     # default if no argument is provided
     else
-      list_definitions "$@"
+      list_abbreviations "$@"
     fi
   } always {
     unfunction -m "add"
@@ -805,7 +805,7 @@ _zsh_abbr() {
     unfunction -m "import_git_aliases"
     unfunction -m "list"
     unfunction -m "list_commands"
-    unfunction -m "list_definitions"
+    unfunction -m "list_abbreviations"
     unfunction -m "print_version"
     unfunction -m "rename"
     unfunction -m "util_add"
