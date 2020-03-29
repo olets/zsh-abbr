@@ -1013,7 +1013,7 @@ _zsh_abbr_job_push() {
       next_job_path=$job_dir/$next_job
 
       echo "abbr: An job added at"
-      echo "  $(strftime '%A, %d %b %Y' ${next_job%.*})"
+      echo "  $(strftime '%T %b %d %Y' ${next_job%.*})"
       echo "has timed out. The job was related to"
       echo "  $(cat $next_job_path)"
       echo "Please report this at https://github.com/olets/zsh-abbr/issues/new"
