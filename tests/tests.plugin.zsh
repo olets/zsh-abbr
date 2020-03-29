@@ -1,4 +1,5 @@
-ZSH_ABBR_USER_PATH=$(mktemp ${0:A:h}/abbreviations.XXXXXX)
+ZSH_ABBR_USER_PATH=${0:A:h}/abbreviations.$RANDOM
+touch $ZSH_ABBR_USER_PATH
 source ${0:A:h}/../zsh-abbr.zsh
 
 test_abbr_abbreviation="zsh_abbr_test"
