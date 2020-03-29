@@ -36,7 +36,7 @@ _zsh_abbr() {
       local abbreviation
       local expansion
 
-      if [[ $# -gt 1 ]]; then
+      if [[ $# > 1 ]]; then
         util_error " add: Expected one argument, got $*"
         return
       fi
@@ -55,7 +55,7 @@ _zsh_abbr() {
     function clear_session() {
       [[ $ZSH_ABBR_DEBUG ]] && echo "clear_session"
 
-      if [ $# -gt 0 ]; then
+      if [[ $# > 0 ]]; then
         util_error " clear-session: Unexpected argument"
         return
       fi
@@ -72,10 +72,10 @@ _zsh_abbr() {
       local job_group
       local success
 
-      if [ $# -gt 1 ]; then
+      if [[ $# > 1 ]]; then
         util_error " erase: Expected one argument"
         return
-      elif [ $# -lt 1 ]; then
+      elif [[ $# < 1 ]]; then
         util_error " erase: Erase needs a variable name"
         return
       fi
@@ -133,8 +133,8 @@ _zsh_abbr() {
 
       abbreviation=$1
 
-      if [ $# -ne 1 ]; then
-        printf "expand requires exactly one argument\\n"
+      if [[ $# != 1 ]]; then
+        echo "expand requires exactly one argument"
         return
       fi
 
@@ -156,7 +156,7 @@ _zsh_abbr() {
       type_saved=$type
       output_path=$1
 
-      if [ $# -gt 1 ]; then
+      if [[ $# > 1 ]]; then
         util_error " export-aliases: Unexpected argument"
         return
       fi
@@ -191,7 +191,7 @@ _zsh_abbr() {
 
       local _alias
 
-      if [ $# -gt 0 ]; then
+      if [[ $# > 0 ]]; then
         util_error " import-aliases: Unexpected argument"
         return
       fi
@@ -218,8 +218,8 @@ _zsh_abbr() {
       local expansion
       local input_file
 
-      if [ $# -ne 1 ]; then
-        printf "expand requires exactly one argument\\n"
+      if [[ $# != 1 ]]; then
+        echo "expand requires exactly one argument"
         return
       fi
 
@@ -244,7 +244,7 @@ _zsh_abbr() {
       local git_aliases
       local abbr_git_aliases
 
-      if [ $# -gt 0 ]; then
+      if [[ $# > 0 ]]; then
         util_error " import-git-aliases: Unexpected argument"
         return
       fi
@@ -267,7 +267,7 @@ _zsh_abbr() {
     function list() {
       [[ $ZSH_ABBR_DEBUG ]] && echo "list"
 
-      if [ $# -gt 0 ]; then
+      if [[ $# > 0 ]]; then
         util_error " list: Unexpected argument"
         return
       fi
@@ -278,7 +278,7 @@ _zsh_abbr() {
     function list_commands() {
       [[ $ZSH_ABBR_DEBUG ]] && echo "list_commands"
 
-      if [ $# -gt 0 ]; then
+      if [[ $# > 0 ]]; then
         util_error " list commands: Unexpected argument"
         return
       fi
@@ -289,7 +289,7 @@ _zsh_abbr() {
     function list_abbreviations() {
       [[ $ZSH_ABBR_DEBUG ]] && echo "list_abbreviations"
 
-      if [ $# -gt 0 ]; then
+      if [[ $# > 0 ]]; then
         util_error " list definitions: Unexpected argument"
         return
       fi
@@ -300,12 +300,12 @@ _zsh_abbr() {
     function print_version() {
       [[ $ZSH_ABBR_DEBUG ]] && echo "print_version"
 
-      if [ $# -gt 0 ]; then
+      if [[ $# > 0 ]]; then
         util_error " version: Unexpected argument"
         return
       fi
 
-      printf "%s\\n" "$version"
+      echo $version
     }
 
     function rename() {
@@ -318,7 +318,7 @@ _zsh_abbr() {
       local new
       local old
 
-      if [ $# -ne 2 ]; then
+      if [[ $# != 2 ]]; then
         util_error " rename: Requires exactly two arguments"
         return
       fi
@@ -471,7 +471,8 @@ _zsh_abbr() {
     function util_error() {
       [[ $ZSH_ABBR_DEBUG ]] && echo "util_error"
 
-      printf "abbr%s\\nFor help run abbr --help\\n" "$@"
+      echo "abbr$@"
+      echo "For help run abbr --help"
       should_exit=true
     }
 
