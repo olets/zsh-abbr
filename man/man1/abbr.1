@@ -13,15 +13,15 @@ zsh\-abbr \- manage zsh abbreviations
 
 \fBabbr\fR (\fB\-\-export\-aliases\fR | \fB\-o\fR) <\fIscope\fI> [<\fIdestination\fR>]
 
-\fBabbr \-\-import\-git\-aliases\fR [\fIscope\fR]
-
 \fBabbr \-\-import\-aliases\fR [\fIscope\fR]
+
+\fBabbr \-\-import\-fish\fR <\fIfile\fR>
+
+\fBabbr \-\-import\-git\-aliases\fR [\fIscope\fR]
 
 \fBabbr \-\-list\-abbreviations\fR | \fB\-l\fR
 
 \fBabbr\fR (\fB\-\-list\-commands\fR | \fB\-L\fR | \fB\-s\fR)
-
-\fBabbr \-\-list\-definitions\fR
 
 \fBabbr\fR (\fB\-\-rename\fR | \fB\-R\fR) [\fIscope\fR] <\fIold_abbreviation\fR> <\fInew_abbreviation\fR>
 
@@ -65,14 +65,19 @@ Returns the \fIexpansion\fR of the abbreviation \fIabbreviation\fR.
 Exports a list of alias command for user abbreviations, suitable for pasting or piping to whereever you keep aliases. If a <\fIdestination\fR> is provided, the commands will be appended to it.
 
 .IP \(bu
-\fB\-\-import\-git\-aliases\fR
-
-Adds abbreviations for all git aliases. Abbreviations are prefixed with "g", expansions are prefixed with "git ".
-
-.IP \(bu
 \fB\-\-import\-aliases\fR
 
 Adds abbreviations for all aliases.
+
+.IP \(bu
+\fB\-\-import\-fish\fR <\fIfile\fR>
+
+Adds abbreviations exported from fish.
+
+.IP \(bu
+\fB\-\-import\-git\-aliases\fR
+
+Adds abbreviations for all git aliases. Abbreviations are prefixed with "g", expansions are prefixed with "git ".
 
 .IP \(bu
 \fB\-\-list\-abbreviations\fR or \fB\-l\fR
@@ -83,11 +88,6 @@ Lists all abbreviations.
 \fB\-\-list\-commands\fR or \fB\-L\fR (or \fB\-s\fR as in fish)
 
 Lists all abbreviations as commands suitable for export and import.
-
-.IP \(bu
-\fB\-\-list\-definitions\fR
-
-Lists all abbreviations and their expansions.
 
 .IP \(bu
 \fB\-\-rename\fR \fIold_abbreviation\fR \fInew_abbreviation\fR or \fB\-R\fR \fIold_abbreviation\fR \fInew_abbreviation\fR
