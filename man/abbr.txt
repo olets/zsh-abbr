@@ -115,7 +115,7 @@ Options
               Show the current version.
 
 
-       Some options (see SYNOPSIS) can take a scope:
+       All options except for --clear-session and --expand can take a scope:
 
               o      --session or -S
 
@@ -128,19 +128,21 @@ Options
                      sions.
 
 
-       and/or a position
+       All except for --clear-session, --expand, and --import-aliases can take
+       a type:
 
 
               o      --global or -g
 
-                     Abbreviation will expand anywhere on a line, rather  than
+                     Abbreviation  will expand anywhere on a line, rather than
                      only in command (first word) position.
 
 
-       and/or be trialed
+       All except for  --clear-session,  --expand,  --export-aliases,  --list-
+       abbreviations, and --list-commands can be tried without making changes:
 
 
-              o      --dry-run  Show whats the result of the command would be.
+              o      --dry-run Show whats the result of the command would  be.
 
 
        See INTERNALS for more information.
@@ -149,7 +151,7 @@ Options
 EXAMPLES
        abbr gco="git checkout"
 
-              "gco" will be expanded as "git checkout" when it  is  the  first
+              "gco"  will  be  expanded as "git checkout" when it is the first
               word in the command, in all open and future sessions.
 
 
@@ -167,9 +169,9 @@ EXAMPLES
 
        abbr -e -S -g gco;
 
-              Erase  the  global session abbreviation "gco". Note that because
+              Erase the global session abbreviation "gco". Note  that  because
               expansion is triggered by [SPACE] and [ENTER], the semicolon (;)
-              is  necessary  to  prevent  expansion  when  operating on global
+              is necessary to  prevent  expansion  when  operating  on  global
               abbreviations.
 
 
@@ -189,7 +191,7 @@ EXAMPLES
 
 
 HISTORY
-       Inspired by fBfish shell's abbr.
+       Inspired by fish shell's abbr.
 
 
 AUTHORS
@@ -197,4 +199,4 @@ AUTHORS
 
 
 
-abbr 3.1.2                       March 22 2020                      ZSH-ABBR(1)
+abbr 3.1.2                       March 22 2020                     ZSH-ABBR(1)

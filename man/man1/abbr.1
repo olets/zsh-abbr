@@ -100,7 +100,7 @@ Renames an abbreviation, from \fIold_abbreviation\fR to \fInew_abbreviation\fR.
 Show the current version.
 
 .PP
-Some options (see \fBSYNOPSIS\fR) can take a \fIscope\fR:
+All options except for \fB\-\-clear-session\fR and \fB\-\-expand\fR can take a \fBscope\fR:
 .RS
 .IP \(bu
 \fB\-\-session\fR
@@ -116,7 +116,7 @@ Abbreviations available to all current and future sessions.
 
 .RE
 
-and/or a position
+All except for \fB\-\-clear-session\fR, \fB\-\-expand\fR, and \fB\-\-import-aliases can take a \fBtype\fR:
 .RS
 
 .IP \(bu
@@ -126,7 +126,7 @@ Abbreviation will expand anywhere on a line, rather than only in command (first 
 
 .RE
 
-and/or be trialed
+All except for \fB\-\-clear-session\fR, \fB\-\-expand\fR, \fB\-\-export-aliases\fR, \fB\-\-list-abbreviations\fR, and \fB\-\-list-commands\fR can be tried without making changes:
 .RS
 
 .IP \(bu

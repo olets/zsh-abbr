@@ -161,19 +161,18 @@ Default is regular.
 ### Options
 
 ```shell
-[(--add | -a )] [(--global | -g)] [--dry-run] arg
+[(--add | -a )] [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] arg
   | (--clear-session | -c)
-  | (--erase | -e ) [(--global | -g)] arg
+  | (--erase | -e ) [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] arg
   | (--expand | -x) arg
-  | --export-aliases arg
+  | --export-aliases [(--session | -S) | (--user | -U)] [(--global | -g)] arg
   | (--help | -h)
   | --import-aliases [(--global | -g)] [--dry-run]
-  | --import-fish [(--global | -g)] [--dry-run] arg
-  | --import-git-aliases [--dry-run]
+  | --import-fish [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] arg
+  | --import-git-aliases [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run]
   | (--list-abbreviations | -l) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
   | (--list-commands | -L | -s) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
-  | [--list-definitions] [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
-  | (--rename | -R ) [(--global | -g)] [--dry-run] args
+  | (--rename | -R ) [(--session | -S) | (--user | -U)] [(--global | -g)] [(--global | -g)] [--dry-run] args
 ]
 ```
 
