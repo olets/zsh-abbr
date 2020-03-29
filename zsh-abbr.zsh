@@ -140,7 +140,7 @@ _zsh_abbr() {
 
       expansion=$(_zsh_abbr_cmd_expansion "$abbreviation")
 
-      if [[ ! -n "$expansion" ]]; then
+      if [ ! "$expansion" ]; then
         expansion=$(_zsh_abbr_global_expansion "$abbreviation")
       fi
 
@@ -454,7 +454,7 @@ _zsh_abbr() {
         fi
         alias_definition+="$abbreviation='$expansion'"
 
-        if [[ -n $output_path ]]; then
+        if [ $output_path ]; then
           echo "$alias_definition" >> "$output_path"
         else
           print "$alias_definition"
@@ -759,7 +759,7 @@ _zsh_abbr_cmd_expansion() {
   abbreviation="$1"
   expansion="${ZSH_ABBR_SESSION_COMMANDS[$abbreviation]}"
 
-  if [[ ! -n "$expansion" ]]; then
+  if [ ! "$expansion" ]; then
     source "${TMPDIR:-/tmp/}zsh-user-abbreviations"
     expansion="${ZSH_ABBR_USER_COMMANDS[$abbreviation]}"
   fi
@@ -794,7 +794,7 @@ _zsh_abbr_global_expansion() {
   abbreviation="$1"
   expansion="${ZSH_ABBR_SESSION_GLOBALS[$abbreviation]}"
 
-  if [[ ! -n "$expansion" ]]; then
+  if [ ! "$expansion" ]; then
     source "${TMPDIR:-/tmp/}zsh-user-global-abbreviations"
     expansion="${ZSH_ABBR_USER_GLOBALS[$abbreviation]}"
   fi
@@ -1004,7 +1004,7 @@ _zsh_abbr_expand_widget() {
     expansion=$(_zsh_abbr_cmd_expansion "$word")
   fi
 
-  if ! [[ -n "$expansion" ]]; then
+  if [ ! "$expansion" ]; then
     expansion=$(_zsh_abbr_global_expansion "$word")
   fi
 

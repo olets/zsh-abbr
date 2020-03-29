@@ -25,5 +25,5 @@ More idiomatic zsh
 
 - [ ] don't use quotation marks when not needed
 - [x] rework variable values to support using (( ${+var} )) instead of [[ -n "$var" ]]
-- [ ] no `if [[ $var == true ]]` where just  `if $var` would work
-- [ ] any other places to tighten up boolean checks
+- [x] no `if [[ $var == true ]]` where just  `if $var` would work
+- [x] any other places to tighten up boolean checks
