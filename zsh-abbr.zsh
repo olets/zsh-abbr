@@ -868,7 +868,7 @@ _zsh_abbr_init() {
           setopt shwordsplit
         fi
       else
-        mkdir -p $(dirname $ZSH_ABBR_USER_PATH)
+        mkdir -p ${ZSH_ABBR_USER_PATH:A:h}
         touch $ZSH_ABBR_USER_PATH
       fi
 
