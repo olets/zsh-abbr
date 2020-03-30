@@ -910,7 +910,7 @@ _zsh_abbr_job_push() {
     job_group=${(q)2}
     timeout_age=30 # seconds
 
-    job_dir=${TMPDIR:-/tmp/}zsh-abbr-jobs/${job_group}
+    job_dir=${TMPDIR:-/tmp/}zsh-abbr-jobs/$job_group
     job_path=$job_dir/$job
 
     function add_job() {
