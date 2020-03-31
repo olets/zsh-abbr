@@ -802,7 +802,7 @@ _zsh_abbr_init() {
     local session_shwordsplit_on
 
     job=$(_zsh_abbr_job_name)
-    session_shwordsplit_on=false
+    shwordsplit_on=0
 
     typeset -gA ZSH_ABBR_USER_COMMANDS
     typeset -gA ZSH_ABBR_SESSION_COMMANDS
@@ -817,7 +817,7 @@ _zsh_abbr_init() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_init:configure"
 
       if [[ $options[shwordsplit] = on ]]; then
-        session_shwordsplit_on=true
+        shwordsplit_on=1
       fi
 
       # Scratch files
@@ -839,9 +839,10 @@ _zsh_abbr_init() {
 
         source $ZSH_ABBR_USER_PATH
 
-        if $session_shwordsplit_on; then
+        if (( shwordsplit_on )); then
           setopt shwordsplit
         fi
+        unset shwordsplit_on
       else
         mkdir -p ${ZSH_ABBR_USER_PATH:A:h}
         touch $ZSH_ABBR_USER_PATH
