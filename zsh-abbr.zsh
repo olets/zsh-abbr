@@ -30,14 +30,14 @@ _zsh_abbr() {
     text_reset="\\033[0m"
     version="zsh-abbr version 3.1.2"
 
-    function add() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "add"
+    function _zsh_abbr:add() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:add"
 
       local abbreviation
       local expansion
 
       if [[ $# > 1 ]]; then
-        util_error " add: Expected one argument, got $*"
+        _zsh_abbr:util_error " add: Expected one argument, got $*"
         return
       fi
 
@@ -45,18 +45,18 @@ _zsh_abbr() {
       expansion="${(q)1#*=}"
 
       if ! [[ $abbreviation && $expansion && $abbreviation != $1 ]]; then
-        util_error " add: Requires abbreviation and expansion"
+        _zsh_abbr:util_error " add: Requires abbreviation and expansion"
         return
       fi
 
-      util_add $abbreviation $expansion
+      _zsh_abbr:util_add $abbreviation $expansion
     }
 
-    function clear_session() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "clear_session"
+    function _zsh_abbr:clear_session() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:clear_session"
 
       if [[ $# > 0 ]]; then
-        util_error " clear-session: Unexpected argument"
+        _zsh_abbr:util_error " clear-session: Unexpected argument"
         return
       fi
 
@@ -64,8 +64,8 @@ _zsh_abbr() {
       ZSH_ABBR_SESSION_GLOBALS=()
     }
 
-    function erase() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "erase"
+    function _zsh_abbr:erase() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:erase"
 
       local abbreviation
       local job
@@ -73,10 +73,10 @@ _zsh_abbr() {
       local success
 
       if [[ $# > 1 ]]; then
-        util_error " erase: Expected one argument"
+        _zsh_abbr:util_error " erase: Expected one argument"
         return
       elif [[ $# < 1 ]]; then
-        util_error " erase: Erase needs a variable name"
+        _zsh_abbr:util_error " erase: Erase needs a variable name"
         return
       fi
 
@@ -85,8 +85,8 @@ _zsh_abbr() {
       success=0
 
       echo $RANDOM >/dev/null
-      job=$(_zsh_abbr_job_name)
-      _zsh_abbr_job_push $job $job_group
+      job=$(_zsh_abbr_job:name)
+      ! (( ZSH_ABBR_INITIALIZING )) && _zsh_abbr_job:push $job $job_group
 
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
@@ -119,7 +119,7 @@ _zsh_abbr() {
               unset ZSH_ABBR_USER_GLOBALS[${(b)abbreviation}]
             fi
 
-            util_sync_user
+            _zsh_abbr:util_sync_user
             success=1
           fi
         else
@@ -132,21 +132,21 @@ _zsh_abbr() {
               unset ZSH_ABBR_USER_COMMANDS[${(b)abbreviation}]
             fi
 
-            util_sync_user
+            _zsh_abbr:util_sync_user
             success=1
           fi
         fi
       fi
 
-      _zsh_abbr_job_pop $job $job_group
+      ! (( ZSH_ABBR_INITIALIZING )) && _zsh_abbr_job:pop $job $job_group
 
       if ! (( success )); then
-        util_error " erase: No ${type:-regular} ${scope:-user} abbreviation $abbreviation found"
+        _zsh_abbr:util_error " erase: No ${type:-regular} ${scope:-user} abbreviation $abbreviation found"
       fi
     }
 
-    function expand() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "expand"
+    function _zsh_abbr:expand() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:expand"
 
       local abbreviation
       local expansion
@@ -167,8 +167,8 @@ _zsh_abbr() {
       echo - "${(Q)expansion}"
     }
 
-    function export_aliases() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "export_aliases"
+    function _zsh_abbr:export_aliases() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:export_aliases"
 
       local type_saved
       local output_path
@@ -177,42 +177,42 @@ _zsh_abbr() {
       output_path=$1
 
       if [[ $# > 1 ]]; then
-        util_error " export-aliases: Unexpected argument"
+        _zsh_abbr:util_error " export-aliases: Unexpected argument"
         return
       fi
 
       if [[ $scope != 'user' ]]; then
         if [[ $type_saved != 'regular' ]]; then
           type='global'
-          util_alias ZSH_ABBR_SESSION_GLOBALS $output_path
+          _zsh_abbr:util_alias ZSH_ABBR_SESSION_GLOBALS $output_path
         fi
 
         if [[ $type_saved != 'global' ]]; then
           type='regular'
-          util_alias ZSH_ABBR_SESSION_COMMANDS $output_path
+          _zsh_abbr:util_alias ZSH_ABBR_SESSION_COMMANDS $output_path
         fi
       fi
 
       if [[ $scope != 'session' ]]; then
         if [[ $type_saved != 'regular' ]]; then
           type='global'
-          util_alias ZSH_ABBR_USER_GLOBALS $output_path
+          _zsh_abbr:util_alias ZSH_ABBR_USER_GLOBALS $output_path
         fi
 
         if [[ $type_saved != 'global' ]]; then
           type='regular'
-          util_alias ZSH_ABBR_USER_COMMANDS $output_path
+          _zsh_abbr:util_alias ZSH_ABBR_USER_COMMANDS $output_path
         fi
       fi
     }
 
-    function import_aliases() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "import_aliases"
+    function _zsh_abbr:import_aliases() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:import_aliases"
 
       local _alias
 
       if [[ $# > 0 ]]; then
-        util_error " import-aliases: Unexpected argument"
+        _zsh_abbr:util_error " import-aliases: Unexpected argument"
         return
       fi
 
@@ -231,8 +231,8 @@ _zsh_abbr() {
       fi
     }
 
-    function import_fish() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "import_fish"
+    function _zsh_abbr:import_fish() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:import_fish"
 
       local abbreviation
       local expansion
@@ -250,7 +250,7 @@ _zsh_abbr() {
         abbreviation=${def%% *}
         expansion=${def#* }
 
-        util_add $abbreviation $expansion
+        _zsh_abbr:util_add $abbreviation $expansion
       done < $input_file
 
       if ! (( dry_run )); then
@@ -258,14 +258,14 @@ _zsh_abbr() {
       fi
     }
 
-    function import_git_aliases() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "import_git_aliases"
+    function _zsh_abbr:import_git_aliases() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:import_git_aliases"
 
       local git_aliases
       local abbr_git_aliases
 
       if [[ $# > 0 ]]; then
-        util_error " import-git-aliases: Unexpected argument"
+        _zsh_abbr:util_error " import-git-aliases: Unexpected argument"
         return
       fi
 
@@ -276,7 +276,7 @@ _zsh_abbr() {
         key=${$(echo - $git_alias | awk '{print $1;}')##alias.}
         value=${$(echo - $git_alias)##alias.$key }
 
-        util_add "g$key" "git ${value# }"
+        _zsh_abbr:util_add "g$key" "git ${value# }"
       done
 
       if ! (( dry_run )); then
@@ -284,52 +284,52 @@ _zsh_abbr() {
       fi
     }
 
-    function list() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "list"
+    function _zsh_abbr:list() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:list"
 
       if [[ $# > 0 ]]; then
-        util_error " list: Unexpected argument"
+        _zsh_abbr:util_error " list: Unexpected argument"
         return
       fi
 
-      util_list 0
+      _zsh_abbr:util_list 0
     }
 
-    function list_commands() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "list_commands"
+    function _zsh_abbr:list_commands() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:list_commands"
 
       if [[ $# > 0 ]]; then
-        util_error " list commands: Unexpected argument"
+        _zsh_abbr:util_error " list commands: Unexpected argument"
         return
       fi
 
-      util_list 2
+      _zsh_abbr:util_list 2
     }
 
-    function list_abbreviations() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "list_abbreviations"
+    function _zsh_abbr:list_abbreviations() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:list_abbreviations"
 
       if [[ $# > 0 ]]; then
-        util_error " list definitions: Unexpected argument"
+        _zsh_abbr:util_error " list definitions: Unexpected argument"
         return
       fi
 
-      util_list 1
+      _zsh_abbr:util_list 1
     }
 
-    function print_version() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "print_version"
+    function _zsh_abbr:print_version() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:print_version"
 
       if [[ $# > 0 ]]; then
-        util_error " version: Unexpected argument"
+        _zsh_abbr:util_error " version: Unexpected argument"
         return
       fi
 
       echo $version
     }
 
-    function rename() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "rename"
+    function _zsh_abbr:rename() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:rename"
 
       local err
       local expansion
@@ -339,17 +339,17 @@ _zsh_abbr() {
       local old
 
       if [[ $# != 2 ]]; then
-        util_error " rename: Requires exactly two arguments"
+        _zsh_abbr:util_error " rename: Requires exactly two arguments"
         return
       fi
 
       current_abbreviation=$1
       new_abbreviation=$2
-      job_group='rename'
+      job_group='_zsh_abbr:rename'
 
       echo $RANDOM >/dev/null
-      job=$(_zsh_abbr_job_name)
-      _zsh_abbr_job_push $job $job_group
+      job=$(_zsh_abbr_job:name)
+      ! (( ZSH_ABBR_INITIALIZING )) && _zsh_abbr_job:push $job $job_group
 
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
@@ -366,17 +366,17 @@ _zsh_abbr() {
       fi
 
       if [ $expansion ]; then
-        util_add $new_abbreviation $expansion
-        erase $current_abbreviation
+        _zsh_abbr:util_add $new_abbreviation $expansion
+        _zsh_abbr:erase $current_abbreviation
       else
-        util_error " rename: No ${type:-regular} ${scope:-user} abbreviation $current_abbreviation exists"
+        _zsh_abbr:util_error " rename: No ${type:-regular} ${scope:-user} abbreviation $current_abbreviation exists"
       fi
 
-      _zsh_abbr_job_pop $job $job_group
+      ! (( ZSH_ABBR_INITIALIZING )) && _zsh_abbr_job:pop $job $job_group
     }
 
-    function util_add() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "util_add"
+    function _zsh_abbr:util_add() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_add"
 
       local abbreviation
       local expansion
@@ -386,20 +386,20 @@ _zsh_abbr() {
 
       abbreviation=$1
       expansion=$2
-      job_group='util_add'
+      job_group='_zsh_abbr:util_add'
       success=0
 
       echo $RANDOM >/dev/null
-      job=$(_zsh_abbr_job_name)
-      _zsh_abbr_job_push $job $job_group
+      job=$(_zsh_abbr_job:name)
+      ! (( ZSH_ABBR_INITIALIZING )) && _zsh_abbr_job:push $job $job_group
 
       if [[ ${(w)#abbreviation} > 1 ]]; then
-        util_error " add: ABBREVIATION ('$abbreviation') must be only one word"
+        _zsh_abbr:util_error " add: ABBREVIATION ('$abbreviation') must be only one word"
         return
       fi
 
       if [[ ${abbreviation%=*} != $abbreviation ]]; then
-        util_error " add: ABBREVIATION ('$abbreviation') may not contain an equals sign"
+        _zsh_abbr:util_error " add: ABBREVIATION ('$abbreviation') may not contain an equals sign"
       fi
 
       if [[ $scope == 'session' ]]; then
@@ -429,7 +429,7 @@ _zsh_abbr() {
               echo "abbr -g $abbreviation=${(Q)expansion}"
             else
               ZSH_ABBR_USER_GLOBALS[$abbreviation]=$expansion
-              util_sync_user
+              _zsh_abbr:util_sync_user
             fi
             success=1
           fi
@@ -441,21 +441,23 @@ _zsh_abbr() {
               echo "abbr ${(Q)abbreviation}=${(Q)expansion}"
             else
               ZSH_ABBR_USER_COMMANDS[$abbreviation]=$expansion
-              util_sync_user
+              _zsh_abbr:util_sync_user
             fi
             success=1
           fi
         fi
       fi
 
-      _zsh_abbr_job_pop $job $job_group
+      ! (( ZSH_ABBR_INITIALIZING )) && _zsh_abbr_job:pop $job $job_group
 
       if ! (( success )); then
-        util_error " add: A ${type:-regular} ${scope:-user} abbreviation $abbreviation already exists"
+        _zsh_abbr:util_error " add: A ${type:-regular} ${scope:-user} abbreviation $abbreviation already exists"
       fi
     }
 
-    util_alias() {
+    _zsh_abbr:util_alias() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_alias"
+
       local abbreviations_set
       local output_path
 
@@ -477,22 +479,22 @@ _zsh_abbr() {
       done
     }
 
-    function util_bad_options() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "util_bad_options"
+    function _zsh_abbr:util_bad_options() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_bad_options"
 
-      util_error ": Illegal combination of options"
+      _zsh_abbr:util_error ": Illegal combination of options"
     }
 
-    function util_error() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "util_error"
+    function _zsh_abbr:util_error() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_error"
 
       echo "abbr$@"
       echo "For help run abbr --help"
       should_exit=1
     }
 
-    function util_list() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "util_list"
+    function _zsh_abbr:util_list() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_list"
 
       local result
       local include_expansion
@@ -509,13 +511,13 @@ _zsh_abbr() {
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
           for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
-            util_list_item $abbreviation $expansion "abbr -g"
+            _zsh_abbr:util_list_item $abbreviation $expansion "abbr -g"
           done
         fi
 
         if [[ $type != 'global' ]]; then
           for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
-            util_list_item $abbreviation $expansion "abbr"
+            _zsh_abbr:util_list_item $abbreviation $expansion "abbr"
           done
         fi
       fi
@@ -523,20 +525,20 @@ _zsh_abbr() {
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
           for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_GLOBALS}; do
-            util_list_item $abbreviation $expansion "abbr -S -g"
+            _zsh_abbr:util_list_item $abbreviation $expansion "abbr -S -g"
           done
         fi
 
         if [[ $type != 'global' ]]; then
           for abbreviation expansion in ${(kv)ZSH_ABBR_SESSION_COMMANDS}; do
-            util_list_item $abbreviation $expansion "abbr -S"
+            _zsh_abbr:util_list_item $abbreviation $expansion "abbr -S"
           done
         fi
       fi
     }
 
-    function util_list_item() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "util_list_item"
+    function _zsh_abbr:util_list_item() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_list_item"
 
       local abbreviation
       local cmd
@@ -558,16 +560,17 @@ _zsh_abbr() {
       echo $result
     }
 
-    function util_set_once() {
+    function _zsh_abbr:util_set_once() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_set_once"
       local option value
 
       option=$1
       value=$2
 
-      [[ $ZSH_ABBR_DEBUG ]] && echo "util_set_once $option $value"
+      (( ZSH_ABBR_DEBUG )) && echo "util_set_once $option $value"
 
       if [ ${(P)option} ]; then
-        util_bad_options
+        _zsh_abbr:util_bad_options
         return
       fi
 
@@ -575,22 +578,26 @@ _zsh_abbr() {
       ((number_opts++))
     }
 
-    function util_sync_user() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "util_sync_user"
+    function _zsh_abbr:util_sync_user() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_sync_user"
 
       local job
       local job_group
       local user_updated
 
+<<<<<<< HEAD
       if [[ -n $(ls ${TMPDIR:-/tmp/}zsh-abbr-jobs/current 2>/dev/null | grep 'init*') ]]; then
         return
       fi
+=======
+      (( ZSH_ABBR_INITIALIZING )) && return
+>>>>>>> refactor,feat(performance): syntax + design changes for init speed...
 
-      job_group='util_sync_user'
+      job_group='_zsh_abbr:util_sync_user'
 
       echo $RANDOM >/dev/null
-      job=$(_zsh_abbr_job_name)
-      _zsh_abbr_job_push $job $job_group
+      job=$(_zsh_abbr_job:name)
+      ! (( ZSH_ABBR_INITIALIZING )) && _zsh_abbr_job:push $job $job_group
 
       user_updated=${TMPDIR:-/tmp/}zsh-user-abbreviations_updated
       rm $user_updated 2> /dev/null
@@ -609,11 +616,11 @@ _zsh_abbr() {
 
       mv $user_updated $ZSH_ABBR_USER_PATH
 
-      _zsh_abbr_job_pop $job $job_group
+      ! (( ZSH_ABBR_INITIALIZING )) && _zsh_abbr_job:pop $job $job_group
     }
 
-    function util_usage() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "util_usage"
+    function _zsh_abbr:util_usage() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_usage"
 
       man abbr 2>/dev/null || cat ${ZSH_ABBR_SOURCE_PATH}/man/abbr.txt | less -F
     }
@@ -627,11 +634,11 @@ _zsh_abbr() {
       case "$opt" in
         "--add"|\
         "-a")
-          util_set_once "action" "add"
+          _zsh_abbr:util_set_once "action" "add"
           ;;
         "--clear-session"|\
         "-c")
-          util_set_once "action" "clear_session"
+          _zsh_abbr:util_set_once "action" "clear_session"
           ;;
         "--dry-run")
           dry_run=1
@@ -639,62 +646,62 @@ _zsh_abbr() {
           ;;
         "--erase"|\
         "-e")
-          util_set_once "action" "erase"
+          _zsh_abbr:util_set_once "action" "erase"
           ;;
         "--expand"|\
         "-x")
-          util_set_once "action" "expand"
+          _zsh_abbr:util_set_once "action" "expand"
           ;;
         "--export-aliases")
-          util_set_once "action" "export_aliases"
+          _zsh_abbr:util_set_once "action" "export_aliases"
           ;;
         "--global"|\
         "-g")
-          util_set_once "type" "global"
+          _zsh_abbr:util_set_once "type" "global"
           ;;
         "--help"|\
         "-h")
-          util_usage
+          _zsh_abbr:util_usage
           should_exit=1
           ;;
         "--import-aliases")
-          util_set_once "action" "import_aliases"
+          _zsh_abbr:util_set_once "action" "import_aliases"
           ;;
         "--import-fish")
-          util_set_once "action" "import_fish"
+          _zsh_abbr:util_set_once "action" "import_fish"
           ;;
         "--import-git-aliases")
-          util_set_once "action" "import_git_aliases"
+          _zsh_abbr:util_set_once "action" "import_git_aliases"
           ;;
         "--list-abbreviations"|\
         "-l")
-          util_set_once "action" "list_abbreviations"
+          _zsh_abbr:util_set_once "action" "list_abbreviations"
           ;;
         "--list-commands"|\
         "-L"|\
         "--show"|\
         "-s") # "show" is for backwards compatability with v2
-          util_set_once "action" "list_commands"
+          _zsh_abbr:util_set_once "action" "list_commands"
           ;;
         "--regular"|\
         "-r")
-          util_set_once "type" "regular"
+          _zsh_abbr:util_set_once "type" "regular"
           ;;
         "--rename"|\
         "-R")
-          util_set_once "action" "rename"
+          _zsh_abbr:util_set_once "action" "rename"
           ;;
         "--session"|\
         "-S")
-          util_set_once "scope" "session"
+          _zsh_abbr:util_set_once "scope" "session"
           ;;
         "--user"|\
         "-U")
-          util_set_once "scope" "user"
+          _zsh_abbr:util_set_once "scope" "user"
           ;;
         "--version"|\
         "-v")
-          util_set_once "action" "print_version"
+          _zsh_abbr:util_set_once "action" "print_version"
           ;;
         "--")
           ((number_opts++))
@@ -711,42 +718,42 @@ _zsh_abbr() {
     shift $number_opts
 
     if [ $action ]; then
-      $action $@
+      _zsh_abbr:$action $@
     elif [[ $# > 0 ]]; then
       # default if arguments are provided
-       add $@
+       _zsh_abbr:add $@
     else
       # default if no argument is provided
-      list_abbreviations $@
+      _zsh_abbr:list_abbreviations $@
     fi
   } always {
-    unfunction -m add
-    unfunction -m util_bad_options
-    unfunction -m clear_session
-    unfunction -m erase
-    unfunction -m expand
-    unfunction -m export_aliases
-    unfunction -m import_aliases
-    unfunction -m import_fish
-    unfunction -m import_git_aliases
-    unfunction -m list
-    unfunction -m list_commands
-    unfunction -m list_abbreviations
-    unfunction -m print_version
-    unfunction -m rename
-    unfunction -m util_add
-    unfunction -m util_alias
-    unfunction -m util_error
-    unfunction -m util_list
-    unfunction -m util_list_item
-    unfunction -m util_set_once
-    unfunction -m util_sync_user
-    unfunction -m util_usage
+    unfunction -m _zsh_abbr:add
+    unfunction -m _zsh_abbr:clear_session
+    unfunction -m _zsh_abbr:erase
+    unfunction -m _zsh_abbr:expand
+    unfunction -m _zsh_abbr:export_aliases
+    unfunction -m _zsh_abbr:import_aliases
+    unfunction -m _zsh_abbr:import_fish
+    unfunction -m _zsh_abbr:import_git_aliases
+    unfunction -m _zsh_abbr:list
+    unfunction -m _zsh_abbr:list_commands
+    unfunction -m _zsh_abbr:list_abbreviations
+    unfunction -m _zsh_abbr:print_version
+    unfunction -m _zsh_abbr:rename
+    unfunction -m _zsh_abbr:util_bad_options
+    unfunction -m _zsh_abbr:util_add
+    unfunction -m _zsh_abbr:util_alias
+    unfunction -m _zsh_abbr:util_error
+    unfunction -m _zsh_abbr:util_list
+    unfunction -m _zsh_abbr:util_list_item
+    unfunction -m _zsh_abbr:util_set_once
+    unfunction -m _zsh_abbr:util_sync_user
+    unfunction -m _zsh_abbr:util_usage
   }
 }
 
 _zsh_abbr_bind_widgets() {
-  [[ $ZSH_ABBR_DEBUG ]] && echo "bind_widgets"
+  (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_bind_widgets"
 
   # spacebar expands abbreviations
   zle -N _zsh_abbr_expand_and_space
@@ -796,6 +803,8 @@ _zsh_abbr_expand_and_accept() {
 }
 
 _zsh_abbr_expand_and_space() {
+  # do not support debug message
+
   zle _zsh_abbr_expand_widget
   zle self-insert
 }
@@ -819,7 +828,7 @@ _zsh_abbr_global_expansion() {
 
 _zsh_abbr_init() {
   {
-    [[ $ZSH_ABBR_DEBUG ]] && echo "init"
+    (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_init"
 
     local line
     local job
@@ -828,6 +837,8 @@ _zsh_abbr_init() {
 
     job_group='init'
     session_shwordsplit_on=false
+
+    ZSH_ABBR_INITIALIZING=1
 
     typeset -gA ZSH_ABBR_USER_COMMANDS
     typeset -gA ZSH_ABBR_SESSION_COMMANDS
@@ -838,8 +849,8 @@ _zsh_abbr_init() {
     ZSH_ABBR_USER_GLOBALS=()
     ZSH_ABBR_SESSION_GLOBALS=()
 
-    function configure() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "configure"
+    function _zsh_abbr:init:configure() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:init:configure"
 
       if [[ $options[shwordsplit] = on ]]; then
         session_shwordsplit_on=true
@@ -855,8 +866,8 @@ _zsh_abbr_init() {
       chmod 600 ${TMPDIR:-/tmp/}zsh-user-global-abbreviations
     }
 
-    function seed() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "seed"
+    function _zsh_abbr:init:seed() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:init:seed"
 
       # Load saved user abbreviations
       if [ -f $ZSH_ABBR_USER_PATH ]; then
@@ -878,24 +889,25 @@ _zsh_abbr_init() {
 
     # open job
     echo $RANDOM >/dev/null
-    job=$(_zsh_abbr_job_name)
-    _zsh_abbr_job_push $job $job_group
+    job=$(_zsh_abbr_job:name)
+    _zsh_abbr_job:push $job $job_group
 
     # init
-    configure
-    seed
+    _zsh_abbr:init:configure
+    _zsh_abbr:init:seed
 
     # close job
-    _zsh_abbr_job_pop $job $job_group
+    _zsh_abbr_job:pop $job $job_group
+    ZSH_ABBR_INITIALIZING=0
   } always {
-    unfunction -m configure
-    unfunction -m seed
+    unfunction -m _zsh_abbr:init:configure
+    unfunction -m _zsh_abbr:init:seed
   }
 }
 
-_zsh_abbr_job_push() {
+_zsh_abbr_job:push() {
   {
-    [[ $ZSH_ABBR_DEBUG ]] && echo "job_push"
+    (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_job:push"
 
     local next_job
     local next_job_age
@@ -913,8 +925,8 @@ _zsh_abbr_job_push() {
     job_dir=${TMPDIR:-/tmp/}zsh-abbr-jobs/$job_group
     job_path=$job_dir/$job
 
-    function add_job() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "add_job"
+    function _zsh_abbr_job:push:add_job() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:_zsh_abbr_job:push:add_job"
 
       if ! [ -d $job_dir ]; then
         mkdir -p $job_dir
@@ -927,14 +939,14 @@ _zsh_abbr_job_push() {
       echo $job_group > $job_path
     }
 
-    function get_next_job() {
+    function _zsh_abbr_job:push:get_next_job() {
       # cannout support debug message
 
       ls -t $job_dir | tail -1
     }
 
-    function handle_timeout() {
-      [[ $ZSH_ABBR_DEBUG ]] && echo "handle_timeout"
+    function _zsh_abbr_job:push:handle_timeout() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:_zsh_abbr_job:push:handle_timeout"
 
       next_job_path=$job_dir/$next_job
 
@@ -949,15 +961,13 @@ _zsh_abbr_job_push() {
       rm ${TMPDIR:-/tmp/}zsh-abbr-jobs/current/$job_group* &>/dev/null
     }
 
-    function wait_turn() {
-      while [[ $(get_next_job) != $job ]]; do
-        next_job=$(get_next_job)
-        echo "next_job $next_job"
-        echo "next_job_time ${next_job%.*}"
+    function _zsh_abbr_job:push:wait_turn() {
+      while [[ $(_zsh_abbr_job:push:get_next_job) != $job ]]; do
+        next_job=$(_zsh_abbr_job:push:get_next_job)
         next_job_age=$(( $(date +%s) - ${next_job%.*} ))
 
         if ((  $next_job_age > $timeout_age )); then
-          handle_timeout
+          _zsh_abbr_job:push:handle_timeout
         fi
 
         sleep 0.01
@@ -966,18 +976,18 @@ _zsh_abbr_job_push() {
       cp $job_path ${TMPDIR:-/tmp/}zsh-abbr-jobs/current/$job_group-$job
     }
 
-    add_job
-    wait_turn
+    _zsh_abbr_job:push:add_job
+    _zsh_abbr_job:push:wait_turn
   } always {
-    unfunction -m add_job
-    unfunction -m get_next_job
-    unfunction -m handle_timeout
-    unfunction -m wait_turn
+    unfunction -m _zsh_abbr_job:push:add_job
+    unfunction -m _zsh_abbr_job:push:get_next_job
+    unfunction -m _zsh_abbr_job:push:handle_timeout
+    unfunction -m _zsh_abbr_job:push:wait_turn
   }
 }
 
-_zsh_abbr_job_pop() {
-  [[ $ZSH_ABBR_DEBUG ]] && echo "job_pop"
+_zsh_abbr_job:pop() {
+  (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_job:pop"
 
   local current
   local currents
@@ -997,7 +1007,7 @@ _zsh_abbr_job_pop() {
   rm ${TMPDIR:-/tmp/}zsh-abbr-jobs/${job_group}/${job} &>/dev/null
 }
 
-_zsh_abbr_job_name() {
+_zsh_abbr_job:name() {
   # cannout support debug message
 
   echo "$(date +%s).$RANDOM"
@@ -1045,10 +1055,11 @@ abbr() {
 # INITIALIZATION
 # --------------
 
-_zsh_abbr_init
+ZSH_ABBR_DEBUG=0
 ZSH_ABBR_SOURCE_PATH=${0:A:h}
+
+_zsh_abbr_init
 
 if (( $ZSH_ABBR_DEFAULT_BINDINGS )) || [ $ZSH_ABBR_DEFAULT_BINDINGS = true ]; then
   _zsh_abbr_bind_widgets
 fi
-
