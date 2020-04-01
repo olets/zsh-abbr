@@ -84,18 +84,14 @@ _zsh_abbr() {
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
           if (( ${+ZSH_ABBR_SESSION_GLOBALS[$abbreviation]} )); then
-            if (( dry_run )); then
-              echo "Erase ${type:-regular} ${scope:-user} abbreviation $abbeviation"
-            else
+            if ! (( dry_run )); then
               unset ZSH_ABBR_SESSION_GLOBALS[${(b)abbreviation}]
             fi
 
             success=1
           fi
         elif (( ${+ZSH_ABBR_SESSION_COMMANDS[$abbreviation]} )); then
-          if (( dry_run )); then
-            echo "Erase ${type:-regular} ${scope:-user} abbreviation $abbeviation"
-          else
+          if ! (( dry_run )); then
             unset ZSH_ABBR_SESSION_COMMANDS[${(b)abbreviation}]
           fi
 
@@ -106,26 +102,22 @@ _zsh_abbr() {
           source "${TMPDIR:-/tmp/}zsh-abbr/user-global-abbreviations"
 
           if (( ${+ZSH_ABBR_USER_GLOBALS[$abbreviation]} )); then
-            if (( dry_run )); then
-              echo "Erase ${type:-regular} ${scope:-user} abbreviation $abbeviation"
-            else
+            if ! (( dry_run )); then
               unset ZSH_ABBR_USER_GLOBALS[${(b)abbreviation}]
+              _zsh_abbr:util_sync_user
             fi
 
-            _zsh_abbr:util_sync_user
             success=1
           fi
         else
           source "${TMPDIR:-/tmp/}zsh-abbr/user-regular-abbreviations"
 
           if (( ${+ZSH_ABBR_USER_COMMANDS[$abbreviation]} )); then
-            if (( dry_run )); then
-              echo "Erase ${type:-regular} ${scope:-user} abbreviation $abbeviation"
-            else
+            if ! (( dry_run )); then
               unset ZSH_ABBR_USER_COMMANDS[${(b)abbreviation}]
+              _zsh_abbr:util_sync_user
             fi
 
-            _zsh_abbr:util_sync_user
             success=1
           fi
         fi
@@ -133,6 +125,8 @@ _zsh_abbr() {
 
       if ! (( success )); then
         _zsh_abbr:util_error " erase: No ${type:-regular} ${scope:-user} abbreviation $abbreviation found"
+      elif (( dry_run )); then
+        echo "Erase ${type:-regular} ${scope:-user} abbreviation $abbreviation"
       fi
     }
 
