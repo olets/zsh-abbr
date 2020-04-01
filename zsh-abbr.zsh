@@ -124,9 +124,9 @@ _zsh_abbr() {
       fi
 
       if ! (( success )); then
-        _zsh_abbr:util_error " erase: No ${type:-regular} ${scope:-user} abbreviation $abbreviation found"
+        _zsh_abbr:util_error " erase: No ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` found"
       elif (( dry_run )); then
-        echo "Erase ${type:-regular} ${scope:-user} abbreviation $abbreviation"
+        echo "Erase ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
       fi
     }
 
@@ -365,12 +365,12 @@ _zsh_abbr() {
       success=0
 
       if [[ ${(w)#abbreviation} > 1 ]]; then
-        _zsh_abbr:util_error " add: ABBREVIATION ('$abbreviation') must be only one word"
+        _zsh_abbr:util_error " add: ABBREVIATION (\`$abbreviation\`) must be only one word"
         return
       fi
 
       if [[ ${abbreviation%=*} != $abbreviation ]]; then
-        _zsh_abbr:util_error " add: ABBREVIATION ('$abbreviation') may not contain an equals sign"
+        _zsh_abbr:util_error " add: ABBREVIATION (\`$abbreviation\`) may not contain an equals sign"
       fi
 
       if [[ $scope == 'session' ]]; then
@@ -420,7 +420,7 @@ _zsh_abbr() {
       fi
 
       if ! (( success )); then
-        _zsh_abbr:util_error " add: A ${type:-regular} ${scope:-user} abbreviation $abbreviation already exists"
+        _zsh_abbr:util_error " add: A ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` already exists"
       fi
     }
 
