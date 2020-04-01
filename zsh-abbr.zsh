@@ -85,14 +85,14 @@ _zsh_abbr() {
         if [[ $type == 'global' ]]; then
           if (( ${+ZSH_ABBR_SESSION_GLOBALS[$abbreviation]} )); then
             if ! (( dry_run )); then
-              unset ZSH_ABBR_SESSION_GLOBALS[${(b)abbreviation}]
+              unset "ZSH_ABBR_SESSION_GLOBALS[${(b)abbreviation}]" # quotation marks required
             fi
 
             success=1
           fi
         elif (( ${+ZSH_ABBR_SESSION_COMMANDS[$abbreviation]} )); then
           if ! (( dry_run )); then
-            unset ZSH_ABBR_SESSION_COMMANDS[${(b)abbreviation}]
+            unset "ZSH_ABBR_SESSION_COMMANDS[${(b)abbreviation}]" # quotation marks required
           fi
 
           success=1
@@ -103,7 +103,7 @@ _zsh_abbr() {
 
           if (( ${+ZSH_ABBR_USER_GLOBALS[$abbreviation]} )); then
             if ! (( dry_run )); then
-              unset ZSH_ABBR_USER_GLOBALS[${(b)abbreviation}]
+              unset "ZSH_ABBR_USER_GLOBALS[${(b)abbreviation}]" # quotation marks required
               _zsh_abbr:util_sync_user
             fi
 
@@ -114,7 +114,7 @@ _zsh_abbr() {
 
           if (( ${+ZSH_ABBR_USER_COMMANDS[$abbreviation]} )); then
             if ! (( dry_run )); then
-              unset ZSH_ABBR_USER_COMMANDS[${(b)abbreviation}]
+              unset "ZSH_ABBR_USER_COMMANDS[${(b)abbreviation}]" # quotation marks required
               _zsh_abbr:util_sync_user
             fi
 
