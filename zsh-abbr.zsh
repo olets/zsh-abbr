@@ -20,8 +20,8 @@ ZSH_ABBR_USER_PATH="${ZSH_ABBR_USER_PATH="${HOME}/.config/zsh/abbreviations"}"
 
 _zsh_abbr() {
   {
-    local action number_opts opt dry_run release_date scope \
-          should_exit text_bold text_reset type version
+    local action number_opts opt dry_run release_date scope should_exit \
+          text_bold text_reset type version
     dry_run=0
     number_opts=0
     release_date="March 22 2020"
@@ -166,29 +166,11 @@ _zsh_abbr() {
         return
       fi
 
-      if [[ $scope != 'user' ]]; then
-        if [[ $type_saved != 'regular' ]]; then
-          type='global'
-          _zsh_abbr:util_alias ZSH_ABBR_SESSION_GLOBALS $output_path
-        fi
+      include_expansion=1
+      session_prefix="alias"
+      user_prefix="alias"
 
-        if [[ $type_saved != 'global' ]]; then
-          type='regular'
-          _zsh_abbr:util_alias ZSH_ABBR_SESSION_COMMANDS $output_path
-        fi
-      fi
-
-      if [[ $scope != 'session' ]]; then
-        if [[ $type_saved != 'regular' ]]; then
-          type='global'
-          _zsh_abbr:util_alias ZSH_ABBR_USER_GLOBALS $output_path
-        fi
-
-        if [[ $type_saved != 'global' ]]; then
-          type='regular'
-          _zsh_abbr:util_alias ZSH_ABBR_USER_COMMANDS $output_path
-        fi
-      fi
+      _zsh_abbr:util_list $include_expansion $session_prefix $user_prefix
     }
 
     function _zsh_abbr:import_aliases() {
