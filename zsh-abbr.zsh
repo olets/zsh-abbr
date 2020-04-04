@@ -277,29 +277,41 @@ _zsh_abbr() {
         return
       fi
 
-      _zsh_abbr:util_list 0
+      _zsh_abbr:util_list
     }
 
     function _zsh_abbr:list_commands() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:list_commands"
+
+      local include_expansion
+      local session_prefix
+      local user_prefix
 
       if [[ $# > 0 ]]; then
         _zsh_abbr:util_error " list commands: Unexpected argument"
         return
       fi
 
-      _zsh_abbr:util_list 2
+      include_expansion=1
+      session_prefix="abbr -S"
+      user_prefix=abbr
+
+      _zsh_abbr:util_list $include_expansion $session_prefix $user_prefix
     }
 
     function _zsh_abbr:list_abbreviations() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:list_abbreviations"
+
+      local include_expansion
 
       if [[ $# > 0 ]]; then
         _zsh_abbr:util_error " list definitions: Unexpected argument"
         return
       fi
 
-      _zsh_abbr:util_list 1
+      include_expansion=1
+
+      _zsh_abbr:util_list $include_expansion
     }
 
     function _zsh_abbr:print_version() {
@@ -470,30 +482,26 @@ _zsh_abbr() {
 
       local abbreviation
       local expansion
-      local result
       local include_expansion
-      local include_cmd
+      local session_prefix
+      local user_prefix
 
-      if [[ $1 > 0 ]]; then
-        include_expansion=1
-      fi
-
-      if [[ $1 > 1 ]]; then
-        include_cmd=1
-      fi
+      include_expansion=$1
+      session_prefix=$2
+      user_prefix=$3
 
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
           for abbreviation in ${(iko)ZSH_ABBR_USER_GLOBALS}; do
-            expansion=${ZSH_ABBR_USER_GLOBALS[$abbreviation]}
-            _zsh_abbr:util_list_item $abbreviation $expansion "abbr -g"
+            expansion=${include_expansion:+${ZSH_ABBR_USER_GLOBALS[$abbreviation]}}
+            _zsh_abbr:util_list_item $abbreviation $expansion ${user_prefix:+$user_prefix -g}
           done
         fi
 
         if [[ $type != 'global' ]]; then
           for abbreviation in ${(iko)ZSH_ABBR_USER_COMMANDS}; do
-            expansion=${ZSH_ABBR_USER_COMMANDS[$abbreviation]}
-            _zsh_abbr:util_list_item $abbreviation $expansion "abbr"
+            expansion=${include_expansion:+${ZSH_ABBR_USER_COMMANDS[$abbreviation]}}
+            _zsh_abbr:util_list_item $abbreviation $expansion $user_prefix
           done
         fi
       fi
@@ -501,15 +509,15 @@ _zsh_abbr() {
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
           for abbreviation in ${(iko)ZSH_ABBR_SESSION_GLOBALS}; do
-            expansion=${ZSH_ABBR_SESSION_GLOBALS[$abbreviation]}
-            _zsh_abbr:util_list_item $abbreviation $expansion "abbr -S -g"
+            expansion=${include_expansion:+${ZSH_ABBR_SESSION_GLOBALS[$abbreviation]}}
+            _zsh_abbr:util_list_item $abbreviation $expansion ${session_prefix:+$session_prefix -g}
           done
         fi
 
         if [[ $type != 'global' ]]; then
           for abbreviation in ${(iko)ZSH_ABBR_SESSION_COMMANDS}; do
-            expansion=${ZSH_ABBR_SESSION_COMMANDS[$abbreviation]}
-            _zsh_abbr:util_list_item $abbreviation $expansion "abbr -S"
+            expansion=${include_expansion:+${ZSH_ABBR_SESSION_COMMANDS[$abbreviation]}}
+            _zsh_abbr:util_list_item $abbreviation $expansion $session_prefix
           done
         fi
       fi
@@ -519,20 +527,21 @@ _zsh_abbr() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_list_item"
 
       local abbreviation
-      local cmd
       local expansion
+      local prefix
 
       abbreviation=$1
       expansion=$2
-      cmd=$3
+      prefix=$3
 
       result=$abbreviation
-      if (( $include_expansion )); then
+
+      if [ $expansion ]; then
         result+="=${(qqq)${(Q)expansion}}"
       fi
 
-      if (( $include_cmd )); then
-        result="$cmd $result"
+      if [ $prefix ]; then
+        result="$prefix $result"
       fi
 
       echo $result
