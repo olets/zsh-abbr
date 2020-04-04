@@ -22,9 +22,11 @@ SYNOPSIS
 
        abbr --import-git-aliases [scope]
 
+       abbr --list
+
        abbr --list-abbreviations | -l
 
-       abbr (--list-commands | -L | -s)
+       abbr --list-commands | -L | -s
 
        abbr (--rename | -R) [scope] <old_abbreviation> <new_abbreviation>
 
@@ -92,6 +94,12 @@ Options
               fixed with "g", expansions are prefixed with "git ".
 
 
+       o      abbr --list
+
+              Lists the  available  abbreviations  without  their  expansions.
+              Equivalent to fish's `abbr --list`.
+
+
        o      --list-abbreviations or -l
 
               Lists all abbreviations.
@@ -99,14 +107,14 @@ Options
 
        o      --list-commands or -L (or -s as in fish)
 
-              Lists all abbreviations as  commands  suitable  for  export  and
+              Lists  all  abbreviations  as  commands  suitable for export and
               import.
 
 
-       o      --rename  old_abbreviation  new_abbreviation or -R old_abbrevia-
+       o      --rename old_abbreviation new_abbreviation or  -R  old_abbrevia-
               tion new_abbreviation
 
-              Renames an abbreviation, from old_abbreviation to  new_abbrevia-
+              Renames  an abbreviation, from old_abbreviation to new_abbrevia-
               tion.
 
 
@@ -124,7 +132,7 @@ Options
 
               o      --user or -U
 
-                     Abbreviations  available  to  all current and future ses-
+                     Abbreviations available to all current  and  future  ses-
                      sions.
 
 
@@ -134,15 +142,15 @@ Options
 
               o      --global or -g
 
-                     Abbreviation  will expand anywhere on a line, rather than
+                     Abbreviation will expand anywhere on a line, rather  than
                      only in command (first word) position.
 
 
-       All except for  --clear-session,  --expand,  --export-aliases,  --list-
+       All  except  for  --clear-session,  --expand, --export-aliases, --list-
        abbreviations, and --list-commands can be tried without making changes:
 
 
-              o      --dry-run Show whats the result of the command would  be.
+              o      --dry-run  Show whats the result of the command would be.
 
 
        See INTERNALS for more information.
@@ -151,7 +159,7 @@ Options
 EXAMPLES
        abbr gco="git checkout"
 
-              "gco"  will  be  expanded as "git checkout" when it is the first
+              "gco" will be expanded as "git checkout" when it  is  the  first
               word in the command, in all open and future sessions.
 
 
@@ -169,9 +177,9 @@ EXAMPLES
 
        abbr -e -S -g gco;
 
-              Erase the global session abbreviation "gco". Note  that  because
+              Erase  the  global session abbreviation "gco". Note that because
               expansion is triggered by [SPACE] and [ENTER], the semicolon (;)
-              is necessary to  prevent  expansion  when  operating  on  global
+              is  necessary  to  prevent  expansion  when  operating on global
               abbreviations.
 
 

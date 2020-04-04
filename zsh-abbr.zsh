@@ -635,6 +635,9 @@ _zsh_abbr() {
         "--import-git-aliases")
           _zsh_abbr:util_set_once "action" "import_git_aliases"
           ;;
+        "--list")
+          _zsh_abbr:util_set_once "action" "list"
+          ;;
         "--list-abbreviations"|\
         "-l")
           _zsh_abbr:util_set_once "action" "list_abbreviations"
