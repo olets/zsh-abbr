@@ -681,21 +681,18 @@ _zsh_abbr() {
       esac
     done
 
-    if (( should_exit )); then
-      should_exit=0
-      return
-    fi
+    if ! (( should_exit )); then
+      shift $number_opts
 
-    shift $number_opts
-
-    if [ $action ]; then
-      _zsh_abbr:$action $@
-    elif [[ $# > 0 ]]; then
-      # default if arguments are provided
-       _zsh_abbr:add $@
-    else
-      # default if no argument is provided
-      _zsh_abbr:list_abbreviations $@
+      if [ $action ]; then
+        _zsh_abbr:$action $@
+      elif [[ $# > 0 ]]; then
+        # default if arguments are provided
+         _zsh_abbr:add $@
+      else
+        # default if no argument is provided
+        _zsh_abbr:list_abbreviations $@
+      fi
     fi
 
     if ! (( ZSH_ABBR_INITIALIZING )); then
