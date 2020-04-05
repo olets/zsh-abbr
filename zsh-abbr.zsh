@@ -826,10 +826,6 @@ _zsh_abbr_init() {
     function _zsh_abbr_init:configure() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_init:configure"
 
-      if [[ $options[shwordsplit] = on ]]; then
-        shwordsplit_on=1
-      fi
-
       mkdir -p ${TMPDIR:-/tmp/}zsh-abbr
 
       rm ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations 2> /dev/null
@@ -843,6 +839,10 @@ _zsh_abbr_init() {
 
     function _zsh_abbr_init:seed() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_init:seed"
+
+      if [[ $options[shwordsplit] = on ]]; then
+        shwordsplit_on=1
+      fi
 
       # Load saved user abbreviations
       if [ -f $ZSH_ABBR_USER_PATH ]; then
