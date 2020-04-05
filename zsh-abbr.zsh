@@ -831,11 +831,17 @@ _zsh_abbr_init() {
 
       mkdir -p ${TMPDIR:-/tmp/}zsh-abbr
 
-      rm ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations 2> /dev/null
+      if [ -f ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations ]; then
+        rm ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+      fi
+
+      if [ -f ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations ]; then
+        rm ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+      fi
+
       touch ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
       chmod 600 ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
 
-      rm ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations 2> /dev/null
       touch ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
       chmod 600 ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
     }
