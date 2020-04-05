@@ -22,7 +22,7 @@ _zsh_abbr() {
   {
     local action number_opts opt dry_run release_date scope should_exit \
           text_bold text_reset type version
-    dry_run=0
+    dry_run=${ZSH_ABBR_DRY_RUN:-0}
     number_opts=0
     release_date="March 22 2020"
     should_exit=0
