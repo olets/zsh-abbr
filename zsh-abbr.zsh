@@ -41,8 +41,12 @@ _zsh_abbr() {
         return
       fi
 
-      abbreviation="${(q)1%%=*}"
-      expansion="${(q)1#*=}"
+      abbreviation=${1%%=*}
+      expansion=${1#*=}
+      if ! (( ZSH_ABBR_INITIALIZING )); then
+        abbreviation=${(q)abbreviation}
+        expansion=${(q)expansion}
+      fi
 
       if ! [[ $abbreviation && $expansion && $abbreviation != $1 ]]; then
         _zsh_abbr:util_error " add: Requires abbreviation and expansion"
@@ -807,7 +811,6 @@ _zsh_abbr_init() {
   {
     (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_init"
 
-    local line
     local job
     local shwordsplit_on
 
@@ -840,6 +843,9 @@ _zsh_abbr_init() {
     function _zsh_abbr_init:seed() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_init:seed"
 
+      local arguments
+      local program
+
       if [[ $options[shwordsplit] = on ]]; then
         shwordsplit_on=1
       fi
@@ -848,7 +854,15 @@ _zsh_abbr_init() {
       if [ -f $ZSH_ABBR_USER_PATH ]; then
         unsetopt shwordsplit
 
-        source $ZSH_ABBR_USER_PATH
+        while read -r line; do
+          program="${line%% *}"
+          arguments="${line#* }"
+
+          # Only execute abbr commands
+          if [[ $program == "abbr" && $program != $line ]]; then
+            abbr ${(z)arguments}
+          fi
+        done < $ZSH_ABBR_USER_PATH
 
         if (( shwordsplit_on )); then
           setopt shwordsplit
