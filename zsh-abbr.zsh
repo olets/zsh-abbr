@@ -929,7 +929,7 @@ _zsh_abbr_job_push() {
     job_group=${(q)2}
     timeout_age=30 # seconds
 
-    job_dir=${TMPDIR:-/tmp}zsh-abbr-jobs/${job_group}
+    job_dir=${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}
     job_path=$job_dir/$job
 
     function add_job() {
@@ -937,8 +937,8 @@ _zsh_abbr_job_push() {
         mkdir -p $job_dir
       fi
 
-      if ! [ -d ${TMPDIR:-/tmp}zsh-abbr-jobs/current ]; then
-        mkdir ${TMPDIR:-/tmp}zsh-abbr-jobs/current
+      if ! [ -d ${TMPDIR:-/tmp}/zsh-abbr-jobs/current ]; then
+        mkdir ${TMPDIR:-/tmp}/zsh-abbr-jobs/current
       fi
 
       echo $job_group > $job_path
@@ -959,7 +959,7 @@ _zsh_abbr_job_push() {
       echo
 
       rm $next_job_path &>/dev/null
-      rm "${TMPDIR:-/tmp}zsh-abbr-jobs/current/$job_group*" &>/dev/null
+      rm "${TMPDIR:-/tmp}/zsh-abbr-jobs/current/$job_group*" &>/dev/null
     }
 
     function wait_turn() {
@@ -974,7 +974,7 @@ _zsh_abbr_job_push() {
         sleep 0.01
       done
 
-      cp $job_path "${TMPDIR:-/tmp}zsh-abbr-jobs/current/$job_group-$job"
+      cp $job_path "${TMPDIR:-/tmp}/zsh-abbr-jobs/current/$job_group-$job"
     }
 
     add_job
@@ -996,13 +996,13 @@ _zsh_abbr_job_pop() {
   job_group=$2
 
   typeset -a currents
-  currents=(${(@f)$(ls -d ${TMPDIR:-/tmp}zsh-abbr-jobs/current/$job_group* 2>/dev/null)})
+  currents=(${(@f)$(ls -d ${TMPDIR:-/tmp}/zsh-abbr-jobs/current/$job_group* 2>/dev/null)})
 
   for current in $currents; do
     rm $current &>/dev/null
   done
 
-  rm "${TMPDIR:-/tmp}zsh-abbr-jobs/${job_group}/${job}" &>/dev/null
+  rm "${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}/${job}" &>/dev/null
 }
 
 _zsh_abbr_job_name() {
