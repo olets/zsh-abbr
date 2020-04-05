@@ -571,10 +571,7 @@ _zsh_abbr() {
       local expansion
       local user_updated
 
-      user_updated=${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations_updated
-      rm $user_updated 2> /dev/null
-      touch $user_updated
-      chmod 600 $user_updated
+      user_updated=$(mktemp ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations_updated.XXXXXX)
 
       typeset -p GLOBAL_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
       for abbreviation in ${(iko)GLOBAL_USER_ABBREVIATIONS}; do
