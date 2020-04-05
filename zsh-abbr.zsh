@@ -68,7 +68,7 @@ _zsh_abbr() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:erase"
 
       local abbreviation
-      local success
+      local abbreviations_set
 
       if [[ $# > 1 ]]; then
         _zsh_abbr:util_error " erase: Expected one argument"
@@ -79,54 +79,41 @@ _zsh_abbr() {
       fi
 
       abbreviation=$1
-      success=0
 
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
           if (( ${+GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
-            if ! (( dry_run )); then
-              unset "GLOBAL_SESSION_ABBREVIATIONS[${(b)abbreviation}]" # quotation marks required
-            fi
-
-            success=1
+            abbreviations_set=GLOBAL_SESSION_ABBREVIATIONS
           fi
         elif (( ${+REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
-          if ! (( dry_run )); then
-            unset "REGULAR_SESSION_ABBREVIATIONS[${(b)abbreviation}]" # quotation marks required
-          fi
-
-          success=1
+          abbreviations_set=REGULAR_SESSION_ABBREVIATIONS
         fi
       else
         if [[ $type == 'global' ]]; then
           source "${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations"
 
           if (( ${+GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
-            if ! (( dry_run )); then
-              unset "GLOBAL_USER_ABBREVIATIONS[${(b)abbreviation}]" # quotation marks required
-              _zsh_abbr:util_sync_user
-            fi
-
-            success=1
+            abbreviations_set=REGULAR_SESSION_ABBREVIATIONS
           fi
         else
           source "${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations"
 
           if (( ${+REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
-            if ! (( dry_run )); then
-              unset "REGULAR_USER_ABBREVIATIONS[${(b)abbreviation}]" # quotation marks required
-              _zsh_abbr:util_sync_user
-            fi
-
-            success=1
+            abbreviations_set=REGULAR_USER_ABBREVIATIONS
           fi
         fi
       fi
 
-      if ! (( success )); then
+      if ! [ $abbreviations_set ]; then
         _zsh_abbr:util_error " erase: No ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` found"
       elif (( dry_run )); then
         echo "Erase ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
+      else
+        unset "${abbreviations_set}[${(b)abbreviation}]" # quotation marks required
+
+        if [[ $abbreviations_set =~ USER ]]; then
+          _zsh_abbr:util_sync_user
+        fi
       fi
     }
 
