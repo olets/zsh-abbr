@@ -37,7 +37,7 @@ _zsh_abbr() {
       local expansion
 
       if [[ $# > 1 ]]; then
-        _zsh_abbr:util_error " add: Expected one argument, got $*"
+        _zsh_abbr:util_error " add: Expected one argument, got $#: $*"
         return
       fi
 
@@ -599,7 +599,7 @@ _zsh_abbr() {
 
     if ! (( ZSH_ABBR_INITIALIZING )); then
       job=$(_zsh_abbr_job_name)
-      _zsh_abbr_job_push $job
+      _zsh_abbr_job_push $job "syncing user abbreviations"
     fi
 
     for opt in "$@"; do
@@ -878,7 +878,7 @@ _zsh_abbr_init() {
     }
 
     ZSH_ABBR_INITIALIZING=1
-    _zsh_abbr_job_push $job
+    _zsh_abbr_job_push $job initialization
     _zsh_abbr_init:configure
     _zsh_abbr_init:seed
     _zsh_abbr_job_pop $job
@@ -896,14 +896,16 @@ _zsh_abbr_job_push() {
     local next_job
     local next_job_age
     local next_job_path
-    local job
+    local job_description
     local job_dir
+    local job_id
     local job_path
     local timeout_age
 
-    job=${(q)1}
+    job_id=${(q)1}
+    job_description=$2
     job_dir=${TMPDIR:-/tmp/}zsh-abbr/jobs
-    job_path=$job_dir/$job
+    job_path=$job_dir/$job_id
     timeout_age=30 # seconds
 
     function _zsh_abbr_job_push:add_job() {
@@ -913,10 +915,10 @@ _zsh_abbr_job_push() {
         mkdir -p $job_dir
       fi
 
-      touch $job_path
+      echo $job_description > $job_path
     }
 
-    function _zsh_abbr_job_push:next_job() {
+    function _zsh_abbr_job_push:next_job_id() {
       # cannout support debug message
 
       ls -t $job_dir | tail -1
@@ -927,10 +929,8 @@ _zsh_abbr_job_push() {
 
       next_job_path=$job_dir/$next_job
 
-      echo "abbr: A job added at"
-      echo "  $(strftime '%T %b %d %Y' ${next_job%.*})"
-      echo "has timed out. The job was related to"
-      echo "  $(cat $next_job_path)"
+      echo "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job%.*}) has timed out."
+      echo "The job was related to $(cat $next_job_path)."
       echo "Please report this at https://github.com/olets/zsh-abbr/issues/new"
       echo
 
@@ -938,8 +938,8 @@ _zsh_abbr_job_push() {
     }
 
     function _zsh_abbr_job_push:wait_turn() {
-      while [[ $(_zsh_abbr_job_push:next_job) != $job ]]; do
-        next_job=$(_zsh_abbr_job_push:next_job)
+      while [[ $(_zsh_abbr_job_push:next_job_id) != $job_id ]]; do
+        next_job=$(_zsh_abbr_job_push:next_job_id)
         next_job_age=$(( $(date +%s) - ${next_job%.*} ))
 
         if ((  $next_job_age > $timeout_age )); then
@@ -953,7 +953,7 @@ _zsh_abbr_job_push() {
     _zsh_abbr_job_push:wait_turn
   } always {
     unfunction -m _zsh_abbr_job_push:add_job
-    unfunction -m _zsh_abbr_job_push:next_job
+    unfunction -m _zsh_abbr_job_push:next_job_id
     unfunction -m _zsh_abbr_job_push:handle_timeout
     unfunction -m _zsh_abbr_job_push:wait_turn
   }
