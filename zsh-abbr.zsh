@@ -60,8 +60,8 @@ _zsh_abbr() {
         return
       fi
 
-      ZSH_ABBR_SESSION_COMMANDS=()
-      ZSH_ABBR_SESSION_GLOBALS=()
+      REGULAR_SESSION_ABBREVIATIONS=()
+      GLOBAL_SESSION_ABBREVIATIONS=()
     }
 
     function _zsh_abbr:erase() {
@@ -83,38 +83,38 @@ _zsh_abbr() {
 
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
-          if (( ${+ZSH_ABBR_SESSION_GLOBALS[$abbreviation]} )); then
+          if (( ${+GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
             if ! (( dry_run )); then
-              unset "ZSH_ABBR_SESSION_GLOBALS[${(b)abbreviation}]" # quotation marks required
+              unset "GLOBAL_SESSION_ABBREVIATIONS[${(b)abbreviation}]" # quotation marks required
             fi
 
             success=1
           fi
-        elif (( ${+ZSH_ABBR_SESSION_COMMANDS[$abbreviation]} )); then
+        elif (( ${+REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
           if ! (( dry_run )); then
-            unset "ZSH_ABBR_SESSION_COMMANDS[${(b)abbreviation}]" # quotation marks required
+            unset "REGULAR_SESSION_ABBREVIATIONS[${(b)abbreviation}]" # quotation marks required
           fi
 
           success=1
         fi
       else
         if [[ $type == 'global' ]]; then
-          source "${TMPDIR:-/tmp/}zsh-abbr/user-global-abbreviations"
+          source "${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations"
 
-          if (( ${+ZSH_ABBR_USER_GLOBALS[$abbreviation]} )); then
+          if (( ${+GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
             if ! (( dry_run )); then
-              unset "ZSH_ABBR_USER_GLOBALS[${(b)abbreviation}]" # quotation marks required
+              unset "GLOBAL_USER_ABBREVIATIONS[${(b)abbreviation}]" # quotation marks required
               _zsh_abbr:util_sync_user
             fi
 
             success=1
           fi
         else
-          source "${TMPDIR:-/tmp/}zsh-abbr/user-regular-abbreviations"
+          source "${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations"
 
-          if (( ${+ZSH_ABBR_USER_COMMANDS[$abbreviation]} )); then
+          if (( ${+REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
             if ! (( dry_run )); then
-              unset "ZSH_ABBR_USER_COMMANDS[${(b)abbreviation}]" # quotation marks required
+              unset "REGULAR_USER_ABBREVIATIONS[${(b)abbreviation}]" # quotation marks required
               _zsh_abbr:util_sync_user
             fi
 
@@ -326,15 +326,15 @@ _zsh_abbr() {
 
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
-          expansion=${ZSH_ABBR_SESSION_GLOBALS[$current_abbreviation]}
+          expansion=${GLOBAL_SESSION_ABBREVIATIONS[$current_abbreviation]}
         else
-          expansion=${ZSH_ABBR_SESSION_COMMANDS[$current_abbreviation]}
+          expansion=${REGULAR_SESSION_ABBREVIATIONS[$current_abbreviation]}
         fi
       else
         if [[ $type == 'global' ]]; then
-          expansion=${ZSH_ABBR_USER_GLOBALS[$current_abbreviation]}
+          expansion=${GLOBAL_USER_ABBREVIATIONS[$current_abbreviation]}
         else
-          expansion=${ZSH_ABBR_USER_COMMANDS[$current_abbreviation]}
+          expansion=${REGULAR_USER_ABBREVIATIONS[$current_abbreviation]}
         fi
       fi
 
@@ -369,43 +369,43 @@ _zsh_abbr() {
 
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
-          if ! (( ${+ZSH_ABBR_SESSION_GLOBALS[$abbreviation]} )); then
+          if ! (( ${+GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
             if (( dry_run )); then
               echo "abbr -S -g $abbreviation=${(Q)expansion}"
             else
-              ZSH_ABBR_SESSION_GLOBALS[$abbreviation]=$expansion
+              GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
             fi
             success=1
           fi
-        elif ! (( ${+ZSH_ABBR_SESSION_COMMANDS[$abbreviation]} )); then
+        elif ! (( ${+REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
           if (( dry_run )); then
             echo "abbr -S $abbreviation=${(Q)expansion}"
           else
-            ZSH_ABBR_SESSION_COMMANDS[$abbreviation]=$expansion
+            REGULAR_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
           fi
           success=1
         fi
       else
         if [[ $type == 'global' ]]; then
-          source ${TMPDIR:-/tmp/}zsh-abbr/user-global-abbreviations
+          source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
 
-          if ! (( ${+ZSH_ABBR_USER_GLOBALS[$abbreviation]} )); then
+          if ! (( ${+GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
             if (( dry_run )); then
               echo "abbr -g $abbreviation=${(Q)expansion}"
             else
-              ZSH_ABBR_USER_GLOBALS[$abbreviation]=$expansion
+              GLOBAL_USER_ABBREVIATIONS[$abbreviation]=$expansion
               _zsh_abbr:util_sync_user
             fi
             success=1
           fi
         else
-          source ${TMPDIR:-/tmp/}zsh-abbr/user-regular-abbreviations
+          source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
 
-          if ! (( ${+ZSH_ABBR_USER_COMMANDS[$abbreviation]} )); then
+          if ! (( ${+REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
             if (( dry_run )); then
               echo "abbr ${(Q)abbreviation}=${(Q)expansion}"
             else
-              ZSH_ABBR_USER_COMMANDS[$abbreviation]=$expansion
+              REGULAR_USER_ABBREVIATIONS[$abbreviation]=$expansion
               _zsh_abbr:util_sync_user
             fi
             success=1
@@ -474,15 +474,15 @@ _zsh_abbr() {
 
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
-          for abbreviation in ${(iko)ZSH_ABBR_USER_GLOBALS}; do
-            expansion=${include_expansion:+${ZSH_ABBR_USER_GLOBALS[$abbreviation]}}
+          for abbreviation in ${(iko)GLOBAL_USER_ABBREVIATIONS}; do
+            expansion=${include_expansion:+${GLOBAL_USER_ABBREVIATIONS[$abbreviation]}}
             _zsh_abbr:util_list_item $abbreviation $expansion ${user_prefix:+$user_prefix -g}
           done
         fi
 
         if [[ $type != 'global' ]]; then
-          for abbreviation in ${(iko)ZSH_ABBR_USER_COMMANDS}; do
-            expansion=${include_expansion:+${ZSH_ABBR_USER_COMMANDS[$abbreviation]}}
+          for abbreviation in ${(iko)REGULAR_USER_ABBREVIATIONS}; do
+            expansion=${include_expansion:+${REGULAR_USER_ABBREVIATIONS[$abbreviation]}}
             _zsh_abbr:util_list_item $abbreviation $expansion $user_prefix
           done
         fi
@@ -490,15 +490,15 @@ _zsh_abbr() {
 
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
-          for abbreviation in ${(iko)ZSH_ABBR_SESSION_GLOBALS}; do
-            expansion=${include_expansion:+${ZSH_ABBR_SESSION_GLOBALS[$abbreviation]}}
+          for abbreviation in ${(iko)GLOBAL_SESSION_ABBREVIATIONS}; do
+            expansion=${include_expansion:+${GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}}
             _zsh_abbr:util_list_item $abbreviation $expansion ${session_prefix:+$session_prefix -g}
           done
         fi
 
         if [[ $type != 'global' ]]; then
-          for abbreviation in ${(iko)ZSH_ABBR_SESSION_COMMANDS}; do
-            expansion=${include_expansion:+${ZSH_ABBR_SESSION_COMMANDS[$abbreviation]}}
+          for abbreviation in ${(iko)REGULAR_SESSION_ABBREVIATIONS}; do
+            expansion=${include_expansion:+${REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}}
             _zsh_abbr:util_list_item $abbreviation $expansion $session_prefix
           done
         fi
@@ -556,20 +556,20 @@ _zsh_abbr() {
       local expansion
       local user_updated
 
-      user_updated=${TMPDIR:-/tmp/}/zsh-abbr/user-regular-abbreviations_updated
+      user_updated=${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations_updated
       rm $user_updated 2> /dev/null
       touch $user_updated
       chmod 600 $user_updated
 
-      typeset -p ZSH_ABBR_USER_GLOBALS > ${TMPDIR:-/tmp/}zsh-abbr/user-global-abbreviations
-      for abbreviation in ${(iko)ZSH_ABBR_USER_GLOBALS}; do
-        expansion=${ZSH_ABBR_USER_GLOBALS[$abbreviation]}
+      typeset -p GLOBAL_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+      for abbreviation in ${(iko)GLOBAL_USER_ABBREVIATIONS}; do
+        expansion=${GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
         echo "abbr -g ${abbreviation}=${(qqq)${(Q)expansion}}" >> "$user_updated"
       done
 
-      typeset -p ZSH_ABBR_USER_COMMANDS > ${TMPDIR:-/tmp/}zsh-abbr/user-regular-abbreviations
-      for abbreviation in ${(iko)ZSH_ABBR_USER_COMMANDS}; do
-        expansion=${ZSH_ABBR_USER_COMMANDS[$abbreviation]}
+      typeset -p REGULAR_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+      for abbreviation in ${(iko)REGULAR_USER_ABBREVIATIONS}; do
+        expansion=${REGULAR_USER_ABBREVIATIONS[$abbreviation]}
         echo "abbr ${abbreviation}=${(qqq)${(Q)expansion}}" >> $user_updated
       done
 
@@ -745,11 +745,11 @@ _zsh_abbr_cmd_expansion() {
   local expansion
 
   abbreviation=$1
-  expansion=${ZSH_ABBR_SESSION_COMMANDS[$abbreviation]}
+  expansion=${REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
 
   if [ ! $expansion ]; then
-    source ${TMPDIR:-/tmp/}zsh-abbr/user-regular-abbreviations
-    expansion=${ZSH_ABBR_USER_COMMANDS[$abbreviation]}
+    source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+    expansion=${REGULAR_USER_ABBREVIATIONS[$abbreviation]}
   fi
 
   echo - $expansion
@@ -782,11 +782,11 @@ _zsh_abbr_global_expansion() {
   local expansion
 
   abbreviation=$1
-  expansion=${ZSH_ABBR_SESSION_GLOBALS[$abbreviation]}
+  expansion=${GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
 
   if [ ! $expansion ]; then
-    source ${TMPDIR:-/tmp/}zsh-abbr/user-global-abbreviations
-    expansion=${ZSH_ABBR_USER_GLOBALS[$abbreviation]}
+    source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+    expansion=${GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
   fi
 
   echo - $expansion
@@ -803,14 +803,14 @@ _zsh_abbr_init() {
     job=$(_zsh_abbr_job_name)
     shwordsplit_on=0
 
-    typeset -gA ZSH_ABBR_USER_COMMANDS
-    typeset -gA ZSH_ABBR_SESSION_COMMANDS
-    typeset -gA ZSH_ABBR_USER_GLOBALS
-    typeset -gA ZSH_ABBR_SESSION_GLOBALS
-    ZSH_ABBR_USER_COMMANDS=()
-    ZSH_ABBR_SESSION_COMMANDS=()
-    ZSH_ABBR_USER_GLOBALS=()
-    ZSH_ABBR_SESSION_GLOBALS=()
+    typeset -gA REGULAR_USER_ABBREVIATIONS
+    typeset -gA REGULAR_SESSION_ABBREVIATIONS
+    typeset -gA GLOBAL_USER_ABBREVIATIONS
+    typeset -gA GLOBAL_SESSION_ABBREVIATIONS
+    REGULAR_USER_ABBREVIATIONS=()
+    REGULAR_SESSION_ABBREVIATIONS=()
+    GLOBAL_USER_ABBREVIATIONS=()
+    GLOBAL_SESSION_ABBREVIATIONS=()
 
     function _zsh_abbr_init:configure() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_init:configure"
@@ -821,13 +821,13 @@ _zsh_abbr_init() {
 
       mkdir -p ${TMPDIR:-/tmp/}zsh-abbr
 
-      rm ${TMPDIR:-/tmp/}zsh-abbr/user-regular-abbreviations 2> /dev/null
-      touch ${TMPDIR:-/tmp/}zsh-abbr/user-regular-abbreviations
-      chmod 600 ${TMPDIR:-/tmp/}zsh-abbr/user-regular-abbreviations
+      rm ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations 2> /dev/null
+      touch ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+      chmod 600 ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
 
-      rm ${TMPDIR:-/tmp/}zsh-abbr/user-global-abbreviations 2> /dev/null
-      touch ${TMPDIR:-/tmp/}zsh-abbr/user-global-abbreviations
-      chmod 600 ${TMPDIR:-/tmp/}zsh-abbr/user-global-abbreviations
+      rm ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations 2> /dev/null
+      touch ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+      chmod 600 ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
     }
 
     function _zsh_abbr_init:seed() {
@@ -848,8 +848,8 @@ _zsh_abbr_init() {
         touch $ZSH_ABBR_USER_PATH
       fi
 
-      typeset -p ZSH_ABBR_USER_COMMANDS > ${TMPDIR:-/tmp/}zsh-abbr/user-regular-abbreviations
-      typeset -p ZSH_ABBR_USER_GLOBALS > ${TMPDIR:-/tmp/}zsh-abbr/user-global-abbreviations
+      typeset -p REGULAR_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+      typeset -p GLOBAL_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
     }
 
     ZSH_ABBR_INITIALIZING=1
