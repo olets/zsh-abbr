@@ -117,7 +117,7 @@ _zsh_abbr() {
         fi
       else
         if $opt_type_global; then
-          source "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
+          source "${TMPDIR:-/tmp/}zsh-user-global-abbreviations"
 
           if (( ${+ZSH_ABBR_USER_GLOBALS[$abbreviation]} )); then
             unset "ZSH_ABBR_USER_GLOBALS[${(b)abbreviation}]"
@@ -125,7 +125,7 @@ _zsh_abbr() {
             success=true
           fi
         else
-          source "${TMPDIR:-/tmp}/zsh-user-abbreviations"
+          source "${TMPDIR:-/tmp/}zsh-user-abbreviations"
 
           if (( ${+ZSH_ABBR_USER_COMMANDS[$abbreviation]} )); then
             unset "ZSH_ABBR_USER_COMMANDS[${(b)abbreviation}]"
@@ -402,7 +402,7 @@ _zsh_abbr() {
         fi
       else
         if $opt_type_global; then
-          source "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
+          source "${TMPDIR:-/tmp/}zsh-user-global-abbreviations"
 
           if ! (( ${+ZSH_ABBR_USER_GLOBALS[$abbreviation]} )); then
             if $opt_dry_run; then
@@ -414,7 +414,7 @@ _zsh_abbr() {
             success=true
           fi
         else
-          source "${TMPDIR:-/tmp}/zsh-user-abbreviations"
+          source "${TMPDIR:-/tmp/}zsh-user-abbreviations"
 
           if ! (( ${+ZSH_ABBR_USER_COMMANDS[$abbreviation]} )); then
             if $opt_dry_run; then
@@ -544,17 +544,17 @@ _zsh_abbr() {
       job=$(_zsh_abbr_job_name)
       _zsh_abbr_job_push $job $job_group
 
-      user_updated="${TMPDIR:-/tmp}/zsh-user-abbreviations"_updated
+      user_updated="${TMPDIR:-/tmp/}zsh-user-abbreviations"_updated
       rm "$user_updated" 2> /dev/null
       touch "$user_updated"
       chmod 600 "$user_updated"
 
-      typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
+      typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp/}zsh-user-global-abbreviations"
       for abbreviation expansion in ${(kv)ZSH_ABBR_USER_GLOBALS}; do
         echo "abbr -g ${abbreviation}=${(qqq)${(Q)expansion}}" >> "$user_updated"
       done
 
-      typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp}/zsh-user-abbreviations"
+      typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp/}zsh-user-abbreviations"
       for abbreviation expansion in ${(kv)ZSH_ABBR_USER_COMMANDS}; do
         echo "abbr ${abbreviation}=${(qqq)${(Q)expansion}}" >> "$user_updated"
       done
@@ -803,7 +803,7 @@ _zsh_abbr_cmd_expansion() {
   expansion="${ZSH_ABBR_SESSION_COMMANDS[$abbreviation]}"
 
   if [[ ! -n "$expansion" ]]; then
-    source "${TMPDIR:-/tmp}/zsh-user-abbreviations"
+    source "${TMPDIR:-/tmp/}zsh-user-abbreviations"
     expansion="${ZSH_ABBR_USER_COMMANDS[$abbreviation]}"
   fi
 
@@ -834,7 +834,7 @@ _zsh_abbr_global_expansion() {
   expansion="${ZSH_ABBR_SESSION_GLOBALS[$abbreviation]}"
 
   if [[ ! -n "$expansion" ]]; then
-    source "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
+    source "${TMPDIR:-/tmp/}zsh-user-global-abbreviations"
     expansion="${ZSH_ABBR_USER_GLOBALS[$abbreviation]}"
   fi
 
@@ -867,13 +867,13 @@ _zsh_abbr_init() {
       fi
 
       # Scratch files
-      rm "${TMPDIR:-/tmp}/zsh-user-abbreviations" 2> /dev/null
-      touch "${TMPDIR:-/tmp}/zsh-user-abbreviations"
-      chmod 600 "${TMPDIR:-/tmp}/zsh-user-abbreviations"
+      rm "${TMPDIR:-/tmp/}zsh-user-abbreviations" 2> /dev/null
+      touch "${TMPDIR:-/tmp/}zsh-user-abbreviations"
+      chmod 600 "${TMPDIR:-/tmp/}zsh-user-abbreviations"
 
-      rm "${TMPDIR:-/tmp}/zsh-user-global-abbreviations" 2> /dev/null
-      touch "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
-      chmod 600 "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
+      rm "${TMPDIR:-/tmp/}zsh-user-global-abbreviations" 2> /dev/null
+      touch "${TMPDIR:-/tmp/}zsh-user-global-abbreviations"
+      chmod 600 "${TMPDIR:-/tmp/}zsh-user-global-abbreviations"
     }
 
     function seed() {
@@ -893,8 +893,8 @@ _zsh_abbr_init() {
 
       unset ZSH_ABBR_NO_SYNC_USER
 
-      typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp}/zsh-user-abbreviations"
-      typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp}/zsh-user-global-abbreviations"
+      typeset -p ZSH_ABBR_USER_COMMANDS > "${TMPDIR:-/tmp/}zsh-user-abbreviations"
+      typeset -p ZSH_ABBR_USER_GLOBALS > "${TMPDIR:-/tmp/}zsh-user-global-abbreviations"
     }
 
     # open job
@@ -929,7 +929,7 @@ _zsh_abbr_job_push() {
     job_group=${(q)2}
     timeout_age=30 # seconds
 
-    job_dir=${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}
+    job_dir=${TMPDIR:-/tmp/}zsh-abbr-jobs/${job_group}
     job_path=$job_dir/$job
 
     function add_job() {
@@ -937,8 +937,8 @@ _zsh_abbr_job_push() {
         mkdir -p $job_dir
       fi
 
-      if ! [ -d ${TMPDIR:-/tmp}/zsh-abbr-jobs/current ]; then
-        mkdir ${TMPDIR:-/tmp}/zsh-abbr-jobs/current
+      if ! [ -d ${TMPDIR:-/tmp/}zsh-abbr-jobs/current ]; then
+        mkdir ${TMPDIR:-/tmp/}zsh-abbr-jobs/current
       fi
 
       echo $job_group > $job_path
@@ -959,7 +959,7 @@ _zsh_abbr_job_push() {
       echo
 
       rm $next_job_path &>/dev/null
-      rm "${TMPDIR:-/tmp}/zsh-abbr-jobs/current/$job_group*" &>/dev/null
+      rm "${TMPDIR:-/tmp/}zsh-abbr-jobs/current/$job_group*" &>/dev/null
     }
 
     function wait_turn() {
@@ -974,7 +974,7 @@ _zsh_abbr_job_push() {
         sleep 0.01
       done
 
-      cp $job_path "${TMPDIR:-/tmp}/zsh-abbr-jobs/current/$job_group-$job"
+      cp $job_path "${TMPDIR:-/tmp/}zsh-abbr-jobs/current/$job_group-$job"
     }
 
     add_job
@@ -996,13 +996,13 @@ _zsh_abbr_job_pop() {
   job_group=$2
 
   typeset -a currents
-  currents=(${(@f)$(ls -d ${TMPDIR:-/tmp}/zsh-abbr-jobs/current/$job_group* 2>/dev/null)})
+  currents=(${(@f)$(ls -d ${TMPDIR:-/tmp/}zsh-abbr-jobs/current/$job_group* 2>/dev/null)})
 
   for current in $currents; do
     rm $current &>/dev/null
   done
 
-  rm "${TMPDIR:-/tmp}/zsh-abbr-jobs/${job_group}/${job}" &>/dev/null
+  rm "${TMPDIR:-/tmp/}zsh-abbr-jobs/${job_group}/${job}" &>/dev/null
 }
 
 _zsh_abbr_job_name() {
