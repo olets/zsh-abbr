@@ -597,11 +597,6 @@ _zsh_abbr() {
       man abbr 2>/dev/null || cat ${ZSH_ABBR_SOURCE_PATH}/man/abbr.txt | less -F
     }
 
-    if ! (( ZSH_ABBR_INITIALIZING )); then
-      job=$(_zsh_abbr_job_name)
-      _zsh_abbr_job_push $job "syncing user abbreviations"
-    fi
-
     for opt in "$@"; do
       if (( should_exit )); then
         should_exit=0
@@ -692,6 +687,11 @@ _zsh_abbr() {
 
     if ! (( should_exit )); then
       shift $number_opts
+
+      if ! (( ZSH_ABBR_INITIALIZING )) && [[ $scope != 'session' ]]; then
+        job=$(_zsh_abbr_job_name)
+        _zsh_abbr_job_push $job $action
+      fi
 
       if [ $action ]; then
         _zsh_abbr:$action $@
