@@ -844,6 +844,27 @@ _zsh_abbr_init() {
 
       touch ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
       chmod 600 ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+
+      # clean up deprecated temp files
+      if [ -d ${TMPDIR:-/tmp/}zsh-abbr-jobs ]; then
+        rm -rf ${TMPDIR:-/tmp/}zsh-abbr-jobs 2> /dev/null
+      fi
+
+      if [ -f ${TMPDIR:-/tmp/}zsh-user-global-abbreviations ]; then
+        rm ${TMPDIR:-/tmp/}zsh-user-global-abbreviations 2> /dev/null
+      fi
+
+      if [ -f ${TMPDIR:-/tmp/}zsh-user-abbreviations ]; then
+        rm ${TMPDIR:-/tmp/}zsh-user-abbreviations 2> /dev/null
+      fi
+
+      if [ -f ${TMPDIR:-/tmp/}zsh-abbr-initializing ]; then
+        rm ${TMPDIR:-/tmp/}zsh-abbr-initializing
+      fi
+
+      if [ -f ${TMPDIR:-/tmp/}abbr_universals ]; then
+        rm ${TMPDIR:-/tmp/}abbr_universals
+      fi
     }
 
     function _zsh_abbr_init:seed() {
