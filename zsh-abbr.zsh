@@ -261,10 +261,15 @@ _zsh_abbr() {
       done < <(git config --get-regexp '^alias\.')
 
       for git_alias in $git_aliases; do
-        key=${$(echo - $git_alias | awk '{print $1;}')##alias.}
-        value=${$(echo - $git_alias)##alias.$key }
+        key=${${git_alias%% *}#alias.}
+        value=${git_alias#* }
 
-        _zsh_abbr:util_add "g$key" "git ${value# }"
+        if ! (( ZSH_ABBR_INITIALIZING )); then
+          abbreviation=${(q)abbreviation}
+          expansion=${(q)expansion}
+        fi
+
+        _zsh_abbr:util_add "g$key" "git $value"
       done
 
       if ! (( dry_run )); then
