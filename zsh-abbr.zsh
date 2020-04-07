@@ -833,14 +833,6 @@ _zsh_abbr_init() {
     job=$(_zsh_abbr_job_name)
     shwordsplit_on=0
 
-    if ! [ -f ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations ]; then
-      touch ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
-    fi
-
-    if ! [ -f ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations ]; then
-      touch ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
-    fi
-
     typeset -gA REGULAR_USER_ABBREVIATIONS
     typeset -gA GLOBAL_USER_ABBREVIATIONS
     typeset -gA REGULAR_SESSION_ABBREVIATIONS
@@ -853,7 +845,17 @@ _zsh_abbr_init() {
     function _zsh_abbr_init:configure() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_init:configure"
 
-      mkdir -p ${TMPDIR:-/tmp/}zsh-abbr
+      if ! [ -d ${TMPDIR:-/tmp/}zsh-abbr ]; then
+        mkdir -p ${TMPDIR:-/tmp/}zsh-abbr
+      fi
+
+      if ! [ -f ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations ]; then
+        touch ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+      fi
+
+      if ! [ -f ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations ]; then
+        touch ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+      fi
 
       # clean up deprecated temp files
 
