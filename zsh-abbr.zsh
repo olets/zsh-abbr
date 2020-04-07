@@ -25,7 +25,6 @@ _zsh_abbr() {
     dry_run=${ZSH_ABBR_DRY_RUN:-0}
     number_opts=0
     release_date="March 22 2020"
-    should_exit=0
     text_bold="\\033[1m"
     text_reset="\\033[0m"
     version="zsh-abbr version 3.1.2"
@@ -625,7 +624,6 @@ _zsh_abbr() {
 
     for opt in "$@"; do
       if (( should_exit )); then
-        should_exit=0
         return
       fi
 
@@ -1070,7 +1068,6 @@ abbr() {
 # INITIALIZATION
 # --------------
 
-ZSH_ABBR_DEBUG=0
 ZSH_ABBR_SOURCE_PATH=${0:A:h}
 _zsh_abbr_init
 if (( $ZSH_ABBR_DEFAULT_BINDINGS )) || [ $ZSH_ABBR_DEFAULT_BINDINGS = true ]; then
