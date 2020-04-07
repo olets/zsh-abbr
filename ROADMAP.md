@@ -16,22 +16,13 @@ Key:
 
 - [ ] stronger tests?
 - [ ] log message about what change was made
-  - [ ] include --quiet option
-- [x] erase does not require correct scope and type flags.
-  - Look for any matches that do not violate specified type and/or scope
-  - If only one match found, erase it
-  - If multiple matches found, either
-    - list them and hint what flags to use
+- [ ] Git status-like: when job finishes, list actions taken by group (added, erased, couldn't add (already exists), could erase (doesn't exist), didn't add (e.g. git function alias))
+  - [ ] color coded
+- [ ] support --quiet option and ZSH_ABBR_QUIET env variable
+- [ ] maybe split abbr into its own file, and autoload it
+- [ ] sync as last step of initialization
 
 Chrome
 
 - [ ] Completion
 - [ ] highlighting
-
-More idiomatic zsh
-
-- [x] don't use quotation marks when not needed
-- [x] rework variable values to support using (( ${+var} )) instead of [[ -n "$var" ]]
-- [x] no `if [[ $var == true ]]` where just  `if $var` would work
-- [x] any other places to tighten up boolean checks
-- [ ] maybe split abbr into its own file, and autoload it

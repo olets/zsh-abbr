@@ -1,3 +1,57 @@
+# [3.2](https://github.com/olets/zsh-abbr/compare/v3.1.2...v3.2) (2020-04-07)
+
+Key changes:
+- Significantly faster initialization, significantly faster time per add
+- Linux-friendly paths (with help from @AlwinW. Thanks!)
+- More informative error messages
+- Git alias import works again
+- Two abbreviations are created for each Git alias, `abbr <alias>` and `abbr -g g<alias>`
+- The user abbreviation file is kept alphabetized
+- Anything in the user abbreviation file other than abbr commands is ignored and, after the first syncing action, sanitized away
+- Erase does not insist that you pass the correct scope and type flags
+- Under the hood updates to use more idiomatic zsh
+
+### Bug Fixes
+
+* **git aliases:** one alias per array element ([72b0bd7](https://github.com/olets/zsh-abbr/commit/72b0bd709f52f7ca831fae6a16d1a173c52310d1))
+* **git aliases:** proper quoting ([44432b2](https://github.com/olets/zsh-abbr/commit/44432b26fad4c4ff3df54a245e8eb38b2d6ff01b))
+* **import aliases:** point to correct command ([2fe9cbf](https://github.com/olets/zsh-abbr/commit/2fe9cbfeb23cd8c875dfc51768e4b2f5cffd8301))
+* **initialization:** correct file name ([d1e29eb](https://github.com/olets/zsh-abbr/commit/d1e29eb9b9b0359d2ccddb444168760c37b05a29))
+* **job:** typo missing '/' in '/tmp/zsh-abbr-jobs' ([e83f54c](https://github.com/olets/zsh-abbr/commit/e83f54caa0f4ed91908ec2ccb8ce974dfec1f22e))
+* **job stack:** play nice with bad options ([c84a1bf](https://github.com/olets/zsh-abbr/commit/c84a1bf33529036257d8e3c654b95df6459d7c71))
+* **quotation marks:** unsetting assoc array element requires quotes... ([22336be](https://github.com/olets/zsh-abbr/commit/22336bef67a356281e4d271b1007292a7dca3460))
+* **temp files:** directory path plays nice with macos and linux ([814d121](https://github.com/olets/zsh-abbr/commit/814d121776b19e0d2e3b8c594fc9d0cd910cfc37))
+* **tests:** test file is removed after tests run ([77b0753](https://github.com/olets/zsh-abbr/commit/77b0753e0a3c51bf16fafb8e77a0af9d59bb4d93))
+
+
+### Features
+
+* **add, job stack:** error messages are more informative ([3611d33](https://github.com/olets/zsh-abbr/commit/3611d33ade5516c9a2bd12aa7a2d4063631d3a1a))
+* **alias, list, sync user:** alphabetize, case-insensitively ([459923c](https://github.com/olets/zsh-abbr/commit/459923cfa0cf6a48d84cd972b102e478d8cad6d0))
+* **debugging:** support debug messages ([add63cb](https://github.com/olets/zsh-abbr/commit/add63cb9cf6f664dc6b9d52664c0b18c230bb57e))
+* **dry run:** support env variable ([a7df1d7](https://github.com/olets/zsh-abbr/commit/a7df1d7b6fa03de51384223c95db715f8a77dd48))
+* **erase:** guess unspecified type + scope; list if multiple matches ([1976228](https://github.com/olets/zsh-abbr/commit/19762280638b238666373ecb96c2e28b2d6cd04a))
+* **erase, rename:** support dry run ([c18a57d](https://github.com/olets/zsh-abbr/commit/c18a57ddc3d372feab9ec3fa3db542899504eab1))
+* **export aliases:** use list utility to support all quotation levels ([ababcfd](https://github.com/olets/zsh-abbr/commit/ababcfdbc824cd8f358d2d23e55be9f150a30a05))
+* **fish:** no longer any need to warn about quotation marks ([a2878ea](https://github.com/olets/zsh-abbr/commit/a2878ea0e5b207f729a84ad8c58dd7b4422b0832))
+* **git aliases:** add unprefixed command aliases ([4a7ab7e](https://github.com/olets/zsh-abbr/commit/4a7ab7eb4595a2f394c796acdc3578c60e10f775))
+* **git aliases:** skip function aliases ([2733d6b](https://github.com/olets/zsh-abbr/commit/2733d6b5b810dc582b2f6fd1c75b11e72a6ffc9d))
+* **importing:** no help instructions when skipping an existing ([b4e406c](https://github.com/olets/zsh-abbr/commit/b4e406c6e4c9732a895edd1d11e5546ce235c7c6))
+* **init:** at no point are the user temp files missing... ([4603f5d](https://github.com/olets/zsh-abbr/commit/4603f5d0b1153a62f2ce7515da955d8ef3d8f239))
+* **init:** only run abbr commands in user file code... ([93f2024](https://github.com/olets/zsh-abbr/commit/93f20244a7158d57d07df5c0957d9a1c79dc923c))
+* **init:** remove deprecated temp files ([af1e348](https://github.com/olets/zsh-abbr/commit/af1e3483de06157e2e8046beaf8965eec632ed41))
+* **init, performance:** check to see if file exists before deleting ([6cc58d3](https://github.com/olets/zsh-abbr/commit/6cc58d3537f7514a5bd0e29af1488cb986ad1d28))
+* **job pop:** don't add variable to session unnecessarily ([c3af3d7](https://github.com/olets/zsh-abbr/commit/c3af3d7ba9ef10af271ef97875abc842935ebb4e))
+* **job stack:** better error message ([a3980df](https://github.com/olets/zsh-abbr/commit/a3980df8bb85f6f071becc34b88a01741887ece3))
+* **job stack:** ignore session-scope activity ([9cd9616](https://github.com/olets/zsh-abbr/commit/9cd9616f2d2d5cd6f8022e49b56445dede336a33))
+* **job stack:** prevent possibility of collision between sessions ([099145a](https://github.com/olets/zsh-abbr/commit/099145ac1c982149942c9c19a840e030eba1bcd5))
+* **job stack:** surface the current job's identity ([3257867](https://github.com/olets/zsh-abbr/commit/3257867b6af4e39407b252714773f3a648b4ac1c))
+* **job stack, performance:** max one stack item per session ([f50df95](https://github.com/olets/zsh-abbr/commit/f50df958d263418c3bb7a79cba9de01ce6aefd64))
+* **list:** reinstate option to list abbreviations without expansions ([99a16e2](https://github.com/olets/zsh-abbr/commit/99a16e2c187b3df4a1957961b933aff07f7b848c))
+* **rename, add:** error includes type and scope ([cdf22c0](https://github.com/olets/zsh-abbr/commit/cdf22c0aa117225b80264742f4663924291fafe6))
+
+
+
 # [3.1.2](https://github.com/olets/zsh-abbr/compare/v3.1.1...v3.1.2) (2020-03-22)
 
 ### Features
