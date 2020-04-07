@@ -214,7 +214,7 @@ _zsh_abbr() {
       done < <(alias -g)
 
       if ! (( dry_run )); then
-        echo "Aliases imported. It is recommended that you look over \$ZSH_ABBR_USER_PATH to confirm there are no quotation mark-related problems\\n"
+        echo "Aliases imported."
       fi
     }
 
@@ -264,8 +264,8 @@ _zsh_abbr() {
         key=${${git_alias%% *}#alias.}
         value=${git_alias#* }
 
-        if [[ ${value[1]} == '!' || ${${(z)value}[1]} == 'git' ]]; then
-          echo "Skipped\n  $git_alias\n"
+        if [[ ${value[1]} == '!' ]]; then
+          echo "\\nThe following Git alias was not imported because it is a function:\\n  $git_alias\\n"
         else
           if ! (( ZSH_ABBR_INITIALIZING )); then
             abbreviation=${(q)abbreviation}
@@ -279,6 +279,10 @@ _zsh_abbr() {
           _zsh_abbr:util_add "$key" "git $value"
         fi
       done
+
+      if ! (( dry_run )); then
+        echo "Git aliases imported."
+      fi
     }
 
     function _zsh_abbr:list() {
@@ -448,7 +452,13 @@ _zsh_abbr() {
       fi
 
       if ! (( success )); then
-        _zsh_abbr:util_error " add: A ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` already exists"
+        message="A ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` already exists"
+
+        if (( importing )); then
+          echo "$message"
+        else
+          _zsh_abbr:util_error " add: $message"
+        fi
       fi
     }
 
@@ -654,12 +664,15 @@ _zsh_abbr() {
           ;;
         "--import-aliases")
           _zsh_abbr:util_set_once "action" "import_aliases"
+          importing=1
           ;;
         "--import-fish")
           _zsh_abbr:util_set_once "action" "import_fish"
+          importing=1
           ;;
         "--import-git-aliases")
           _zsh_abbr:util_set_once "action" "import_git_aliases"
+          importing=1
           ;;
         "--list")
           _zsh_abbr:util_set_once "action" "list"
