@@ -17,7 +17,7 @@ zsh\-abbr \- manage zsh abbreviations
 
 \fBabbr \-\-import\-fish\fR <\fIfile\fR>
 
-\fBabbr \-\-import\-git\-aliases\fR [\fIscope\fR]
+\fBabbr \-\-import\-git\-aliases\fR
 
 \fBabbr \-\-list\fR
 
@@ -79,7 +79,7 @@ Adds abbreviations exported from fish.
 .IP \(bu
 \fB\-\-import\-git\-aliases\fR
 
-Adds abbreviations for all git aliases. Abbreviations are prefixed with "g", expansions are prefixed with "git ".
+Adds two abbreviations for each git alias: a regular abbreviation, and a "g"-prefixed global abbreviation.
 
 .IP \(bu
 \fBabbr \-\-list\fR

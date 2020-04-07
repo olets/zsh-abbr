@@ -121,7 +121,7 @@ Your branch is up to date with 'origin/master'.
 
 # Make the switch from aliases
 % abbr --import-aliases
-% abbr -g --import-git-aliases
+% abbr --import-git-aliases
 ```
 
 ## Usage
@@ -169,7 +169,7 @@ Default is regular.
   | (--help | -h)
   | --import-aliases [(--global | -g)] [--dry-run]
   | --import-fish [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] arg
-  | --import-git-aliases [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run]
+  | --import-git-aliases [(--session | -S) | (--user | -U)] [--dry-run]
   | (--list-abbreviations | -l) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
   | (--list-commands | -L | -s) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
   | (--rename | -R ) [(--session | -S) | (--user | -U)] [(--global | -g)] [(--global | -g)] [--dry-run] args
@@ -328,29 +328,35 @@ Use `--dry-run` to see what would result, without making any actual changes.
 ##### Git Aliases
 
 ```shell
-abbr --import-git-aliases [(--global | -g)] [--dry-run]
+abbr --import-git-aliases [--dry-run]
 ```
 
-Add abbreviations for every Git alias available in the current session. WORDs are prefixed with `g`; EXPANSIONs are prefixed with `git[Space]`.
+Add two abbreviations for every Git alias available in the current session: a global abbreviation where the WORD is prefixed with `g`, and a command abbreviation. For both the EXPANSION is prefixed with `git[Space]`.
 
 Use the **--session**  or **-S** scope flag to create session abbreviations. Otherwise, or if the **--user** or **-U** scope flag is used, the Git abbreviations will be user.
 
-Use the **--global** or **-g** type flag to create global abbreviations.
-
 ```shell
 % git config alias.co checkout
+
+# session
 % abbr --import-git-aliases -S
-% gco[Space] # expands to git checkout
+% gco[Space] # git checkout
+% echo gco[Space] # echo git checkout
+% co[Space] # git checkout
+% echo co[Space] # echo co
 % source ~/.zshrc
-% gco[Space] # no expansion
+% gco[Space] # gco
+
+# user
 % abbr --import-git-aliases
+% gco[Space] # git checkout
 % source ~/.zshrc
-% gco[Space] # expands to git checkout
+% gco[Space] # git checkout
 ```
 
 Note for users migrating from Oh-My-Zsh: [OMZ's Git aliases are shell aliases](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh), not aliases in the Git config. To add abbreviations for them, use **import-aliases**.
 
-Note that zsh-abbr does not lint the imported abbreviations. An effort is made to correctly wrap the expansion in single or double quotes, but it is possible that importing will add an abbreviation with a quotation mark problem in the expansion. It is up to the user to double check the result before taking further actions.
+Note that zsh-abbr does not lint the imported abbreviations. It is up to the user to double check the result before taking further actions.
 
 Use `--dry-run` to see what would result, without making any actual changes.
 

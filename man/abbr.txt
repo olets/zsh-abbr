@@ -20,7 +20,7 @@ SYNOPSIS
 
        abbr --import-fish <file>
 
-       abbr --import-git-aliases [scope]
+       abbr --import-git-aliases
 
        abbr --list
 
@@ -90,8 +90,8 @@ Options
 
        o      --import-git-aliases
 
-              Adds  abbreviations  for all git aliases. Abbreviations are pre-
-              fixed with "g", expansions are prefixed with "git ".
+              Adds  two  abbreviations for each git alias: a regular abbrevia-
+              tion, and a "g"-prefixed global abbreviation.
 
 
        o      abbr --list

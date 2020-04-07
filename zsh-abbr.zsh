@@ -272,13 +272,13 @@ _zsh_abbr() {
             expansion=${(q)expansion}
           fi
 
+          type="global"
           _zsh_abbr:util_add "g$key" "git $value"
+
+          type="regular"
+          _zsh_abbr:util_add "$key" "git $value"
         fi
       done
-
-      if ! (( dry_run )); then
-        echo "Aliases imported. It is recommended that you look over \$ZSH_ABBR_USER_PATH to confirm there are no quotation mark-related problems\\n"
-      fi
     }
 
     function _zsh_abbr:list() {
