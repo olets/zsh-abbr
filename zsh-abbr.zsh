@@ -204,13 +204,13 @@ _zsh_abbr() {
       fi
 
       while read -r _alias; do
-        add $_alias
+        _zsh_abbr:add $_alias
       done < <(alias -r)
 
       type='global'
 
       while read -r _alias; do
-        add $_alias
+        _zsh_abbr:add $_alias
       done < <(alias -g)
 
       if ! (( dry_run )); then
