@@ -264,12 +264,16 @@ _zsh_abbr() {
         key=${${git_alias%% *}#alias.}
         value=${git_alias#* }
 
-        if ! (( ZSH_ABBR_INITIALIZING )); then
-          abbreviation=${(q)abbreviation}
-          expansion=${(q)expansion}
-        fi
+        if [[ ${value[1]} == '!' || ${${(z)value}[1]} == 'git' ]]; then
+          echo "Skipped\n  $git_alias\n"
+        else
+          if ! (( ZSH_ABBR_INITIALIZING )); then
+            abbreviation=${(q)abbreviation}
+            expansion=${(q)expansion}
+          fi
 
-        _zsh_abbr:util_add "g$key" "git $value"
+          _zsh_abbr:util_add "g$key" "git $value"
+        fi
       done
 
       if ! (( dry_run )); then
