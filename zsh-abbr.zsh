@@ -241,7 +241,7 @@ _zsh_abbr() {
       done < $input_file
 
       if ! (( dry_run )); then
-        echo "Abbreviations imported. It is recommended that you look over \$ZSH_ABBR_USER_PATH to confirm there are no quotation mark-related problems\\n"
+        echo "Abbreviations imported.\\n"
       fi
     }
 
