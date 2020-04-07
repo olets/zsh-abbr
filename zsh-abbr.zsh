@@ -842,8 +842,8 @@ _zsh_abbr_init() {
     REGULAR_USER_ABBREVIATIONS=()
     GLOBAL_USER_ABBREVIATIONS=()
 
-    function _zsh_abbr_init:configure() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_init:configure"
+    function _zsh_abbr_init:create() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_init:create"
 
       if ! [ -d ${TMPDIR:-/tmp/}zsh-abbr ]; then
         mkdir -p ${TMPDIR:-/tmp/}zsh-abbr
@@ -919,12 +919,12 @@ _zsh_abbr_init() {
 
     ZSH_ABBR_INITIALIZING=1
     _zsh_abbr_job_push $job initialization
-    _zsh_abbr_init:configure
+    _zsh_abbr_init:create
     _zsh_abbr_init:seed
     _zsh_abbr_job_pop $job
     ZSH_ABBR_INITIALIZING=0
   } always {
-    unfunction -m _zsh_abbr_init:configure
+    unfunction -m _zsh_abbr_init:create
     unfunction -m _zsh_abbr_init:seed
   }
 }
