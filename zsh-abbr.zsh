@@ -249,15 +249,16 @@ _zsh_abbr() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:import_git_aliases"
 
       local git_aliases
-      local abbr_git_aliases
 
       if [[ $# > 0 ]]; then
         _zsh_abbr:util_error " import-git-aliases: Unexpected argument"
         return
       fi
 
-      git_aliases=(${(@f)$(git config --get-regexp '^alias\.')})
-      typeset -A abbr_git_aliases
+      typeset -a git_aliases
+      while read -r line; do
+        git_aliases+=($line)
+      done < <(git config --get-regexp '^alias\.')
 
       for git_alias in $git_aliases; do
         key=${$(echo - $git_alias | awk '{print $1;}')##alias.}
