@@ -9,10 +9,10 @@
 
 # Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
-ZSH_ABBR_DEFAULT_BINDINGS="${ZSH_ABBR_DEFAULT_BINDINGS=1}"
+ZSH_ABBR_DEFAULT_BINDINGS=${ZSH_ABBR_DEFAULT_BINDINGS=1}
 
 # File abbreviations are stored in
-ZSH_ABBR_USER_PATH="${ZSH_ABBR_USER_PATH="${HOME}/.config/zsh/abbreviations"}"
+ZSH_ABBR_USER_PATH=${ZSH_ABBR_USER_PATH=${HOME}/.config/zsh/abbreviations}
 
 
 # FUNCTIONS
@@ -105,7 +105,7 @@ _zsh_abbr() {
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
           if ! (( ZSH_ABBR_INITIALIZING )); then
-            source "${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations"
+            source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
           fi
 
           if (( ${+GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
@@ -116,7 +116,7 @@ _zsh_abbr() {
 
         if [[ $type != 'global' ]]; then
           if ! (( ZSH_ABBR_INITIALIZING )); then
-            source "${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations"
+            source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
           fi
 
           if (( ${+REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
