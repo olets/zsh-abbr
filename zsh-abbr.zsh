@@ -982,7 +982,8 @@ _zsh_abbr_job_push() {
 
       echo "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job%.*}) has timed out."
       echo "The job was related to $(cat $next_job_path)."
-      echo "Please report this at https://github.com/olets/zsh-abbr/issues/new"
+      echo "This could be the result of manually terminating an zsh-abbr activity, for example during session startup."
+      echo "If you believe it reflects a zsh-abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
       echo
 
       rm $next_job_path &>/dev/null
