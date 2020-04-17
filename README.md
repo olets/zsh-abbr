@@ -258,7 +258,7 @@ Switched to branch 'master'
 % gcm[Space|Enter] # normal
 ```
 
-User abbreviations can also be manually erased from the `ZSH_USER_ABBREVIATIONS_PATH`. See **Storage** below.
+User abbreviations can also be manually erased from the `ZSH_ABBR_USER_PATH`. See **Storage** below.
 
 #### Expand
 
@@ -385,7 +385,7 @@ To migrate from zsh-abbr < 3:
 zsh
 abbr [(--global|-g)] [SCOPE] ${HOME}/.config/zsh/universal-abbreviations
 # zsh-abbr > 2 no longer uses that file
-# If not customizing `ZSH_USER_ABBREVIATIONS_PATH=${HOME}/.config/zsh/universal-abbreviations` feel free to
+# If not customizing `ZSH_ABBR_USER_PATH=${HOME}/.config/zsh/universal-abbreviations` feel free to
 # rm ${HOME}/.config/zsh/universal-abbreviations
 ```
 
@@ -500,7 +500,7 @@ Rename is scope- and type-specific. If you get a "no matching abbreviation" erro
 
 Use `--dry-run` to see what would result, without making any actual changes..
 
-Abbreviations can also be manually renamed in the `ZSH_USER_ABBREVIATIONS_PATH`. See **Storage** below.
+Abbreviations can also be manually renamed in the `ZSH_ABBR_USER_PATH`. See **Storage** below.
 
 ## Configuration
 
@@ -512,12 +512,12 @@ When zsh-abbr updates the user abbreviations storage file, global user abbreviat
 
 _It is possible for direct edits to the storage file to be lost_ if you start a zsh session, make a change in the file, and then make a change via the open session. Run `source ~/.zshrc` in all open sessions after directly editing the user abbreviations storage file.
 
-The user abbreviations storage file's default location is `${HOME}/.config/zsh/abbreviations`. Customize this by setting the `ZSH_USER_ABBREVIATIONS_PATH` variable in your `.zshrc` before loading zsh-abbr.
+The user abbreviations storage file's default location is `${HOME}/.config/zsh/abbreviations`. Customize this by setting the `ZSH_ABBR_USER_PATH` variable in your `.zshrc` before loading zsh-abbr.
 
 ```shell
 % cat ~/.zshrc
 # -- snip --
-ZSH_USER_ABBREVIATIONS_PATH="path/to/my/user/abbreviations"
+ZSH_ABBR_USER_PATH="path/to/my/user/abbreviations"
 # -- snip --
 # load zsh-abbr
 ```
@@ -550,7 +550,7 @@ bindkey "^A" _zsh_abbr_expand_space
 Delete the zsh-abbr configuration directory. Note that this will permanently delete the user abbreviations file.
 
 ```shell
-% rm -rf $(dirname "$ZSH_USER_ABBREVIATIONS_PATH")
+% rm -rf $(dirname "$ZSH_ABBR_USER_PATH")
 ```
 
 Then follow the standard uninstallation procedure for your installation method. This is typically the reverse of what you did to install.
