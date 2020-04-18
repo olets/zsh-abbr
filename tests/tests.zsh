@@ -162,4 +162,97 @@ echo $message
 abbr -e $abbreviation
 echo
 
+# Can import aliases
+abbreviation=zsh_abbr_test_alias
+expansion=abc
+message="importing a single-word alias "
+alias $abbreviation=$expansion
+abbr --import-aliases
+if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
+	message+="passed"
+else
+	message+="failed"
+fi
+echo $message
+abbr -e $abbreviation
+echo
+unalias $abbreviation
+rm $ZSH_ABBR_USER_PATH
+touch $ZSH_ABBR_USER_PATH
+source ${0:A:h}/../zsh-abbr.zsh
+
+# Can import a multi-word alias
+abbreviation=zsh_abbr_test_alias
+expansion="a b"
+message="importing a multi-word alias "
+alias $abbreviation=$expansion
+abbr --import-aliases
+if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
+	message+="passed"
+else
+	message+="failed"
+fi
+echo $message
+abbr -e $abbreviation
+echo
+unalias $abbreviation
+rm $ZSH_ABBR_USER_PATH
+touch $ZSH_ABBR_USER_PATH
+source ${0:A:h}/../zsh-abbr.zsh
+
+# Can import a double-quoted alias with escaped double quotation marks
+abbreviation=zsh_abbr_test_alias
+expansion="a \"b\""
+message="importing a double-quoted multi-word alias with escape double quotes "
+alias $abbreviation=$expansion
+abbr --import-aliases
+if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
+	message+="passed"
+else
+	message+="failed"
+fi
+echo $message
+abbr -e $abbreviation
+echo
+unalias $abbreviation
+rm $ZSH_ABBR_USER_PATH
+touch $ZSH_ABBR_USER_PATH
+source ${0:A:h}/../zsh-abbr.zsh
+
+# Can import a single-quoted alias with double quotation marks
+abbreviation=zsh_abbr_test_alias
+expansion='a "b"'
+message="importing a single-quoted multi-word alias with double quotes "
+alias $abbreviation=$expansion
+abbr --import-aliases
+if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
+	message+="passed"
+else
+	message+="failed"
+fi
+echo $message
+abbr -e $abbreviation
+echo
+unalias $abbreviation
+rm $ZSH_ABBR_USER_PATH
+touch $ZSH_ABBR_USER_PATH
+source ${0:A:h}/../zsh-abbr.zsh
+
+# Can import a double-quoted alias with single quotation marks
+abbreviation=zsh_abbr_test_alias
+expansion="a 'b'"
+message="importing a double-quoted multi-word alias with single quotes "
+alias $abbreviation=$expansion
+abbr --import-aliases
+if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
+	message+="passed"
+else
+	message+="failed"
+fi
+echo $message
+abbr -e $abbreviation
+echo
+unalias $abbreviation
+
+
 rm $ZSH_ABBR_USER_PATH

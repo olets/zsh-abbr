@@ -196,6 +196,8 @@ _zsh_abbr() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:import_aliases"
 
       local _alias
+      local abbreviation
+      local expansion
 
       if [[ $# > 0 ]]; then
         _zsh_abbr:util_error " import-aliases: Unexpected argument"
@@ -203,13 +205,13 @@ _zsh_abbr() {
       fi
 
       while read -r _alias; do
-        _zsh_abbr:add $_alias
+        _zsh_abbr:util_import_alias $_alias
       done < <(alias -r)
 
       type='global'
 
       while read -r _alias; do
-        _zsh_abbr:add $_alias
+        _zsh_abbr:util_import_alias $_alias
       done < <(alias -g)
 
       if ! (( dry_run )); then
@@ -502,6 +504,16 @@ _zsh_abbr() {
       should_exit=1
     }
 
+    function _zsh_abbr:util_import_alias() {
+      local abbreviation
+      local expansion
+
+      abbreviation=${1%%=*}
+      expansion=${1#*=}
+
+      _zsh_abbr:util_add $abbreviation "$(echo $expansion)"
+    }
+
     function _zsh_abbr:util_list() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_list"
 
@@ -752,6 +764,7 @@ _zsh_abbr() {
     unfunction -m _zsh_abbr:util_add
     unfunction -m _zsh_abbr:util_alias
     unfunction -m _zsh_abbr:util_error
+    unfunction -m _zsh_abbr:util_import_alias
     unfunction -m _zsh_abbr:util_list
     unfunction -m _zsh_abbr:util_list_item
     unfunction -m _zsh_abbr:util_set_once
