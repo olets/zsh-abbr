@@ -853,6 +853,12 @@ _zsh_abbr_init() {
     REGULAR_USER_ABBREVIATIONS=()
     GLOBAL_USER_ABBREVIATIONS=()
 
+    function _zsh_abbr_init:protected_cmds() {
+      _zsh_abbr_ls() {
+        \command \ls $@
+      }
+    }
+
     function _zsh_abbr_init:create() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_init:create"
 
@@ -929,6 +935,7 @@ _zsh_abbr_init() {
     }
 
     ZSH_ABBR_INITIALIZING=1
+    _zsh_abbr_init:protected_cmds
     _zsh_abbr_job_push $job initialization
     _zsh_abbr_init:create
     _zsh_abbr_init:seed
@@ -972,7 +979,7 @@ _zsh_abbr_job_push() {
     function _zsh_abbr_job_push:next_job_id() {
       # cannout support debug message
 
-      ls -t $job_dir | tail -1
+      _zsh_abbr_ls -t $job_dir | tail -1
     }
 
     function _zsh_abbr_job_push:handle_timeout() {
