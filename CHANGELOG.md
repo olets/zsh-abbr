@@ -1,3 +1,9 @@
+# [3.2.1](https://github.com/olets/zsh-abbr/compare/v3.2...v3.2.1) (2020-04-18)
+
+### Features
+
+* **ls:** wrap command to not follow potential alias [#13](https://github.com/olets/zsh-abbr/issues/13) ([a5d7c1d](https://github.com/olets/zsh-abbr/commit/a5d7c1d6f3aa0d6e4b4839c3c3c40c80b876e7a7))
+
 # [3.2](https://github.com/olets/zsh-abbr/compare/v3.1.2...v3.2) (2020-04-07)
 
 Key changes:
