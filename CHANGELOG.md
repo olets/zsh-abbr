@@ -1,3 +1,12 @@
+# [3.2.2](https://github.com/olets/zsh-abbr/compare/v3.2.1...v3.2.2) (2020-04-18)
+
+
+### Bug Fixes
+
+* **import aliases:** support multi-word aliases and a variety of quote levels, with [@allisio](https://github.com/allisio) [#15](https://github.com/olets/zsh-abbr/pull/15)
+
+
+
 # [3.2.1](https://github.com/olets/zsh-abbr/compare/v3.2...v3.2.1) (2020-04-18)
 
 ### Features
@@ -168,7 +177,7 @@ Parity with zsh alias's behavior: syntax is `abbreviation=word` instead of fish 
 
 ### Bug Fixes
 
-* **scratch file:** Linux compatibility (#3 by @ifreund) ([0e647cd](https://github.com/olets/zsh-abbr/commit/0e647cdf2d07c55b14fb98a6b3a39911c9bdb49d))
+* **scratch file:** Linux compatibility ([#3](https://github.com/olets/zsh-abbr/pull/3) by [@ifreund](https://github.com/olets/zsh-abbr/commits?author=ifreund)) ([0e647cd](https://github.com/olets/zsh-abbr/commit/0e647cdf2d07c55b14fb98a6b3a39911c9bdb49d))
 
 ### Features
 
