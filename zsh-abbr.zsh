@@ -269,8 +269,8 @@ _zsh_abbr() {
           echo "\\nThe following Git alias was not imported because it is a function:\\n  $git_alias\\n"
         else
           if ! (( ZSH_ABBR_INITIALIZING )); then
-            abbreviation=${(q)abbreviation}
-            expansion=${(q)expansion}
+            key=${(q)key}
+            value=${(q)value}
           fi
 
           type="global"
