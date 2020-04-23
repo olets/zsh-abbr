@@ -1,6 +1,6 @@
 # fish shell-like abbreviation management for zsh.
 # https://github.com/olets/zsh-abbr
-# v3.2.2
+# v3.2.3
 # Copyright (c) 2019-2020 Henry Bley-Vroman
 
 
@@ -24,10 +24,10 @@ _zsh_abbr() {
           text_bold text_reset type version
     dry_run=${ZSH_ABBR_DRY_RUN:-0}
     number_opts=0
-    release_date="April 18 2020"
+    release_date="April 22 2020"
     text_bold="\\033[1m"
     text_reset="\\033[0m"
-    version="zsh-abbr version 3.2.2"
+    version="zsh-abbr version 3.2.3"
 
     function _zsh_abbr:add() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:add"

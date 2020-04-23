@@ -1,3 +1,12 @@
+# [v3.2.3](https://github.com/olets/zsh-abbr/compare/v3.2.2...v3.2.3) (2020-04-23)
+
+
+### Bug Fixes
+
+* **import git aliases:** preserve quotation marks ([aa62bd2](https://github.com/olets/zsh-abbr/commit/aa62bd289c8b1d1e4068679f9a6d9139930a9db7))
+
+
+
 # [3.2.2](https://github.com/olets/zsh-abbr/compare/v3.2.1...v3.2.2) (2020-04-18)
 
 
