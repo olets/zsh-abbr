@@ -153,13 +153,20 @@ Options
               o      --dry-run  Show whats the result of the command would be.
 
 
+       All except for  --clear-session,  --expand,  --export-aliases,  --list-
+       abbreviations, and --list-commands can be run with reduced output:
+
+
+              o      --quiet Do not log success, warning, or error messages.
+
+
        See INTERNALS for more information.
 
 
 EXAMPLES
        abbr gco="git checkout"
 
-              "gco" will be expanded as "git checkout" when it  is  the  first
+              "gco"  will  be  expanded as "git checkout" when it is the first
               word in the command, in all open and future sessions.
 
 
@@ -177,9 +184,9 @@ EXAMPLES
 
        abbr -e -S -g gco;
 
-              Erase  the  global session abbreviation "gco". Note that because
+              Erase the global session abbreviation "gco". Note  that  because
               expansion is triggered by [SPACE] and [ENTER], the semicolon (;)
-              is  necessary  to  prevent  expansion  when  operating on global
+              is necessary to  prevent  expansion  when  operating  on  global
               abbreviations.
 
 

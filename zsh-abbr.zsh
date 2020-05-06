@@ -20,14 +20,19 @@ ZSH_ABBR_USER_PATH=${ZSH_ABBR_USER_PATH=${HOME}/.config/zsh/abbreviations}
 
 _zsh_abbr() {
   {
-    local action number_opts opt dry_run release_date scope should_exit \
-          text_bold text_reset type version
+    local action dry_run has_error number_opts opt logs output quiet \
+          release_date scope should_exit text_bold text_reset type version
     dry_run=${ZSH_ABBR_DRY_RUN:-0}
     number_opts=0
+    quiet=${ZSH_ABBR_QUIET:-0}
     release_date="April 22 2020"
     text_bold="\\033[1m"
     text_reset="\\033[0m"
     version="zsh-abbr version 3.2.3"
+
+    if (( ZSH_ABBR_INITIALIZING )); then
+      quiet=1
+    fi
 
     function _zsh_abbr:add() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:add"
@@ -36,7 +41,7 @@ _zsh_abbr() {
       local expansion
 
       if [[ $# > 1 ]]; then
-        _zsh_abbr:util_error " add: Expected one argument, got $#: $*"
+        _zsh_abbr:util_error "abbr add: Expected one argument, got $#: $*"
         return
       fi
 
@@ -49,7 +54,7 @@ _zsh_abbr() {
       fi
 
       if ! [[ $abbreviation && $expansion && $abbreviation != $1 ]]; then
-        _zsh_abbr:util_error " add: Requires abbreviation and expansion"
+        _zsh_abbr:util_error "abbr add: Requires abbreviation and expansion"
         return
       fi
 
@@ -60,7 +65,7 @@ _zsh_abbr() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:clear_session"
 
       if [[ $# > 0 ]]; then
-        _zsh_abbr:util_error " clear-session: Unexpected argument"
+        _zsh_abbr:util_error "abbr clear-session: Unexpected argument"
         return
       fi
 
@@ -76,10 +81,10 @@ _zsh_abbr() {
       local message
 
       if [[ $# > 1 ]]; then
-        _zsh_abbr:util_error " erase: Expected one argument"
+        _zsh_abbr:util_error "abbr erase: Expected one argument"
         return
       elif [[ $# < 1 ]]; then
-        _zsh_abbr:util_error " erase: Erase needs a variable name"
+        _zsh_abbr:util_error "abbr erase: Erase needs a variable name"
         return
       fi
 
@@ -127,19 +132,19 @@ _zsh_abbr() {
       fi
 
       if ! (( ${#abbreviations_sets} )); then
-        _zsh_abbr:util_error " erase: No ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` found"
+        _zsh_abbr:util_error "abbr erase: No ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` found"
       elif [[ ${#abbreviations_sets} == 1 ]]; then
-        if (( dry_run )); then
-          echo "Erase ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
-        else
+        if ! (( dry_run )); then
           unset "${abbreviations_sets}[${(b)abbreviation}]" # quotation marks required
 
           if [[ $abbreviations_sets =~ USER ]]; then
             _zsh_abbr:util_sync_user
           fi
         fi
+
+        _zsh_abbr:util_log "$fg[green]Erased$reset_color ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
       else
-        message=" erase: Multiple abbreviations \`$abbreviation\`. Please specify one of\\n"
+        message="$fg[red]Did not erase$reset_color abbreviation \`$abbreviation\`. Please specify one of\\n"
 
         for abbreviations_set in ${abbreviations_sets[@]}; do
           message+="  ${${${abbreviations_set:l}//_/ }//abbreviations/}\\n"
@@ -158,7 +163,7 @@ _zsh_abbr() {
       abbreviation=$1
 
       if [[ $# != 1 ]]; then
-        echo "expand requires exactly one argument"
+        _zsh_abbr:util_error "abbr expand: requires exactly one argument"
         return
       fi
 
@@ -167,8 +172,7 @@ _zsh_abbr() {
       if [ ! "$expansion" ]; then
         expansion=$(_zsh_abbr_global_expansion "$abbreviation")
       fi
-
-      echo - "${(Q)expansion}"
+      _zsh_abbr:util_print "${(Q)expansion}"
     }
 
     function _zsh_abbr:export_aliases() {
@@ -181,7 +185,7 @@ _zsh_abbr() {
       output_path=$1
 
       if [[ $# > 1 ]]; then
-        _zsh_abbr:util_error " export-aliases: Unexpected argument"
+        _zsh_abbr:util_error "abbr export-aliases: Unexpected argument"
         return
       fi
 
@@ -200,7 +204,7 @@ _zsh_abbr() {
       local expansion
 
       if [[ $# > 0 ]]; then
-        _zsh_abbr:util_error " import-aliases: Unexpected argument"
+        _zsh_abbr:util_error "abbr import-aliases: Unexpected argument"
         return
       fi
 
@@ -213,10 +217,6 @@ _zsh_abbr() {
       while read -r _alias; do
         _zsh_abbr:util_import_alias $_alias
       done < <(alias -g)
-
-      if ! (( dry_run )); then
-        echo "Aliases imported."
-      fi
     }
 
     function _zsh_abbr:import_fish() {
@@ -227,7 +227,7 @@ _zsh_abbr() {
       local input_file
 
       if [[ $# != 1 ]]; then
-        echo "expand requires exactly one argument"
+        _zsh_abbr:util_error "abbr import-fish: requires exactly one argument"
         return
       fi
 
@@ -240,10 +240,6 @@ _zsh_abbr() {
 
         _zsh_abbr:util_add $abbreviation $expansion
       done < $input_file
-
-      if ! (( dry_run )); then
-        echo "Abbreviations imported.\\n"
-      fi
     }
 
     function _zsh_abbr:import_git_aliases() {
@@ -252,7 +248,7 @@ _zsh_abbr() {
       local git_aliases
 
       if [[ $# > 0 ]]; then
-        _zsh_abbr:util_error " import-git-aliases: Unexpected argument"
+        _zsh_abbr:util_error "abbr import-git-aliases: Unexpected argument"
         return
       fi
 
@@ -266,7 +262,7 @@ _zsh_abbr() {
         value=${git_alias#* }
 
         if [[ ${value[1]} == '!' ]]; then
-          echo "\\nThe following Git alias was not imported because it is a function:\\n  $git_alias\\n"
+          _zsh_abbr:util_warn "The Git alias \`$git_alias\` was not imported because it is a function"
         else
           if ! (( ZSH_ABBR_INITIALIZING )); then
             key=${(q)key}
@@ -280,17 +276,13 @@ _zsh_abbr() {
           _zsh_abbr:util_add "$key" "git $value"
         fi
       done
-
-      if ! (( dry_run )); then
-        echo "Git aliases imported."
-      fi
     }
 
     function _zsh_abbr:list() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:list"
 
       if [[ $# > 0 ]]; then
-        _zsh_abbr:util_error " list: Unexpected argument"
+        _zsh_abbr:util_error "abbr list: Unexpected argument"
         return
       fi
 
@@ -305,7 +297,7 @@ _zsh_abbr() {
       local user_prefix
 
       if [[ $# > 0 ]]; then
-        _zsh_abbr:util_error " list commands: Unexpected argument"
+        _zsh_abbr:util_error "abbr list commands: Unexpected argument"
         return
       fi
 
@@ -322,7 +314,7 @@ _zsh_abbr() {
       local include_expansion
 
       if [[ $# > 0 ]]; then
-        _zsh_abbr:util_error " list definitions: Unexpected argument"
+        _zsh_abbr:util_error "abbr list definitions: Unexpected argument"
         return
       fi
 
@@ -335,11 +327,11 @@ _zsh_abbr() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:print_version"
 
       if [[ $# > 0 ]]; then
-        _zsh_abbr:util_error " version: Unexpected argument"
+        _zsh_abbr:util_error "abbr version: Unexpected argument"
         return
       fi
 
-      echo $version
+      _zsh_abbr:util_print $version
     }
 
     function _zsh_abbr:rename() {
@@ -351,7 +343,7 @@ _zsh_abbr() {
       local old
 
       if [[ $# != 2 ]]; then
-        _zsh_abbr:util_error " rename: Requires exactly two arguments"
+        _zsh_abbr:util_error "abbr rename: Requires exactly two arguments"
         return
       fi
 
@@ -377,7 +369,7 @@ _zsh_abbr() {
         _zsh_abbr:util_add $new_abbreviation $expansion
         _zsh_abbr:erase $current_abbreviation
       else
-        _zsh_abbr:util_error " rename: No ${type:-regular} ${scope:-user} abbreviation $current_abbreviation exists"
+        _zsh_abbr:util_error "abbr rename: No ${type:-regular} ${scope:-user} abbreviation \`$current_abbreviation\` exists"
       fi
     }
 
@@ -394,30 +386,28 @@ _zsh_abbr() {
       success=0
 
       if [[ ${(w)#abbreviation} > 1 ]]; then
-        _zsh_abbr:util_error " add: ABBREVIATION (\`$abbreviation\`) must be only one word"
+        _zsh_abbr:util_error "abbr add: ABBREVIATION (\`$abbreviation\`) must be only one word"
         return
       fi
 
       if [[ ${abbreviation%=*} != $abbreviation ]]; then
-        _zsh_abbr:util_error " add: ABBREVIATION (\`$abbreviation\`) may not contain an equals sign"
+        _zsh_abbr:util_error "abbr add: ABBREVIATION (\`$abbreviation\`) may not contain an equals sign"
       fi
 
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
           if ! (( ${+GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
-            if (( dry_run )); then
-              echo "abbr -S -g $abbreviation=${(Q)expansion}"
-            else
+            if ! (( dry_run )); then
               GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
             fi
+
             success=1
           fi
         elif ! (( ${+REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
-          if (( dry_run )); then
-            echo "abbr -S $abbreviation=${(Q)expansion}"
-          else
+          if ! (( dry_run )); then
             REGULAR_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
           fi
+
           success=1
         fi
       else
@@ -427,12 +417,11 @@ _zsh_abbr() {
           fi
 
           if ! (( ${+GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
-            if (( dry_run )); then
-              echo "abbr -g $abbreviation=${(Q)expansion}"
-            else
+            if ! (( dry_run )); then
               GLOBAL_USER_ABBREVIATIONS[$abbreviation]=$expansion
               _zsh_abbr:util_sync_user
             fi
+
             success=1
           fi
         else
@@ -441,25 +430,20 @@ _zsh_abbr() {
           fi
 
           if ! (( ${+REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
-            if (( dry_run )); then
-              echo "abbr ${(Q)abbreviation}=${(Q)expansion}"
-            else
+            if ! (( dry_run )); then
               REGULAR_USER_ABBREVIATIONS[$abbreviation]=$expansion
               _zsh_abbr:util_sync_user
             fi
+
             success=1
           fi
         fi
       fi
 
-      if ! (( success )); then
-        message="A ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` already exists"
-
-        if (( importing )); then
-          echo "$message"
-        else
-          _zsh_abbr:util_error " add: $message"
-        fi
+      if (( success )); then
+        _zsh_abbr:util_log "$fg[green]Added$reset_color the ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
+      else
+        _zsh_abbr:util_error "The ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` was not added because already exists"
       fi
     }
 
@@ -493,14 +477,14 @@ _zsh_abbr() {
     function _zsh_abbr:util_bad_options() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_bad_options"
 
-      _zsh_abbr:util_error ": Illegal combination of options"
+      _zsh_abbr:util_error "abbr: Illegal combination of options"
     }
 
     function _zsh_abbr:util_error() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_error"
 
-      echo "abbr$@"
-      echo "For help run abbr --help"
+      has_error=1
+      logs+="$fg[red]$@$reset_color\n"
       should_exit=1
     }
 
@@ -581,7 +565,19 @@ _zsh_abbr() {
         result="$prefix $result"
       fi
 
-      echo $result
+      _zsh_abbr:util_print $result
+    }
+
+    function _zsh_abbr:util_log() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_log"
+
+      logs+="$1\n"
+    }
+
+    function _zsh_abbr:util_print() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_print"
+
+      output+="$1\n"
     }
 
     function _zsh_abbr:util_set_once() {
@@ -632,6 +628,13 @@ _zsh_abbr() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_usage"
 
       man abbr 2>/dev/null || cat ${ZSH_ABBR_SOURCE_PATH}/man/abbr.txt | less -F
+    }
+
+    function _zsh_abbr:util_warn() {
+      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_warn"
+
+      has_error=1
+      logs+="$fg[yellow]$@$reset_color\n"
     }
 
     for opt in "$@"; do
@@ -697,6 +700,11 @@ _zsh_abbr() {
         "-s") # "show" is for backwards compatability with v2
           _zsh_abbr:util_set_once "action" "list_commands"
           ;;
+        "--quiet"|\
+        "-q")
+          quiet=1
+          ((number_opts++))
+          ;;
         "--regular"|\
         "-r")
           _zsh_abbr:util_set_once "type" "regular"
@@ -746,6 +754,26 @@ _zsh_abbr() {
     if ! (( ZSH_ABBR_INITIALIZING )); then
       _zsh_abbr_job_pop $job
     fi
+
+    if ! (( quiet )); then
+      if [[ -n $has_error ]]; then
+        logs+="\nFor help run \`abbr --help\`"
+      fi
+
+      if (( dry_run )); then
+        logs+="Dry run. Changes not saved."
+      fi
+
+      output=$logs$output
+    fi
+
+    if [[ -n $has_error ]]; then
+      [[ -n $output ]] && echo - $output >&2
+      return 1
+    else
+      [[ -n $output ]] && echo - $output >&1
+      return 0
+    fi
   } always {
     unfunction -m _zsh_abbr:add
     unfunction -m _zsh_abbr:clear_session
@@ -767,9 +795,12 @@ _zsh_abbr() {
     unfunction -m _zsh_abbr:util_import_alias
     unfunction -m _zsh_abbr:util_list
     unfunction -m _zsh_abbr:util_list_item
+    unfunction -m _zsh_abbr:util_log
+    unfunction -m _zsh_abbr:util_print
     unfunction -m _zsh_abbr:util_set_once
     unfunction -m _zsh_abbr:util_sync_user
     unfunction -m _zsh_abbr:util_usage
+    unfunction -m _zsh_abbr:util_warn
   }
 }
 
@@ -1089,6 +1120,7 @@ abbr() {
 # INITIALIZATION
 # --------------
 
+autoload -U colors && colors
 ZSH_ABBR_SOURCE_PATH=${0:A:h}
 _zsh_abbr_init
 if (( $ZSH_ABBR_DEFAULT_BINDINGS )) || [ $ZSH_ABBR_DEFAULT_BINDINGS = true ]; then

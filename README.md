@@ -161,18 +161,18 @@ Default is regular.
 ### Options
 
 ```shell
-[(--add | -a )] [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] arg
-  | (--clear-session | -c)
-  | (--erase | -e ) [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] arg
+[(--add | -a )] [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] arg
+  | (--clear-session | -c) [--quiet]
+  | (--erase | -e ) [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] arg
   | (--expand | -x) arg
   | --export-aliases [(--session | -S) | (--user | -U)] [(--global | -g)] arg
   | (--help | -h)
-  | --import-aliases [(--global | -g)] [--dry-run]
-  | --import-fish [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] arg
-  | --import-git-aliases [(--session | -S) | (--user | -U)] [--dry-run]
+  | --import-aliases [(--global | -g)] [--dry-run] [--quiet]
+  | --import-fish [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] arg
+  | --import-git-aliases [(--session | -S) | (--user | -U)] [--dry-run] [--quiet]
   | (--list-abbreviations | -l) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
   | (--list-commands | -L | -s) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
-  | (--rename | -R ) [(--session | -S) | (--user | -U)] [(--global | -g)] [(--global | -g)] [--dry-run] args
+  | (--rename | -R ) [(--session | -S) | (--user | -U)] [(--global | -g)] [(--global | -g)] [--dry-run] [--quiet] args
 ]
 ```
 
@@ -183,7 +183,7 @@ zsh-abbr has options to add, rename, and erase abbreviations; to add abbreviatio
 #### Add
 
 ```shell
-abbr [(--add | -a)] [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] ABBREVIATION=EXPANSION
+abbr [(--add | -a)] [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] ABBREVIATION=EXPANSION
 ```
 
 Add a new abbreviation.
@@ -241,7 +241,7 @@ Erase all session abbreviations.
 #### Erase
 
 ```shell
-abbr (--erase | -e) [(--session | -S) | (--user | -U)] [(--global | -g)] ABBREVIATION
+abbr (--erase | -e) [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] ABBREVIATION
 ```
 
 Erase an abbreviation.
@@ -306,7 +306,7 @@ alias g='git'
 ##### Aliases
 
 ```shell
-abbr --import-aliases [--dry-run]
+abbr --import-aliases [--dry-run] [--quiet]
 ```
 
 Add regular abbreviations for every regular alias in the session, and global abbreviations for every global alias in the session.
@@ -328,7 +328,7 @@ Use `--dry-run` to see what would result, without making any actual changes.
 ##### Git Aliases
 
 ```shell
-abbr --import-git-aliases [--dry-run]
+abbr --import-git-aliases [--dry-run] [--quiet]
 ```
 
 Add two abbreviations for every Git alias available in the current session: a global abbreviation where the WORD is prefixed with `g`, and a command abbreviation. For both the EXPANSION is prefixed with `git[Space]`.
@@ -363,7 +363,7 @@ Use `--dry-run` to see what would result, without making any actual changes.
 ##### Fish Abbreviations
 
 ```shell
-abbr --import-fish [(--session | -S) | (--user | -U)] [(--global|-g)] FILE [--dry-run]
+abbr --import-fish [(--session | -S) | (--user | -U)] [(--global|-g)] FILE [--dry-run] [--quiet]
 ```
 
 Import fish abbr-syntax abbreviations (`abbreviation expansion` as compared to zsh abbr's `abbreviation=expansion`).
@@ -478,7 +478,7 @@ b="ball"
 #### Rename
 
 ```shell
-abbr (--rename | -R) [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] OLD NEW
+abbr (--rename | -R) [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] OLD NEW
 ```
 
 Rename an abbreviation.
@@ -572,6 +572,10 @@ Thanks for your interest. Contributions are welcome!
 Check the [Issues](https://github.com/olets/zsh-abbr/issues) to see if your topic has been discussed before or if it is being worked on. You may also want to check the roadmap (see above). Discussing in an Issue before opening a Pull Request means future contributors only have to search in one place.
 
 This project loosely follows the [Angular commit message conventions](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit). This helps with searchability and with the changelog, which is generated automatically and touched up by hand only if necessary. Use the commit message format `<type>(<scope>): <subject>`, where `<type>` is **feat** for new or changed behavior, **fix** for fixes, **docs** for documentation, **style** for under the hood changes related to for example zshisms, **refactor** for other refactors, **test** for tests, or **chore** chore for general maintenance (this will be used primarily by maintainers not contributors, for example for version bumps). `<scope>` is more loosely defined. Look at the [commit history](https://github.com/olets/zsh-abbr/commits/master) for ideas.
+
+To force a dry run without passing `--dry-run`, set `ZSH_ABBR_DRY_RUN` to `1.
+
+To force quiet mode with passing `--quiet`, set `ZSH_ABBR_QUIET` to `1`.
 
 Tests are in the `tests` directory. To run them, replace `zsh-abbr` with `zsh-abbr/tests` in .zshrc. For example, zinit users will run
 

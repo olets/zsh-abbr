@@ -1,3 +1,4 @@
+ZSH_ABBR_QUIET=1
 ZSH_ABBR_USER_PATH=${0:A:h}/abbreviations.$RANDOM
 touch $ZSH_ABBR_USER_PATH
 source ${0:A:h}/../zsh-abbr.zsh
