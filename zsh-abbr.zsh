@@ -484,7 +484,7 @@ _zsh_abbr() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_error"
 
       has_error=1
-      logs+="$fg[red]$@$reset_color\n"
+      logs+="\n$fg[red]$@$reset_color"
       should_exit=1
     }
 
@@ -571,13 +571,13 @@ _zsh_abbr() {
     function _zsh_abbr:util_log() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_log"
 
-      logs+="$1\n"
+      logs+="\n$1"
     }
 
     function _zsh_abbr:util_print() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_print"
 
-      output+="$1\n"
+      output+="\n$1"
     }
 
     function _zsh_abbr:util_set_once() {
@@ -634,7 +634,7 @@ _zsh_abbr() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_warn"
 
       has_error=1
-      logs+="$fg[yellow]$@$reset_color\n"
+      logs+="\n$fg[yellow]$@$reset_color"
     }
 
     for opt in "$@"; do
