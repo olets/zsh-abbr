@@ -262,7 +262,7 @@ _zsh_abbr() {
         value=${git_alias#* }
 
         if [[ ${value[1]} == '!' ]]; then
-          _zsh_abbr:util_warn "The Git alias \`$git_alias\` was not imported because it is a function"
+          _zsh_abbr:util_warn "The Git alias \`$key\` was not imported because its expansion is a function"
         else
           if ! (( ZSH_ABBR_INITIALIZING )); then
             key=${(q)key}
