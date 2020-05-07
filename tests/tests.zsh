@@ -12,9 +12,9 @@ test_abbr="$test_abbr_abbreviation=$test_abbr_expansion"
 message="abbr --add && abbr --list-commands "
 abbr --add $test_abbr
 if [[ $(abbr --list-commands) == "abbr $test_abbr_abbreviation=${(qqq)test_abbr_expansion}" ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 echo
@@ -23,9 +23,9 @@ echo
 message="abbr --erase "
 abbr --erase $test_abbr_abbreviation
 if [[ $(abbr --list-commands) == "" ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 echo
@@ -34,9 +34,9 @@ echo
 message="abbr "
 abbr $test_abbr
 if [[ $(abbr --list-commands) == "abbr $test_abbr_abbreviation=${(qqq)test_abbr_expansion}" ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 abbr -e $test_abbr_abbreviation
@@ -47,9 +47,9 @@ message="abbr --clear-session "
 abbr -S $test_abbr
 abbr --clear-session
 if [[ $(abbr --list-commands) == "" ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 echo
@@ -58,9 +58,9 @@ echo
 message="abbr --expand "
 abbr $test_abbr
 if [[ $(abbr --expand $test_abbr_abbreviation) == $test_abbr_expansion ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 abbr -e $test_abbr_abbreviation
@@ -71,9 +71,9 @@ message="abbr --rename "
 abbr $test_abbr
 abbr --rename $test_abbr_abbreviation ${test_abbr_abbreviation}_new
 if [[ $(abbr -x ${test_abbr_abbreviation}_new) == $test_abbr_expansion ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 abbr -e ${test_abbr_abbreviation}_new
@@ -85,9 +85,9 @@ expansion="b'c'd"
 message="abbr a=$expansion "
 abbr $abbreviation=$expansion
 if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 abbr -e $abbreviation
@@ -99,9 +99,9 @@ expansion='b"c"d'
 message="abbr a=$expansion "
 abbr $abbreviation=$expansion
 if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 abbr -e $abbreviation
@@ -113,9 +113,9 @@ expansion='b'cd
 message="abbr a='b'cd "
 abbr $abbreviation=$expansion
 if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 abbr -e $abbreviation
@@ -127,9 +127,9 @@ expansion=b'c'd
 message="abbr a=b'c'd "
 abbr $abbreviation=$expansion
 if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 abbr -e $abbreviation
@@ -141,9 +141,9 @@ expansion="b"cd
 message="abbr a=\"b\"cd "
 abbr $abbreviation=$expansion
 if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 abbr -e $abbreviation
@@ -155,9 +155,9 @@ expansion=b"c"d
 message="abbr a=b\"c\"d "
 abbr $abbreviation=$expansion
 if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 abbr -e $abbreviation
@@ -170,9 +170,9 @@ message="importing a single-word alias "
 alias $abbreviation=$expansion
 abbr --import-aliases
 if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 abbr -e $abbreviation
@@ -189,9 +189,9 @@ message="importing a multi-word alias "
 alias $abbreviation=$expansion
 abbr --import-aliases
 if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 abbr -e $abbreviation
@@ -208,9 +208,9 @@ message="importing a double-quoted multi-word alias with escape double quotes "
 alias $abbreviation=$expansion
 abbr --import-aliases
 if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 abbr -e $abbreviation
@@ -227,9 +227,9 @@ message="importing a single-quoted multi-word alias with double quotes "
 alias $abbreviation=$expansion
 abbr --import-aliases
 if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 abbr -e $abbreviation
@@ -246,9 +246,9 @@ message="importing a double-quoted multi-word alias with single quotes "
 alias $abbreviation=$expansion
 abbr --import-aliases
 if [[ $(abbr --expand $abbreviation) == $expansion ]]; then
-	message+="passed"
+	message="$fg[green]PASS$reset_color $message"
 else
-	message+="failed"
+	message="$fg[red]FAIL$reset_color $message"
 fi
 echo $message
 abbr -e $abbreviation
