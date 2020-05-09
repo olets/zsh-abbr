@@ -141,8 +141,8 @@ Options
                      sions.
 
 
-       All except for --clear-session, --expand, and --import-aliases can take
-       a type:
+       All except for --clear-session, --expand, --import-fish, and  --import-
+       git-aliases can take a type:
 
 
               o      --global or -g
@@ -151,14 +151,20 @@ Options
                      only in command (first word) position.
 
 
-       All except for  --clear-session,  --expand,  --export-aliases,  --list-
-       abbreviations, and --list-commands can be tried without making changes:
+              o      --regular or -r (default)
 
-
-              o      --dry-run Show whats the result of the command would  be.
+                     Abbreviation will expand in command (first word) position
+                     only.
 
 
        All  except  for  --clear-session,  --expand, --export-aliases, --list-
+       abbreviations, and --list-commands can be tried without making changes:
+
+
+              o      --dry-run  Show whats the result of the command would be.
+
+
+       All except for  --clear-session,  --expand,  --export-aliases,  --list-
        abbreviations, and --list-commands can be run with reduced output:
 
 
@@ -171,7 +177,7 @@ Options
 EXAMPLES
        abbr gco="git checkout"
 
-              "gco" will be expanded as "git checkout" when it  is  the  first
+              "gco"  will  be  expanded as "git checkout" when it is the first
               word in the command, in all open and future sessions.
 
 
@@ -189,9 +195,9 @@ EXAMPLES
 
        abbr -e -S -g gco;
 
-              Erase  the  global session abbreviation "gco". Note that because
+              Erase the global session abbreviation "gco". Note  that  because
               expansion is triggered by [SPACE] and [ENTER], the semicolon (;)
-              is  necessary  to  prevent  expansion  when  operating on global
+              is necessary to  prevent  expansion  when  operating  on  global
               abbreviations.
 
 

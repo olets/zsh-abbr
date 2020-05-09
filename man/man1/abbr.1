@@ -127,13 +127,18 @@ Abbreviations available to all current and future sessions.
 
 .RE
 
-All except for \fB\-\-clear-session\fR, \fB\-\-expand\fR, and \fB\-\-import-aliases can take a \fBtype\fR:
+All except for \fB\-\-clear-session\fR, \fB\-\-expand\fR, \fB\-\-import-fish\fR, and \fB\-\-import-git-aliases\fR can take a \fBtype\fR:
 .RS
 
 .IP \(bu
 \fB\-\-global\fR or \fB\-g\fR
 
 Abbreviation will expand anywhere on a line, rather than only in command (first word) position.
+
+.IP \(bu
+\fB\-\-regular\fR or \fB\-r\fR (default)
+
+Abbreviation will expand in command (first word) position only.
 
 .RE
 

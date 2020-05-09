@@ -305,7 +305,7 @@ alias g='git'
 ##### Aliases
 
 ```shell
-abbr --import-aliases [--dry-run] [--quiet]
+abbr --import-aliases [<type>] [--dry-run] [--quiet]
 ```
 
 Add regular abbreviations for every regular alias in the session, and global abbreviations for every global alias in the session.

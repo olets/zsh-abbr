@@ -204,21 +204,30 @@ _zsh_abbr() {
       local _alias
       local abbreviation
       local expansion
+      local saved_type
+
+      saved_type=$type
 
       if [[ $# > 0 ]]; then
         _zsh_abbr:util_error "abbr import-aliases: Unexpected argument"
         return
       fi
 
-      while read -r _alias; do
-        _zsh_abbr:util_import_alias $_alias
-      done < <(alias -r)
+      if [[ $saved_type != 'global' ]]; then
+        while read -r _alias; do
+          _zsh_abbr:util_import_alias $_alias
+        done < <(alias -r)
+      fi
 
-      type='global'
+      if [[ $saved_type != 'regular' ]]; then
+        type='global'
 
-      while read -r _alias; do
-        _zsh_abbr:util_import_alias $_alias
-      done < <(alias -g)
+        while read -r _alias; do
+          _zsh_abbr:util_import_alias $_alias
+        done < <(alias -g)
+      fi
+
+      type=$saved_type
     }
 
     function _zsh_abbr:import_fish() {
