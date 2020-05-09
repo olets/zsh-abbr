@@ -1,3 +1,17 @@
+# [v3.3.0](https://github.com/olets/zsh-abbr/compare/v3.2.3...v3.3.0) (2020-05-09)
+
+Prettier output. Suppress output with `--quiet`. Don't add an abbreviation if it would interfere with an existing command. Add it anyway with `--force`.
+
+### Features
+
+* **add:** support forcing add over system command ([57eb4a8](https://github.com/olets/zsh-abbr/commit/57eb4a8671df10f30cf24e49cad3be1156511f40))
+* **add:** warn if a command exists ([0311ecf](https://github.com/olets/zsh-abbr/commit/0311ecf6db742df733f20c583d0c27afeb3ecff3))
+* **dry run:** helper message more visible ([cce33fc](https://github.com/olets/zsh-abbr/commit/cce33fcf6cb37bd0f36dfdbfddb3d9f689bdbe4d))
+* **import aliases:** respect type ([c000975](https://github.com/olets/zsh-abbr/commit/c000975526a798498e1b1cbdb679e1a796ed1943))
+* **import git aliases:** warning gives key not full key+value ([cbe4074](https://github.com/olets/zsh-abbr/commit/cbe4074ef5c795d4d641715bf0bf5490a75087ab))
+* **quiet, exit status:** output to stdout or stderr with quiet option ([e671a87](https://github.com/olets/zsh-abbr/commit/e671a8794f9b1abcd0976583c0727a8ebf18caf9))
+
+
 # [v3.2.3](https://github.com/olets/zsh-abbr/compare/v3.2.2...v3.2.3) (2020-04-23)
 
 

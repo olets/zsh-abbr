@@ -15,12 +15,7 @@ Key:
 ## 3.x
 
 - [ ] testing framework?
-- [x] log message about what change was made
-- [ ] Git status-like: when job finishes, list actions taken by group (added, erased, couldn't add (already exists), could erase (doesn't exist), didn't add (e.g. git function alias))
-  - [ ] color coded
-- [x] support --quiet option and ZSH_ABBR_QUIET env variable
 - [ ] maybe split abbr into its own file, and autoload it
-- [ ] sync as last step of initialization
 
 Chrome
 
