@@ -392,6 +392,7 @@ _zsh_abbr() {
 
       if [[ ${abbreviation%=*} != $abbreviation ]]; then
         _zsh_abbr:util_error "abbr add: ABBREVIATION (\`$abbreviation\`) may not contain an equals sign"
+        return
       fi
 
       if [[ $scope == 'session' ]]; then
