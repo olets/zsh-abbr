@@ -161,18 +161,18 @@ Default is regular.
 ### Options
 
 ```shell
-[(--add | -a )] [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] [--force] arg
+[(--add | -a )] [(--session | -S) | (--user | -U)] [<type>] [--dry-run] [--quiet] [--force] arg
   | (--clear-session | -c) [--quiet]
-  | (--erase | -e ) [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] arg
+  | (--erase | -e ) [(--session | -S) | (--user | -U)] [<type>] [--dry-run] [--quiet] arg
   | (--expand | -x) arg
-  | --export-aliases [(--session | -S) | (--user | -U)] [(--global | -g)] arg
+  | --export-aliases [(--session | -S) | (--user | -U)] [<type>] arg
   | (--help | -h)
-  | --import-aliases [(--global | -g)] [--dry-run] [--quiet]
-  | --import-fish [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] arg
+  | --import-aliases [<type>] [--dry-run] [--quiet]
+  | --import-fish [(--session | -S) | (--user | -U)] [<type>] [--dry-run] [--quiet] arg
   | --import-git-aliases [(--session | -S) | (--user | -U)] [--dry-run] [--quiet]
   | (--list-abbreviations | -l) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
   | (--list-commands | -L | -s) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
-  | (--rename | -R ) [(--session | -S) | (--user | -U)] [(--global | -g)] [(--global | -g)] [--dry-run] [--quiet] args
+  | (--rename | -R ) [(--session | -S) | (--user | -U)] [<type>] [<type>] [--dry-run] [--quiet] args
 ]
 ```
 
@@ -183,7 +183,7 @@ zsh-abbr has options to add, rename, and erase abbreviations; to add abbreviatio
 #### Add
 
 ```shell
-abbr [(--add | -a)] [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] [--force] ABBREVIATION=EXPANSION
+abbr [(--add | -a)] [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [--dry-run] [--quiet] [--force] ABBREVIATION=EXPANSION
 ```
 
 Add a new abbreviation.
@@ -240,7 +240,7 @@ Erase all session abbreviations.
 #### Erase
 
 ```shell
-abbr (--erase | -e) [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] ABBREVIATION
+abbr (--erase | -e) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [--dry-run] [--quiet] ABBREVIATION
 ```
 
 Erase an abbreviation.
@@ -276,7 +276,7 @@ git checkout
 #### Export Aliases
 
 ```shell
-abbr --export-aliases [(--session | -S) | (--user | -U)] [(--global | -g)] [DESTINATION]
+abbr --export-aliases [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [DESTINATION]
 ```
 
 Export abbreviations as alias commands. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
@@ -405,7 +405,7 @@ Combine a scope flag and a type flag to further limit the output.
 ##### Abbreviations
 
 ```shell
-abbr (--list-abbreviations|-l) [(--session | -S) | (--user | -U)] [(--global | -g)]
+abbr (--list-abbreviations|-l) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
 ```
 
 List the abbreviations only, like fish's `abbr -l`.
@@ -429,7 +429,7 @@ b
 ##### Commands
 
 ```shell
-abbr (--list-commands | -L | -s) [(--session | -S) | (--user | -U)] [(--global | -g)]
+abbr (--list-commands | -L | -s) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
 ```
 
 List as commands, like zsh's `alias -L`.
@@ -453,7 +453,7 @@ abbr -g b="ball"
 ##### Definitions
 
 ```shell
-abbr [--list-definitions] [(--session | -S) | (--user | -U)] [(--global | -g)]
+abbr [--list-definitions] [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
 ```
 
 List as commands, like zsh's `alias`.
@@ -477,7 +477,7 @@ b="ball"
 #### Rename
 
 ```shell
-abbr (--rename | -R) [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] OLD NEW
+abbr (--rename | -R) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [--dry-run] [--quiet] OLD NEW
 ```
 
 Rename an abbreviation.
