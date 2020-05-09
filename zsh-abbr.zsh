@@ -412,7 +412,7 @@ _zsh_abbr() {
       # Apply force to add regardless
       if [[ $cmd && ${cmd:0:6} != 'alias ' ]]; then
         if (( force )); then
-          _zsh_abbr:util_warn "\`$abbreviation\` will now expand as an abbreviation"
+          _zsh_abbr:util_log "\`$abbreviation\` will now expand as an abbreviation"
         else
           _zsh_abbr:util_warn "The alias \`$abbreviation\` was not added because a command with the same name exists"
           return
