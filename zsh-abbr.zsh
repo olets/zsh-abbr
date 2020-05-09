@@ -635,7 +635,7 @@ _zsh_abbr() {
     function _zsh_abbr:util_usage() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_usage"
 
-      man abbr 2>/dev/null || cat ${ZSH_ABBR_SOURCE_PATH}/man/abbr.txt | less -F
+      _zsh_abbr_man abbr 2>/dev/null || _zsh_abbr_cat ${ZSH_ABBR_SOURCE_PATH}/man/abbr.txt | _zsh_abbr_less -F
     }
 
     function _zsh_abbr:util_warn() {
@@ -906,12 +906,24 @@ _zsh_abbr_init() {
     GLOBAL_USER_ABBREVIATIONS=()
 
     function _zsh_abbr_init:protected_cmds() {
+      _zsh_abbr_cat() {
+        \command \cat $@
+      }
+
       _zsh_abbr_command() {
         \command \command $@
       }
 
+      _zsh_abbr_less() {
+        \command \less $@
+      }
+
       _zsh_abbr_ls() {
         \command \ls $@
+      }
+
+      _zsh_abbr_man() {
+        \command \man $@
       }
     }
 
