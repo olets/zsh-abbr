@@ -161,7 +161,7 @@ Default is regular.
 ### Options
 
 ```shell
-[(--add | -a )] [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] arg
+[(--add | -a )] [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] [--force] arg
   | (--clear-session | -c) [--quiet]
   | (--erase | -e ) [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] arg
   | (--expand | -x) arg
@@ -183,7 +183,7 @@ zsh-abbr has options to add, rename, and erase abbreviations; to add abbreviatio
 #### Add
 
 ```shell
-abbr [(--add | -a)] [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] ABBREVIATION=EXPANSION
+abbr [(--add | -a)] [(--session | -S) | (--user | -U)] [(--global | -g)] [--dry-run] [--quiet] [--force] ABBREVIATION=EXPANSION
 ```
 
 Add a new abbreviation.
@@ -219,16 +219,15 @@ abbr a=b\;c  # allowed
 abbr a="b|c" # allowed
 ```
 
-```shell
-abbr a='a"b"c' # bad - will turn into `"a"b"c"`, which will error
-abbr a='a\"b\"c' # good
-```
-
 User-scope abbreviations can also be manually to the user abbreviations file. See **Storage** below.
 
 The session regular, session global, user regular, and user global abbreviation sets are independent. If you wanted, you could have more than one abbreviation with the same ABBREVIATION. Order of precedence is "session command > user command > session global > user global".
 
 Use `--dry-run` to see what would result, without making any actual changes.
+
+Will error rather than overwrite an existing abbreviation.
+
+Will warn if the abbreviation would replace an existing command. To add in spite of the warning, use `--force`.
 
 #### Clear Sessions
 

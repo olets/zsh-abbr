@@ -20,9 +20,11 @@ ZSH_ABBR_USER_PATH=${ZSH_ABBR_USER_PATH=${HOME}/.config/zsh/abbreviations}
 
 _zsh_abbr() {
   {
-    local action dry_run has_error number_opts opt logs output quiet \
-          release_date scope should_exit text_bold text_reset type version
+    local action dry_run force has_error number_opts opt logs output \
+          quiet release_date scope should_exit text_bold text_reset \
+          type version
     dry_run=${ZSH_ABBR_DRY_RUN:-0}
+    force=${ZSH_ABBR_FORCE:-0}
     number_opts=0
     quiet=${ZSH_ABBR_QUIET:-0}
     release_date="April 22 2020"
@@ -397,9 +399,15 @@ _zsh_abbr() {
         return
       fi
 
+      # Warn if abbreviation would interfere with system command use, e.g. `cp="git cherry-pick"`
+      # Apply force to add regardless
       if [[ $cmd && ${cmd:0:6} != 'alias ' ]]; then
-        _zsh_abbr:util_warn "The alias \`$abbreviation\` was not added because a command with the same name exists"
-        return
+        if (( force )); then
+          _zsh_abbr:util_warn "\`$abbreviation\` will now expand as an abbreviation"
+        else
+          _zsh_abbr:util_warn "The alias \`$abbreviation\` was not added because a command with the same name exists"
+          return
+        fi
       fi
 
       if [[ $scope == 'session' ]]; then
@@ -673,6 +681,11 @@ _zsh_abbr() {
           ;;
         "--export-aliases")
           _zsh_abbr:util_set_once "action" "export_aliases"
+          ;;
+        "--force"|\
+        "-f")
+          force=1
+          ((number_opts++))
           ;;
         "--global"|\
         "-g")
