@@ -670,11 +670,11 @@ _zsh_abbr() {
       case "$opt" in
         "--add"|\
         "-a")
-          _zsh_abbr:util_set_once "action" "add"
+          _zsh_abbr:util_set_once action add
           ;;
         "--clear-session"|\
         "-c")
-          _zsh_abbr:util_set_once "action" "clear_session"
+          _zsh_abbr:util_set_once action clear_session
           ;;
         "--dry-run")
           dry_run=1
@@ -682,14 +682,14 @@ _zsh_abbr() {
           ;;
         "--erase"|\
         "-e")
-          _zsh_abbr:util_set_once "action" "erase"
+          _zsh_abbr:util_set_once action erase
           ;;
         "--expand"|\
         "-x")
-          _zsh_abbr:util_set_once "action" "expand"
+          _zsh_abbr:util_set_once action expand
           ;;
         "--export-aliases")
-          _zsh_abbr:util_set_once "action" "export_aliases"
+          _zsh_abbr:util_set_once action export_aliases
           ;;
         "--force"|\
         "-f")
@@ -698,7 +698,7 @@ _zsh_abbr() {
           ;;
         "--global"|\
         "-g")
-          _zsh_abbr:util_set_once "type" "global"
+          _zsh_abbr:util_set_once type global
           ;;
         "--help"|\
         "-h")
@@ -706,29 +706,29 @@ _zsh_abbr() {
           should_exit=1
           ;;
         "--import-aliases")
-          _zsh_abbr:util_set_once "action" "import_aliases"
+          _zsh_abbr:util_set_once action import_aliases
           importing=1
           ;;
         "--import-fish")
-          _zsh_abbr:util_set_once "action" "import_fish"
+          _zsh_abbr:util_set_once action import_fish
           importing=1
           ;;
         "--import-git-aliases")
-          _zsh_abbr:util_set_once "action" "import_git_aliases"
+          _zsh_abbr:util_set_once action import_git_aliases
           importing=1
           ;;
         "--list")
-          _zsh_abbr:util_set_once "action" "list"
+          _zsh_abbr:util_set_once action list
           ;;
         "--list-abbreviations"|\
         "-l")
-          _zsh_abbr:util_set_once "action" "list_abbreviations"
+          _zsh_abbr:util_set_once action list_abbreviations
           ;;
         "--list-commands"|\
         "-L"|\
         "--show"|\
         "-s") # "show" is for backwards compatability with v2
-          _zsh_abbr:util_set_once "action" "list_commands"
+          _zsh_abbr:util_set_once action list_commands
           ;;
         "--quiet"|\
         "-q")
@@ -737,23 +737,23 @@ _zsh_abbr() {
           ;;
         "--regular"|\
         "-r")
-          _zsh_abbr:util_set_once "type" "regular"
+          _zsh_abbr:util_set_once type regular
           ;;
         "--rename"|\
         "-R")
-          _zsh_abbr:util_set_once "action" "rename"
+          _zsh_abbr:util_set_once action rename
           ;;
         "--session"|\
         "-S")
-          _zsh_abbr:util_set_once "scope" "session"
+          _zsh_abbr:util_set_once scope session
           ;;
         "--user"|\
         "-U")
-          _zsh_abbr:util_set_once "scope" "user"
+          _zsh_abbr:util_set_once scope user
           ;;
         "--version"|\
         "-v")
-          _zsh_abbr:util_set_once "action" "print_version"
+          _zsh_abbr:util_set_once action print_version
           ;;
         "--")
           ((number_opts++))
@@ -774,7 +774,7 @@ _zsh_abbr() {
         _zsh_abbr:$action $@
       elif [[ $# > 0 ]]; then
         # default if arguments are provided
-         _zsh_abbr:add $@
+        _zsh_abbr:add $@
       else
         # default if no argument is provided
         _zsh_abbr:list_abbreviations $@
