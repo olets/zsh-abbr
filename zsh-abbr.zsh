@@ -37,7 +37,7 @@ _zsh_abbr() {
     fi
 
     function _zsh_abbr:add() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:add"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
       local expansion
@@ -64,7 +64,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:clear_session() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:clear_session"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       if [[ $# > 0 ]]; then
         _zsh_abbr:util_error "abbr clear-session: Unexpected argument"
@@ -76,7 +76,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:erase() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:erase"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
       local abbreviations_sets
@@ -157,7 +157,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:expand() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:expand"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
       local expansion
@@ -178,7 +178,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:export_aliases() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:export_aliases"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local type_saved
       local output_path
@@ -199,7 +199,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:import_aliases() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:import_aliases"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local _alias
       local abbreviation
@@ -231,7 +231,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:import_fish() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:import_fish"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
       local expansion
@@ -254,7 +254,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:import_git_aliases() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:import_git_aliases"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local git_aliases
 
@@ -290,7 +290,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:list() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:list"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       if [[ $# > 0 ]]; then
         _zsh_abbr:util_error "abbr list: Unexpected argument"
@@ -301,7 +301,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:list_commands() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:list_commands"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local include_expansion
       local session_prefix
@@ -320,7 +320,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:list_abbreviations() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:list_abbreviations"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local include_expansion
 
@@ -335,7 +335,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:print_version() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:print_version"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       if [[ $# > 0 ]]; then
         _zsh_abbr:util_error "abbr version: Unexpected argument"
@@ -346,7 +346,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:rename() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:rename"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local err
       local expansion
@@ -385,7 +385,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:util_add() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_add"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
       local cmd
@@ -473,7 +473,7 @@ _zsh_abbr() {
     }
 
     _zsh_abbr:util_alias() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_alias"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
       local abbreviations_set
@@ -500,13 +500,13 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:util_bad_options() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_bad_options"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       _zsh_abbr:util_error "abbr: Illegal combination of options"
     }
 
     function _zsh_abbr:util_error() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_error"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       has_error=1
       logs+="\n$fg[red]$@$reset_color"
@@ -524,7 +524,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:util_list() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_list"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
       local expansion
@@ -570,7 +570,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:util_list_item() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_list_item"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
       local expansion
@@ -594,25 +594,24 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:util_log() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_log"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       logs+="\n$1"
     }
 
     function _zsh_abbr:util_print() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_print"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       output+="\n$1"
     }
 
     function _zsh_abbr:util_set_once() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_set_once"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
+
       local option value
 
       option=$1
       value=$2
-
-      (( ZSH_ABBR_DEBUG )) && echo "util_set_once $option $value"
 
       if [ ${(P)option} ]; then
         _zsh_abbr:util_bad_options
@@ -624,7 +623,7 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:util_sync_user() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_sync_user"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       (( ZSH_ABBR_INITIALIZING )) && return
 
@@ -650,13 +649,13 @@ _zsh_abbr() {
     }
 
     function _zsh_abbr:util_usage() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_usage"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       _zsh_abbr_man abbr 2>/dev/null || _zsh_abbr_cat ${ZSH_ABBR_SOURCE_PATH}/man/abbr.txt | _zsh_abbr_less -F
     }
 
     function _zsh_abbr:util_warn() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_warn"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       has_error=1
       logs+="\n$fg[yellow]$@$reset_color"
@@ -835,7 +834,7 @@ _zsh_abbr() {
 }
 
 _zsh_abbr_bind_widgets() {
-  (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_bind_widgets"
+  (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
   # spacebar expands abbreviations
   zle -N _zsh_abbr_expand_and_space
@@ -910,7 +909,7 @@ _zsh_abbr_global_expansion() {
 
 _zsh_abbr_init() {
   {
-    (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_init"
+    (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
     local job
     local shwordsplit_on
@@ -950,7 +949,7 @@ _zsh_abbr_init() {
     }
 
     function _zsh_abbr_init:create() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_init:create"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       if ! [ -d ${TMPDIR:-/tmp/}zsh-abbr ]; then
         mkdir -p ${TMPDIR:-/tmp/}zsh-abbr
@@ -988,7 +987,7 @@ _zsh_abbr_init() {
     }
 
     function _zsh_abbr_init:seed() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_init:seed"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local arguments
       local program
@@ -1039,7 +1038,7 @@ _zsh_abbr_init() {
 
 _zsh_abbr_job_push() {
   {
-    (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_job_push"
+    (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
     local next_job
     local next_job_age
@@ -1057,7 +1056,7 @@ _zsh_abbr_job_push() {
     timeout_age=30 # seconds
 
     function _zsh_abbr_job_push:add_job() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_job_push:add_job"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       if ! [ -d $job_dir ]; then
         mkdir -p $job_dir
@@ -1073,7 +1072,7 @@ _zsh_abbr_job_push() {
     }
 
     function _zsh_abbr_job_push:handle_timeout() {
-      (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_job_push:handle_timeout"
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       next_job_path=$job_dir/$next_job
 
@@ -1109,7 +1108,7 @@ _zsh_abbr_job_push() {
 }
 
 _zsh_abbr_job_pop() {
-  (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr_job_pop"
+  (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
   local job
 
