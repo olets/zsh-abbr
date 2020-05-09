@@ -13,7 +13,7 @@ Run `abbr --help` (or `abbr -h`) for documentation; if the package is installed 
 ## Contents
 
 1. [Installation](#installation)
-1. [Quick Start](#quick-start)
+1. [Crash Course](#crash-course)
 1. [Usage](#usage)
 1. [Configuration](#configuration)
 1. [Uninstalling](#uninstalling)
@@ -83,41 +83,40 @@ If running `abbr` gives an error "zsh: permission denied: abbr", reload zsh:
 
 Clone this repo and add `source path/to/zsh-abbr.zsh` to your `.zshrc`.
 
-## Quick Start
+## Crash Course
 
 ```shell
 # Add and use an abbreviation
-% abbr g=git
-% g[Space] # expands to `git `
-# It is saved for your user and immediately available to open sessions
-% source ~/.zshrc # or switch to different session
-% g[Space] # expands to `git `
-
-# Add a session-specific abbreviation
-% abbr -S x=git
-% x[Space] # expands to `git `
-% source ~/.zshrc # or switch to different session
-% x[Space] # no special treatment
-
-# Erase an abbreviation
-% abbr -e g; # the `;` prevents expansion. Ctrl-Space would work too
-% g[Space] # no expansion
-
-# Add a global abbreviation
-% abbr -g g=git
-% echo hello world && g[Space] # expands
-
-# Enter expands and accepts
+% abbr gc="git checkout"
+% gc[Space] # space expands this to `git checkout `
 % abbr gcm="git checkout master"
-% gcm[Enter]
+% gcm[Enter] # enter expands this to `git checkout master` and then accepts
 Switched to branch 'master'
 Your branch is up to date with 'origin/master'.
 %
 
+# Abbreviations are immediately available to all current and future sessions
+% source ~/.zshrc
+% gc[Space] # expands to `git checkout`
+
+# Add a session-specific abbreviation
+% abbr -S x="git checkout"
+% x[Space] # expands to `git checkout `
+% source ~/.zshrc
+% x[Space] # but only in the session it was created in
+
+# Erase an abbreviation
+% abbr -e gc
+% gc[Space] # no expansion
+
+# Add a global abbreviation
+% abbr -g g=git
+% echo global && g[Space] # expands to `echo global && git `
+
 # Rename an abbreviation
-% abbr -r gcm gm
+% abbr -r gcm cm
 % gcm[Space] # does not expand
-% gm[Space] # expands to `git checkout master `
+% cm[Space] # expands to `git checkout master `
 
 # Make the switch from aliases
 % abbr --import-aliases
@@ -159,22 +158,6 @@ zsh-abbr supports regular abbreviations, which match the word at the start of th
 Default is regular.
 
 ### Options
-
-```shell
-[(--add | -a )] [(--session | -S) | (--user | -U)] [<type>] [--dry-run] [--quiet] [--force] arg
-  | (--clear-session | -c) [--quiet]
-  | (--erase | -e ) [(--session | -S) | (--user | -U)] [<type>] [--dry-run] [--quiet] arg
-  | (--expand | -x) arg
-  | --export-aliases [(--session | -S) | (--user | -U)] [<type>] arg
-  | (--help | -h)
-  | --import-aliases [<type>] [--dry-run] [--quiet]
-  | --import-fish [(--session | -S) | (--user | -U)] [<type>] [--dry-run] [--quiet] arg
-  | --import-git-aliases [(--session | -S) | (--user | -U)] [--dry-run] [--quiet]
-  | (--list-abbreviations | -l) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
-  | (--list-commands | -L | -s) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
-  | (--rename | -R ) [(--session | -S) | (--user | -U)] [<type>] [<type>] [--dry-run] [--quiet] args
-]
-```
 
 zsh-abbr has options to add, rename, and erase abbreviations; to add abbreviations for every alias or Git alias; to list the available abbreviations with or without their expansions; and to create aliases from abbreviations.
 
@@ -324,6 +307,39 @@ Note that zsh-abbr does not lint the imported abbreviations. An effort is made t
 
 Use `--dry-run` to see what would result, without making any actual changes.
 
+##### Fish Abbreviations
+
+```shell
+abbr --import-fish [(--session | -S) | (--user | -U)] [(--global|-g)] FILE [--dry-run] [--quiet]
+```
+
+Import fish abbr-syntax abbreviations (`abbreviation expansion` as compared to zsh abbr's `abbreviation=expansion`).
+
+To migrate from fish:
+
+```shell
+fish
+abbr -s > file/to/save/fish/abbreviations/to
+zsh
+abbr [(--global|-g)] [SCOPE] --import-fish file/to/save/fish/abbreviations/to
+# file is no longer needed, so feel free to
+# rm file/to/save/fish/abbreviations/to
+```
+
+To migrate from zsh-abbr < 3:
+
+```shell
+zsh
+abbr [(--global|-g)] [SCOPE] ${HOME}/.config/zsh/universal-abbreviations
+# zsh-abbr > 2 no longer uses that file
+# If not customizing `ZSH_ABBR_USER_PATH=${HOME}/.config/zsh/universal-abbreviations` feel free to
+# rm ${HOME}/.config/zsh/universal-abbreviations
+```
+
+Note that zsh-abbr does not lint the imported abbreviations. An effort is made to correctly wrap the expansion in single or double quotes, but it is possible that importing will add an abbreviation with a quotation mark problem in the expansion. It is up to the user to double check the result before taking further actions.
+
+Use `--dry-run` to see what would result, without making any actual changes.
+
 ##### Git Aliases
 
 ```shell
@@ -356,39 +372,6 @@ Use the **--session**  or **-S** scope flag to create session abbreviations. Oth
 Note for users migrating from Oh-My-Zsh: [OMZ's Git aliases are shell aliases](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh), not aliases in the Git config. To add abbreviations for them, use **import-aliases**.
 
 Note that zsh-abbr does not lint the imported abbreviations. It is up to the user to double check the result before taking further actions.
-
-Use `--dry-run` to see what would result, without making any actual changes.
-
-##### Fish Abbreviations
-
-```shell
-abbr --import-fish [(--session | -S) | (--user | -U)] [(--global|-g)] FILE [--dry-run] [--quiet]
-```
-
-Import fish abbr-syntax abbreviations (`abbreviation expansion` as compared to zsh abbr's `abbreviation=expansion`).
-
-To migrate from fish:
-
-```shell
-fish
-abbr -s > file/to/save/fish/abbreviations/to
-zsh
-abbr [(--global|-g)] [SCOPE] --import-fish file/to/save/fish/abbreviations/to
-# file is no longer needed, so feel free to
-# rm file/to/save/fish/abbreviations/to
-```
-
-To migrate from zsh-abbr < 3:
-
-```shell
-zsh
-abbr [(--global|-g)] [SCOPE] ${HOME}/.config/zsh/universal-abbreviations
-# zsh-abbr > 2 no longer uses that file
-# If not customizing `ZSH_ABBR_USER_PATH=${HOME}/.config/zsh/universal-abbreviations` feel free to
-# rm ${HOME}/.config/zsh/universal-abbreviations
-```
-
-Note that zsh-abbr does not lint the imported abbreviations. An effort is made to correctly wrap the expansion in single or double quotes, but it is possible that importing will add an abbreviation with a quotation mark problem in the expansion. It is up to the user to double check the result before taking further actions.
 
 Use `--dry-run` to see what would result, without making any actual changes.
 
