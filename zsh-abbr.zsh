@@ -377,11 +377,13 @@ _zsh_abbr() {
       (( ZSH_ABBR_DEBUG )) && echo "_zsh_abbr:util_add"
 
       local abbreviation
+      local cmd
       local expansion
       local job_group
       local success
 
       abbreviation=$1
+      cmd=$(_zsh_abbr_command -v $abbreviation)
       expansion=$2
       success=0
 
@@ -392,6 +394,11 @@ _zsh_abbr() {
 
       if [[ ${abbreviation%=*} != $abbreviation ]]; then
         _zsh_abbr:util_error "abbr add: ABBREVIATION (\`$abbreviation\`) may not contain an equals sign"
+        return
+      fi
+
+      if [[ $cmd && ${cmd:0:6} != 'alias ' ]]; then
+        _zsh_abbr:util_warn "The alias \`$abbreviation\` was not added because a command with the same name exists"
         return
       fi
 
@@ -899,6 +906,10 @@ _zsh_abbr_init() {
     GLOBAL_USER_ABBREVIATIONS=()
 
     function _zsh_abbr_init:protected_cmds() {
+      _zsh_abbr_command() {
+        \command \command $@
+      }
+
       _zsh_abbr_ls() {
         \command \ls $@
       }
