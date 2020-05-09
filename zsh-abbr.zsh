@@ -791,7 +791,7 @@ _zsh_abbr() {
       fi
 
       if (( dry_run )); then
-        logs+="Dry run. Changes not saved."
+        logs+="\n\n$fg[yellow]Dry run. Changes not saved.$reset_color"
       fi
 
       output=$logs$output
