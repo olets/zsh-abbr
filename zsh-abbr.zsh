@@ -512,7 +512,7 @@ _zsh_abbr() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       has_error=1
-      logs+="\n$fg[red]$@$reset_color"
+      logs+="${logs:+\\n}$fg[red]$@$reset_color"
       should_exit=1
     }
 
@@ -599,13 +599,13 @@ _zsh_abbr() {
     function _zsh_abbr:util_log() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
-      logs+="\n$1"
+      logs+="${logs:+\\n}$1"
     }
 
     function _zsh_abbr:util_print() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
-      output+="\n$1"
+      output+="${output:+\\n}$1"
     }
 
     function _zsh_abbr:util_set_once() {
@@ -661,7 +661,7 @@ _zsh_abbr() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       has_error=1
-      logs+="\n$fg[yellow]$@$reset_color"
+      logs+="${logs:+\\n}$fg[yellow]$@$reset_color"
     }
 
     for opt in "$@"; do
@@ -789,14 +789,16 @@ _zsh_abbr() {
 
     if ! (( quiet )); then
       if [[ -n $has_error ]]; then
-        logs+="\nFor help run \`abbr --help\`"
+        logs+="${logs:+\\n}For help run \`abbr --help\`"
+      fi
+
+      if [[ -n $logs ]]; then
+        output=$logs${output:+\\n$output}
       fi
 
       if (( dry_run )); then
-        logs+="\n\n$fg[yellow]Dry run. Changes not saved.$reset_color"
+        logs+="\\n$fg[yellow]Dry run. Changes not saved.$reset_color"
       fi
-
-      output=$logs$output
     fi
 
     if [[ -n $has_error ]]; then
