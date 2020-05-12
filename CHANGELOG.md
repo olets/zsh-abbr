@@ -1,3 +1,19 @@
+# [v3.3.1](https://github.com/olets/zsh-abbr/compare/v3.3.0...v3.3.1) (2020-05-12)
+
+Fixed a Linux error, caught a regression.
+
+### Bug Fixes
+
+* **add:** do not wrap 'command' [[#16](https://github.com/olets/zsh-abbr/issues/16)] ([28697f3](https://github.com/olets/zsh-abbr/commit/28697f359de6382a75ae506feee6b63a01d66451))
+* **help:** reinstate man fallback ([1ae0acb](https://github.com/olets/zsh-abbr/commit/1ae0acbb0aa72ea1ad83771e1fb98ae186dfd086))
+
+
+### Features
+
+* **add:** do not check for command name conflicts during init ([153b2e3](https://github.com/olets/zsh-abbr/commit/153b2e3f273612582b38f69242d6ee425649b460))
+
+
+
 # [v3.3.0](https://github.com/olets/zsh-abbr/compare/v3.2.3...v3.3.0) (2020-05-09)
 
 Prettier output. Suppress output with `--quiet`. Don't add an abbreviation if it would interfere with an existing command. Add it anyway with `--force`.
