@@ -394,7 +394,7 @@ _zsh_abbr() {
       local success
 
       abbreviation=$1
-      cmd=$(_zsh_abbr_command -v $abbreviation)
+      cmd=$(command -v $abbreviation)
       expansion=$2
       success=0
 
@@ -929,10 +929,6 @@ _zsh_abbr_init() {
     function _zsh_abbr_init:protected_cmds() {
       _zsh_abbr_cat() {
         \command \cat $@
-      }
-
-      _zsh_abbr_command() {
-        \command \command $@
       }
 
       _zsh_abbr_less() {
