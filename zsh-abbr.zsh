@@ -394,7 +394,6 @@ _zsh_abbr() {
       local success
 
       abbreviation=$1
-      cmd=$(command -v $abbreviation)
       expansion=$2
       success=0
 
@@ -408,14 +407,18 @@ _zsh_abbr() {
         return
       fi
 
-      # Warn if abbreviation would interfere with system command use, e.g. `cp="git cherry-pick"`
-      # Apply force to add regardless
-      if [[ $cmd && ${cmd:0:6} != 'alias ' ]]; then
-        if (( force )); then
-          _zsh_abbr:util_log "\`$abbreviation\` will now expand as an abbreviation"
-        else
-          _zsh_abbr:util_warn "The alias \`$abbreviation\` was not added because a command with the same name exists"
-          return
+      if ! (( ZSH_ABBR_INITIALIZING )); then
+        # Warn if abbreviation would interfere with system command use, e.g. `cp="git cherry-pick"`
+        # Apply force to add regardless
+        cmd=$(command -v $abbreviation)
+
+        if [[ $cmd && ${cmd:0:6} != 'alias ' ]]; then
+          if (( force )); then
+            _zsh_abbr:util_log "\`$abbreviation\` will now expand as an abbreviation"
+          else
+            _zsh_abbr:util_warn "The alias \`$abbreviation\` was not added because a command with the same name exists"
+            return
+          fi
         fi
       fi
 
