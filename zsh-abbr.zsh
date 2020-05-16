@@ -201,10 +201,12 @@ _zsh_abbr() {
     _zsh_abbr:import_aliases() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
-      local alias
+      local alias_to_import
       local abbreviation
       local expansion
       local saved_type
+
+      typeset -a aliases_to_import
 
       saved_type=$type
 
@@ -214,17 +216,19 @@ _zsh_abbr() {
       fi
 
       if [[ $saved_type != 'global' ]]; then
-        while read -r alias; do
-          _zsh_abbr:util_import_alias $alias
-        done < <(_zsh_abbr_alias -r)
+        aliases_to_import=( ${(f)"$(_zsh_abbr_alias -r)"} )
+        for alias_to_import in $aliases_to_import; do
+          _zsh_abbr:util_import_alias $alias_to_import
+        done
       fi
 
       if [[ $saved_type != 'regular' ]]; then
         type='global'
 
-        while read -r alias; do
-          _zsh_abbr:util_import_alias $alias
-        done < <(_zsh_abbr_alias -g)
+        aliases_to_import=( ${(f)"$(_zsh_abbr_alias -g)"} )
+        for alias_to_import in $aliases_to_import; do
+          _zsh_abbr:util_import_alias $alias_to_import
+        done
       fi
 
       type=$saved_type
@@ -234,6 +238,7 @@ _zsh_abbr() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
+      local abbreviations
       local expansion
       local input_file
 
@@ -243,19 +248,21 @@ _zsh_abbr() {
       fi
 
       input_file=$1
+      abbreviations=( ${(f)"$(<$input_file)"} )
 
-      while read -r line; do
+      for abbreviation in $abbreviations; do
         def=${line#* -- }
         abbreviation=${def%% *}
         expansion=${def#* }
 
         _zsh_abbr:util_add $abbreviation $expansion
-      done < $input_file
+      done
     }
 
     _zsh_abbr:import_git_aliases() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
+      local git_alias
       local git_aliases
 
       if [[ $# > 0 ]]; then
@@ -264,9 +271,7 @@ _zsh_abbr() {
       fi
 
       typeset -a git_aliases
-      while read -r line; do
-        git_aliases+=($line)
-      done < <(git config --get-regexp '^alias\.')
+      git_aliases=( ${(f)"$(git config --get-regexp '^alias\.')"} )
 
       for git_alias in $git_aliases; do
         key=${${git_alias%% *}#alias.}
@@ -1097,15 +1102,17 @@ _zsh_abbr_load_user_abbreviations() {
       if [ -f $ZSH_ABBR_USER_PATH ]; then
         unsetopt shwordsplit
 
-        while read -r line; do
-          program="${line%% *}"
-          arguments="${line#* }"
+        user_abbreviations=( ${(f)"$(<$ZSH_ABBR_USER_PATH)"} )
+
+        for abbreviation in $user_abbreviations; do
+          program="${abbreviation%% *}"
+          arguments="${abbreviation#* }"
 
           # Only execute abbr commands
-          if [[ $program == "abbr" && $program != $line ]]; then
+          if [[ $program == "abbr" && $program != $abbreviation ]]; then
             abbr ${(z)arguments}
           fi
-        done < $ZSH_ABBR_USER_PATH
+        done
 
         if (( shwordsplit_on )); then
           setopt shwordsplit
