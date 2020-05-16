@@ -415,7 +415,7 @@ _zsh_abbr() {
       if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
         # Warn if abbreviation would interfere with system command use, e.g. `cp="git cherry-pick"`
         # Apply force to add regardless
-        cmd=$(command -v $abbreviation)
+        cmd=$(_zsh_abbr_command -v $abbreviation)
 
         if [[ $cmd && ${cmd:0:6} != 'alias ' ]]; then
           if (( force )); then
@@ -939,6 +939,10 @@ _zsh_abbr_init() {
 
       _zsh_abbr_cat() {
         \command \cat $@
+      }
+
+      _zsh_abbr_command() {
+        \builtin \command $@
       }
 
       _zsh_abbr_less() {
