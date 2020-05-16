@@ -471,7 +471,7 @@ _zsh_abbr() {
       if (( success )); then
         _zsh_abbr:util_log "$fg[green]Added$reset_color the ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
       else
-        _zsh_abbr:util_error "The ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` was not added because already exists"
+        _zsh_abbr:util_error "The ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` was not added because it already exists"
       fi
     }
 
