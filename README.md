@@ -15,7 +15,7 @@ Run `abbr --help` (or `abbr -h`) for documentation; if the package is installed 
 1. [Installation](#installation)
 1. [Crash Course](#crash-course)
 1. [Usage](#usage)
-1. [Configuration](#configuration)
+1. [Advanced](#advanced)
 1. [Uninstalling](#uninstalling)
 1. [Changelog](#changelog)
 1. [Roadmap](#roadmap)
@@ -484,15 +484,17 @@ Use `--dry-run` to see what would result, without making any actual changes..
 
 Abbreviations can also be manually renamed in the `ZSH_ABBR_USER_PATH`. See **Storage** below.
 
-## Configuration
+## Advanced
 
-### Storage
+### Storage and manual editing
 
-User abbreviations live in a plain text file which you can edit directly, share, keep in version control, etc. This file is `source`d when each new session is opened.
+User abbreviations live in a plain text file which you can edit directly, share, keep in version control, etc. Abbreviations in this file are loaded when each new session is opened; non-`abbr` commands will be ignored excised from the file.
 
-When zsh-abbr updates the user abbreviations storage file, global user abbreviations are moved to the top of the file.
+When zsh-abbr updates the user abbreviations storage file, the lines are alphabetized and global user abbreviations are moved to the top of the file.
 
-_It is possible for direct edits to the storage file to be lost_ if you start a zsh session, make a change in the file, and then make a change via the open session. Run `source ~/.zshrc` in all open sessions after directly editing the user abbreviations storage file.
+Every time you run `abbr`, it checks for manual changes to the user abbreviations storage file (that is, changes made with a text editor or `echo`, as opposed to changes made with `abbr (--add|--erase|--import…|--rename)`) and updates the session's user abbreviations if necessary. This means that in typical use it is safe to manually edit the user abbreviations storage file and continue using `abbr` without worry that the manual changes will be overridden. The limitation is that a manual change made in the same epoch second as a subsequent `abbr` command, the command will miss the update. This is likely only a concern in scripting, where a `sleep 1` may be necessary (see the "delete/added externally" tests for examples).
+
+To load the user abbreviations storage file's abbreviations into the current session without running `abbr [something]`, run `abbr-load`.
 
 The user abbreviations storage file's default location is `${HOME}/.config/zsh/abbreviations`. Customize this by setting the `ZSH_ABBR_USER_PATH` variable in your `.zshrc` before loading zsh-abbr.
 

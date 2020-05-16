@@ -32,11 +32,11 @@ _zsh_abbr() {
     text_reset="\\033[0m"
     version="zsh-abbr version 3.3.0"
 
-    if (( ZSH_ABBR_INITIALIZING )); then
+    if (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
       quiet=1
     fi
 
-    function _zsh_abbr:add() {
+    _zsh_abbr:add() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
@@ -50,7 +50,7 @@ _zsh_abbr() {
       abbreviation=${1%%=*}
       expansion=${1#*=}
 
-      if ! (( ZSH_ABBR_INITIALIZING )); then
+      if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
         abbreviation=${(q)abbreviation}
         expansion=${(q)expansion}
       fi
@@ -63,7 +63,7 @@ _zsh_abbr() {
       _zsh_abbr:util_add $abbreviation $expansion
     }
 
-    function _zsh_abbr:clear_session() {
+    _zsh_abbr:clear_session() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       if [[ $# > 0 ]]; then
@@ -75,7 +75,7 @@ _zsh_abbr() {
       GLOBAL_SESSION_ABBREVIATIONS=()
     }
 
-    function _zsh_abbr:erase() {
+    _zsh_abbr:erase() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
@@ -111,7 +111,7 @@ _zsh_abbr() {
 
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
-          if ! (( ZSH_ABBR_INITIALIZING )); then
+          if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
             source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
           fi
 
@@ -122,7 +122,7 @@ _zsh_abbr() {
         fi
 
         if [[ $type != 'global' ]]; then
-          if ! (( ZSH_ABBR_INITIALIZING )); then
+          if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
             source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
           fi
 
@@ -156,7 +156,7 @@ _zsh_abbr() {
       fi
     }
 
-    function _zsh_abbr:expand() {
+    _zsh_abbr:expand() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
@@ -177,7 +177,7 @@ _zsh_abbr() {
       _zsh_abbr:util_print "${(Q)expansion}"
     }
 
-    function _zsh_abbr:export_aliases() {
+    _zsh_abbr:export_aliases() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local type_saved
@@ -198,7 +198,7 @@ _zsh_abbr() {
       _zsh_abbr:util_list $include_expansion $session_prefix $user_prefix
     }
 
-    function _zsh_abbr:import_aliases() {
+    _zsh_abbr:import_aliases() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local _alias
@@ -230,7 +230,7 @@ _zsh_abbr() {
       type=$saved_type
     }
 
-    function _zsh_abbr:import_fish() {
+    _zsh_abbr:import_fish() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
@@ -253,7 +253,7 @@ _zsh_abbr() {
       done < $input_file
     }
 
-    function _zsh_abbr:import_git_aliases() {
+    _zsh_abbr:import_git_aliases() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local git_aliases
@@ -275,7 +275,7 @@ _zsh_abbr() {
         if [[ ${value[1]} == '!' ]]; then
           _zsh_abbr:util_warn "The Git alias \`$key\` was not imported because its expansion is a function"
         else
-          if ! (( ZSH_ABBR_INITIALIZING )); then
+          if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
             key=${(q)key}
             value=${(q)value}
           fi
@@ -289,7 +289,7 @@ _zsh_abbr() {
       done
     }
 
-    function _zsh_abbr:list() {
+    _zsh_abbr:list() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       if [[ $# > 0 ]]; then
@@ -300,7 +300,7 @@ _zsh_abbr() {
       _zsh_abbr:util_list
     }
 
-    function _zsh_abbr:list_commands() {
+    _zsh_abbr:list_commands() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local include_expansion
@@ -319,7 +319,7 @@ _zsh_abbr() {
       _zsh_abbr:util_list $include_expansion $session_prefix $user_prefix
     }
 
-    function _zsh_abbr:list_abbreviations() {
+    _zsh_abbr:list_abbreviations() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local include_expansion
@@ -334,7 +334,7 @@ _zsh_abbr() {
       _zsh_abbr:util_list $include_expansion
     }
 
-    function _zsh_abbr:print_version() {
+    _zsh_abbr:print_version() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       if [[ $# > 0 ]]; then
@@ -345,7 +345,7 @@ _zsh_abbr() {
       _zsh_abbr:util_print $version
     }
 
-    function _zsh_abbr:rename() {
+    _zsh_abbr:rename() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local err
@@ -384,7 +384,7 @@ _zsh_abbr() {
       fi
     }
 
-    function _zsh_abbr:util_add() {
+    _zsh_abbr:util_add() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
@@ -407,7 +407,7 @@ _zsh_abbr() {
         return
       fi
 
-      if ! (( ZSH_ABBR_INITIALIZING )); then
+      if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
         # Warn if abbreviation would interfere with system command use, e.g. `cp="git cherry-pick"`
         # Apply force to add regardless
         cmd=$(command -v $abbreviation)
@@ -440,7 +440,7 @@ _zsh_abbr() {
         fi
       else
         if [[ $type == 'global' ]]; then
-          if ! (( ZSH_ABBR_INITIALIZING )); then
+          if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
             source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
           fi
 
@@ -453,7 +453,7 @@ _zsh_abbr() {
             success=1
           fi
         else
-          if ! (( ZSH_ABBR_INITIALIZING )); then
+          if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
             source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
           fi
 
@@ -502,13 +502,13 @@ _zsh_abbr() {
       done
     }
 
-    function _zsh_abbr:util_bad_options() {
+    _zsh_abbr:util_bad_options() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       _zsh_abbr:util_error "abbr: Illegal combination of options"
     }
 
-    function _zsh_abbr:util_error() {
+    _zsh_abbr:util_error() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       has_error=1
@@ -516,7 +516,7 @@ _zsh_abbr() {
       should_exit=1
     }
 
-    function _zsh_abbr:util_import_alias() {
+    _zsh_abbr:util_import_alias() {
       local abbreviation
       local expansion
 
@@ -526,7 +526,7 @@ _zsh_abbr() {
       _zsh_abbr:util_add $abbreviation "$(echo $expansion)"
     }
 
-    function _zsh_abbr:util_list() {
+    _zsh_abbr:util_list() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
@@ -572,7 +572,7 @@ _zsh_abbr() {
       fi
     }
 
-    function _zsh_abbr:util_list_item() {
+    _zsh_abbr:util_list_item() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local abbreviation
@@ -596,19 +596,19 @@ _zsh_abbr() {
       _zsh_abbr:util_print $result
     }
 
-    function _zsh_abbr:util_log() {
+    _zsh_abbr:util_log() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       logs+="${logs:+\\n}$1"
     }
 
-    function _zsh_abbr:util_print() {
+    _zsh_abbr:util_print() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       output+="${output:+\\n}$1"
     }
 
-    function _zsh_abbr:util_set_once() {
+    _zsh_abbr:util_set_once() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       local option value
@@ -625,10 +625,10 @@ _zsh_abbr() {
       ((number_opts++))
     }
 
-    function _zsh_abbr:util_sync_user() {
+    _zsh_abbr:util_sync_user() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
-      (( ZSH_ABBR_INITIALIZING )) && return
+      (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )) && return
 
       local abbreviation
       local expansion
@@ -651,13 +651,13 @@ _zsh_abbr() {
       mv $user_updated $ZSH_ABBR_USER_PATH
     }
 
-    function _zsh_abbr:util_usage() {
+    _zsh_abbr:util_usage() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       _zsh_abbr_man abbr 2>/dev/null || _zsh_abbr_cat ${ZSH_ABBR_SOURCE_PATH}/man/abbr.txt | _zsh_abbr_less -F
     }
 
-    function _zsh_abbr:util_warn() {
+    _zsh_abbr:util_warn() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       has_error=1
@@ -767,9 +767,10 @@ _zsh_abbr() {
     if ! (( should_exit )); then
       shift $number_opts
 
-      if ! (( ZSH_ABBR_INITIALIZING )) && [[ $scope != 'session' ]]; then
+      if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )) && [[ $scope != 'session' ]]; then
         job=$(_zsh_abbr_job_name)
         _zsh_abbr_job_push $job $action
+        _zsh_abbr_load_user_abbreviations
       fi
 
       if [ $action ]; then
@@ -783,7 +784,9 @@ _zsh_abbr() {
       fi
     fi
 
-    if ! (( ZSH_ABBR_INITIALIZING )); then
+    if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
+      ZSH_ABBR_USER_MODIFICATION_TIME=$(date -r $ZSH_ABBR_USER_PATH "+%s")
+
       _zsh_abbr_job_pop $job
     fi
 
@@ -808,33 +811,6 @@ _zsh_abbr() {
       [[ -n $output ]] && echo - $output >&1
       return 0
     fi
-  } always {
-    unfunction -m _zsh_abbr:add
-    unfunction -m _zsh_abbr:clear_session
-    unfunction -m _zsh_abbr:erase
-    unfunction -m _zsh_abbr:expand
-    unfunction -m _zsh_abbr:export_aliases
-    unfunction -m _zsh_abbr:import_aliases
-    unfunction -m _zsh_abbr:import_fish
-    unfunction -m _zsh_abbr:import_git_aliases
-    unfunction -m _zsh_abbr:list
-    unfunction -m _zsh_abbr:list_commands
-    unfunction -m _zsh_abbr:list_abbreviations
-    unfunction -m _zsh_abbr:print_version
-    unfunction -m _zsh_abbr:rename
-    unfunction -m _zsh_abbr:util_bad_options
-    unfunction -m _zsh_abbr:util_add
-    unfunction -m _zsh_abbr:util_alias
-    unfunction -m _zsh_abbr:util_error
-    unfunction -m _zsh_abbr:util_import_alias
-    unfunction -m _zsh_abbr:util_list
-    unfunction -m _zsh_abbr:util_list_item
-    unfunction -m _zsh_abbr:util_log
-    unfunction -m _zsh_abbr:util_print
-    unfunction -m _zsh_abbr:util_set_once
-    unfunction -m _zsh_abbr:util_sync_user
-    unfunction -m _zsh_abbr:util_usage
-    unfunction -m _zsh_abbr:util_warn
   }
 }
 
@@ -917,52 +893,16 @@ _zsh_abbr_init() {
     (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
     local job
-    local shwordsplit_on
 
     job=$(_zsh_abbr_job_name)
-    shwordsplit_on=0
 
     typeset -gA REGULAR_USER_ABBREVIATIONS
     typeset -gA GLOBAL_USER_ABBREVIATIONS
     typeset -gA REGULAR_SESSION_ABBREVIATIONS
     typeset -gA GLOBAL_SESSION_ABBREVIATIONS
-    REGULAR_SESSION_ABBREVIATIONS=()
-    GLOBAL_SESSION_ABBREVIATIONS=()
-    REGULAR_USER_ABBREVIATIONS=()
-    GLOBAL_USER_ABBREVIATIONS=()
-
-    function _zsh_abbr_init:protected_cmds() {
-      _zsh_abbr_cat() {
-        \command \cat $@
-      }
-
-      _zsh_abbr_less() {
-        \command \less $@
-      }
-
-      _zsh_abbr_ls() {
-        \command \ls $@
-      }
-
-      _zsh_abbr_man() {
-        \command \man $@
-      }
-    }
 
     function _zsh_abbr_init:create() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
-
-      if ! [ -d ${TMPDIR:-/tmp/}zsh-abbr ]; then
-        mkdir -p ${TMPDIR:-/tmp/}zsh-abbr
-      fi
-
-      if ! [ -f ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations ]; then
-        touch ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
-      fi
-
-      if ! [ -f ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations ]; then
-        touch ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
-      fi
 
       # clean up deprecated temp files
 
@@ -987,53 +927,35 @@ _zsh_abbr_init() {
       fi
     }
 
-    function _zsh_abbr_init:seed() {
-      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
+    function _zsh_abbr_init:protected_cmds() {
+      _zsh_abbr_cat() {
+        \command \cat $@
+      }
 
-      local arguments
-      local program
+      _zsh_abbr_less() {
+        \command \less $@
+      }
 
-      if [[ $options[shwordsplit] = on ]]; then
-        shwordsplit_on=1
-      fi
+      _zsh_abbr_ls() {
+        \command \ls $@
+      }
 
-      # Load saved user abbreviations
-      if [ -f $ZSH_ABBR_USER_PATH ]; then
-        unsetopt shwordsplit
-
-        while read -r line; do
-          program="${line%% *}"
-          arguments="${line#* }"
-
-          # Only execute abbr commands
-          if [[ $program == "abbr" && $program != $line ]]; then
-            abbr ${(z)arguments}
-          fi
-        done < $ZSH_ABBR_USER_PATH
-
-        if (( shwordsplit_on )); then
-          setopt shwordsplit
-        fi
-        unset shwordsplit_on
-      else
-        mkdir -p ${ZSH_ABBR_USER_PATH:A:h}
-        touch $ZSH_ABBR_USER_PATH
-      fi
-
-      typeset -p REGULAR_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
-      typeset -p GLOBAL_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+      _zsh_abbr_man() {
+        \command \man $@
+      }
     }
 
-    ZSH_ABBR_INITIALIZING=1
     _zsh_abbr_init:protected_cmds
     _zsh_abbr_job_push $job initialization
     _zsh_abbr_init:create
-    _zsh_abbr_init:seed
+    _zsh_abbr_load_user_abbreviations
+
+    ZSH_ABBR_USER_MODIFICATION_TIME=$(date -r $ZSH_ABBR_USER_PATH "+%s")
+
     _zsh_abbr_job_pop $job
-    ZSH_ABBR_INITIALIZING=0
   } always {
     unfunction -m _zsh_abbr_init:create
-    unfunction -m _zsh_abbr_init:seed
+    unfunction -m _zsh_abbr_init:protected_cmds
   }
 }
 
@@ -1098,6 +1020,7 @@ _zsh_abbr_job_push() {
         sleep 0.01
       done
     }
+
     _zsh_abbr_job_push:add_job
     _zsh_abbr_job_push:wait_turn
   } always {
@@ -1122,6 +1045,96 @@ _zsh_abbr_job_name() {
   # cannout support debug message
 
   echo "$(date +%s).$RANDOM"
+}
+
+_zsh_abbr_load_user_abbreviations() {
+  {
+    (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
+
+    local modification_time
+
+    function _zsh_abbr_load_user_abbreviations:setup() {
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
+
+      REGULAR_SESSION_ABBREVIATIONS=()
+      GLOBAL_SESSION_ABBREVIATIONS=()
+      REGULAR_USER_ABBREVIATIONS=()
+      GLOBAL_USER_ABBREVIATIONS=()
+
+      if ! [ -d ${TMPDIR:-/tmp/}zsh-abbr ]; then
+        mkdir -p ${TMPDIR:-/tmp/}zsh-abbr
+      fi
+
+      if ! [ -f ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations ]; then
+        touch ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+      fi
+
+      if ! [ -f ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations ]; then
+        touch ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+      fi
+    }
+
+    function _zsh_abbr_load_user_abbreviations:load() {
+      (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
+
+      local abbreviation
+      local arguments
+      local program
+      local shwordsplit_on
+      typeset -a user_abbreviations
+
+      shwordsplit_on=0
+
+      if [[ $options[shwordsplit] = on ]]; then
+        shwordsplit_on=1
+      fi
+
+      # Load saved user abbreviations
+      if [ -f $ZSH_ABBR_USER_PATH ]; then
+        unsetopt shwordsplit
+
+        while read -r line; do
+          program="${line%% *}"
+          arguments="${line#* }"
+
+          # Only execute abbr commands
+          if [[ $program == "abbr" && $program != $line ]]; then
+            abbr ${(z)arguments}
+          fi
+        done < $ZSH_ABBR_USER_PATH
+
+        if (( shwordsplit_on )); then
+          setopt shwordsplit
+        fi
+        unset shwordsplit_on
+      else
+        mkdir -p ${ZSH_ABBR_USER_PATH:A:h}
+        touch $ZSH_ABBR_USER_PATH
+      fi
+
+      typeset -p REGULAR_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+      typeset -p GLOBAL_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+    }
+
+    modification_time=$(date -r $ZSH_ABBR_USER_PATH "+%s")
+
+    if (( modification_time > ZSH_ABBR_USER_MODIFICATION_TIME )); then
+      (( ZSH_ABBR_DEBUG )) && echo "  seeding"
+      ZSH_ABBR_LOADING_USER_ABBREVIATIONS=1
+
+      _zsh_abbr_load_user_abbreviations:setup
+      _zsh_abbr_load_user_abbreviations:load
+
+      ZSH_ABBR_LOADING_USER_ABBREVIATIONS=0
+    elif (( ZSH_ABBR_DEBUG )); then
+      echo "  already up to date"
+    fi
+
+    return
+  } always {
+    unfunction -m _zsh_abbr_load_user_abbreviations:setup
+    unfunction -m _zsh_abbr_load_user_abbreviations:load
+  }
 }
 
 # WIDGETS
@@ -1159,7 +1172,24 @@ zle -N _zsh_abbr_expand_widget
 # -----
 
 abbr() {
+  (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
   _zsh_abbr $*
+}
+
+abbr-load() {
+  (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
+  _zsh_abbr_load_user_abbreviations
+
+  local job
+
+  job=$(_zsh_abbr_job_name)
+
+  _zsh_abbr_job_push $job $funcstack[1]
+  _zsh_abbr_load_user_abbreviations
+
+  ZSH_ABBR_USER_MODIFICATION_TIME=$(date -r $ZSH_ABBR_USER_PATH "+%s")
+
+  _zsh_abbr_job_pop $job
 }
 
 
