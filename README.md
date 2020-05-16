@@ -12,8 +12,8 @@ Run `abbr --help` (or `abbr -h`) for documentation; if the package is installed 
 
 ## Contents
 
-1. [Installation](#installation)
 1. [Crash Course](#crash-course)
+1. [Installation](#installation)
 1. [Usage](#usage)
 1. [Advanced](#advanced)
 1. [Uninstalling](#uninstalling)
@@ -21,6 +21,46 @@ Run `abbr --help` (or `abbr -h`) for documentation; if the package is installed 
 1. [Roadmap](#roadmap)
 1. [Contributing](#contributing)
 1. [License](#license)
+
+## Crash Course
+
+```shell
+# Add and use an abbreviation
+% abbr gc="git checkout"
+% gc[Space] # space expands this to `git checkout `
+% abbr gcm="git checkout master"
+% gcm[Enter] # enter expands this to `git checkout master` and then accepts
+Switched to branch 'master'
+Your branch is up to date with 'origin/master'.
+%
+
+# Abbreviations are immediately available to all current and future sessions
+% source ~/.zshrc
+% gc[Space] # expands to `git checkout`
+
+# Add a session-specific abbreviation
+% abbr -S x="git checkout"
+% x[Space] # expands to `git checkout `
+% source ~/.zshrc
+% x[Space] # but only in the session it was created in
+
+# Erase an abbreviation
+% abbr -e gc
+% gc[Space] # no expansion
+
+# Add a global abbreviation
+% abbr -g g=git
+% echo global && g[Space] # expands to `echo global && git `
+
+# Rename an abbreviation
+% abbr -r gcm cm
+% gcm[Space] # does not expand
+% cm[Space] # expands to `git checkout master `
+
+# Make the switch from aliases
+% abbr --import-aliases
+% abbr --import-git-aliases
+```
 
 ## Installation
 
@@ -82,46 +122,6 @@ If running `abbr` gives an error "zsh: permission denied: abbr", reload zsh:
 ### Manual
 
 Clone this repo and add `source path/to/zsh-abbr.zsh` to your `.zshrc`.
-
-## Crash Course
-
-```shell
-# Add and use an abbreviation
-% abbr gc="git checkout"
-% gc[Space] # space expands this to `git checkout `
-% abbr gcm="git checkout master"
-% gcm[Enter] # enter expands this to `git checkout master` and then accepts
-Switched to branch 'master'
-Your branch is up to date with 'origin/master'.
-%
-
-# Abbreviations are immediately available to all current and future sessions
-% source ~/.zshrc
-% gc[Space] # expands to `git checkout`
-
-# Add a session-specific abbreviation
-% abbr -S x="git checkout"
-% x[Space] # expands to `git checkout `
-% source ~/.zshrc
-% x[Space] # but only in the session it was created in
-
-# Erase an abbreviation
-% abbr -e gc
-% gc[Space] # no expansion
-
-# Add a global abbreviation
-% abbr -g g=git
-% echo global && g[Space] # expands to `echo global && git `
-
-# Rename an abbreviation
-% abbr -r gcm cm
-% gcm[Space] # does not expand
-% cm[Space] # expands to `git checkout master `
-
-# Make the switch from aliases
-% abbr --import-aliases
-% abbr --import-git-aliases
-```
 
 ## Usage
 
