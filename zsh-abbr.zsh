@@ -201,7 +201,7 @@ _zsh_abbr() {
     _zsh_abbr:import_aliases() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
-      local _alias
+      local alias
       local abbreviation
       local expansion
       local saved_type
@@ -214,17 +214,17 @@ _zsh_abbr() {
       fi
 
       if [[ $saved_type != 'global' ]]; then
-        while read -r _alias; do
-          _zsh_abbr:util_import_alias $_alias
-        done < <(alias -r)
+        while read -r alias; do
+          _zsh_abbr:util_import_alias $alias
+        done < <(_zsh_abbr_alias -r)
       fi
 
       if [[ $saved_type != 'regular' ]]; then
         type='global'
 
-        while read -r _alias; do
-          _zsh_abbr:util_import_alias $_alias
-        done < <(alias -g)
+        while read -r alias; do
+          _zsh_abbr:util_import_alias $alias
+        done < <(_zsh_abbr_alias -g)
       fi
 
       type=$saved_type
@@ -928,6 +928,10 @@ _zsh_abbr_init() {
     }
 
     function _zsh_abbr_init:protected_cmds() {
+      _zsh_abbr_alias() {
+        \builtin \alias $@
+      }
+
       _zsh_abbr_cat() {
         \command \cat $@
       }
