@@ -531,10 +531,16 @@ bindkey "^A" _zsh_abbr_expand_space
 
 ## Uninstalling
 
-Delete the zsh-abbr configuration directory. Note that this will permanently delete the user abbreviations file.
+Delete the user abbreviations file
 
 ```shell
-% rm -rf $(dirname "$ZSH_ABBR_USER_PATH")
+% rm $ZSH_ABBR_USER_PATH
+```
+
+and the session data storage directory
+
+```shell
+% rm -rf ${TMPDIR:-/tmp/}zsh-abbr
 ```
 
 Then follow the standard uninstallation procedure for your installation method. This is typically the reverse of what you did to install.
