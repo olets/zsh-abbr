@@ -2,6 +2,7 @@ ZSH_ABBR_QUIET=1
 ZSH_ABBR_USER_PATH=${0:A:h}/abbreviations.$RANDOM
 touch $ZSH_ABBR_USER_PATH
 source ${0:A:h}/../zsh-abbr.zsh
+pass=0
 
 typeset -a result
 
@@ -18,6 +19,7 @@ if [[ $result[1] == "abbr $test_abbr_abbreviation=${(qqq)test_abbr_expansion}" ]
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 echo
@@ -30,6 +32,7 @@ if [[ ${#result} == 0 ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 echo
@@ -42,6 +45,7 @@ if [[ $result[1] == "abbr $test_abbr_abbreviation=${(qqq)test_abbr_expansion}" ]
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e $test_abbr_abbreviation
@@ -56,6 +60,7 @@ if [[ ${#result} == 0 ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 echo
@@ -68,6 +73,7 @@ if [[ $result[1] == $test_abbr_expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e $test_abbr_abbreviation
@@ -82,6 +88,7 @@ if [[ $result[1] == $test_abbr_expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e ${test_abbr_abbreviation}_new
@@ -97,6 +104,7 @@ if [[ $result[1] == $expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e $abbreviation
@@ -112,6 +120,7 @@ if [[ $result[1] == $expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e $abbreviation
@@ -127,6 +136,7 @@ if [[ $result[1] == $expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e $abbreviation
@@ -142,6 +152,7 @@ if [[ $result[1] == $expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e $abbreviation
@@ -157,6 +168,7 @@ if [[ $result[1] == $expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e $abbreviation
@@ -172,6 +184,7 @@ if [[ $result[1] == $expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e $abbreviation
@@ -188,6 +201,7 @@ if [[ $result[1] == $expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e $abbreviation
@@ -208,6 +222,7 @@ if [[ $result[1] == $expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e $abbreviation
@@ -228,6 +243,7 @@ if [[ $result[1] == $expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e $abbreviation
@@ -248,6 +264,7 @@ if [[ $result[1] == $expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e $abbreviation
@@ -268,6 +285,7 @@ if [[ $result[1] == $expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e $abbreviation
@@ -285,6 +303,7 @@ if [[ ${#result} == 0 ]]; then
 else
 	echo $result[1]
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 echo
@@ -298,9 +317,17 @@ if [[ $result[1] == $test_abbr_expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
+	pass=1
 fi
 echo $message
 abbr -e $test_abbr_abbreviation
 echo
 
 rm $ZSH_ABBR_USER_PATH
+if (( pass )); then
+	echo >&1
+	# exit 0
+else
+	echo >&2
+	# exit 1
+fi

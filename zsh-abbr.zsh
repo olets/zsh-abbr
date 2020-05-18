@@ -906,7 +906,7 @@ _zsh_abbr_init() {
     typeset -gA REGULAR_SESSION_ABBREVIATIONS
     typeset -gA GLOBAL_SESSION_ABBREVIATIONS
 
-    function _zsh_abbr_init:create() {
+    function _zsh_abbr_init:clean() {
       (( ZSH_ABBR_DEBUG )) && echo $funcstack[1]
 
       # clean up deprecated temp files
@@ -932,7 +932,7 @@ _zsh_abbr_init() {
       fi
     }
 
-    function _zsh_abbr_init:protected_cmds() {
+    function _zsh_abbr_init:wrap_external_commands() {
       _zsh_abbr_alias() {
         \builtin \alias $@
       }
@@ -958,17 +958,17 @@ _zsh_abbr_init() {
       }
     }
 
-    _zsh_abbr_init:protected_cmds
+    _zsh_abbr_init:wrap_external_commands
     _zsh_abbr_job_push $job initialization
-    _zsh_abbr_init:create
+    _zsh_abbr_init:clean
     _zsh_abbr_load_user_abbreviations
 
     ZSH_ABBR_USER_MODIFICATION_TIME=$(date -r $ZSH_ABBR_USER_PATH "+%s")
 
     _zsh_abbr_job_pop $job
   } always {
-    unfunction -m _zsh_abbr_init:create
-    unfunction -m _zsh_abbr_init:protected_cmds
+    unfunction -m _zsh_abbr_init:clean
+    unfunction -m _zsh_abbr_init:wrap_external_commands
   }
 }
 
