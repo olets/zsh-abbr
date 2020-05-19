@@ -295,7 +295,6 @@ unalias $abbreviation
 # Can delete a user abbreviation from outside abbr without unexpected retention
 message="abbreviation deleted externally cannot be expanded"
 abbr --add $test_abbr
-sleep 1
 echo '' > $ZSH_ABBR_USER_PATH
 result=( ${(f)"$(abbr -x $test_abbr_abbreviation)"} )
 if [[ ${#result} == 0 ]]; then
@@ -310,7 +309,6 @@ echo
 
 # Can add a user abbreviation from outside abbr without data loss
 message="abbreviation added externally can be expanded"
-sleep 1
 echo "abbr --add $test_abbr_abbreviation='$test_abbr_expansion'" > $ZSH_ABBR_USER_PATH
 result=( ${(f)"$(abbr --expand $test_abbr_abbreviation)"} )
 if [[ $result[1] == $test_abbr_expansion ]]; then

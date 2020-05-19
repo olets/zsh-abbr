@@ -31,12 +31,16 @@ zsh\-abbr \- manage zsh abbreviations
 
 \fBabbr\fR (\fB\-\-version\fR | \fB\-v)
 
+\fBabbr-load\fR
+
 .SH DESCRIPTION
 \fBabbr\fR manages abbreviations \- user\-defined words that are replaced with longer phrases after they are entered.
 
 For example, a frequently\-run command like git checkout can be abbreviated to gco. After entering gco and pressing [\fBSpace\fR], the full text git checkout will appear in the command line.
 
 To prevent expansion, press [\fBCTRL\-SPACE\fR] in place of [\fBSPACE\fR].
+
+\fBabbr-load\fR triggers a reload of the user abbreviations files. This also runs automatically before each of the above commands.
 
 .SH Options
 The following options are available:

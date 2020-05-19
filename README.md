@@ -492,11 +492,12 @@ User abbreviations live in a plain text file which you can edit directly, share,
 
 When zsh-abbr updates the user abbreviations storage file, the lines are alphabetized and global user abbreviations are moved to the top of the file.
 
-Every time you run `abbr`, it checks for manual changes to the user abbreviations storage file (that is, changes made with a text editor or `echo`, as opposed to changes made with `abbr (--add|--erase|--import…|--rename)`) and updates the session's user abbreviations if necessary. This means that in typical use it is safe to manually edit the user abbreviations storage file and continue using `abbr` without worry that the manual changes will be overridden. The limitation is that a manual change made in the same epoch second as a subsequent `abbr` command, the command will miss the update. This is likely only a concern in scripting, where a `sleep 1` may be necessary (see the "delete/added externally" tests for examples).
+Changes made directly to the user abbreviations storage file  will be available in the terminal the next time an `abbr` command is run, or run `abbr-load`.
+To load changes made directly to the user abbreviation file (that is, changes made with a text editor or `echo` as opposed to changes made with `abbr (--add|--erase|--import…|--rename)`) run `abbr-load`.
 
-To load the user abbreviations storage file's abbreviations into the current session without running `abbr [something]`, run `abbr-load`.
+`abbr-load` is run automatically at the start of every `abbr` command (`abbr (--add|--erase|--import…|--rename)`, not every expansion).
 
-The user abbreviations storage file's default location is `${HOME}/.config/zsh/abbreviations`. Customize this by setting the `ZSH_ABBR_USER_PATH` variable in your `.zshrc` before loading zsh-abbr.
+The user abbreviations storage file's default location is `${HOME}/.config/zsh/abbreviations`. Customize this by setting the `ZSH_ABBR_USER_PATH` variable in your `.zshrc` before loading zsh-abbr:
 
 ```shell
 % cat ~/.zshrc

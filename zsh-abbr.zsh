@@ -790,8 +790,6 @@ _zsh_abbr() {
     fi
 
     if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
-      ZSH_ABBR_USER_MODIFICATION_TIME=$(date -r $ZSH_ABBR_USER_PATH "+%s")
-
       _zsh_abbr_job_pop $job
     fi
 
@@ -935,8 +933,6 @@ _zsh_abbr_init() {
     _zsh_abbr_init:clean
     _zsh_abbr_load_user_abbreviations
 
-    ZSH_ABBR_USER_MODIFICATION_TIME=$(date -r $ZSH_ABBR_USER_PATH "+%s")
-
     _zsh_abbr_job_pop $job
   } always {
     unfunction -m _zsh_abbr_init:clean
@@ -1035,8 +1031,6 @@ _zsh_abbr_load_user_abbreviations() {
   {
     (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo $funcstack[1]
 
-    local modification_time
-
     function _zsh_abbr_load_user_abbreviations:setup() {
       (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo $funcstack[1]
 
@@ -1102,19 +1096,12 @@ _zsh_abbr_load_user_abbreviations() {
       typeset -p GLOBAL_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
     }
 
-    modification_time=$(date -r $ZSH_ABBR_USER_PATH "+%s")
+    ZSH_ABBR_LOADING_USER_ABBREVIATIONS=1
 
-    if (( modification_time > ZSH_ABBR_USER_MODIFICATION_TIME )); then
-      (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo "  seeding"
-      ZSH_ABBR_LOADING_USER_ABBREVIATIONS=1
+    _zsh_abbr_load_user_abbreviations:setup
+    _zsh_abbr_load_user_abbreviations:load
 
-      _zsh_abbr_load_user_abbreviations:setup
-      _zsh_abbr_load_user_abbreviations:load
-
-      ZSH_ABBR_LOADING_USER_ABBREVIATIONS=0
-    elif (( ZSH_ABBR_DEBUG )); then
-      _zsh_abbr_echo "  already up to date"
-    fi
+    ZSH_ABBR_LOADING_USER_ABBREVIATIONS=0
 
     return
   } always {
@@ -1202,8 +1189,6 @@ abbr-load() {
 
   _zsh_abbr_job_push $job $funcstack[1]
   _zsh_abbr_load_user_abbreviations
-
-  ZSH_ABBR_USER_MODIFICATION_TIME=$(date -r $ZSH_ABBR_USER_PATH "+%s")
 
   _zsh_abbr_job_pop $job
 }

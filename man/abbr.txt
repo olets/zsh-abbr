@@ -34,6 +34,8 @@ SYNOPSIS
 
        abbr (--version | -v)
 
+       abbr-load
+
 
 DESCRIPTION
        abbr  manages abbreviations - user-defined words that are replaced with
@@ -45,6 +47,9 @@ DESCRIPTION
 
        To prevent expansion, press [CTRL-SPACE] in place of [SPACE].
 
+       abbr-load triggers a reload of the user abbreviations files. This  also
+       runs automatically before each of the above commands.
+
 
 Options
        The following options are available:
@@ -52,7 +57,7 @@ Options
 
        o      --add abbreviation expansion or -a abbreviation expansion
 
-              Adds a new abbreviation, causing abbreviation to be expanded  as
+              Adds  a new abbreviation, causing abbreviation to be expanded as
               expansion.
 
               Will error rather than overwrite an existing abbreviation.
@@ -79,7 +84,7 @@ Options
        o      --export-aliases [<destination>]
 
               Exports a list of alias command for user abbreviations, suitable
-              for  pasting or piping to whereever you keep aliases. If a <des-
+              for pasting or piping to whereever you keep aliases. If a  <des-
               tination> is provided, the commands will be appended to it.
 
 
@@ -95,13 +100,13 @@ Options
 
        o      --import-git-aliases
 
-              Adds two abbreviations for each git alias: a  regular  abbrevia-
+              Adds  two  abbreviations for each git alias: a regular abbrevia-
               tion, and a "g"-prefixed global abbreviation.
 
 
        o      abbr --list
 
-              Lists  the  available  abbreviations  without  their expansions.
+              Lists the  available  abbreviations  without  their  expansions.
               Equivalent to fish's `abbr --list`.
 
 
@@ -112,14 +117,14 @@ Options
 
        o      --list-commands or -L (or --show or -s as in fish)
 
-              Lists all abbreviations as  commands  suitable  for  export  and
+              Lists  all  abbreviations  as  commands  suitable for export and
               import.
 
 
-       o      --rename  old_abbreviation  new_abbreviation or -R old_abbrevia-
+       o      --rename old_abbreviation new_abbreviation or  -R  old_abbrevia-
               tion new_abbreviation
 
-              Renames an abbreviation, from old_abbreviation to  new_abbrevia-
+              Renames  an abbreviation, from old_abbreviation to new_abbrevia-
               tion.
 
 
@@ -137,17 +142,17 @@ Options
 
               o      --user or -U
 
-                     Abbreviations  available  to  all current and future ses-
+                     Abbreviations available to all current  and  future  ses-
                      sions.
 
 
-       All except for --clear-session, --expand, --import-fish, and  --import-
+       All  except for --clear-session, --expand, --import-fish, and --import-
        git-aliases can take a type:
 
 
               o      --global or -g
 
-                     Abbreviation  will expand anywhere on a line, rather than
+                     Abbreviation will expand anywhere on a line, rather  than
                      only in command (first word) position.
 
 
@@ -157,14 +162,14 @@ Options
                      only.
 
 
-       All  except  for  --clear-session,  --expand, --export-aliases, --list-
+       All except for  --clear-session,  --expand,  --export-aliases,  --list-
        abbreviations, and --list-commands can be tried without making changes:
 
 
-              o      --dry-run  Show whats the result of the command would be.
+              o      --dry-run Show whats the result of the command would  be.
 
 
-       All except for  --clear-session,  --expand,  --export-aliases,  --list-
+       All  except  for  --clear-session,  --expand, --export-aliases, --list-
        abbreviations, and --list-commands can be run with reduced output:
 
 
@@ -177,7 +182,7 @@ Options
 EXAMPLES
        abbr gco="git checkout"
 
-              "gco"  will  be  expanded as "git checkout" when it is the first
+              "gco" will be expanded as "git checkout" when it  is  the  first
               word in the command, in all open and future sessions.
 
 
@@ -195,9 +200,9 @@ EXAMPLES
 
        abbr -e -S -g gco;
 
-              Erase the global session abbreviation "gco". Note  that  because
+              Erase  the  global session abbreviation "gco". Note that because
               expansion is triggered by [SPACE] and [ENTER], the semicolon (;)
-              is necessary to  prevent  expansion  when  operating  on  global
+              is  necessary  to  prevent  expansion  when  operating on global
               abbreviations.
 
 
@@ -225,4 +230,4 @@ AUTHORS
 
 
 
-abbr 3.3.0                        May 9 2020                       ZSH-ABBR(1)
+abbr 3.3.1                        May 11 2020                      ZSH-ABBR(1)
