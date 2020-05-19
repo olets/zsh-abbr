@@ -14,6 +14,8 @@ ZSH_ABBR_DEFAULT_BINDINGS=${ZSH_ABBR_DEFAULT_BINDINGS=1}
 # File abbreviations are stored in
 ZSH_ABBR_USER_PATH=${ZSH_ABBR_USER_PATH=${HOME}/.config/zsh/abbreviations}
 
+# Should `abbr-load` run before every `abbr` command?
+ZSH_ABBR_AUTOLOAD=${ZSH_ABBR_AUTOLOAD:-1}
 
 # FUNCTIONS
 # ---------
@@ -775,7 +777,10 @@ _zsh_abbr() {
       if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )) && [[ $scope != 'session' ]]; then
         job=$(_zsh_abbr_job_name)
         _zsh_abbr_job_push $job $action
-        _zsh_abbr_load_user_abbreviations
+
+        if (( ZSH_ABBR_AUTOLOAD )); then
+          _zsh_abbr_load_user_abbreviations
+        fi
       fi
 
       if [ $action ]; then

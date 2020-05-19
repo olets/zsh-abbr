@@ -492,10 +492,9 @@ User abbreviations live in a plain text file which you can edit directly, share,
 
 When zsh-abbr updates the user abbreviations storage file, the lines are alphabetized and global user abbreviations are moved to the top of the file.
 
-Changes made directly to the user abbreviations storage file  will be available in the terminal the next time an `abbr` command is run, or run `abbr-load`.
-To load changes made directly to the user abbreviation file (that is, changes made with a text editor or `echo` as opposed to changes made with `abbr (--add|--erase|--import…|--rename)`) run `abbr-load`.
+Run `abbr-load` to load changes made directly to the user abbreviation file (that is, changes made with a text editor or `echo` as opposed to changes made with `abbr (--add|--erase|--import…|--rename)`) into the current session.
 
-`abbr-load` is run automatically at the start of every `abbr` command (`abbr (--add|--erase|--import…|--rename)`, not every expansion).
+`abbr-load` is run automatically at the start of every `abbr` command (`abbr (--add|--erase|--import…|--rename)`, not every expansion). This should add no appreciable time (clocked at 0.02ms per saved abbreviation), but it can be turned off by setting `ZSH_ABBR_AUTOLOAD=0`.
 
 The user abbreviations storage file's default location is `${HOME}/.config/zsh/abbreviations`. Customize this by setting the `ZSH_ABBR_USER_PATH` variable in your `.zshrc` before loading zsh-abbr:
 
