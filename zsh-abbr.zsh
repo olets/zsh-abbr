@@ -7,15 +7,26 @@
 # CONFIGURATION
 # -------------
 
+# Should `abbr-load` run before every `abbr` command? (default true)
+ZSH_ABBR_AUTOLOAD=${ZSH_ABBR_AUTOLOAD:-1}
+
 # Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
-ZSH_ABBR_DEFAULT_BINDINGS=${ZSH_ABBR_DEFAULT_BINDINGS=1}
+# (default true)
+ZSH_ABBR_DEFAULT_BINDINGS=${ZSH_ABBR_DEFAULT_BINDINGS:-1}
+
+# Behave as if `--dry-run` was passed? (default false)
+ZSH_ABBR_DRY_RUN=${ZSH_ABBR_DRY_RUN:-0}
+
+# Behave as if `--force` was passed? (default false)
+ZSH_ABBR_FORCE=${ZSH_ABBR_FORCE:-0}
+
+# Behave as if `--quiet` was passed? (default false)
+ZSH_ABBR_QUIET=${ZSH_ABBR_QUIET:-0}
 
 # File abbreviations are stored in
 ZSH_ABBR_USER_PATH=${ZSH_ABBR_USER_PATH=${HOME}/.config/zsh/abbreviations}
 
-# Should `abbr-load` run before every `abbr` command?
-ZSH_ABBR_AUTOLOAD=${ZSH_ABBR_AUTOLOAD:-1}
 
 # FUNCTIONS
 # ---------
@@ -25,10 +36,10 @@ _zsh_abbr() {
     local action dry_run force has_error number_opts opt logs output \
           quiet release_date scope should_exit text_bold text_reset \
           type version
-    dry_run=${ZSH_ABBR_DRY_RUN:-0}
-    force=${ZSH_ABBR_FORCE:-0}
+    dry_run=$ZSH_ABBR_DRY_RUN
+    force=$ZSH_ABBR_FORCE
     number_opts=0
-    quiet=${ZSH_ABBR_QUIET:-0}
+    quiet=$ZSH_ABBR_QUIET
     release_date="May 11 2020"
     text_bold="\\033[1m"
     text_reset="\\033[0m"
