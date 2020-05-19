@@ -810,10 +810,6 @@ _zsh_abbr() {
     fi
 
     if ! (( quiet )); then
-      if [[ -n $has_error ]]; then
-        logs+="${logs:+\\n}For help run \`abbr --help\`"
-      fi
-
       if [[ -n $logs ]]; then
         output=$logs${output:+\\n$output}
       fi
