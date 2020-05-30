@@ -436,30 +436,11 @@ _zsh_abbr() {
         return
       fi
 
-      if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
-        # Warn if abbreviation would interfere with system command use, e.g. `cp="git cherry-pick"`
-        # Apply force to add regardless
-        cmd=$(_zsh_abbr_command -v $abbreviation)
-
-        if [[ $cmd && ${cmd:0:6} != 'alias ' ]]; then
-          if (( force )); then
-            verb_phrase="will now expand"
-            (( dry_run )) && verb_phrase="would now expand"
-
-            _zsh_abbr:util_log "\`$abbreviation\` $verb_phrase as an abbreviation"
-          else
-            verb_phrase="was not added"
-            (( dry_run )) && verb_phrase="would not be added"
-
-            _zsh_abbr:util_warn "The abbreviation \`$abbreviation\` $verb_phrase because a command with the same name exists"
-            return
-          fi
-        fi
-      fi
-
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
           if ! (( ${+GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+            _zsh_abbr:util_check_command $abbreviation || return
+
             if ! (( dry_run )); then
               GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
             fi
@@ -467,6 +448,8 @@ _zsh_abbr() {
             success=1
           fi
         elif ! (( ${+REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+          _zsh_abbr:util_check_command $abbreviation || return
+
           if ! (( dry_run )); then
             REGULAR_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
           fi
@@ -480,6 +463,8 @@ _zsh_abbr() {
           fi
 
           if ! (( ${+GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
+            _zsh_abbr:util_check_command $abbreviation || return
+
             if ! (( dry_run )); then
               GLOBAL_USER_ABBREVIATIONS[$abbreviation]=$expansion
               _zsh_abbr:util_sync_user
@@ -493,6 +478,8 @@ _zsh_abbr() {
           fi
 
           if ! (( ${+REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
+            _zsh_abbr:util_check_command $abbreviation || return
+
             if ! (( dry_run )); then
               REGULAR_USER_ABBREVIATIONS[$abbreviation]=$expansion
               _zsh_abbr:util_sync_user
@@ -565,6 +552,35 @@ _zsh_abbr() {
       expansion=${1#*=}
 
       _zsh_abbr:util_add $abbreviation "$(_zsh_abbr_echo $expansion)"
+    }
+
+    _zsh_abbr:util_check_command() {
+      (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo $funcstack[1]
+
+      local abbreviation
+
+      abbreviation=$1
+
+      # Warn if abbreviation would interfere with system command use, e.g. `cp="git cherry-pick"`
+      # Apply force to add regardless
+      if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
+        cmd=$(_zsh_abbr_command -v $abbreviation)
+
+        if [[ $cmd && ${cmd:0:6} != 'alias ' ]]; then
+          if (( force )); then
+            verb_phrase="will now expand"
+            (( dry_run )) && verb_phrase="would now expand"
+
+            _zsh_abbr:util_log "\`$abbreviation\` $verb_phrase as an abbreviation"
+          else
+            verb_phrase="was not added"
+            (( dry_run )) && verb_phrase="would not be added"
+
+            _zsh_abbr:util_warn "The abbreviation \`$abbreviation\` $verb_phrase because a command with the same name exists"
+            return 1
+          fi
+        fi
+      fi
     }
 
     _zsh_abbr:util_list() {
