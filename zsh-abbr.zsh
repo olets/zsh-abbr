@@ -94,6 +94,7 @@ _zsh_abbr() {
       local abbreviation
       local abbreviations_sets
       local message
+      local verb_phrase
 
       if [[ $# > 1 ]]; then
         _zsh_abbr:util_error "abbr erase: Expected one argument"
@@ -149,7 +150,10 @@ _zsh_abbr() {
       if ! (( ${#abbreviations_sets} )); then
         _zsh_abbr:util_error "abbr erase: No ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` found"
       elif [[ ${#abbreviations_sets} == 1 ]]; then
+        verb_phrase="Would erase"
+
         if ! (( dry_run )); then
+          verb_phrase="Erased"
           unset "${abbreviations_sets}[${(b)abbreviation}]" # quotation marks required
 
           if [[ $abbreviations_sets =~ USER ]]; then
@@ -157,9 +161,12 @@ _zsh_abbr() {
           fi
         fi
 
-        _zsh_abbr:util_log "$fg[green]Erased$reset_color ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
+        _zsh_abbr:util_log "$fg[green]$verb_phrase$reset_color ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
       else
-        message="$fg[red]Did not erase$reset_color abbreviation \`$abbreviation\`. Please specify one of\\n"
+        verb_phrase="Did not erase"
+        (( dry_run )) && verb_phrase="Would not erase"
+
+        message="$fg[red]$verb_phrase$reset_color abbreviation \`$abbreviation\`. Please specify one of\\n"
 
         for abbreviations_set in ${abbreviations_sets[@]}; do
           message+="  ${${${abbreviations_set:l}//_/ }//abbreviations/}\\n"
@@ -291,7 +298,10 @@ _zsh_abbr() {
         value=${git_alias#* }
 
         if [[ ${value[1]} == '!' ]]; then
-          _zsh_abbr:util_warn "The Git alias \`$key\` was not imported because its expansion is a function"
+          verb_phrase="was not imported"
+          ((dry_run)) && verb_phrase="would not be imported"
+
+          _zsh_abbr:util_warn "The Git alias \`$key\` $verb_phrase because its expansion is a function"
         else
           if ! (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
             key=${(q)key}
@@ -410,6 +420,7 @@ _zsh_abbr() {
       local expansion
       local job_group
       local success
+      local verb_phrase
 
       abbreviation=$1
       expansion=$2
@@ -432,9 +443,15 @@ _zsh_abbr() {
 
         if [[ $cmd && ${cmd:0:6} != 'alias ' ]]; then
           if (( force )); then
-            _zsh_abbr:util_log "\`$abbreviation\` will now expand as an abbreviation"
+            verb_phrase="will now expand"
+            (( dry_run )) && verb_phrase="would now expand"
+
+            _zsh_abbr:util_log "\`$abbreviation\` $verb_phrase as an abbreviation"
           else
-            _zsh_abbr:util_warn "The alias \`$abbreviation\` was not added because a command with the same name exists"
+            verb_phrase="was not added"
+            (( dry_run )) && verb_phrase="would not be added"
+
+            _zsh_abbr:util_warn "The abbreviation \`$abbreviation\` $verb_phrase because a command with the same name exists"
             return
           fi
         fi
@@ -487,9 +504,15 @@ _zsh_abbr() {
       fi
 
       if (( success )); then
-        _zsh_abbr:util_log "$fg[green]Added$reset_color the ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
+        verb_phrase="Added"
+        (( dry_run )) && verb_phrase="Would add"
+
+        _zsh_abbr:util_log "$fg[green]$verb_phrase$reset_color the ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
       else
-        _zsh_abbr:util_error "The ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` was not added because it already exists"
+        verb_phrase="was not added"
+        (( dry_run )) && verb_phrase="would not be added"
+
+        _zsh_abbr:util_error "The ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` $verb_phrase because it already exists"
       fi
     }
 
