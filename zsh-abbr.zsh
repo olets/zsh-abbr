@@ -674,7 +674,6 @@ _zsh_abbr() {
       value=$2
 
       if [ ${(P)option} ]; then
-        _zsh_abbr:util_bad_options
         return
       fi
 
