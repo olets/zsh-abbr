@@ -789,6 +789,10 @@ _zsh_abbr() {
         "-s") # "show" is for backwards compatability with v2
           _zsh_abbr:util_set_once action list_commands
           ;;
+        "--load")
+          _zsh_abbr_load_user_abbreviations
+          should_exit=1
+          ;;
         "--quiet"|\
         "-q")
           quiet=1
@@ -1228,20 +1232,6 @@ zle -N _zsh_abbr_expand_widget
 abbr() {
   (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo $funcstack[1]
   _zsh_abbr $*
-}
-
-abbr-load() {
-  (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo $funcstack[1]
-  _zsh_abbr_load_user_abbreviations
-
-  local job
-
-  job=$(_zsh_abbr_job_name)
-
-  _zsh_abbr_job_push $job $funcstack[1]
-  _zsh_abbr_load_user_abbreviations
-
-  _zsh_abbr_job_pop $job
 }
 
 
