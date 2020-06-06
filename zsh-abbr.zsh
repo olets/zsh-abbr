@@ -32,6 +32,8 @@ ZSH_ABBR_USER_PATH=${ZSH_ABBR_USER_PATH=${HOME}/.config/zsh/abbreviations}
 # ---------
 
 _zsh_abbr() {
+  emulate -LR zsh
+
   {
     local action dry_run force has_error number_opts opt logs output \
           quiet release_date scope should_exit text_bold text_reset \
@@ -872,6 +874,8 @@ _zsh_abbr() {
 }
 
 _zsh_abbr_bind_widgets() {
+  emulate -LR zsh
+
   (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo $funcstack[1]
 
   # spacebar expands abbreviations
@@ -892,6 +896,8 @@ _zsh_abbr_bind_widgets() {
 }
 
 _zsh_abbr_cmd_expansion() {
+  emulate -LR zsh
+
   # cannout support debug message
 
   local abbreviation
@@ -909,6 +915,8 @@ _zsh_abbr_cmd_expansion() {
 }
 
 _zsh_abbr_expand_and_accept() {
+  emulate -LR zsh
+
   # do not support debug message
 
   local trailing_space
@@ -922,6 +930,8 @@ _zsh_abbr_expand_and_accept() {
 }
 
 _zsh_abbr_expand_and_space() {
+  emulate -LR zsh
+
   # do not support debug message
 
   zle _zsh_abbr_expand_widget
@@ -929,6 +939,8 @@ _zsh_abbr_expand_and_space() {
 }
 
 _zsh_abbr_global_expansion() {
+  emulate -LR zsh
+
   # cannout support debug message
 
   local abbreviation
@@ -946,6 +958,8 @@ _zsh_abbr_global_expansion() {
 }
 
 _zsh_abbr_init() {
+  emulate -LR zsh
+
   {
     (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo $funcstack[1]
 
@@ -983,10 +997,10 @@ _zsh_abbr_init() {
     }
 
     job=$(_zsh_abbr_job_name)
+
     _zsh_abbr_job_push $job initialization
     _zsh_abbr_init:clean
     _zsh_abbr_load_user_abbreviations
-
     _zsh_abbr_job_pop $job
   } always {
     unfunction -m _zsh_abbr_init:clean
@@ -994,6 +1008,8 @@ _zsh_abbr_init() {
 }
 
 _zsh_abbr_job_push() {
+  emulate -LR zsh
+
   {
     (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo $funcstack[1]
 
@@ -1066,6 +1082,8 @@ _zsh_abbr_job_push() {
 }
 
 _zsh_abbr_job_pop() {
+  emulate -LR zsh
+
   (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo $funcstack[1]
 
   local job
@@ -1076,12 +1094,16 @@ _zsh_abbr_job_pop() {
 }
 
 _zsh_abbr_job_name() {
+  emulate -LR zsh
+
   # cannout support debug message
 
   _zsh_abbr_echo "$(date +%s).$RANDOM"
 }
 
 _zsh_abbr_load_user_abbreviations() {
+  emulate -LR zsh
+
   {
     (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo $funcstack[1]
 
@@ -1165,6 +1187,8 @@ _zsh_abbr_load_user_abbreviations() {
 }
 
 _zsh_abbr_wrap_external_commands() {
+  emulate -LR zsh
+
   _zsh_abbr_alias() {
     \builtin \alias $@
   }
@@ -1198,6 +1222,8 @@ _zsh_abbr_wrap_external_commands() {
 # -------
 
 _zsh_abbr_expand_widget() {
+  emulate -LR zsh
+
   local expansion
   local word
   local words
@@ -1229,6 +1255,8 @@ zle -N _zsh_abbr_expand_widget
 # -----
 
 abbr() {
+  emulate -LR zsh
+
   (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo $funcstack[1]
   _zsh_abbr $*
 }
