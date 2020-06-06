@@ -737,7 +737,6 @@ _zsh_abbr() {
     _zsh_abbr:util_warn() {
       (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo $funcstack[1]
 
-      has_error=1
       logs+="${logs:+\\n}$fg[yellow]$@$reset_color"
     }
 
