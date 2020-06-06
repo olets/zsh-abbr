@@ -26,7 +26,7 @@ SYNOPSIS
 
        abbr (list-abbreviations | l)
 
-       abbr (list-commands | L | --show | -s)
+       abbr (list-commands | L)
 
        abbr (rename | R) [scope] <old_abbreviation> <new_abbreviation>
 
@@ -115,7 +115,7 @@ Options
               Lists all abbreviations.
 
 
-       o      list-commands or L (or --show or -s as in fish)
+       o      list-commands or L
 
               Lists  all  abbreviations  as  commands  suitable for export and
               import.

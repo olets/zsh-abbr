@@ -831,10 +831,9 @@ _zsh_abbr() {
         "list-commands"|\
         "L"|\
         "--list-commands"|\
-        "-L"|\
-        "--show"|\
-        "-s")
-          [[ $opt[1] == '-' ]] && _zsh_abbr:util_deprecated $opt ${opt##*-}
+        "-L")
+          # -L option will continue to be supported to match the builtin alias's `-L`
+          [[ $opt[1] == '--' ]] && _zsh_abbr:util_deprecated $opt ${opt##*-}
           _zsh_abbr:util_set_once action list_commands
           ;;
         "load")
@@ -860,6 +859,11 @@ _zsh_abbr() {
         "--session"|\
         "-S")
           _zsh_abbr:util_set_once scope session
+          ;;
+        "--show"|\
+        "-s")
+          _zsh_abbr:util_deprecated $opt "--list-commands or -L"
+          _zsh_abbr:util_set_once action list_commands
           ;;
         "--user"|\
         "-U")
