@@ -14,8 +14,12 @@ Key:
 
 ## 3.x
 
-- [ ] testing framework?
+- [x] deprecate the `_zsh_` and `ZSH_` prefixes from functions and vars
 - [ ] maybe split abbr into its own file, and autoload it
+
+## 4.0
+
+- [ ] drop the `_zsh_` and `ZSH_` prefixes from functions and vars
 
 Chrome
 
