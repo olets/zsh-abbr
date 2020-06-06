@@ -6,35 +6,35 @@ NAME
        zsh-abbr - manage zsh abbreviations
 
 SYNOPSIS
-       abbr (--add | -a) [scope] [--force] <abbreviation> <expansion>
+       abbr (add | a) [scope] [--force] <abbreviation> <expansion>
 
-       abbr (--clear-session | -c)
+       abbr (clear-session | c)
 
-       abbr (--erase | -e) [scope] <abbreviation>
+       abbr (erase | e) [scope] <abbreviation>
 
-       abbr (--expand | -x) <abbreviation>
+       abbr (expand | x) <abbreviation>
 
-       abbr (--export-aliases | -o) <scope> [<destination>]
+       abbr (export-aliases | -o) <scope> [<destination>]
 
-       abbr --import-aliases [scope]
+       abbr import-aliases [scope]
 
-       abbr --import-fish <file>
+       abbr import-fish <file>
 
-       abbr --import-git-aliases
+       abbr import-git-aliases
 
-       abbr --list
+       abbr list
 
-       abbr (--list-abbreviations | -l)
+       abbr (list-abbreviations | l)
 
-       abbr (--list-commands | -L | --show | -s)
+       abbr (list-commands | L | --show | -s)
 
-       abbr (--rename | -R) [scope] <old_abbreviation> <new_abbreviation>
+       abbr (rename | R) [scope] <old_abbreviation> <new_abbreviation>
 
-       abbr (--help | -h)
+       abbr load
 
-       abbr (--version | -v)
+       abbr (help | --help | -h)
 
-       abbr-load
+       abbr (version | --version | -v)
 
 
 DESCRIPTION
@@ -55,7 +55,7 @@ Options
        The following options are available:
 
 
-       o      --add abbreviation expansion or -a abbreviation expansion
+       o      add abbreviation expansion or a abbreviation expansion
 
               Adds  a new abbreviation, causing abbreviation to be expanded as
               expansion.
@@ -66,74 +66,74 @@ Options
               To add in spite of the warning, use [--force].
 
 
-       o      --clear-session or -c
+       o      clear-session or c
 
               Erases all session abbreviations.
 
 
-       o      --erase abbreviation or -e abbreviation
+       o      erase abbreviation or e abbreviation
 
               Erases the abbreviation abbreviation .
 
 
-       o      --expand abbreviation or -x abbreviation
+       o      expand abbreviation or x abbreviation
 
               Returns the expansion of the abbreviation abbreviation.
 
 
-       o      --export-aliases [<destination>]
+       o      export-aliases [<destination>]
 
               Exports a list of alias command for user abbreviations, suitable
               for pasting or piping to whereever you keep aliases. If a  <des-
               tination> is provided, the commands will be appended to it.
 
 
-       o      --import-aliases
+       o      import-aliases
 
               Adds abbreviations for all aliases.
 
 
-       o      --import-fish <file>
+       o      import-fish <file>
 
               Adds abbreviations exported from fish.
 
 
-       o      --import-git-aliases
+       o      import-git-aliases
 
               Adds  two  abbreviations for each git alias: a regular abbrevia-
               tion, and a "g"-prefixed global abbreviation.
 
 
-       o      abbr --list
+       o      abbr list
 
               Lists the  available  abbreviations  without  their  expansions.
               Equivalent to fish's `abbr --list`.
 
 
-       o      --list-abbreviations or -l
+       o      list-abbreviations or l
 
               Lists all abbreviations.
 
 
-       o      --list-commands or -L (or --show or -s as in fish)
+       o      list-commands or L (or --show or -s as in fish)
 
               Lists  all  abbreviations  as  commands  suitable for export and
               import.
 
 
-       o      --rename old_abbreviation new_abbreviation or  -R  old_abbrevia-
-              tion new_abbreviation
+       o      rename old_abbreviation new_abbreviation or  R  old_abbreviation
+              new_abbreviation
 
               Renames  an abbreviation, from old_abbreviation to new_abbrevia-
               tion.
 
 
-       o      --version or -v
+       o      version or --version or -v
 
               Show the current version.
 
 
-       All options except for --clear-session and --expand can take a scope:
+       All options except for clear-session and expand can take a scope:
 
               o      --session or -S
 
@@ -146,8 +146,8 @@ Options
                      sions.
 
 
-       All  except for --clear-session, --expand, --import-fish, and --import-
-       git-aliases can take a type:
+       All  except  for  clear-session,  expand,  import-fish, and import-git-
+       aliases can take a type:
 
 
               o      --global or -g
@@ -156,21 +156,21 @@ Options
                      only in command (first word) position.
 
 
-              o      --regular or -r (default)
+              o      --regular or r (default)
 
                      Abbreviation will expand in command (first word) position
                      only.
 
 
-       All except for  --clear-session,  --expand,  --export-aliases,  --list-
-       abbreviations, and --list-commands can be tried without making changes:
+       All except for clear-session,  expand,  export-aliases,  list-abbrevia-
+       tions, and list-commands can be tried without making changes:
 
 
-              o      --dry-run Show whats the result of the command would  be.
+              o      --dry-run  Show whats the result of the command would be.
 
 
-       All  except  for  --clear-session,  --expand, --export-aliases, --list-
-       abbreviations, and --list-commands can be run with reduced output:
+       All except for clear-session,  expand,  export-aliases,  list-abbrevia-
+       tions, and list-commands can be run with reduced output:
 
 
               o      --quiet Do not log success, warning, or error messages.
@@ -183,7 +183,7 @@ Configuration
        The following variables may be set:
 
 
-       o      ZSH_ABBR_AUTOLOAD Should `abbr-load`  run  before  every  `abbr`
+       o      ZSH_ABBR_AUTOLOAD  Should  `abbr  load`  run before every `abbr`
               command? (0 or 1, default 1)
 
 
@@ -191,26 +191,26 @@ Configuration
               default 1)
 
 
-       o      ZSH_ABBR_DRY_RUN Behave as if `--dry-run` was passed? (0  or  1,
+       o      ZSH_ABBR_DRY_RUN  Behave  as if `--dry-run` was passed? (0 or 1,
               default 0)
 
 
-       o      ZSH_ABBR_FORCE  Behave  as  if  `--force`  was  passed? (0 or 1,
+       o      ZSH_ABBR_FORCE Behave as if  `--force`  was  passed?  (0  or  1,
               default 0)
 
 
-       o      ZSH_ABBR_QUIET Behave as if  `--quiet`  was  passed?  (0  or  1,
+       o      ZSH_ABBR_QUIET  Behave  as  if  `--quiet`  was  passed? (0 or 1,
               default 0)
 
 
-       o      ZSH_ABBR_USER_PATH  File  abbreviations  are  stored in (default
+       o      ZSH_ABBR_USER_PATH File abbreviations  are  stored  in  (default
               ${HOME}/.config/zsh/abbreviations)
 
 
 EXAMPLES
        abbr gco="git checkout"
 
-              "gco" will be expanded as "git checkout" when it  is  the  first
+              "gco"  will  be  expanded as "git checkout" when it is the first
               word in the command, in all open and future sessions.
 
 
@@ -226,25 +226,25 @@ EXAMPLES
               in the current session.
 
 
-       abbr -e -S -g gco;
+       abbr e -S -g gco;
 
-              Erase  the  global session abbreviation "gco". Note that because
+              Erase the global session abbreviation "gco". Note  that  because
               expansion is triggered by [SPACE] and [ENTER], the semicolon (;)
-              is  necessary  to  prevent  expansion  when  operating on global
+              is necessary to  prevent  expansion  when  operating  on  global
               abbreviations.
 
 
-       abbr -e -g gco;
+       abbr e -g gco;
 
               Erase the global user abbreviation "gco".
 
 
-       abbr -e gco
+       abbr e gco
 
               Erase the regular user abbrevation "gco".
 
 
-       abbr -R -g gco gch
+       abbr R -g gco gch
 
               Rename an existing global user abbreviation from "gco" to "gch".
 

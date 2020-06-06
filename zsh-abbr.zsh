@@ -538,6 +538,25 @@ _zsh_abbr() {
       _zsh_abbr:util_error "abbr: Illegal combination of options"
     }
 
+    _zsh_abbr:util_deprecated() {
+      (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo $funcstack[1]
+
+      local message
+      local new
+      local old
+
+      old=$1
+      new=$2
+
+      message="$1 is deprecated and will be dropped in a future version."
+
+      if [ $new ]; then
+        message+=" Please use $new instead."
+      fi
+
+      _zsh_abbr:util_warn $message
+    }
+
     _zsh_abbr:util_error() {
       (( ZSH_ABBR_DEBUG )) && _zsh_abbr_echo $funcstack[1]
 
@@ -727,28 +746,42 @@ _zsh_abbr() {
         return
       fi
 
-      case "$opt" in
+      case $opt in
+        "add"|\
+        "a"|\
         "--add"|\
         "-a")
+          [[ $opt[1] == '-' ]] && _zsh_abbr:util_deprecated $opt ${opt##*-}
           _zsh_abbr:util_set_once action add
           ;;
+        "clear-session"|\
+        "c"|\
         "--clear-session"|\
         "-c")
+          [[ $opt[1] == '-' ]] && _zsh_abbr:util_deprecated $opt ${opt##*-}
           _zsh_abbr:util_set_once action clear_session
           ;;
         "--dry-run")
           dry_run=1
           ((number_opts++))
           ;;
+        "erase"|\
+        "e"|\
         "--erase"|\
         "-e")
+          [[ $opt[1] == '-' ]] && _zsh_abbr:util_deprecated $opt ${opt##*-}
           _zsh_abbr:util_set_once action erase
           ;;
+        "expand"|\
+        "x"|\
         "--expand"|\
         "-x")
+          [[ $opt[1] == '-' ]] && _zsh_abbr:util_deprecated $opt ${opt##*-}
           _zsh_abbr:util_set_once action expand
           ;;
+        "export-aliases"|\
         "--export-aliases")
+          [[ $opt[1] == '-' ]] && _zsh_abbr:util_deprecated $opt ${opt##*-}
           _zsh_abbr:util_set_once action export_aliases
           ;;
         "--force"|\
@@ -760,37 +793,52 @@ _zsh_abbr() {
         "-g")
           _zsh_abbr:util_set_once type global
           ;;
+        "help"|\
         "--help"|\
         "-h")
           _zsh_abbr:util_usage
           should_exit=1
           ;;
+        "import-aliases"|\
         "--import-aliases")
+          [[ $opt[1] == '-' ]] && _zsh_abbr:util_deprecated $opt ${opt##*-}
           _zsh_abbr:util_set_once action import_aliases
           importing=1
           ;;
+        "import-fish"|\
         "--import-fish")
+          [[ $opt[1] == '-' ]] && _zsh_abbr:util_deprecated $opt ${opt##*-}
           _zsh_abbr:util_set_once action import_fish
           importing=1
           ;;
+        "import-git-aliases"|\
         "--import-git-aliases")
+          [[ $opt[1] == '-' ]] && _zsh_abbr:util_deprecated $opt ${opt##*-}
           _zsh_abbr:util_set_once action import_git_aliases
           importing=1
           ;;
+        "list"|\
         "--list")
+          [[ $opt[1] == '-' ]] && _zsh_abbr:util_deprecated $opt ${opt##*-}
           _zsh_abbr:util_set_once action list
           ;;
+        "list-abbreviations"|\
+        "l"|\
         "--list-abbreviations"|\
         "-l")
+          [[ $opt[1] == '-' ]] && _zsh_abbr:util_deprecated $opt ${opt##*-}
           _zsh_abbr:util_set_once action list_abbreviations
           ;;
+        "list-commands"|\
+        "L"|\
         "--list-commands"|\
         "-L"|\
         "--show"|\
-        "-s") # "show" is for backwards compatability with v2
+        "-s")
+          [[ $opt[1] == '-' ]] && _zsh_abbr:util_deprecated $opt ${opt##*-}
           _zsh_abbr:util_set_once action list_commands
           ;;
-        "--load")
+        "load")
           _zsh_abbr_load_user_abbreviations
           should_exit=1
           ;;
@@ -803,8 +851,11 @@ _zsh_abbr() {
         "-r")
           _zsh_abbr:util_set_once type regular
           ;;
+        "rename"|\
+        "R"|\
         "--rename"|\
         "-R")
+          [[ $opt[1] == '-' ]] && _zsh_abbr:util_deprecated $opt ${opt##*-}
           _zsh_abbr:util_set_once action rename
           ;;
         "--session"|\
@@ -815,6 +866,7 @@ _zsh_abbr() {
         "-U")
           _zsh_abbr:util_set_once scope user
           ;;
+        "version"|\
         "--version"|\
         "-v")
           _zsh_abbr:util_set_once action print_version

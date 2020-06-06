@@ -8,7 +8,7 @@ For example, a frequently-run command like `git checkout` can be abbreviated to 
 
 Like zsh's `alias`, zsh-abbr supports "regular" (i.e. command-position) and global (anywhere on the line) abbreviations. Like fish abbr, zsh-abbr supports session-specific and cross-session abbreviations.
 
-Run `abbr --help` (or `abbr -h`) for documentation; if the package is installed with Homebrew, `man abbr` is also available.
+Run `abbr help` (or `abbr h`) for documentation; if the package is installed with Homebrew, `man abbr` is also available.
 
 ## Contents
 
@@ -58,8 +58,8 @@ Your branch is up to date with 'origin/master'.
 % cm[Space] # expands to `git checkout master `
 
 # Make the switch from aliases
-% abbr --import-aliases
-% abbr --import-git-aliases
+% abbr import-aliases
+% abbr import-git-aliases
 ```
 
 ## Installation
@@ -161,12 +161,12 @@ Default is regular.
 
 zsh-abbr has options to add, rename, and erase abbreviations; to add abbreviations for every alias or Git alias; to list the available abbreviations with or without their expansions; and to create aliases from abbreviations.
 
-`abbr` with no arguments is shorthand for `abbr --list-commands`. `abbr ...` with arguments is shorthand for `abbr --add ...`.
+`abbr` with no arguments is shorthand for `abbr list-commands`. `abbr ...` with arguments is shorthand for `abbr add ...`.
 
 #### Add
 
 ```shell
-abbr [(--add | -a)] [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [--dry-run] [--quiet] [--force] ABBREVIATION=EXPANSION
+abbr [(add | -a)] [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [--dry-run] [--quiet] [--force] ABBREVIATION=EXPANSION
 ```
 
 Add a new abbreviation.
@@ -176,7 +176,7 @@ To add a session abbreviation, use the **--session** or **-S** scope flag. Other
 To add a global abbreviation, use the **--global** flag. Otherwise the new abbreviation will be a command abbreviation.
 
 ```shell
-% abbr --add gcm='git checkout master'
+% abbr add gcm='git checkout master'
 % gcm[Space] # expands as git checkout master
 % gcm[Enter] # expands and accepts git checkout master
 ```
@@ -184,11 +184,11 @@ To add a global abbreviation, use the **--global** flag. Otherwise the new abbre
 The following are equivalent:
 
 ```shell
-% abbr --add --user gcm='git checkout master'
-% abbr -a --user gcm='git checkout master'
+% abbr add --user gcm='git checkout master'
+% abbr a --user gcm='git checkout master'
 % abbr --user gcm='git checkout master'
-% abbr --add -U gcm='git checkout master'
-% abbr -a -U gcm='git checkout master'
+% abbr add -U gcm='git checkout master'
+% abbr a -U gcm='git checkout master'
 % abbr -U gcm='git checkout master'
 % abbr gcm='git checkout master'
 ```
@@ -215,7 +215,7 @@ Will warn if the abbreviation would replace an existing command. To add in spite
 #### Clear Sessions
 
 ```shell
-abbr (--clear-session | -c)
+abbr (clear-session | c)
 ```
 
 Erase all session abbreviations.
@@ -223,7 +223,7 @@ Erase all session abbreviations.
 #### Erase
 
 ```shell
-abbr (--erase | -e) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [--dry-run] [--quiet] ABBREVIATION
+abbr (erase | e) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [--dry-run] [--quiet] ABBREVIATION
 ```
 
 Erase an abbreviation.
@@ -245,7 +245,7 @@ User abbreviations can also be manually erased from the `ZSH_ABBR_USER_PATH`. Se
 #### Expand
 
 ```shell
-abbr (--expand | -x) ABBREVIATION
+abbr (expand | x) ABBREVIATION
 ```
 
 Output the ABBREVIATION's EXPANSION.
@@ -259,7 +259,7 @@ git checkout
 #### Export Aliases
 
 ```shell
-abbr --export-aliases [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [DESTINATION]
+abbr export-aliases [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [DESTINATION]
 ```
 
 Export abbreviations as alias commands. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
@@ -273,11 +273,11 @@ Combine a scope flag and a type flag to further limit the output.
 ```shell
 % abbr gcm="git checkout master"
 % abbr -S g=git
-% abbr --export-aliases
+% abbr export-aliases
 alias gcm='git checkout master'
-% abbr --export-aliases --session
+% abbr export-aliases --session
 alias g='git'
-% abbr --export-aliases ~/.zshrc
+% abbr export-aliases ~/.zshrc
 % cat ~/.zshrc
 # -- snip --
 alias g='git'
@@ -288,7 +288,7 @@ alias g='git'
 ##### Aliases
 
 ```shell
-abbr --import-aliases [<type>] [--dry-run] [--quiet]
+abbr import-aliases [<type>] [--dry-run] [--quiet]
 ```
 
 Add regular abbreviations for every regular alias in the session, and global abbreviations for every global alias in the session.
@@ -299,7 +299,7 @@ Add regular abbreviations for every regular alias in the session, and global abb
 alias -S d='bin/deploy'
 # --snip--
 
-% abbr --import-aliases
+% abbr import-aliases
 % d[Space] # expands to bin/deploy
 ```
 
@@ -310,7 +310,7 @@ Use `--dry-run` to see what would result, without making any actual changes.
 ##### Fish Abbreviations
 
 ```shell
-abbr --import-fish [(--session | -S) | (--user | -U)] [(--global|-g)] FILE [--dry-run] [--quiet]
+abbr import-fish [(--session | -S) | (--user | -U)] [(--global|-g)] FILE [--dry-run] [--quiet]
 ```
 
 Import fish abbr-syntax abbreviations (`abbreviation expansion` as compared to zsh abbr's `abbreviation=expansion`).
@@ -321,7 +321,7 @@ To migrate from fish:
 fish
 abbr -s > file/to/save/fish/abbreviations/to
 zsh
-abbr [(--global|-g)] [SCOPE] --import-fish file/to/save/fish/abbreviations/to
+abbr [(--global|-g)] [SCOPE] import-fish file/to/save/fish/abbreviations/to
 # file is no longer needed, so feel free to
 # rm file/to/save/fish/abbreviations/to
 ```
@@ -343,7 +343,7 @@ Use `--dry-run` to see what would result, without making any actual changes.
 ##### Git Aliases
 
 ```shell
-abbr --import-git-aliases [--dry-run] [--quiet]
+abbr import-git-aliases [--dry-run] [--quiet]
 ```
 
 Add two abbreviations for every Git alias available in the current session: a global abbreviation where the WORD is prefixed with `g`, and a command abbreviation. For both the EXPANSION is prefixed with `git[Space]`.
@@ -354,7 +354,7 @@ Use the **--session**  or **-S** scope flag to create session abbreviations. Oth
 % git config alias.co checkout
 
 # session
-% abbr --import-git-aliases -S
+% abbr import-git-aliases -S
 % gco[Space] # git checkout
 % echo gco[Space] # echo git checkout
 % co[Space] # git checkout
@@ -363,7 +363,7 @@ Use the **--session**  or **-S** scope flag to create session abbreviations. Oth
 % gco[Space] # gco
 
 # user
-% abbr --import-git-aliases
+% abbr import-git-aliases
 % gco[Space] # git checkout
 % source ~/.zshrc
 % gco[Space] # git checkout
@@ -388,7 +388,7 @@ Combine a scope flag and a type flag to further limit the output.
 ##### Abbreviations
 
 ```shell
-abbr (--list-abbreviations|-l) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
+abbr (list-abbreviations | l) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
 ```
 
 List the abbreviations only, like fish's `abbr -l`.
@@ -398,13 +398,13 @@ List the abbreviations only, like fish's `abbr -l`.
 % abbr -g b=ball
 % abbr -S c=cat
 % abbr -S -g d=dog
-% abbr --list-abbreviations
+% abbr list-abbreviations
 a
 b
 c
 d
 % source ~/.zshrc
-% abbr --list-abbreviations
+% abbr list-abbreviations
 a
 b
 ```
@@ -412,7 +412,7 @@ b
 ##### Commands
 
 ```shell
-abbr (--list-commands | -L | -s) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
+abbr (list-commands | L) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
 ```
 
 List as commands, like zsh's `alias -L`.
@@ -422,13 +422,13 @@ List as commands, like zsh's `alias -L`.
 % abbr -g b=ball
 % abbr -S c=cat
 % abbr -S -g d=dog
-% abbr --list-abbreviations
+% abbr list-abbreviations
 abbr a="apple"
 abbr -g b="ball"
 abbr -S c="cat"
 abbr -S -g d="dog"
 % source ~/.zshrc
-% abbr --list-abbreviations
+% abbr list-abbreviations
 abbr a="apple"
 abbr -g b="ball"
 ```
@@ -436,7 +436,7 @@ abbr -g b="ball"
 ##### Definitions
 
 ```shell
-abbr [--list-definitions] [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
+abbr [list-definitions] [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
 ```
 
 List as commands, like zsh's `alias`.
@@ -446,13 +446,13 @@ List as commands, like zsh's `alias`.
 % abbr -g b=ball
 % abbr -S c=cat
 % abbr -S -g d=dog
-% abbr # or abbr --list-abbreviations
+% abbr # or abbr list-abbreviations
 a="apple"
 b="ball"
 c="cat"
 d="dog"
 % source ~/.zshrc
-% abbr # or abbr --list-abbreviations
+% abbr # or abbr list-abbreviations
 a="apple"
 b="ball"
 ```
@@ -460,7 +460,7 @@ b="ball"
 #### Rename
 
 ```shell
-abbr (--rename | -R) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [--dry-run] [--quiet] OLD NEW
+abbr (rename | R) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [--dry-run] [--quiet] OLD NEW
 ```
 
 Rename an abbreviation.
@@ -472,10 +472,10 @@ Use the **--global** flag to rename a global abbreviation. Otherwise a command a
 Rename is scope- and type-specific. If you get a "no matching abbreviation" error, make sure you added the right flags (list abbreviations if you are not sure).
 
 ```shell
-% abbr --add gcm git checkout master
+% abbr add gcm git checkout master
 % gcm[Space] # expands to git checkout master
 % gm[Space] # no expansion
-% abbr --rename gcm[Ctrl-Space] gm
+% abbr rename gcm[Ctrl-Space] gm
 % gcm[Space] # no expansion
 % gm[Space] # expands to git checkout master
 ```
@@ -492,9 +492,9 @@ User abbreviations live in a plain text file which you can edit directly, share,
 
 When zsh-abbr updates the user abbreviations storage file, the lines are alphabetized and global user abbreviations are moved to the top of the file.
 
-Run `abbr --load` to load changes made directly to the user abbreviation file (that is, changes made with a text editor or `echo` as opposed to changes made with `abbr (--add|--erase|--import…|--rename)`) into the current session.
+Run `abbr load` to load changes made directly to the user abbreviation file (that is, changes made with a text editor or `echo` as opposed to changes made with `abbr (add|erase|import…|rename)`) into the current session.
 
-`abbr --load` is run automatically at the start of every other `abbr` command (`abbr (--add|--erase|--import…|--rename)`, not every expansion). This should add no appreciable time (clocked at 0.02ms per saved abbreviation), but it can be turned off by setting `ZSH_ABBR_AUTOLOAD=0`.
+`abbr load` is run automatically at the start of every other `abbr` command (`abbr (add|erase|import…|rename)`, not every expansion). This should add no appreciable time (clocked at 0.02ms per saved abbreviation), but it can be turned off by setting `ZSH_ABBR_AUTOLOAD=0`.
 
 The user abbreviations storage file's default location is `${HOME}/.config/zsh/abbreviations`. Customize this by setting the `ZSH_ABBR_USER_PATH` variable in your `.zshrc` before loading zsh-abbr:
 
