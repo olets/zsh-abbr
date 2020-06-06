@@ -1,6 +1,6 @@
 # fish shell-like abbreviation management for zsh.
 # https://github.com/olets/zsh-abbr
-# v3.3.1
+# v3.3.2
 # Copyright (c) 2019-2020 Henry Bley-Vroman
 
 
@@ -42,10 +42,10 @@ _zsh_abbr() {
     force=$ZSH_ABBR_FORCE
     number_opts=0
     quiet=$ZSH_ABBR_QUIET
-    release_date="May 11 2020"
+    release_date="June 6 2020"
     text_bold="\\033[1m"
     text_reset="\\033[0m"
-    version="zsh-abbr version 3.3.0"
+    version="zsh-abbr version 3.3.2"
 
     if (( ZSH_ABBR_LOADING_USER_ABBREVIATIONS )); then
       quiet=1

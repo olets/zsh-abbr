@@ -1,3 +1,34 @@
+# [v3.3.2](https://github.com/olets/zsh-abbr/compare/v3.3.1...v3.3.2) (2020-06-06)
+
+Save some keystrokes! `--` and `-` prefixes in actions are deprecated. Just say `add`, `clear-session`, `erase`, `expand`, `export-aliases`, `help`, `import-aliases`, `import-fish`, `import-git-aliases`, `list`, `list-abbreviations`, `list-commands`, `rename`, and `version`, or their single letter short forms (`--help` and `--version` are not deprecated, for findability; `-L` is not deprecated to match zsh's `alias -L`).
+
+Advanced users no longer need to source zshrc after directly (ie not via the abbr CLI) editing the user abbreviations file to prevent against the possibility of losing data when subsequently running abbr actions in an open session. Details in the README.
+
+Also a fix for Oh-My-Zsh users, and protection against the possibility that builtins have been redefined by aliases and that zsh emulation has been set to another shell.
+
+### Bug Fixes
+
+* **omz:** plugin file is executable ([e2f6632](https://github.com/olets/zsh-abbr/commit/e2f6632e014675526fbb70d19af5923bb0286891))
+
+
+### Features
+
+* **abbr:** argument can be a supported parameter's name... ([47cfb6a](https://github.com/olets/zsh-abbr/commit/47cfb6a7afd86357f1ea87ac99ce8f14a42c8fe3))
+* **add:** dry run, command overwriting, and log messages play nice ([9a17c8b](https://github.com/olets/zsh-abbr/commit/9a17c8b2e3d38b93bb101b0ff9437d620cd5ce46))
+* **add:** wrap 'command', using builtin ([042e68d](https://github.com/olets/zsh-abbr/commit/042e68dbc07b64e8ff7a569825e9585aa00d9c61))
+* **autoload:** support opting out with env var ([9658a67](https://github.com/olets/zsh-abbr/commit/9658a677bd03ac60654ea6f382b344d8671c552c))
+* **commands:** deprecate dash prefixes ([3f75f57](https://github.com/olets/zsh-abbr/commit/3f75f575090dc9ffdb90f0010db8443e07e507b7))
+* **data:** manual changes are taken into account... ([00abe87](https://github.com/olets/zsh-abbr/commit/00abe87ef059f92c0cbd5a091e5c4c4e12a01929))
+* **echo:** wrap builtin ([c4ee8e2](https://github.com/olets/zsh-abbr/commit/c4ee8e2292493a63fda8fd64fbc2887dd0528f75))
+* **emulation:** emulate zsh in all functions ([f644f1a](https://github.com/olets/zsh-abbr/commit/f644f1ad41daf968df768c80ff7fa32836f00cba))
+* **error:** do not push the help command ([379ae70](https://github.com/olets/zsh-abbr/commit/379ae7043e6a593e87fa2fe9060232e457bf2ded))
+* **import aliases:** wrap alias command ([cbb9bb5](https://github.com/olets/zsh-abbr/commit/cbb9bb504f9be74ab42a793177b9278fd6f308cc))
+* **list-commands:** deprecate --show, s ([fd58b39](https://github.com/olets/zsh-abbr/commit/fd58b39550c30aaf7f4ee09c8a6ccb9917156bcc))
+* **loading:** always reload user file ([3776076](https://github.com/olets/zsh-abbr/commit/3776076b7ab4d9e06fc93fc9fb3261c1d201f789))
+* **warnings:** do not cause an error exit code ([f8b02be](https://github.com/olets/zsh-abbr/commit/f8b02be1d9db6a38e899518496313041cdec04ad))
+
+
+
 # [v3.3.1](https://github.com/olets/zsh-abbr/compare/v3.3.0...v3.3.1) (2020-05-12)
 
 Fixed a Linux error, caught a regression.
