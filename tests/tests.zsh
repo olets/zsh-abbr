@@ -1,3 +1,4 @@
+abbr_quiet_saved=$ZSH_ABBR_QUIET
 ZSH_ABBR_QUIET=1
 ZSH_ABBR_USER_PATH=${0:A:h}/abbreviations.$RANDOM
 touch $ZSH_ABBR_USER_PATH
@@ -329,3 +330,5 @@ else
 	echo >&2
 	# exit 1
 fi
+
+ZSH_ABBR_QUIET=$abbr_quiet_saved
