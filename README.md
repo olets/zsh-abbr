@@ -4,7 +4,7 @@ The zsh manager for auto-expanding abbreviations, inspired by fish shell.
 
 **abbr** manages abbreviations - user-defined words that are replaced with longer phrases after they are entered.
 
-For example, a frequently-run command like `git checkout` can be abbreviated to `gco`. After entering `gco` and pressing <kbd>Space</kbd>, the full text `git checkout` will appear in the command line. To prevent expansion, press <kbd>Ctrl</kbd><kbd>Space</kbd> in place of <kbd>Space</kbd>. Pressing <kbd>Enter</kbd> after an abbreviation will expand the abbreviation and accept the current line.
+For example, a frequently-run command like `git checkout` can be abbreviated to `gco` (or even `co` or `c` or anything else). After entering `gco` and pressing <kbd>Space</kbd>, the full text `git checkout` will appear in the command line. To prevent expansion, press <kbd>Ctrl</kbd><kbd>Space</kbd> in place of <kbd>Space</kbd>. Pressing <kbd>Enter</kbd> after an abbreviation will expand the abbreviation and accept the current line.
 
 Like zsh's `alias`, zsh-abbr supports "regular" (i.e. command-position) and global (anywhere on the line) abbreviations. Like fish abbr, zsh-abbr supports session-specific and cross-session abbreviations.
 
