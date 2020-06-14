@@ -176,9 +176,6 @@ Options
               o      --quiet Do not log success, warning, or error messages.
 
 
-       See INTERNALS for more information.
-
-
 Configuration
        The following variables may be set:
 
