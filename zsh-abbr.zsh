@@ -46,6 +46,15 @@ _abbr() {
     text_reset="\\033[0m"
     version="zsh-abbr version 3.3.2"
 
+    # Deprecation notices for values that could be meaningfully set after initialization
+    if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
+      (( ${+ZSH_ABBR_AUTOLOAD} )) && _abbr_deprecated ZSH_ABBR_AUTOLOAD ABBR_AUTOLOAD
+      (( ${+ZSH_ABBR_DRY_RUN} )) && _abbr_deprecated ZSH_ABBR_DRY_RUN ABBR_DRY_RUN
+      (( ${+ZSH_ABBR_FORCE} )) && _abbr_deprecated ZSH_ABBR_FORCE ABBR_FORCE
+      (( ${+ZSH_ABBR_QUIET} )) && _abbr_deprecated ZSH_ABBR_QUIET ABBR_QUIET
+      (( ${+ZSH_ABBR_USER_PATH} )) && _abbr_deprecated ZSH_ABBR_USER_PATH ABBR_USER_PATH
+    fi
+
     if (( ABBR_LOADING_USER_ABBREVIATIONS )); then
       quiet=1
     fi
@@ -1323,13 +1332,10 @@ abbr() {
 # DEPRECATION
 # -----------
 
-[[ -n $ZSH_ABBR_AUTOLOAD ]] && _abbr_deprecated ZSH_ABBR_AUTOLOAD ABBR_AUTOLOAD
-[[ -n $ZSH_ABBR_DEFAULT_BINDINGS ]] && _abbr_deprecated ZSH_ABBR_DEFAULT_BINDINGS ABBR_DEFAULT_BINDINGS
-[[ -n $ZSH_ABBR_DRY_RUN ]] && _abbr_deprecated ZSH_ABBR_DRY_RUN ABBR_DRY_RUN
-[[ -n $ZSH_ABBR_FORCE ]] && _abbr_deprecated ZSH_ABBR_FORCE ABBR_FORCE
-[[ -n $ZSH_ABBR_QUIET ]] && _abbr_deprecated ZSH_ABBR_QUIET ABBR_QUIET
-[[ -n $ZSH_ABBR_USER_PATH ]] && _abbr_deprecated ZSH_ABBR_USER_PATH ABBR_USER_PATH
+# Deprecation notices for values that could not be meaningfully set after initialization
+(( ${+ZSH_ABBR_DEFAULT_BINDINGS} )) && _abbr_deprecated ZSH_ABBR_DEFAULT_BINDINGS ABBR_DEFAULT_BINDINGS
 
+# Deprecation notices for functions
 _zsh_abbr() {
   _abbr_deprecated _zsh_abbr _abbr
   _abbr
