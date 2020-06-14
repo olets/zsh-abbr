@@ -1069,6 +1069,8 @@ _abbr_init() {
     }
 
     job=$(_abbr_job_name)
+    REGULAR_SESSION_ABBREVIATIONS=()
+    GLOBAL_SESSION_ABBREVIATIONS=()
 
     _abbr_job_push $job initialization
     _abbr_init:clean
@@ -1182,8 +1184,6 @@ _abbr_load_user_abbreviations() {
     function _abbr_load_user_abbreviations:setup() {
       (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
 
-      REGULAR_SESSION_ABBREVIATIONS=()
-      GLOBAL_SESSION_ABBREVIATIONS=()
       REGULAR_USER_ABBREVIATIONS=()
       GLOBAL_USER_ABBREVIATIONS=()
 
