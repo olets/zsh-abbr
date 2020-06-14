@@ -37,9 +37,9 @@ _abbr() {
   emulate -LR zsh
 
   {
-    local action dry_run force has_error number_opts opt logs output \
-          quiet release_date scope should_exit text_bold text_reset \
-          type version
+    local action dry_run error_color force has_error number_opts opt logs \
+          output quiet release_date scope should_exit success_color text_bold \
+          text_reset type version warn_color
     dry_run=$ABBR_DRY_RUN
     force=$ABBR_FORCE
     number_opts=0
@@ -48,6 +48,12 @@ _abbr() {
     text_bold="\\033[1m"
     text_reset="\\033[0m"
     version="zsh-abbr version 3.3.2"
+
+    if ! (( ${+NO_COLOR} )); then
+      error_color="$fg[red]"
+      success_color="$fg[green]"
+      warn_color="$fg[yellow]"
+    fi
 
     # Deprecation notices for values that could be meaningfully set after initialization
     if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
@@ -175,12 +181,12 @@ _abbr() {
           fi
         fi
 
-        _abbr:util_log "$fg[green]$verb_phrase$reset_color ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
+        _abbr:util_log "$success_color$verb_phrase$reset_color ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
       else
         verb_phrase="Did not erase"
         (( dry_run )) && verb_phrase="Would not erase"
 
-        message="$fg[red]$verb_phrase$reset_color abbreviation \`$abbreviation\`. Please specify one of\\n"
+        message="$error_color$verb_phrase$reset_color abbreviation \`$abbreviation\`. Please specify one of\\n"
 
         for abbreviations_set in ${abbreviations_sets[@]}; do
           message+="  ${${${abbreviations_set:l}//_/ }//abbreviations/}\\n"
@@ -508,7 +514,7 @@ _abbr() {
         verb_phrase="Added"
         (( dry_run )) && verb_phrase="Would add"
 
-        _abbr:util_log "$fg[green]$verb_phrase$reset_color the ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
+        _abbr:util_log "$success_color$verb_phrase$reset_color the ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
       else
         verb_phrase="was not added"
         (( dry_run )) && verb_phrase="would not be added"
@@ -573,7 +579,7 @@ _abbr() {
       (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
 
       has_error=1
-      logs+="${logs:+\\n}$fg[red]$@$reset_color"
+      logs+="${logs:+\\n}$error_color$@$reset_color"
       should_exit=1
     }
 
@@ -749,7 +755,7 @@ _abbr() {
     _abbr:util_warn() {
       (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
 
-      logs+="${logs:+\\n}$fg[yellow]$@$reset_color"
+      logs+="${logs:+\\n}$warn_color$@$reset_color"
     }
 
     for opt in "$@"; do
@@ -926,7 +932,7 @@ _abbr() {
       fi
 
       if (( dry_run )); then
-        logs+="\\n$fg[yellow]Dry run. Changes not saved.$reset_color"
+        logs+="\\n${warn_color}Dry run. Changes not saved.$reset_color"
       fi
     fi
 
@@ -983,7 +989,13 @@ _abbr_cmd_expansion() {
 
 _abbr_deprecated() {
   emulate -LR zsh
-  echo "$fg[yellow]$1 is deprecated. Please use $2 instead.$reset_color"
+  local message
+
+  message="$1 is deprecated. Please use $2 instead."
+  if ! (( ${+NO_COLOR} )); then
+    message="$fg[yellow]$message$reset_color"
+  fi
+  echo $message
 }
 
 _abbr_expand_and_accept() {

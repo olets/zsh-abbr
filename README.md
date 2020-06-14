@@ -498,6 +498,8 @@ Variable | Type | Use | Default
 `ABBR_QUIET` | integer Boolean | Use quiet mode without passing `--quiet` | 0
 `ABBR_USER_PATH` | path string | The location of the user abbreviation file (see [Storage and manual editing](#storage-and-manual-editing)) | `$HOME/.config/zsh/abbreviations`
 
+In addition, setting `NO_COLOR` (regardless of its value) will disable color output. See https://no-color.org/.
+
 ### Storage and manual editing
 
 User abbreviations live in a plain text file which you can edit directly, share, keep in version control, etc. Abbreviations in this file are loaded when each new session is opened; non-`abbr` commands will be ignored excised from the file.

@@ -207,10 +207,14 @@ Configuration
               ${HOME}/.config/zsh/abbreviations)
 
 
+       o      NO_COLOR  If  `NO_COLOR`  is  set, color output is disabled. See
+              https://no-color.org/.
+
+
 EXAMPLES
        abbr gco="git checkout"
 
-              "gco"  will  be  expanded as "git checkout" when it is the first
+              "gco" will be expanded as "git checkout" when it  is  the  first
               word in the command, in all open and future sessions.
 
 
@@ -228,9 +232,9 @@ EXAMPLES
 
        abbr e -S -g gco;
 
-              Erase the global session abbreviation "gco". Note  that  because
+              Erase  the  global session abbreviation "gco". Note that because
               expansion is triggered by [SPACE] and [ENTER], the semicolon (;)
-              is necessary to  prevent  expansion  when  operating  on  global
+              is  necessary  to  prevent  expansion  when  operating on global
               abbreviations.
 
 
