@@ -970,7 +970,7 @@ _abbr_cmd_expansion() {
 
 _abbr_deprecated() {
   emulate -LR zsh
-  echo $1 is deprecated. Please use $2 instead.
+  echo "$fg[yellow]$1 is deprecated. Please use $2 instead.$reset_color"
 }
 
 _abbr_expand_and_accept() {
