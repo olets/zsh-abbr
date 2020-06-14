@@ -1338,6 +1338,7 @@ abbr() {
 
 # Deprecation notices for values that could not be meaningfully set after initialization
 (( ${+ZSH_ABBR_DEFAULT_BINDINGS} )) && _abbr_deprecated ZSH_ABBR_DEFAULT_BINDINGS ABBR_DEFAULT_BINDINGS
+[ $ABBR_DEFAULT_BINDINGS = true ] && _abbr_deprecated "String value (\`true\` and \`false\`) ABBR_DEFAULT_BINDINGS" "Boolean value (\`0\` and \`1\`)"
 
 # Deprecation notices for functions
 _zsh_abbr() {
