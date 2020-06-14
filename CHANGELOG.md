@@ -1,3 +1,22 @@
+# [v3.3.3](https://github.com/olets/zsh-abbr/compare/v3.3.2...v3.3.3) (2020-06-14)
+
+Fix a session abbreviations bug, support NO_COLOR, and polish deprecation warnings.
+
+### Bug Fixes
+
+* **session abbreviations:** do not unintentionally clear ([113ffc6](https://github.com/olets/zsh-abbr/commit/113ffc6c10b53bd2bbdea5b8838ba89d598434f3))
+
+
+### Features
+
+* **config:** deprecate ABBR_DEFAULT_BINDINGS 'true'/'false' (use 0/1) ([5f25f1c](https://github.com/olets/zsh-abbr/commit/5f25f1cb8b8232beee15d77ae24af44895a8dcc5))
+* **debugging:** deprecate ZSH_-prefixed var name ([2b5de18](https://github.com/olets/zsh-abbr/commit/2b5de186411a32dc7e1414669133bb2411eb59ca))
+* **deprecation:** post-init warnings for non-init config vars ([69d73b8](https://github.com/olets/zsh-abbr/commit/69d73b827d4cab1a10f6941a60c6b6cf6f8b4ffe))
+* **deprecation message:** use warning color ([fd53852](https://github.com/olets/zsh-abbr/commit/fd5385294cc4c32627cb90f60cc0748a160a69b8))
+* **output:** support NO_COLOR (see https://no-color.org/) ([54f16db](https://github.com/olets/zsh-abbr/commit/54f16dbd2be2e3913a8013822d9b1dd30664706a))
+
+
+
 # [v3.3.2](https://github.com/olets/zsh-abbr/compare/v3.3.1...v3.3.2) (2020-06-06)
 
 Save some keystrokes! `--` and `-` prefixes in actions are deprecated. Just say `add`, `clear-session`, `erase`, `expand`, `export-aliases`, `help`, `import-aliases`, `import-fish`, `import-git-aliases`, `list`, `list-abbreviations`, `list-commands`, `rename`, and `version`, or their single letter short forms (`--help` and `--version` are not deprecated, for findability; `-L` is not deprecated to match zsh's `alias -L`).
