@@ -10,6 +10,9 @@
 # Should `abbr-load` run before every `abbr` command? (default true)
 ABBR_AUTOLOAD=${ABBR_AUTOLOAD:-${ZSH_ABBR_AUTOLOAD:-1}}
 
+# Log debugging messages?
+ABBR_DEBUG=${ABBR_DEBUG:-${ZSH_ABBR_DEBUG:-0}}
+
 # Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
 # (default true)
@@ -49,6 +52,7 @@ _abbr() {
     # Deprecation notices for values that could be meaningfully set after initialization
     if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
       (( ${+ZSH_ABBR_AUTOLOAD} )) && _abbr_deprecated ZSH_ABBR_AUTOLOAD ABBR_AUTOLOAD
+      (( ${+ZSH_ABBR_DEBUG} )) && _abbr_deprecated ZSH_ABBR_DEBUG ABBR_DEBUG
       (( ${+ZSH_ABBR_DRY_RUN} )) && _abbr_deprecated ZSH_ABBR_DRY_RUN ABBR_DRY_RUN
       (( ${+ZSH_ABBR_FORCE} )) && _abbr_deprecated ZSH_ABBR_FORCE ABBR_FORCE
       (( ${+ZSH_ABBR_QUIET} )) && _abbr_deprecated ZSH_ABBR_QUIET ABBR_QUIET
