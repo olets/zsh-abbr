@@ -188,6 +188,9 @@ Configuration
               default 1)
 
 
+       o      ABBR_DEBUG Print debugging logs? (0 or 1, default 0)
+
+
        o      ABBR_DRY_RUN  Behave  as  if  `--dry-run`  was  passed? (0 or 1,
               default 0)
 
