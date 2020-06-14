@@ -240,7 +240,7 @@ Switched to branch 'master'
 % gcm[Space|Enter] # normal
 ```
 
-User abbreviations can also be manually erased from the `ZSH_ABBR_USER_PATH`. See **Storage** below.
+User abbreviations can also be manually erased from the `ABBR_USER_PATH`. See **Storage** below.
 
 #### Expand
 
@@ -332,7 +332,7 @@ To migrate from zsh-abbr < 3:
 zsh
 abbr [(--global|-g)] [SCOPE] ${HOME}/.config/zsh/universal-abbreviations
 # zsh-abbr > 2 no longer uses that file
-# If not customizing `ZSH_ABBR_USER_PATH=${HOME}/.config/zsh/universal-abbreviations` feel free to
+# If not customizing `ABBR_USER_PATH=${HOME}/.config/zsh/universal-abbreviations` feel free to
 # rm ${HOME}/.config/zsh/universal-abbreviations
 ```
 
@@ -482,7 +482,7 @@ Rename is scope- and type-specific. If you get a "no matching abbreviation" erro
 
 Use `--dry-run` to see what would result, without making any actual changes..
 
-Abbreviations can also be manually renamed in the `ZSH_ABBR_USER_PATH`. See **Storage** below.
+Abbreviations can also be manually renamed in the `ABBR_USER_PATH`. See **Storage** below.
 
 ## Advanced
 
@@ -494,14 +494,14 @@ When zsh-abbr updates the user abbreviations storage file, the lines are alphabe
 
 Run `abbr load` to load changes made directly to the user abbreviation file (that is, changes made with a text editor or `echo` as opposed to changes made with `abbr (add|erase|import…|rename)`) into the current session.
 
-`abbr load` is run automatically at the start of every other `abbr` command (`abbr (add|erase|import…|rename)`, not every expansion). This should add no appreciable time (clocked at 0.02ms per saved abbreviation), but it can be turned off by setting `ZSH_ABBR_AUTOLOAD=0`.
+`abbr load` is run automatically at the start of every other `abbr` command (`abbr (add|erase|import…|rename)`, not every expansion). This should add no appreciable time (clocked at 0.02ms per saved abbreviation), but it can be turned off by setting `ABBR_AUTOLOAD=0`.
 
-The user abbreviations storage file's default location is `${HOME}/.config/zsh/abbreviations`. Customize this by setting the `ZSH_ABBR_USER_PATH` variable in your `.zshrc` before loading zsh-abbr:
+The user abbreviations storage file's default location is `${HOME}/.config/zsh/abbreviations`. Customize this by setting the `ABBR_USER_PATH` variable in your `.zshrc` before loading zsh-abbr:
 
 ```shell
 % cat ~/.zshrc
 # -- snip --
-ZSH_ABBR_USER_PATH="path/to/my/user/abbreviations"
+ABBR_USER_PATH="path/to/my/user/abbreviations"
 # -- snip --
 # load zsh-abbr
 ```
@@ -518,13 +518,13 @@ By default
 
 (In incremental search mode, <kbd>Space</kbd> is a normal space and <kbd>Ctrl</kbd><kbd>Space</kbd> expands abbreviations.)
 
-If you want to set your own bindings, set `ZSH_ABBR_DEFAULT_BINDINGS` to `0` or `false` in your `.zshrc` before loading zsh-abbr. In the following example, expansion is bound to <kbd>Ctrl</kbd><kbd>a</kbd>:
+If you want to set your own bindings, set `ABBR_DEFAULT_BINDINGS` to `0` or `false` in your `.zshrc` before loading zsh-abbr. In the following example, expansion is bound to <kbd>Ctrl</kbd><kbd>a</kbd>:
 
 ```shell
 % cat ~/.zshrc
 # -- snip --
-ZSH_ABBR_DEFAULT_BINDINGS=false
-bindkey "^A" _zsh_abbr_expand_space
+ABBR_DEFAULT_BINDINGS=false
+bindkey "^A" _abbr_expand_space
 # -- snip --
 # load zsh-abbr
 ```
@@ -540,16 +540,16 @@ Delete the session data storage directory
 To delete the user abbreviations file,
 
 ```shell
-% rm $ZSH_ABBR_USER_PATH
+% rm $ABBR_USER_PATH
 ```
 
-If you haven't customized `$ZSH_ABBR_USER_PATH`, you will probably want to delete its parent directory
+If you haven't customized `$ABBR_USER_PATH`, you will probably want to delete its parent directory
 
 ```shell
 # see if there's anything in there
-% ls $ZSH_ABBR_USER_PATH:h
+% ls $ABBR_USER_PATH:h
 # IF you want to delete it
-% rm -rf $ZSH_ABBR_USER_PATH:h
+% rm -rf $ABBR_USER_PATH:h
 ```
 
 Then follow the standard uninstallation procedure for your installation method. This is typically the reverse of what you did to install.
@@ -572,9 +572,9 @@ Check the [Issues](https://github.com/olets/zsh-abbr/issues) to see if your topi
 
 This project loosely follows the [Angular commit message conventions](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit). This helps with searchability and with the changelog, which is generated automatically and touched up by hand only if necessary. Use the commit message format `<type>(<scope>): <subject>`, where `<type>` is **feat** for new or changed behavior, **fix** for fixes, **docs** for documentation, **style** for under the hood changes related to for example zshisms, **refactor** for other refactors, **test** for tests, or **chore** chore for general maintenance (this will be used primarily by maintainers not contributors, for example for version bumps). `<scope>` is more loosely defined. Look at the [commit history](https://github.com/olets/zsh-abbr/commits/master) for ideas.
 
-To force a dry run without passing `--dry-run`, set `ZSH_ABBR_DRY_RUN` to `1.
+To force a dry run without passing `--dry-run`, set `ABBR_DRY_RUN` to `1.
 
-To force quiet mode with passing `--quiet`, set `ZSH_ABBR_QUIET` to `1`.
+To force quiet mode with passing `--quiet`, set `ABBR_QUIET` to `1`.
 
 Tests are in the `tests` directory. To run them, replace `zsh-abbr` with `zsh-abbr/tests` in .zshrc. For example, zinit users will run
 
