@@ -28,7 +28,7 @@ ABBR_FORCE=${ABBR_FORCE:-${ZSH_ABBR_FORCE:-0}}
 ABBR_QUIET=${ABBR_QUIET:-${ZSH_ABBR_QUIET:-0}}
 
 # File abbreviations are stored in
-ABBR_USER_PATH=${ABBR_USER_PATH:-${ZSH_ABBR_USER_PATH:-${HOME}/.config/zsh/abbreviations}}
+ABBR_USER_PATH=${ABBR_USER_PATH:-${ZSH_ABBR_USER_PATH:-$HOME/.config/zsh/abbreviations}}
 
 # FUNCTIONS
 # ---------

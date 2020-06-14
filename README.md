@@ -486,6 +486,18 @@ Abbreviations can also be manually renamed in the `ABBR_USER_PATH`. See **Storag
 
 ## Advanced
 
+### Configuration variables
+
+Variable | Type | Use | Default
+---|---|---|---
+`ABBR_AUTOLOAD` | integer Boolean | Automatically accounting for updates to the user abbrevations file (see [Storage and manual editing](#storage-and-manual-editing)) | 1
+`ABBR_DEBUG` | integer Boolean | Print debugging messages | 0
+`ABBR_DEFAULT_BINDINGS` | integer Boolean | Add the default bindings (see [Bindings](#bindings)) | 1
+`ABBR_DRY_RUN` | integer Boolean | Use dry run mode without passing `--dry-run` | 0
+`ABBR_FORCE` | integer Boolean | Use force mode without passing `--force` (see [`add`](#add)) | 0
+`ABBR_QUIET` | integer Boolean | Use quiet mode without passing `--quiet` | 0
+`ABBR_USER_PATH` | path string | The location of the user abbreviation file (see [Storage and manual editing](#storage-and-manual-editing)) | `$HOME/.config/zsh/abbreviations`
+
 ### Storage and manual editing
 
 User abbreviations live in a plain text file which you can edit directly, share, keep in version control, etc. Abbreviations in this file are loaded when each new session is opened; non-`abbr` commands will be ignored excised from the file.
@@ -571,10 +583,6 @@ Thanks for your interest. Contributions are welcome!
 Check the [Issues](https://github.com/olets/zsh-abbr/issues) to see if your topic has been discussed before or if it is being worked on. You may also want to check the roadmap (see above). Discussing in an Issue before opening a Pull Request means future contributors only have to search in one place.
 
 This project loosely follows the [Angular commit message conventions](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit). This helps with searchability and with the changelog, which is generated automatically and touched up by hand only if necessary. Use the commit message format `<type>(<scope>): <subject>`, where `<type>` is **feat** for new or changed behavior, **fix** for fixes, **docs** for documentation, **style** for under the hood changes related to for example zshisms, **refactor** for other refactors, **test** for tests, or **chore** chore for general maintenance (this will be used primarily by maintainers not contributors, for example for version bumps). `<scope>` is more loosely defined. Look at the [commit history](https://github.com/olets/zsh-abbr/commits/master) for ideas.
-
-To force a dry run without passing `--dry-run`, set `ABBR_DRY_RUN` to `1.
-
-To force quiet mode with passing `--quiet`, set `ABBR_QUIET` to `1`.
 
 Tests are in the `tests` directory. To run them, replace `zsh-abbr` with `zsh-abbr/tests` in .zshrc. For example, zinit users will run
 
