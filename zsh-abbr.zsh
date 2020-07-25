@@ -201,7 +201,7 @@ _abbr() {
 
       expansion=$(_abbr_cmd_expansion "$abbreviation")
 
-      if [ ! "$expansion" ]; then
+      if [[ ! "$expansion" ]]; then
         expansion=$(_abbr_global_expansion "$abbreviation")
       fi
       _abbr:util_print "${(Q)expansion}"
@@ -414,7 +414,7 @@ _abbr() {
         fi
       fi
 
-      if [ $expansion ]; then
+      if [[ $expansion ]]; then
         _abbr:util_add $new_abbreviation $expansion
         _abbr:erase $current_abbreviation
       else
@@ -532,7 +532,7 @@ _abbr() {
         fi
         alias_definition+="$abbreviation='$expansion'"
 
-        if [ $output_path ]; then
+        if [[ $output_path ]]; then
           _abbr_echo "$alias_definition" >> "$output_path"
         else
           print "$alias_definition"
@@ -558,7 +558,7 @@ _abbr() {
 
       message="$1 is deprecated and will be dropped in a future version."
 
-      if [ $new ]; then
+      if [[ $new ]]; then
         message+=" Please use $new instead."
       fi
 
@@ -671,11 +671,11 @@ _abbr() {
 
       result=$abbreviation
 
-      if [ $expansion ]; then
+      if [[ $expansion ]]; then
         result+="=${(qqq)${(Q)expansion}}"
       fi
 
-      if [ $prefix ]; then
+      if [[ $prefix ]]; then
         result="$prefix $result"
       fi
 
@@ -702,7 +702,7 @@ _abbr() {
       option=$1
       value=$2
 
-      if [ ${(P)option} ]; then
+      if [[ ${(P)option} ]]; then
         return
       fi
 
@@ -865,7 +865,7 @@ _abbr() {
         fi
       fi
 
-      if [ $action ]; then
+      if [[ $action ]]; then
         _abbr:$action $@
       elif [[ $# > 0 ]]; then
         # default if arguments are provided
@@ -933,7 +933,7 @@ _abbr_cmd_expansion() {
   abbreviation=$1
   expansion=${REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
 
-  if [ ! $expansion ]; then
+  if [[ ! $expansion ]]; then
     source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
     expansion=${REGULAR_USER_ABBREVIATIONS[$abbreviation]}
   fi
@@ -987,7 +987,7 @@ _abbr_global_expansion() {
   abbreviation=$1
   expansion=${GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
 
-  if [ ! $expansion ]; then
+  if [[ ! $expansion ]]; then
     source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
     expansion=${GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
   fi
@@ -1039,7 +1039,7 @@ _abbr_job_push() {
     function _abbr_job_push:add_job() {
       (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
 
-      if ! [ -d $job_dir ]; then
+      if ! [[ -d $job_dir ]]; then
         mkdir -p $job_dir
       fi
 
@@ -1121,15 +1121,15 @@ _abbr_load_user_abbreviations() {
       REGULAR_USER_ABBREVIATIONS=()
       GLOBAL_USER_ABBREVIATIONS=()
 
-      if ! [ -d ${TMPDIR:-/tmp/}zsh-abbr ]; then
+      if ! [[ -d ${TMPDIR:-/tmp/}zsh-abbr ]]; then
         mkdir -p ${TMPDIR:-/tmp/}zsh-abbr
       fi
 
-      if ! [ -f ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations ]; then
+      if ! [[ -f ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations ]]; then
         touch ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
       fi
 
-      if ! [ -f ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations ]; then
+      if ! [[ -f ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations ]]; then
         touch ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
       fi
     }
@@ -1150,7 +1150,7 @@ _abbr_load_user_abbreviations() {
       fi
 
       # Load saved user abbreviations
-      if [ -f $ABBR_USER_ABBREVIATIONS_FILE ]; then
+      if [[ -f $ABBR_USER_ABBREVIATIONS_FILE ]]; then
         unsetopt shwordsplit
 
         user_abbreviations=( ${(f)"$(<$ABBR_USER_ABBREVIATIONS_FILE)"} )
@@ -1243,7 +1243,7 @@ _abbr_expand_widget() {
     expansion=$(_abbr_cmd_expansion $word)
   fi
 
-  if [ ! $expansion ]; then
+  if [[ ! $expansion ]]; then
     expansion=$(_abbr_global_expansion $word)
   fi
 
