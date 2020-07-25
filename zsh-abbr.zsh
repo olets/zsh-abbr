@@ -38,15 +38,13 @@ _abbr() {
 
   {
     local action dry_run error_color force has_error number_opts opt logs \
-          output quiet release_date scope should_exit success_color text_bold \
-          text_reset type version warn_color
+          output quiet release_date scope should_exit success_color \
+          type version warn_color
     dry_run=$ABBR_DRY_RUN
     force=$ABBR_FORCE
     number_opts=0
     quiet=$ABBR_QUIET
     release_date="July 26 2020"
-    text_bold="\\033[1m"
-    text_reset="\\033[0m"
     version="zsh-abbr version 3.3.4"
 
     if ! (( ${+NO_COLOR} )); then
@@ -1274,7 +1272,7 @@ abbr() {
 # INITIALIZATION
 # --------------
 
-autoload -U colors && colors
+! (( ${+NO_COLOR} )) && autoload -U colors && colors
 ABBR_SOURCE_PATH=${0:A:h}
 _abbr_wrap_external_commands
 _abbr_init
