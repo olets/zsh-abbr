@@ -58,7 +58,7 @@ _abbr() {
     fi
 
     _abbr:add() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local abbreviation
       local expansion
@@ -85,7 +85,7 @@ _abbr() {
     }
 
     _abbr:clear_session() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       if [[ $# > 0 ]]; then
         _abbr:util_error "abbr clear-session: Unexpected argument"
@@ -97,7 +97,7 @@ _abbr() {
     }
 
     _abbr:erase() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local abbreviation
       local abbreviations_sets
@@ -185,7 +185,7 @@ _abbr() {
     }
 
     _abbr:expand() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local abbreviation
       local expansion
@@ -206,7 +206,7 @@ _abbr() {
     }
 
     _abbr:export_aliases() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local type_saved
       local output_path
@@ -227,7 +227,7 @@ _abbr() {
     }
 
     _abbr:import_aliases() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local alias_to_import
       local abbreviation
@@ -263,7 +263,7 @@ _abbr() {
     }
 
     _abbr:import_fish() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local abbreviation
       local abbreviations
@@ -288,7 +288,7 @@ _abbr() {
     }
 
     _abbr:import_git_aliases() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local git_alias
       local git_aliases
@@ -326,7 +326,7 @@ _abbr() {
     }
 
     _abbr:list() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       if [[ $# > 0 ]]; then
         _abbr:util_error "abbr list: Unexpected argument"
@@ -337,7 +337,7 @@ _abbr() {
     }
 
     _abbr:list_commands() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local include_expansion
       local session_prefix
@@ -356,7 +356,7 @@ _abbr() {
     }
 
     _abbr:list_abbreviations() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local include_expansion
 
@@ -371,7 +371,7 @@ _abbr() {
     }
 
     _abbr:print_version() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       if [[ $# > 0 ]]; then
         _abbr:util_error "abbr version: Unexpected argument"
@@ -382,7 +382,7 @@ _abbr() {
     }
 
     _abbr:rename() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local err
       local expansion
@@ -421,7 +421,7 @@ _abbr() {
     }
 
     _abbr:util_add() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local abbreviation
       local cmd
@@ -512,7 +512,7 @@ _abbr() {
     }
 
     _abbr:util_alias() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local abbreviation
       local abbreviations_set
@@ -539,13 +539,13 @@ _abbr() {
     }
 
     _abbr:util_bad_options() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       _abbr:util_error "abbr: Illegal combination of options"
     }
 
     _abbr:util_deprecated() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local message
       local new
@@ -564,7 +564,7 @@ _abbr() {
     }
 
     _abbr:util_error() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       has_error=1
       logs+="${logs:+\\n}$error_color$@$reset_color"
@@ -582,7 +582,7 @@ _abbr() {
     }
 
     _abbr:util_check_command() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local abbreviation
 
@@ -611,7 +611,7 @@ _abbr() {
     }
 
     _abbr:util_list() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local abbreviation
       local expansion
@@ -657,7 +657,7 @@ _abbr() {
     }
 
     _abbr:util_list_item() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local abbreviation
       local expansion
@@ -681,19 +681,19 @@ _abbr() {
     }
 
     _abbr:util_log() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       logs+="${logs:+\\n}$1"
     }
 
     _abbr:util_print() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       output+="${output:+\\n}$1"
     }
 
     _abbr:util_set_once() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local option value
 
@@ -709,7 +709,7 @@ _abbr() {
     }
 
     _abbr:util_sync_user() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       (( ABBR_LOADING_USER_ABBREVIATIONS )) && return
 
@@ -735,13 +735,13 @@ _abbr() {
     }
 
     _abbr:util_usage() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       _abbr_man abbr 2>/dev/null || _abbr_cat ${ABBR_SOURCE_PATH}/man/abbr.txt | _abbr_less -F
     }
 
     _abbr:util_warn() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       logs+="${logs:+\\n}$warn_color$@$reset_color"
     }
@@ -889,10 +889,10 @@ _abbr() {
     fi
 
     if [[ -n $has_error ]]; then
-      [[ -n $output ]] && _abbr_echo - $output >&2
+      [[ -n $output ]] && _abbr_print - $output >&2
       return 1
     else
-      [[ -n $output ]] && _abbr_echo - $output >&1
+      [[ -n $output ]] && _abbr_print - $output >&1
       return 0
     fi
   }
@@ -901,7 +901,7 @@ _abbr() {
 _abbr_bind_widgets() {
   emulate -LR zsh
 
-  (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+  (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
   # spacebar expands abbreviations
   zle -N _abbr_expand_and_space
@@ -947,7 +947,7 @@ _abbr_deprecated() {
   if ! (( ${+NO_COLOR} )); then
     message="$fg[yellow]$message$reset_color"
   fi
-  echo $message
+  _abbr_print $message
 }
 
 _abbr_expand_and_accept() {
@@ -1008,7 +1008,7 @@ _abbr_init() {
   GLOBAL_SESSION_ABBREVIATIONS=()
 
   _abbr_job_push $job initialization
-  (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+  (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
   _abbr_load_user_abbreviations
   _abbr_job_pop $job
 }
@@ -1017,7 +1017,7 @@ _abbr_job_push() {
   emulate -LR zsh
 
   {
-    (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+    (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
     local next_job
     local next_job_age
@@ -1035,7 +1035,7 @@ _abbr_job_push() {
     timeout_age=30 # seconds
 
     function _abbr_job_push:add_job() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       if ! [[ -d $job_dir ]]; then
         mkdir -p $job_dir
@@ -1051,15 +1051,15 @@ _abbr_job_push() {
     }
 
     function _abbr_job_push:handle_timeout() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       next_job_path=$job_dir/$next_job
 
-      _abbr_echo "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job%.*}) has timed out."
-      _abbr_echo "The job was related to $(cat $next_job_path)."
-      _abbr_echo "This could be the result of manually terminating an abbr activity, for example during session startup."
-      _abbr_echo "If you believe it reflects a abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
-      _abbr_echo
+      _abbr_print "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job%.*}) has timed out."
+      _abbr_print "The job was related to $(cat $next_job_path)."
+      _abbr_print "This could be the result of manually terminating an abbr activity, for example during session startup."
+      _abbr_print "If you believe it reflects a abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
+      _abbr_print
 
       rm $next_job_path &>/dev/null
     }
@@ -1090,7 +1090,7 @@ _abbr_job_push() {
 _abbr_job_pop() {
   emulate -LR zsh
 
-  (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+  (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
   local job
 
@@ -1111,10 +1111,10 @@ _abbr_load_user_abbreviations() {
   emulate -LR zsh
 
   {
-    (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+    (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
     function _abbr_load_user_abbreviations:setup() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       REGULAR_USER_ABBREVIATIONS=()
       GLOBAL_USER_ABBREVIATIONS=()
@@ -1133,7 +1133,7 @@ _abbr_load_user_abbreviations() {
     }
 
     function _abbr_load_user_abbreviations:load() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local abbreviation
       local arguments
@@ -1220,6 +1220,10 @@ _abbr_wrap_external_commands() {
   _abbr_man() {
     \command \man $@
   }
+
+  _abbr_print() {
+    \builtin \print $@
+  }
 }
 
 # WIDGETS
@@ -1261,7 +1265,7 @@ zle -N _abbr_expand_widget
 abbr() {
   emulate -LR zsh
 
-  (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+  (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
   _abbr $*
 }
 
