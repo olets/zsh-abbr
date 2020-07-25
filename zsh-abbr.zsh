@@ -8,27 +8,27 @@
 # -------------
 
 # Should `abbr-load` run before every `abbr` command? (default true)
-ABBR_AUTOLOAD=${ABBR_AUTOLOAD:-${ZSH_ABBR_AUTOLOAD:-1}}
+ABBR_AUTOLOAD=${ABBR_AUTOLOAD:-1}
 
 # Log debugging messages?
-ABBR_DEBUG=${ABBR_DEBUG:-${ZSH_ABBR_DEBUG:-0}}
+ABBR_DEBUG=${ABBR_DEBUG:-0}
 
 # Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
 # (default true)
-ABBR_DEFAULT_BINDINGS=${ABBR_DEFAULT_BINDINGS:-${ZSH_ABBR_DEFAULT_BINDINGS:-1}}
+ABBR_DEFAULT_BINDINGS=${ABBR_DEFAULT_BINDINGS:-1}
 
 # Behave as if `--dry-run` was passed? (default false)
-ABBR_DRY_RUN=${ABBR_DRY_RUN:-${ZSH_ABBR_DRY_RUN:-0}}
+ABBR_DRY_RUN=${ABBR_DRY_RUN:-0}
 
 # Behave as if `--force` was passed? (default false)
-ABBR_FORCE=${ABBR_FORCE:-${ZSH_ABBR_FORCE:-0}}
+ABBR_FORCE=${ABBR_FORCE:-0}
 
 # Behave as if `--quiet` was passed? (default false)
-ABBR_QUIET=${ABBR_QUIET:-${ZSH_ABBR_QUIET:-0}}
+ABBR_QUIET=${ABBR_QUIET:-0}
 
 # File abbreviations are stored in
-ABBR_USER_ABBREVIATIONS_FILE=${ABBR_USER_ABBREVIATIONS_FILE:-${ABBR_USER_PATH:-${ZSH_ABBR_USER_PATH:-$HOME/.config/zsh/abbreviations}}}
+ABBR_USER_ABBREVIATIONS_FILE=${ABBR_USER_ABBREVIATIONS_FILE:-$HOME/.config/zsh/abbreviations}
 
 # FUNCTIONS
 # ---------
@@ -53,17 +53,6 @@ _abbr() {
       error_color="$fg[red]"
       success_color="$fg[green]"
       warn_color="$fg[yellow]"
-    fi
-
-    # Deprecation notices for values that could be meaningfully set after initialization
-    if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-      (( ${+ZSH_ABBR_AUTOLOAD} )) && _abbr_deprecated ZSH_ABBR_AUTOLOAD ABBR_AUTOLOAD
-      (( ${+ZSH_ABBR_DEBUG} )) && _abbr_deprecated ZSH_ABBR_DEBUG ABBR_DEBUG
-      (( ${+ZSH_ABBR_DRY_RUN} )) && _abbr_deprecated ZSH_ABBR_DRY_RUN ABBR_DRY_RUN
-      (( ${+ZSH_ABBR_FORCE} )) && _abbr_deprecated ZSH_ABBR_FORCE ABBR_FORCE
-      (( ${+ZSH_ABBR_QUIET} )) && _abbr_deprecated ZSH_ABBR_QUIET ABBR_QUIET
-      (( ${+ZSH_ABBR_USER_PATH} )) && _abbr_deprecated ZSH_ABBR_USER_PATH ABBR_USER_ABBREVIATIONS_FILE
-      (( ${+ABBR_USER_PATH} )) && _abbr_deprecated ABBR_USER_PATH ABBR_USER_ABBREVIATIONS_FILE
     fi
 
     if (( ABBR_LOADING_USER_ABBREVIATIONS )); then
@@ -1349,76 +1338,6 @@ abbr() {
 # DEPRECATION
 # -----------
 
-# Deprecation notices for values that could not be meaningfully set after initialization
-(( ${+ZSH_ABBR_DEFAULT_BINDINGS} )) && _abbr_deprecated ZSH_ABBR_DEFAULT_BINDINGS ABBR_DEFAULT_BINDINGS
-[ $ABBR_DEFAULT_BINDINGS = true ] && _abbr_deprecated "String value (\`true\` and \`false\`) ABBR_DEFAULT_BINDINGS" "Boolean value (\`0\` and \`1\`)"
-
-# Deprecation notices for functions
-_zsh_abbr() {
-  _abbr_deprecated _zsh_abbr _abbr
-  _abbr
-}
-
-_zsh_abbr_bind_widgets() {
-  _abbr_deprecated _zsh_abbr_bind_widgets _abbr_bind_widgets
-  _abbr_bind_widgets
-}
-
-_zsh_abbr_cmd_expansion() {
-  _abbr_deprecated _zsh_abbr_cmd_expansion _abbr_cmd_expansion
-  _abbr_cmd_expansion
-}
-
-_zsh_abbr_expand_and_accept() {
-  _abbr_deprecated _zsh_abbr_expand_and_accept _abbr_expand_and_accept
-  _abbr_expand_and_accept
-}
-
-_zsh_abbr_expand_and_space() {
-  _abbr_deprecated _zsh_abbr_expand_and_space _abbr_expand_and_space
-  _abbr_expand_and_space
-}
-
-_zsh_abbr_global_expansion() {
-  _abbr_deprecated _zsh_abbr_global_expansion _abbr_global_expansion
-  _abbr_global_expansion
-}
-
-_zsh_abbr_init() {
-  _abbr_deprecated _zsh_abbr_init _abbr_init
-  _abbr_init
-}
-
-_zsh_abbr_job_push() {
-  _abbr_deprecated _zsh_abbr_job_push _abbr_job_push
-  _abbr_job_push
-}
-
-_zsh_abbr_job_pop() {
-  _abbr_deprecated _zsh_abbr_job_pop _abbr_job_pop
-  _abbr_job_pop
-}
-
-_zsh_abbr_job_name() {
-  _abbr_deprecated _zsh_abbr_job_name _abbr_job_name
-  _abbr_job_name
-}
-
-_zsh_abbr_load_user_abbreviations() {
-  _abbr_deprecated _zsh_abbr_load_user_abbreviations _abbr_load_user_abbreviations
-  _abbr_load_user_abbreviations
-}
-
-_zsh_abbr_wrap_external_commands() {
-  _abbr_deprecated _zsh_abbr_wrap_external_commands _abbr_wrap_external_commands
-  _abbr_wrap_external_commands
-}
-
-_zsh_abbr_expand_widget() {
-  _abbr_deprecated _zsh_abbr_expand_widget _abbr_expand_widget
-  _abbr_expand_widget
-}
-
 
 # INITIALIZATION
 # --------------
@@ -1427,6 +1346,4 @@ autoload -U colors && colors
 ABBR_SOURCE_PATH=${0:A:h}
 _abbr_wrap_external_commands
 _abbr_init
-if (( $ABBR_DEFAULT_BINDINGS )) || [ $ABBR_DEFAULT_BINDINGS = true ]; then
-  _abbr_bind_widgets
-fi
+(( $ABBR_DEFAULT_BINDINGS )) &&  _abbr_bind_widgets
