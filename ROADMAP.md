@@ -15,7 +15,7 @@ Key:
 ## 4.0
 
 - [x] drop the `_zsh_` and `ZSH_` prefixes from functions and vars
-- [ ] stop cleaning up the deprecated temp files
+- [x] stop cleaning up the deprecated temp files
 
 ## Maybes
 

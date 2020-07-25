@@ -1034,53 +1034,21 @@ _abbr_global_expansion() {
 _abbr_init() {
   emulate -LR zsh
 
-  {
-    (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+  local job
 
-    local job
+  typeset -gA REGULAR_USER_ABBREVIATIONS
+  typeset -gA GLOBAL_USER_ABBREVIATIONS
+  typeset -gA REGULAR_SESSION_ABBREVIATIONS
+  typeset -gA GLOBAL_SESSION_ABBREVIATIONS
 
-    typeset -gA REGULAR_USER_ABBREVIATIONS
-    typeset -gA GLOBAL_USER_ABBREVIATIONS
-    typeset -gA REGULAR_SESSION_ABBREVIATIONS
-    typeset -gA GLOBAL_SESSION_ABBREVIATIONS
+  job=$(_abbr_job_name)
+  REGULAR_SESSION_ABBREVIATIONS=()
+  GLOBAL_SESSION_ABBREVIATIONS=()
 
-    function _abbr_init:clean() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
-
-      # clean up deprecated temp files
-
-      if [ -d ${TMPDIR:-/tmp/}zsh-abbr-jobs ]; then
-        rm -rf ${TMPDIR:-/tmp/}zsh-abbr-jobs 2> /dev/null
-      fi
-
-      if [ -f ${TMPDIR:-/tmp/}zsh-user-global-abbreviations ]; then
-        rm ${TMPDIR:-/tmp/}zsh-user-global-abbreviations 2> /dev/null
-      fi
-
-      if [ -f ${TMPDIR:-/tmp/}zsh-user-abbreviations ]; then
-        rm ${TMPDIR:-/tmp/}zsh-user-abbreviations 2> /dev/null
-      fi
-
-      if [ -f ${TMPDIR:-/tmp/}zsh-abbr-initializing ]; then
-        rm ${TMPDIR:-/tmp/}zsh-abbr-initializing
-      fi
-
-      if [ -f ${TMPDIR:-/tmp/}abbr_universals ]; then
-        rm ${TMPDIR:-/tmp/}abbr_universals
-      fi
-    }
-
-    job=$(_abbr_job_name)
-    REGULAR_SESSION_ABBREVIATIONS=()
-    GLOBAL_SESSION_ABBREVIATIONS=()
-
-    _abbr_job_push $job initialization
-    _abbr_init:clean
-    _abbr_load_user_abbreviations
-    _abbr_job_pop $job
-  } always {
-    unfunction -m _abbr_init:clean
-  }
+  _abbr_job_push $job initialization
+  (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+  _abbr_load_user_abbreviations
+  _abbr_job_pop $job
 }
 
 _abbr_job_push() {
