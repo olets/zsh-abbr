@@ -755,17 +755,11 @@ _abbr() {
 
       case $opt in
         "add"|\
-        "a"|\
-        "--add"|\
-        "-a")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "a")
           _abbr:util_set_once action add
           ;;
         "clear-session"|\
-        "c"|\
-        "--clear-session"|\
-        "-c")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "c")
           _abbr:util_set_once action clear_session
           ;;
         "--dry-run")
@@ -773,22 +767,14 @@ _abbr() {
           ((number_opts++))
           ;;
         "erase"|\
-        "e"|\
-        "--erase"|\
-        "-e")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "e")
           _abbr:util_set_once action erase
           ;;
         "expand"|\
-        "x"|\
-        "--expand"|\
-        "-x")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "x")
           _abbr:util_set_once action expand
           ;;
-        "export-aliases"|\
-        "--export-aliases")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "export-aliases")
           _abbr:util_set_once action export_aliases
           ;;
         "--force"|\
@@ -801,47 +787,33 @@ _abbr() {
           _abbr:util_set_once type global
           ;;
         "help"|\
-        "--help"|\
-        "-h")
+        "--help")
           _abbr:util_usage
           should_exit=1
           ;;
-        "import-aliases"|\
-        "--import-aliases")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "import-aliases")
           _abbr:util_set_once action import_aliases
           importing=1
           ;;
-        "import-fish"|\
-        "--import-fish")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "import-fish")
           _abbr:util_set_once action import_fish
           importing=1
           ;;
-        "import-git-aliases"|\
-        "--import-git-aliases")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "import-git-aliases")
           _abbr:util_set_once action import_git_aliases
           importing=1
           ;;
-        "list"|\
-        "--list")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "list")
           _abbr:util_set_once action list
           ;;
         "list-abbreviations"|\
-        "l"|\
-        "--list-abbreviations"|\
-        "-l")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "l")
           _abbr:util_set_once action list_abbreviations
           ;;
         "list-commands"|\
         "L"|\
-        "--list-commands"|\
         "-L")
-          # -L option will continue to be supported to match the builtin alias's `-L`
-          [[ $opt[1] == '--' ]] && _abbr:util_deprecated $opt ${opt##*-}
+          # -L option is to match the builtin alias's `-L`
           _abbr:util_set_once action list_commands
           ;;
         "load")
@@ -858,20 +830,12 @@ _abbr() {
           _abbr:util_set_once type regular
           ;;
         "rename"|\
-        "R"|\
-        "--rename"|\
-        "-R")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "R")
           _abbr:util_set_once action rename
           ;;
         "--session"|\
         "-S")
           _abbr:util_set_once scope session
-          ;;
-        "--show"|\
-        "-s")
-          _abbr:util_deprecated $opt "--list-commands or -L"
-          _abbr:util_set_once action list_commands
           ;;
         "--user"|\
         "-U")
