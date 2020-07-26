@@ -8,27 +8,27 @@
 # -------------
 
 # Should `abbr-load` run before every `abbr` command? (default true)
-typeset -i ABBR_AUTOLOAD=${ABBR_AUTOLOAD:-1}
+typeset -gi ABBR_AUTOLOAD=${ABBR_AUTOLOAD:-1}
 
 # Log debugging messages?
-typeset -i ABBR_DEBUG=${ABBR_DEBUG:-0}
+typeset -gi ABBR_DEBUG=${ABBR_DEBUG:-0}
 
 # Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
 # (default true)
-typeset -i ABBR_DEFAULT_BINDINGS=${ABBR_DEFAULT_BINDINGS:-1}
+typeset -gi ABBR_DEFAULT_BINDINGS=${ABBR_DEFAULT_BINDINGS:-1}
 
 # Behave as if `--dry-run` was passed? (default false)
-typeset -i ABBR_DRY_RUN=${ABBR_DRY_RUN:-0}
+typeset -gi ABBR_DRY_RUN=${ABBR_DRY_RUN:-0}
 
 # Behave as if `--force` was passed? (default false)
-typeset -i ABBR_FORCE=${ABBR_FORCE:-0}
+typeset -gi ABBR_FORCE=${ABBR_FORCE:-0}
 
 # Behave as if `--quiet` was passed? (default false)
-typeset -i ABBR_QUIET=${ABBR_QUIET:-0}
+typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
 
 # File abbreviations are stored in
-ABBR_USER_ABBREVIATIONS_FILE=${ABBR_USER_ABBREVIATIONS_FILE:-$HOME/.config/zsh/abbreviations}
+typeset -g ABBR_USER_ABBREVIATIONS_FILE=${ABBR_USER_ABBREVIATIONS_FILE:-$HOME/.config/zsh/abbreviations}
 
 # FUNCTIONS
 # ---------
