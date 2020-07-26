@@ -240,7 +240,7 @@ Switched to branch 'master'
 % gcm[Space|Enter] # normal
 ```
 
-User abbreviations can also be manually erased from the `ABBR_USER_PATH`. See **Storage** below.
+User abbreviations can also be manually erased from the `ABBR_USER_ABBREVIATIONS_FILE`. See **Storage** below.
 
 #### Expand
 
@@ -332,7 +332,7 @@ To migrate from zsh-abbr < 3:
 zsh
 abbr [(--global|-g)] [SCOPE] ${HOME}/.config/zsh/universal-abbreviations
 # zsh-abbr > 2 no longer uses that file
-# If not customizing `ABBR_USER_PATH=${HOME}/.config/zsh/universal-abbreviations` feel free to
+# If not customizing `ABBR_USER_ABBREVIATIONS_FILE=${HOME}/.config/zsh/universal-abbreviations` feel free to
 # rm ${HOME}/.config/zsh/universal-abbreviations
 ```
 
@@ -482,7 +482,7 @@ Rename is scope- and type-specific. If you get a "no matching abbreviation" erro
 
 Use `--dry-run` to see what would result, without making any actual changes..
 
-Abbreviations can also be manually renamed in the `ABBR_USER_PATH`. See **Storage** below.
+Abbreviations can also be manually renamed in the `ABBR_USER_ABBREVIATIONS_FILE`. See **Storage** below.
 
 ## Advanced
 
@@ -496,7 +496,7 @@ Variable | Type | Use | Default
 `ABBR_DRY_RUN` | integer Boolean | Use dry run mode without passing `--dry-run` | 0
 `ABBR_FORCE` | integer Boolean | Use force mode without passing `--force` (see [`add`](#add)) | 0
 `ABBR_QUIET` | integer Boolean | Use quiet mode without passing `--quiet` | 0
-`ABBR_USER_PATH` | path string | The location of the user abbreviation file (see [Storage and manual editing](#storage-and-manual-editing)) | `$HOME/.config/zsh/abbreviations`
+`ABBR_USER_ABBREVIATIONS_FILE` | path string | The location of the user abbreviation file (see [Storage and manual editing](#storage-and-manual-editing)) | `$HOME/.config/zsh/abbreviations`
 
 In addition, setting `NO_COLOR` (regardless of its value) will disable color output. See https://no-color.org/.
 
@@ -510,12 +510,12 @@ Run `abbr load` to load changes made directly to the user abbreviation file (tha
 
 `abbr load` is run automatically at the start of every other `abbr` command (`abbr (add|erase|import…|rename)`, not every expansion). This should add no appreciable time (clocked at 0.02ms per saved abbreviation), but it can be turned off by setting `ABBR_AUTOLOAD=0`.
 
-The user abbreviations storage file's default location is `${HOME}/.config/zsh/abbreviations`. Customize this by setting the `ABBR_USER_PATH` variable in your `.zshrc` before loading zsh-abbr:
+The user abbreviations storage file's default location is `${HOME}/.config/zsh/abbreviations`. Customize this by setting the `ABBR_USER_ABBREVIATIONS_FILE` variable in your `.zshrc` before loading zsh-abbr:
 
 ```shell
 % cat ~/.zshrc
 # -- snip --
-ABBR_USER_PATH="path/to/my/user/abbreviations"
+ABBR_USER_ABBREVIATIONS_FILE="path/to/my/user/abbreviations"
 # -- snip --
 # load zsh-abbr
 ```
@@ -554,16 +554,16 @@ Delete the session data storage directory
 To delete the user abbreviations file,
 
 ```shell
-% rm $ABBR_USER_PATH
+% rm $ABBR_USER_ABBREVIATIONS_FILE
 ```
 
-If you haven't customized `$ABBR_USER_PATH`, you will probably want to delete its parent directory
+If you haven't customized `$ABBR_USER_ABBREVIATIONS_FILE`, you will probably want to delete its parent directory
 
 ```shell
 # see if there's anything in there
-% ls $ABBR_USER_PATH:h
+% ls $ABBR_USER_ABBREVIATIONS_FILE:h
 # IF you want to delete it
-% rm -rf $ABBR_USER_PATH:h
+% rm -rf $ABBR_USER_ABBREVIATIONS_FILE:h
 ```
 
 Then follow the standard uninstallation procedure for your installation method. This is typically the reverse of what you did to install.

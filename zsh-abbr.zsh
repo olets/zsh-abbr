@@ -28,7 +28,7 @@ ABBR_FORCE=${ABBR_FORCE:-${ZSH_ABBR_FORCE:-0}}
 ABBR_QUIET=${ABBR_QUIET:-${ZSH_ABBR_QUIET:-0}}
 
 # File abbreviations are stored in
-ABBR_USER_PATH=${ABBR_USER_PATH:-${ZSH_ABBR_USER_PATH:-$HOME/.config/zsh/abbreviations}}
+ABBR_USER_ABBREVIATIONS_FILE=${ABBR_USER_ABBREVIATIONS_FILE:-${ABBR_USER_PATH:-${ZSH_ABBR_USER_PATH:-$HOME/.config/zsh/abbreviations}}}
 
 # FUNCTIONS
 # ---------
@@ -62,7 +62,8 @@ _abbr() {
       (( ${+ZSH_ABBR_DRY_RUN} )) && _abbr_deprecated ZSH_ABBR_DRY_RUN ABBR_DRY_RUN
       (( ${+ZSH_ABBR_FORCE} )) && _abbr_deprecated ZSH_ABBR_FORCE ABBR_FORCE
       (( ${+ZSH_ABBR_QUIET} )) && _abbr_deprecated ZSH_ABBR_QUIET ABBR_QUIET
-      (( ${+ZSH_ABBR_USER_PATH} )) && _abbr_deprecated ZSH_ABBR_USER_PATH ABBR_USER_PATH
+      (( ${+ZSH_ABBR_USER_PATH} )) && _abbr_deprecated ZSH_ABBR_USER_PATH ABBR_USER_ABBREVIATIONS_FILE
+      (( ${+ABBR_USER_PATH} )) && _abbr_deprecated ABBR_USER_PATH ABBR_USER_ABBREVIATIONS_FILE
     fi
 
     if (( ABBR_LOADING_USER_ABBREVIATIONS )); then
@@ -743,7 +744,7 @@ _abbr() {
         _abbr_echo "abbr ${abbreviation}=${(qqq)${(Q)expansion}}" >> $user_updated
       done
 
-      mv $user_updated $ABBR_USER_PATH
+      mv $user_updated $ABBR_USER_ABBREVIATIONS_FILE
     }
 
     _abbr:util_usage() {
@@ -1228,10 +1229,10 @@ _abbr_load_user_abbreviations() {
       fi
 
       # Load saved user abbreviations
-      if [ -f $ABBR_USER_PATH ]; then
+      if [ -f $ABBR_USER_ABBREVIATIONS_FILE ]; then
         unsetopt shwordsplit
 
-        user_abbreviations=( ${(f)"$(<$ABBR_USER_PATH)"} )
+        user_abbreviations=( ${(f)"$(<$ABBR_USER_ABBREVIATIONS_FILE)"} )
 
         for abbreviation in $user_abbreviations; do
           program="${abbreviation%% *}"
@@ -1248,8 +1249,8 @@ _abbr_load_user_abbreviations() {
         fi
         unset shwordsplit_on
       else
-        mkdir -p ${ABBR_USER_PATH:A:h}
-        touch $ABBR_USER_PATH
+        mkdir -p ${ABBR_USER_ABBREVIATIONS_FILE:A:h}
+        touch $ABBR_USER_ABBREVIATIONS_FILE
       fi
 
       typeset -p REGULAR_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
