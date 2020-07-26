@@ -886,8 +886,8 @@ _abbr() {
       fi
 
       if (( dry_run )); then
-        logs+=$'\n'
-        logs+="${warn_color}Dry run. Changes not saved.%f"
+        output+=$'\n'
+        output+="${warn_color}Dry run. Changes not saved.%f"
       fi
     fi
 
