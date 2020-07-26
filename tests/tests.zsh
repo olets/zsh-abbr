@@ -11,12 +11,10 @@ test_abbr_abbreviation="zsh_abbr_test"
 test_abbr_expansion="zsh abbr test"
 test_abbr="$test_abbr_abbreviation=$test_abbr_expansion"
 
-# Can add an abbreviation with the add flag,
-# and can list abbreviations
-message="abbr add && abbr list-commands "
-abbr add $test_abbr
-result=( ${(f)"$(abbr list-commands)"} )
-if [[ $result[1] == "abbr $test_abbr_abbreviation=${(qqq)test_abbr_expansion}" ]]; then
+# Can add an abbreviation with the add flag
+message="abbr add"
+abbr add $test_abbr_abbreviation=$test_abbr_expansion
+if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation]} == $test_abbr_expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
@@ -26,10 +24,10 @@ echo $message
 echo
 
 # Can erase an abbreviation
-message="abbr erase "
+message="abbr add and erase "
+abbr add $test_abbr_abbreviation=$test_abbr_expansion
 abbr erase $test_abbr_abbreviation
-result=( ${(f)"$(abbr list-commands)"} )
-if [[ ${#result} == 0 ]]; then
+if [[ ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ]]; then
 	message="$fg[green]PASS$reset_color $message"
 else
 	message="$fg[red]FAIL$reset_color $message"
