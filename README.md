@@ -228,7 +228,7 @@ Switched to branch 'main'
 
 User abbreviations can also be manually erased from the `ABBR_USER_ABBREVIATIONS_FILE`. See **Storage** below.
 
-a `expand`
+#### `expand`
 
 ```shell
 abbr (expand | x) ABBREVIATION
