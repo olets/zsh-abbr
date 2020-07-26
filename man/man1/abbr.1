@@ -11,7 +11,7 @@ zsh\-abbr \- manage zsh abbreviations
 
 \fBabbr\fR (\fBexpand\fR | \fBx\fR) <\fIabbreviation\fR>
 
-\fBabbr\fR (\fBexport\-aliases\fR | \fB\-o\fR) <\fIscope\fI> [<\fIdestination\fR>]
+\fBabbr\fR (\fBexport\-aliases\fR | \fB\-o\fR) <\fIscope\fI>
 
 \fBabbr import\-aliases\fR [\fIscope\fR]
 
@@ -42,8 +42,8 @@ To prevent expansion, press [\fBCTRL\-SPACE\fR] in place of [\fBSPACE\fR].
 
 \fBabbr-load\fR triggers a reload of the user abbreviations files. This also runs automatically before each of the above commands.
 
-.SH Options
-The following options are available:
+.SH Commands
+The following commands are available:
 
 .IP \(bu
 \fBadd \fIabbreviation\fR \fIexpansion\fR or \fBa\fR \fIabbreviation\fR \fIexpansion\fR
@@ -72,7 +72,7 @@ Returns the \fIexpansion\fR of the abbreviation \fIabbreviation\fR.
 .IP \(bu
 \fBexport\-aliases\fR [<\fIdestination\fR>]
 
-Exports a list of alias command for user abbreviations, suitable for pasting or piping to whereever you keep aliases. If a <\fIdestination\fR> is provided, the commands will be appended to it.
+Exports a list of alias command for user abbreviations, suitable for pasting or piping to whereever you keep aliases.
 
 .IP \(bu
 \fBimport\-aliases\fR
@@ -115,7 +115,7 @@ Renames an abbreviation, from \fIold_abbreviation\fR to \fInew_abbreviation\fR.
 Show the current version.
 
 .PP
-All options except for \fBclear-session\fR and \fBexpand\fR can take a \fBscope\fR:
+All commands except for \fBclear-session\fR and \fBexpand\fR can take a \fBscope\fR:
 .RS
 .IP \(bu
 \fB\-\-session\fR

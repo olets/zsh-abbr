@@ -8,27 +8,30 @@
 # -------------
 
 # Should `abbr-load` run before every `abbr` command? (default true)
-ABBR_AUTOLOAD=${ABBR_AUTOLOAD:-${ZSH_ABBR_AUTOLOAD:-1}}
+typeset -gi ABBR_AUTOLOAD=${ABBR_AUTOLOAD:-1}
 
 # Log debugging messages?
-ABBR_DEBUG=${ABBR_DEBUG:-${ZSH_ABBR_DEBUG:-0}}
+typeset -gi ABBR_DEBUG=${ABBR_DEBUG:-0}
 
 # Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
 # (default true)
-ABBR_DEFAULT_BINDINGS=${ABBR_DEFAULT_BINDINGS:-${ZSH_ABBR_DEFAULT_BINDINGS:-1}}
+typeset -gi ABBR_DEFAULT_BINDINGS=${ABBR_DEFAULT_BINDINGS:-1}
 
 # Behave as if `--dry-run` was passed? (default false)
-ABBR_DRY_RUN=${ABBR_DRY_RUN:-${ZSH_ABBR_DRY_RUN:-0}}
+typeset -gi ABBR_DRY_RUN=${ABBR_DRY_RUN:-0}
 
 # Behave as if `--force` was passed? (default false)
-ABBR_FORCE=${ABBR_FORCE:-${ZSH_ABBR_FORCE:-0}}
+typeset -gi ABBR_FORCE=${ABBR_FORCE:-0}
 
 # Behave as if `--quiet` was passed? (default false)
-ABBR_QUIET=${ABBR_QUIET:-${ZSH_ABBR_QUIET:-0}}
+typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
+
+# Temp files are stored in
+typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${TMPDIR:-/tmp/}zsh-abbr/}
 
 # File abbreviations are stored in
-ABBR_USER_ABBREVIATIONS_FILE=${ABBR_USER_ABBREVIATIONS_FILE:-${ABBR_USER_PATH:-${ZSH_ABBR_USER_PATH:-$HOME/.config/zsh/abbreviations}}}
+typeset -g ABBR_USER_ABBREVIATIONS_FILE=${ABBR_USER_ABBREVIATIONS_FILE:-$HOME/.config/zsh/abbreviations}
 
 # FUNCTIONS
 # ---------
@@ -37,16 +40,15 @@ _abbr() {
   emulate -LR zsh
 
   {
-    local action dry_run error_color force has_error number_opts opt logs \
-          output quiet release_date scope should_exit success_color text_bold \
-          text_reset type version warn_color
+    local action error_color opt logs output release_date scope \
+      success_color type version warn_color
+    local -i dry_run force has_error number_opts quiet should_exit
+
     dry_run=$ABBR_DRY_RUN
     force=$ABBR_FORCE
     number_opts=0
     quiet=$ABBR_QUIET
     release_date="July 26 2020"
-    text_bold="\\033[1m"
-    text_reset="\\033[0m"
     version="zsh-abbr version 3.3.4"
 
     if ! (( ${+NO_COLOR} )); then
@@ -55,23 +57,12 @@ _abbr() {
       warn_color="$fg[yellow]"
     fi
 
-    # Deprecation notices for values that could be meaningfully set after initialization
-    if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-      (( ${+ZSH_ABBR_AUTOLOAD} )) && _abbr_deprecated ZSH_ABBR_AUTOLOAD ABBR_AUTOLOAD
-      (( ${+ZSH_ABBR_DEBUG} )) && _abbr_deprecated ZSH_ABBR_DEBUG ABBR_DEBUG
-      (( ${+ZSH_ABBR_DRY_RUN} )) && _abbr_deprecated ZSH_ABBR_DRY_RUN ABBR_DRY_RUN
-      (( ${+ZSH_ABBR_FORCE} )) && _abbr_deprecated ZSH_ABBR_FORCE ABBR_FORCE
-      (( ${+ZSH_ABBR_QUIET} )) && _abbr_deprecated ZSH_ABBR_QUIET ABBR_QUIET
-      (( ${+ZSH_ABBR_USER_PATH} )) && _abbr_deprecated ZSH_ABBR_USER_PATH ABBR_USER_ABBREVIATIONS_FILE
-      (( ${+ABBR_USER_PATH} )) && _abbr_deprecated ABBR_USER_PATH ABBR_USER_ABBREVIATIONS_FILE
-    fi
-
     if (( ABBR_LOADING_USER_ABBREVIATIONS )); then
       quiet=1
     fi
 
     _abbr:add() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local expansion
@@ -98,19 +89,19 @@ _abbr() {
     }
 
     _abbr:clear_session() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       if [[ $# > 0 ]]; then
         _abbr:util_error "abbr clear-session: Unexpected argument"
         return
       fi
 
-      REGULAR_SESSION_ABBREVIATIONS=()
-      GLOBAL_SESSION_ABBREVIATIONS=()
+      ABBR_REGULAR_SESSION_ABBREVIATIONS=()
+      ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
     }
 
     _abbr:erase() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local abbreviations_sets
@@ -130,16 +121,16 @@ _abbr() {
 
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
-          if (( ${+GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
             (( ABBR_DEBUG )) && _abbr_echo "  Found a global session abbreviation"
-            abbreviations_sets+=( GLOBAL_SESSION_ABBREVIATIONS )
+            abbreviations_sets+=( ABBR_GLOBAL_SESSION_ABBREVIATIONS )
           fi
         fi
 
         if [[ $type != 'global' ]]; then
-          if (( ${+REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
             (( ABBR_DEBUG )) && _abbr_echo "  Found a regular session abbreviation"
-            abbreviations_sets+=( REGULAR_SESSION_ABBREVIATIONS )
+            abbreviations_sets+=( ABBR_REGULAR_SESSION_ABBREVIATIONS )
           fi
         fi
       fi
@@ -147,23 +138,23 @@ _abbr() {
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-            source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+            source ${ABBR_TMPDIR}global-user-abbreviations
           fi
 
-          if (( ${+GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
             (( ABBR_DEBUG )) && _abbr_echo "  Found a global user abbreviation"
-            abbreviations_sets+=( GLOBAL_USER_ABBREVIATIONS )
+            abbreviations_sets+=( ABBR_GLOBAL_USER_ABBREVIATIONS )
           fi
         fi
 
         if [[ $type != 'global' ]]; then
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-            source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+            source ${ABBR_TMPDIR}regular-user-abbreviations
           fi
 
-          if (( ${+REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
             (( ABBR_DEBUG )) && _abbr_echo "  Found a regular user abbreviation"
-            abbreviations_sets+=( REGULAR_USER_ABBREVIATIONS )
+            abbreviations_sets+=( ABBR_REGULAR_USER_ABBREVIATIONS )
           fi
         fi
       fi
@@ -198,7 +189,7 @@ _abbr() {
     }
 
     _abbr:expand() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local expansion
@@ -212,22 +203,20 @@ _abbr() {
 
       expansion=$(_abbr_cmd_expansion "$abbreviation")
 
-      if [ ! "$expansion" ]; then
+      if [[ ! "$expansion" ]]; then
         expansion=$(_abbr_global_expansion "$abbreviation")
       fi
       _abbr:util_print "${(Q)expansion}"
     }
 
     _abbr:export_aliases() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local type_saved
-      local output_path
 
       type_saved=$type
-      output_path=$1
 
-      if [[ $# > 1 ]]; then
+      if [[ $# > 0 ]]; then
         _abbr:util_error "abbr export-aliases: Unexpected argument"
         return
       fi
@@ -240,7 +229,7 @@ _abbr() {
     }
 
     _abbr:import_aliases() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local alias_to_import
       local abbreviation
@@ -276,7 +265,7 @@ _abbr() {
     }
 
     _abbr:import_fish() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local abbreviations
@@ -301,7 +290,7 @@ _abbr() {
     }
 
     _abbr:import_git_aliases() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local git_alias
       local git_aliases
@@ -319,10 +308,10 @@ _abbr() {
         value=${git_alias#* }
 
         if [[ ${value[1]} == '!' ]]; then
-          verb_phrase="was not imported"
-          ((dry_run)) && verb_phrase="would not be imported"
+          verb_phrase="Did not"
+          ((dry_run)) && verb_phrase="Would not"
 
-          _abbr:util_warn "The Git alias \`$key\` $verb_phrase because its expansion is a function"
+          _abbr:util_warn "$verb_phrase import the Git alias \`$key\` because its expansion is a function"
         else
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
             key=${(q)key}
@@ -339,7 +328,22 @@ _abbr() {
     }
 
     _abbr:list() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
+
+      local -i include_expansion
+
+      if [[ $# > 0 ]]; then
+        _abbr:util_error "abbr list definitions: Unexpected argument"
+        return
+      fi
+
+      include_expansion=1
+
+      _abbr:util_list $include_expansion
+    }
+
+    _abbr:list_abbreviations() {
+      _abbr_debugger
 
       if [[ $# > 0 ]]; then
         _abbr:util_error "abbr list: Unexpected argument"
@@ -350,9 +354,9 @@ _abbr() {
     }
 
     _abbr:list_commands() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
-      local include_expansion
+      local -i include_expansion
       local session_prefix
       local user_prefix
 
@@ -368,23 +372,8 @@ _abbr() {
       _abbr:util_list $include_expansion $session_prefix $user_prefix
     }
 
-    _abbr:list_abbreviations() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
-
-      local include_expansion
-
-      if [[ $# > 0 ]]; then
-        _abbr:util_error "abbr list definitions: Unexpected argument"
-        return
-      fi
-
-      include_expansion=1
-
-      _abbr:util_list $include_expansion
-    }
-
     _abbr:print_version() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       if [[ $# > 0 ]]; then
         _abbr:util_error "abbr version: Unexpected argument"
@@ -395,7 +384,7 @@ _abbr() {
     }
 
     _abbr:rename() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local err
       local expansion
@@ -413,19 +402,19 @@ _abbr() {
 
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
-          expansion=${GLOBAL_SESSION_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$current_abbreviation]}
         else
-          expansion=${REGULAR_SESSION_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$current_abbreviation]}
         fi
       else
         if [[ $type == 'global' ]]; then
-          expansion=${GLOBAL_USER_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$current_abbreviation]}
         else
-          expansion=${REGULAR_USER_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$current_abbreviation]}
         fi
       fi
 
-      if [ $expansion ]; then
+      if [[ $expansion ]]; then
         _abbr:util_add $new_abbreviation $expansion
         _abbr:erase $current_abbreviation
       else
@@ -434,13 +423,13 @@ _abbr() {
     }
 
     _abbr:util_add() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local cmd
       local expansion
       local job_group
-      local success
+      local -a success
       local verb_phrase
 
       abbreviation=$1
@@ -459,20 +448,20 @@ _abbr() {
 
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
-          if ! (( ${+GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+          if ! (( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
             _abbr:util_check_command $abbreviation || return
 
             if ! (( dry_run )); then
-              GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
+              ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
             fi
 
             success=1
           fi
-        elif ! (( ${+REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+        elif ! (( ${+ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
           _abbr:util_check_command $abbreviation || return
 
           if ! (( dry_run )); then
-            REGULAR_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
+            ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
           fi
 
           success=1
@@ -480,14 +469,14 @@ _abbr() {
       else
         if [[ $type == 'global' ]]; then
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-            source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+            source ${ABBR_TMPDIR}global-user-abbreviations
           fi
 
-          if ! (( ${+GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
+          if ! (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
             _abbr:util_check_command $abbreviation || return
 
             if ! (( dry_run )); then
-              GLOBAL_USER_ABBREVIATIONS[$abbreviation]=$expansion
+              ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]=$expansion
               _abbr:util_sync_user
             fi
 
@@ -495,14 +484,14 @@ _abbr() {
           fi
         else
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-            source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+            source ${ABBR_TMPDIR}regular-user-abbreviations
           fi
 
-          if ! (( ${+REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
+          if ! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
             _abbr:util_check_command $abbreviation || return
 
             if ! (( dry_run )); then
-              REGULAR_USER_ABBREVIATIONS[$abbreviation]=$expansion
+              ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]=$expansion
               _abbr:util_sync_user
             fi
 
@@ -517,67 +506,43 @@ _abbr() {
 
         _abbr:util_log "$success_color$verb_phrase$reset_color the ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
       else
-        verb_phrase="was not added"
-        (( dry_run )) && verb_phrase="would not be added"
+        verb_phrase="Did not"
+        (( dry_run )) && verb_phrase="Would not"
 
-        _abbr:util_error "The ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` $verb_phrase because it already exists"
+        _abbr:util_error "$verb_phrase add the ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` because it already exists"
       fi
     }
 
     _abbr:util_alias() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local abbreviations_set
       local expansion
-      local output_path
 
       abbreviations_set=$1
-      output_path=$2
 
       for abbreviation in ${(iko)${(P)abbreviations_set}}; do
-        alias_definition="alias "
         expansion=${${(P)abbreviations_set}[$abbreviation]}
+
+        alias_definition="alias "
         if [[ $type == 'global' ]]; then
           alias_definition+="-g "
         fi
         alias_definition+="$abbreviation='$expansion'"
 
-        if [ $output_path ]; then
-          _abbr_echo "$alias_definition" >> "$output_path"
-        else
-          print "$alias_definition"
-        fi
+        print "$alias_definition"
       done
     }
 
     _abbr:util_bad_options() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       _abbr:util_error "abbr: Illegal combination of options"
     }
 
-    _abbr:util_deprecated() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
-
-      local message
-      local new
-      local old
-
-      old=$1
-      new=$2
-
-      message="$1 is deprecated and will be dropped in a future version."
-
-      if [ $new ]; then
-        message+=" Please use $new instead."
-      fi
-
-      _abbr:util_warn $message
-    }
-
     _abbr:util_error() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       has_error=1
       logs+="${logs:+\\n}$error_color$@$reset_color"
@@ -595,7 +560,7 @@ _abbr() {
     }
 
     _abbr:util_check_command() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
 
@@ -613,10 +578,10 @@ _abbr() {
 
             _abbr:util_log "\`$abbreviation\` $verb_phrase as an abbreviation"
           else
-            verb_phrase="was not added"
-            (( dry_run )) && verb_phrase="would not be added"
+            verb_phrase="Did not"
+            (( dry_run )) && verb_phrase="Would not"
 
-            _abbr:util_warn "The abbreviation \`$abbreviation\` $verb_phrase because a command with the same name exists"
+            _abbr:util_warn "$verb_phrase add the abbreviation \`$abbreviation\` because a command with the same name exists"
             return 1
           fi
         fi
@@ -624,11 +589,11 @@ _abbr() {
     }
 
     _abbr:util_list() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local expansion
-      local include_expansion
+      local -i include_expansion
       local session_prefix
       local user_prefix
 
@@ -638,15 +603,15 @@ _abbr() {
 
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
-          for abbreviation in ${(iko)GLOBAL_USER_ABBREVIATIONS}; do
-            expansion=${include_expansion:+${GLOBAL_USER_ABBREVIATIONS[$abbreviation]}}
+          for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
+            (( include_expansion )) && expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
             _abbr:util_list_item $abbreviation $expansion ${user_prefix:+$user_prefix -g}
           done
         fi
 
         if [[ $type != 'global' ]]; then
-          for abbreviation in ${(iko)REGULAR_USER_ABBREVIATIONS}; do
-            expansion=${include_expansion:+${REGULAR_USER_ABBREVIATIONS[$abbreviation]}}
+          for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
+            (( include_expansion )) && expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
             _abbr:util_list_item $abbreviation $expansion $user_prefix
           done
         fi
@@ -654,15 +619,15 @@ _abbr() {
 
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
-          for abbreviation in ${(iko)GLOBAL_SESSION_ABBREVIATIONS}; do
-            expansion=${include_expansion:+${GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}}
+          for abbreviation in ${(iko)ABBR_GLOBAL_SESSION_ABBREVIATIONS}; do
+            (( include_expansion )) && expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
             _abbr:util_list_item $abbreviation $expansion ${session_prefix:+$session_prefix -g}
           done
         fi
 
         if [[ $type != 'global' ]]; then
-          for abbreviation in ${(iko)REGULAR_SESSION_ABBREVIATIONS}; do
-            expansion=${include_expansion:+${REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}}
+          for abbreviation in ${(iko)ABBR_REGULAR_SESSION_ABBREVIATIONS}; do
+            (( include_expansion )) && expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
             _abbr:util_list_item $abbreviation $expansion $session_prefix
           done
         fi
@@ -670,7 +635,7 @@ _abbr() {
     }
 
     _abbr:util_list_item() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local expansion
@@ -682,11 +647,11 @@ _abbr() {
 
       result=$abbreviation
 
-      if [ $expansion ]; then
+      if [[ $expansion ]]; then
         result+="=${(qqq)${(Q)expansion}}"
       fi
 
-      if [ $prefix ]; then
+      if [[ $prefix ]]; then
         result="$prefix $result"
       fi
 
@@ -694,26 +659,26 @@ _abbr() {
     }
 
     _abbr:util_log() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       logs+="${logs:+\\n}$1"
     }
 
     _abbr:util_print() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       output+="${output:+\\n}$1"
     }
 
     _abbr:util_set_once() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local option value
 
       option=$1
       value=$2
 
-      if [ ${(P)option} ]; then
+      if [[ ${(P)option} ]]; then
         return
       fi
 
@@ -722,7 +687,7 @@ _abbr() {
     }
 
     _abbr:util_sync_user() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       (( ABBR_LOADING_USER_ABBREVIATIONS )) && return
 
@@ -730,17 +695,17 @@ _abbr() {
       local expansion
       local user_updated
 
-      user_updated=$(mktemp ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations_updated.XXXXXX)
+      user_updated=$(mktemp ${ABBR_TMPDIR}regular-user-abbreviations_updated.XXXXXX)
 
-      typeset -p GLOBAL_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
-      for abbreviation in ${(iko)GLOBAL_USER_ABBREVIATIONS}; do
-        expansion=${GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
+      typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${ABBR_TMPDIR}global-user-abbreviations
+      for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
+        expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
         _abbr_echo "abbr -g ${abbreviation}=${(qqq)${(Q)expansion}}" >> "$user_updated"
       done
 
-      typeset -p REGULAR_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
-      for abbreviation in ${(iko)REGULAR_USER_ABBREVIATIONS}; do
-        expansion=${REGULAR_USER_ABBREVIATIONS[$abbreviation]}
+      typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${ABBR_TMPDIR}regular-user-abbreviations
+      for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
+        expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
         _abbr_echo "abbr ${abbreviation}=${(qqq)${(Q)expansion}}" >> $user_updated
       done
 
@@ -748,13 +713,13 @@ _abbr() {
     }
 
     _abbr:util_usage() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       _abbr_man abbr 2>/dev/null || _abbr_cat ${ABBR_SOURCE_PATH}/man/abbr.txt | _abbr_less -F
     }
 
     _abbr:util_warn() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       logs+="${logs:+\\n}$warn_color$@$reset_color"
     }
@@ -766,17 +731,11 @@ _abbr() {
 
       case $opt in
         "add"|\
-        "a"|\
-        "--add"|\
-        "-a")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "a")
           _abbr:util_set_once action add
           ;;
         "clear-session"|\
-        "c"|\
-        "--clear-session"|\
-        "-c")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "c")
           _abbr:util_set_once action clear_session
           ;;
         "--dry-run")
@@ -784,22 +743,14 @@ _abbr() {
           ((number_opts++))
           ;;
         "erase"|\
-        "e"|\
-        "--erase"|\
-        "-e")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "e")
           _abbr:util_set_once action erase
           ;;
         "expand"|\
-        "x"|\
-        "--expand"|\
-        "-x")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "x")
           _abbr:util_set_once action expand
           ;;
-        "export-aliases"|\
-        "--export-aliases")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "export-aliases")
           _abbr:util_set_once action export_aliases
           ;;
         "--force"|\
@@ -812,47 +763,30 @@ _abbr() {
           _abbr:util_set_once type global
           ;;
         "help"|\
-        "--help"|\
-        "-h")
+        "--help")
           _abbr:util_usage
           should_exit=1
           ;;
-        "import-aliases"|\
-        "--import-aliases")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "import-aliases")
           _abbr:util_set_once action import_aliases
-          importing=1
           ;;
-        "import-fish"|\
-        "--import-fish")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "import-fish")
           _abbr:util_set_once action import_fish
-          importing=1
           ;;
-        "import-git-aliases"|\
-        "--import-git-aliases")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "import-git-aliases")
           _abbr:util_set_once action import_git_aliases
-          importing=1
           ;;
-        "list"|\
-        "--list")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "list")
           _abbr:util_set_once action list
           ;;
         "list-abbreviations"|\
-        "l"|\
-        "--list-abbreviations"|\
-        "-l")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "l")
           _abbr:util_set_once action list_abbreviations
           ;;
         "list-commands"|\
         "L"|\
-        "--list-commands"|\
         "-L")
-          # -L option will continue to be supported to match the builtin alias's `-L`
-          [[ $opt[1] == '--' ]] && _abbr:util_deprecated $opt ${opt##*-}
+          # -L option is to match the builtin alias's `-L`
           _abbr:util_set_once action list_commands
           ;;
         "load")
@@ -869,20 +803,12 @@ _abbr() {
           _abbr:util_set_once type regular
           ;;
         "rename"|\
-        "R"|\
-        "--rename"|\
-        "-R")
-          [[ $opt[1] == '-' ]] && _abbr:util_deprecated $opt ${opt##*-}
+        "R")
           _abbr:util_set_once action rename
           ;;
         "--session"|\
         "-S")
           _abbr:util_set_once scope session
-          ;;
-        "--show"|\
-        "-s")
-          _abbr:util_deprecated $opt "--list-commands or -L"
-          _abbr:util_set_once action list_commands
           ;;
         "--user"|\
         "-U")
@@ -912,14 +838,14 @@ _abbr() {
         fi
       fi
 
-      if [ $action ]; then
+      if [[ $action ]]; then
         _abbr:$action $@
       elif [[ $# > 0 ]]; then
         # default if arguments are provided
         _abbr:add $@
       else
         # default if no argument is provided
-        _abbr:list_abbreviations $@
+        _abbr:list $@
       fi
     fi
 
@@ -931,16 +857,16 @@ _abbr() {
       if [[ -n $logs ]]; then
         output=$logs${output:+\\n$output}
       fi
-
-      if (( dry_run )); then
-        logs+="\\n${warn_color}Dry run. Changes not saved.$reset_color"
-      fi
     fi
 
-    if [[ -n $has_error ]]; then
+    if (( has_error )); then
       [[ -n $output ]] && _abbr_echo - $output >&2
       return 1
     else
+      if (( dry_run && ! ABBR_TESTING )); then
+        output+="\\n${warn_color}Dry run. Changes not saved.$reset_color"
+      fi
+
       [[ -n $output ]] && _abbr_echo - $output >&1
       return 0
     fi
@@ -950,7 +876,7 @@ _abbr() {
 _abbr_bind_widgets() {
   emulate -LR zsh
 
-  (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+  _abbr_debugger
 
   # spacebar expands abbreviations
   zle -N _abbr_expand_and_space
@@ -978,25 +904,23 @@ _abbr_cmd_expansion() {
   local expansion
 
   abbreviation=$1
-  expansion=${REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
+  expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
 
-  if [ ! $expansion ]; then
-    source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
-    expansion=${REGULAR_USER_ABBREVIATIONS[$abbreviation]}
+  if [[ ! $expansion ]]; then
+    source ${ABBR_TMPDIR}regular-user-abbreviations
+    expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
   fi
 
   _abbr_echo - $expansion
 }
 
-_abbr_deprecated() {
+_abbr_debugger() {
   emulate -LR zsh
-  local message
 
-  message="$1 is deprecated. Please use $2 instead."
-  if ! (( ${+NO_COLOR} )); then
-    message="$fg[yellow]$message$reset_color"
-  fi
-  echo $message
+  # user abbreviations are loaded on every git subcommand, making noise
+  (( ABBR_LOADING_USER_ABBREVIATIONS && ! ABBR_INITIALIZING )) && return
+
+  (( ABBR_DEBUG )) && _abbr_echo - $funcstack[2]
 }
 
 _abbr_expand_and_accept() {
@@ -1032,11 +956,11 @@ _abbr_global_expansion() {
   local expansion
 
   abbreviation=$1
-  expansion=${GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
+  expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
 
-  if [ ! $expansion ]; then
-    source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
-    expansion=${GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
+  if [[ ! $expansion ]]; then
+    source ${ABBR_TMPDIR}global-user-abbreviations
+    expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
   fi
 
   _abbr_echo - $expansion
@@ -1045,60 +969,28 @@ _abbr_global_expansion() {
 _abbr_init() {
   emulate -LR zsh
 
-  {
-    (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+  local job
 
-    local job
+  typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
+  typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
+  typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
+  typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
 
-    typeset -gA REGULAR_USER_ABBREVIATIONS
-    typeset -gA GLOBAL_USER_ABBREVIATIONS
-    typeset -gA REGULAR_SESSION_ABBREVIATIONS
-    typeset -gA GLOBAL_SESSION_ABBREVIATIONS
+  job=$(_abbr_job_name)
+  ABBR_REGULAR_SESSION_ABBREVIATIONS=()
+  ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
 
-    function _abbr_init:clean() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
-
-      # clean up deprecated temp files
-
-      if [ -d ${TMPDIR:-/tmp/}zsh-abbr-jobs ]; then
-        rm -rf ${TMPDIR:-/tmp/}zsh-abbr-jobs 2> /dev/null
-      fi
-
-      if [ -f ${TMPDIR:-/tmp/}zsh-user-global-abbreviations ]; then
-        rm ${TMPDIR:-/tmp/}zsh-user-global-abbreviations 2> /dev/null
-      fi
-
-      if [ -f ${TMPDIR:-/tmp/}zsh-user-abbreviations ]; then
-        rm ${TMPDIR:-/tmp/}zsh-user-abbreviations 2> /dev/null
-      fi
-
-      if [ -f ${TMPDIR:-/tmp/}zsh-abbr-initializing ]; then
-        rm ${TMPDIR:-/tmp/}zsh-abbr-initializing
-      fi
-
-      if [ -f ${TMPDIR:-/tmp/}abbr_universals ]; then
-        rm ${TMPDIR:-/tmp/}abbr_universals
-      fi
-    }
-
-    job=$(_abbr_job_name)
-    REGULAR_SESSION_ABBREVIATIONS=()
-    GLOBAL_SESSION_ABBREVIATIONS=()
-
-    _abbr_job_push $job initialization
-    _abbr_init:clean
-    _abbr_load_user_abbreviations
-    _abbr_job_pop $job
-  } always {
-    unfunction -m _abbr_init:clean
-  }
+  _abbr_job_push $job initialization
+  _abbr_debugger
+  _abbr_load_user_abbreviations
+  _abbr_job_pop $job
 }
 
 _abbr_job_push() {
   emulate -LR zsh
 
   {
-    (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+    _abbr_debugger
 
     local next_job
     local next_job_age
@@ -1111,14 +1003,14 @@ _abbr_job_push() {
 
     job_id=${(q)1}
     job_description=$2
-    job_dir=${TMPDIR:-/tmp/}zsh-abbr/jobs
+    job_dir=${ABBR_TMPDIR}jobs
     job_path=$job_dir/$job_id
     timeout_age=30 # seconds
 
     function _abbr_job_push:add_job() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
-      if ! [ -d $job_dir ]; then
+      if ! [[ -d $job_dir ]]; then
         mkdir -p $job_dir
       fi
 
@@ -1132,7 +1024,7 @@ _abbr_job_push() {
     }
 
     function _abbr_job_push:handle_timeout() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       next_job_path=$job_dir/$next_job
 
@@ -1171,13 +1063,13 @@ _abbr_job_push() {
 _abbr_job_pop() {
   emulate -LR zsh
 
-  (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+  _abbr_debugger
 
   local job
 
   job=${(q)1}
 
-  rm ${TMPDIR:-/tmp/}zsh-abbr/jobs/$job &>/dev/null
+  rm ${ABBR_TMPDIR}jobs/$job &>/dev/null
 }
 
 _abbr_job_name() {
@@ -1192,35 +1084,37 @@ _abbr_load_user_abbreviations() {
   emulate -LR zsh
 
   {
-    (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+    _abbr_debugger
 
     function _abbr_load_user_abbreviations:setup() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
-      REGULAR_USER_ABBREVIATIONS=()
-      GLOBAL_USER_ABBREVIATIONS=()
+      ABBR_REGULAR_USER_ABBREVIATIONS=()
+      ABBR_GLOBAL_USER_ABBREVIATIONS=()
 
-      if ! [ -d ${TMPDIR:-/tmp/}zsh-abbr ]; then
+      if ! [[ -d ${TMPDIR:-/tmp/}zsh-abbr ]]; then
         mkdir -p ${TMPDIR:-/tmp/}zsh-abbr
       fi
 
-      if ! [ -f ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations ]; then
-        touch ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+      if ! [[ -f ${ABBR_TMPDIR}regular-user-abbreviations ]]; then
+        touch ${ABBR_TMPDIR}regular-user-abbreviations
       fi
 
-      if ! [ -f ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations ]; then
-        touch ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+      if ! [[ -f ${ABBR_TMPDIR}global-user-abbreviations ]]; then
+        touch ${ABBR_TMPDIR}global-user-abbreviations
       fi
     }
 
     function _abbr_load_user_abbreviations:load() {
-      (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local arguments
       local program
-      local shwordsplit_on
+      local -i shwordsplit_on
       typeset -a user_abbreviations
+
+      typeset -gi ABBR_LOADING_USER_ABBREVIATIONS
 
       shwordsplit_on=0
 
@@ -1229,7 +1123,7 @@ _abbr_load_user_abbreviations() {
       fi
 
       # Load saved user abbreviations
-      if [ -f $ABBR_USER_ABBREVIATIONS_FILE ]; then
+      if [[ -f $ABBR_USER_ABBREVIATIONS_FILE ]]; then
         unsetopt shwordsplit
 
         user_abbreviations=( ${(f)"$(<$ABBR_USER_ABBREVIATIONS_FILE)"} )
@@ -1253,17 +1147,14 @@ _abbr_load_user_abbreviations() {
         touch $ABBR_USER_ABBREVIATIONS_FILE
       fi
 
-      typeset -p REGULAR_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
-      typeset -p GLOBAL_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+      typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${ABBR_TMPDIR}regular-user-abbreviations
+      typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${ABBR_TMPDIR}global-user-abbreviations
     }
 
     ABBR_LOADING_USER_ABBREVIATIONS=1
-
     _abbr_load_user_abbreviations:setup
     _abbr_load_user_abbreviations:load
-
-    ABBR_LOADING_USER_ABBREVIATIONS=0
-
+    unset ABBR_LOADING_USER_ABBREVIATIONS
     return
   } always {
     unfunction -m _abbr_load_user_abbreviations:setup
@@ -1275,31 +1166,31 @@ _abbr_wrap_external_commands() {
   emulate -LR zsh
 
   _abbr_alias() {
-    \builtin \alias $@
+    'builtin' 'alias' $@
   }
 
   _abbr_cat() {
-    \command \cat $@
+    'command' 'cat' $@
   }
 
   _abbr_command() {
-    \builtin \command $@
+    'builtin' 'command' $@
   }
 
   _abbr_echo() {
-    \builtin \echo $@
+    'builtin' 'echo' $@
   }
 
   _abbr_less() {
-    \command \less $@
+    'command' 'less' $@
   }
 
   _abbr_ls() {
-    \command \ls $@
+    'command' 'ls' $@
   }
 
   _abbr_man() {
-    \command \man $@
+    'command' 'man' $@
   }
 }
 
@@ -1312,7 +1203,7 @@ _abbr_expand_widget() {
   local expansion
   local word
   local words
-  local word_count
+  local -i word_count
 
   words=(${(z)LBUFFER})
   word=$words[-1]
@@ -1322,7 +1213,7 @@ _abbr_expand_widget() {
     expansion=$(_abbr_cmd_expansion $word)
   fi
 
-  if [ ! $expansion ]; then
+  if [[ ! $expansion ]]; then
     expansion=$(_abbr_global_expansion $word)
   fi
 
@@ -1342,91 +1233,21 @@ zle -N _abbr_expand_widget
 abbr() {
   emulate -LR zsh
 
-  (( ABBR_DEBUG )) && _abbr_echo $funcstack[1]
+  _abbr_debugger
   _abbr $*
 }
 
 # DEPRECATION
 # -----------
 
-# Deprecation notices for values that could not be meaningfully set after initialization
-(( ${+ZSH_ABBR_DEFAULT_BINDINGS} )) && _abbr_deprecated ZSH_ABBR_DEFAULT_BINDINGS ABBR_DEFAULT_BINDINGS
-[ $ABBR_DEFAULT_BINDINGS = true ] && _abbr_deprecated "String value (\`true\` and \`false\`) ABBR_DEFAULT_BINDINGS" "Boolean value (\`0\` and \`1\`)"
-
-# Deprecation notices for functions
-_zsh_abbr() {
-  _abbr_deprecated _zsh_abbr _abbr
-  _abbr
-}
-
-_zsh_abbr_bind_widgets() {
-  _abbr_deprecated _zsh_abbr_bind_widgets _abbr_bind_widgets
-  _abbr_bind_widgets
-}
-
-_zsh_abbr_cmd_expansion() {
-  _abbr_deprecated _zsh_abbr_cmd_expansion _abbr_cmd_expansion
-  _abbr_cmd_expansion
-}
-
-_zsh_abbr_expand_and_accept() {
-  _abbr_deprecated _zsh_abbr_expand_and_accept _abbr_expand_and_accept
-  _abbr_expand_and_accept
-}
-
-_zsh_abbr_expand_and_space() {
-  _abbr_deprecated _zsh_abbr_expand_and_space _abbr_expand_and_space
-  _abbr_expand_and_space
-}
-
-_zsh_abbr_global_expansion() {
-  _abbr_deprecated _zsh_abbr_global_expansion _abbr_global_expansion
-  _abbr_global_expansion
-}
-
-_zsh_abbr_init() {
-  _abbr_deprecated _zsh_abbr_init _abbr_init
-  _abbr_init
-}
-
-_zsh_abbr_job_push() {
-  _abbr_deprecated _zsh_abbr_job_push _abbr_job_push
-  _abbr_job_push
-}
-
-_zsh_abbr_job_pop() {
-  _abbr_deprecated _zsh_abbr_job_pop _abbr_job_pop
-  _abbr_job_pop
-}
-
-_zsh_abbr_job_name() {
-  _abbr_deprecated _zsh_abbr_job_name _abbr_job_name
-  _abbr_job_name
-}
-
-_zsh_abbr_load_user_abbreviations() {
-  _abbr_deprecated _zsh_abbr_load_user_abbreviations _abbr_load_user_abbreviations
-  _abbr_load_user_abbreviations
-}
-
-_zsh_abbr_wrap_external_commands() {
-  _abbr_deprecated _zsh_abbr_wrap_external_commands _abbr_wrap_external_commands
-  _abbr_wrap_external_commands
-}
-
-_zsh_abbr_expand_widget() {
-  _abbr_deprecated _zsh_abbr_expand_widget _abbr_expand_widget
-  _abbr_expand_widget
-}
-
 
 # INITIALIZATION
 # --------------
 
-autoload -U colors && colors
+typeset -i ABBR_INITIALIZING=1
+! (( ${+NO_COLOR} )) && autoload -U colors && colors
 ABBR_SOURCE_PATH=${0:A:h}
 _abbr_wrap_external_commands
 _abbr_init
-if (( $ABBR_DEFAULT_BINDINGS )) || [ $ABBR_DEFAULT_BINDINGS = true ]; then
-  _abbr_bind_widgets
-fi
+(( ABBR_DEFAULT_BINDINGS )) &&  _abbr_bind_widgets
+unset ABBR_INITIALIZING
