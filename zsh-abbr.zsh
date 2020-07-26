@@ -547,25 +547,6 @@ _abbr() {
       _abbr:util_error "abbr: Illegal combination of options"
     }
 
-    _abbr:util_deprecated() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
-
-      local message
-      local new
-      local old
-
-      old=$1
-      new=$2
-
-      message="$1 is deprecated and will be dropped in a future version."
-
-      if [[ $new ]]; then
-        message+=" Please use $new instead."
-      fi
-
-      _abbr:util_warn $message
-    }
-
     _abbr:util_error() {
       (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
@@ -941,17 +922,6 @@ _abbr_cmd_expansion() {
   fi
 
   _abbr_echo - $expansion
-}
-
-_abbr_deprecated() {
-  emulate -LR zsh
-  local message
-
-  message="$1 is deprecated. Please use $2 instead."
-  if ! (( ${+NO_COLOR} )); then
-    message="%F{yellow}$message%f"
-  fi
-  _abbr_print $message
 }
 
 _abbr_expand_and_accept() {
