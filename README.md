@@ -215,7 +215,7 @@ zsh-abbr has commands to add, rename, and erase abbreviations; to add abbreviati
 - **`export-aliases`**
 
   ```shell
-  abbr export-aliases [<SCOPE>] [<TYPE>] [DESTINATION]
+  abbr export-aliases [<SCOPE>] [<TYPE>]
   ```
 
   Export abbreviations as alias commands. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
@@ -232,10 +232,6 @@ zsh-abbr has commands to add, rename, and erase abbreviations; to add abbreviati
   % abbr export-aliases
   alias gcm='git checkout main'
   % abbr export-aliases --session
-  alias g='git'
-  % abbr export-aliases ~/.zshrc
-  % cat ~/.zshrc
-  # -- snip --
   alias g='git'
   ```
 

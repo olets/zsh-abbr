@@ -215,12 +215,10 @@ _abbr() {
       _abbr_debugger
 
       local type_saved
-      local output_path
 
       type_saved=$type
-      output_path=$1
 
-      if [[ $# > 1 ]]; then
+      if [[ $# > 0 ]]; then
         _abbr:util_error "abbr export-aliases: Unexpected argument"
         return
       fi
@@ -523,24 +521,19 @@ _abbr() {
       local abbreviation
       local abbreviations_set
       local expansion
-      local output_path
 
       abbreviations_set=$1
-      output_path=$2
 
       for abbreviation in ${(iko)${(P)abbreviations_set}}; do
-        alias_definition="alias "
         expansion=${${(P)abbreviations_set}[$abbreviation]}
+
+        alias_definition="alias "
         if [[ $type == 'global' ]]; then
           alias_definition+="-g "
         fi
         alias_definition+="$abbreviation='$expansion'"
 
-        if [[ $output_path ]]; then
-          _abbr_echo "$alias_definition" >> "$output_path"
-        else
-          print "$alias_definition"
-        fi
+        print "$alias_definition"
       done
     }
 
