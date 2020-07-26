@@ -873,7 +873,7 @@ _abbr() {
       output+="${warn_color}Dry run. Changes not saved.%f"
     fi
 
-    if (( $has_error )); then
+    if (( has_error )); then
       [[ -n $output ]] && _abbr_print -P - $output >&2
       return 1
     else
@@ -1253,4 +1253,4 @@ abbr() {
 ABBR_SOURCE_PATH=${0:A:h}
 _abbr_wrap_external_commands
 _abbr_init
-(( $ABBR_DEFAULT_BINDINGS )) &&  _abbr_bind_widgets
+(( ABBR_DEFAULT_BINDINGS )) &&  _abbr_bind_widgets
