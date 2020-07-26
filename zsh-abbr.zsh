@@ -342,7 +342,7 @@ _abbr() {
     _abbr:list_commands() {
       _abbr_debugger
 
-      local include_expansion
+      local -i include_expansion
       local session_prefix
       local user_prefix
 
@@ -361,7 +361,7 @@ _abbr() {
     _abbr:list_abbreviations() {
       _abbr_debugger
 
-      local include_expansion
+      local -i include_expansion
 
       if [[ $# > 0 ]]; then
         _abbr:util_error "abbr list definitions: Unexpected argument"
@@ -599,7 +599,7 @@ _abbr() {
 
       local abbreviation
       local expansion
-      local include_expansion
+      local -i include_expansion
       local session_prefix
       local user_prefix
 
@@ -610,14 +610,14 @@ _abbr() {
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
           for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
-            expansion=${include_expansion:+${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}}
+            (( include_expansion )) && expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
             _abbr:util_list_item $abbreviation $expansion ${user_prefix:+$user_prefix -g}
           done
         fi
 
         if [[ $type != 'global' ]]; then
           for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
-            expansion=${include_expansion:+${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}}
+            (( include_expansion )) && expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
             _abbr:util_list_item $abbreviation $expansion $user_prefix
           done
         fi
@@ -626,14 +626,14 @@ _abbr() {
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
           for abbreviation in ${(iko)ABBR_GLOBAL_SESSION_ABBREVIATIONS}; do
-            expansion=${include_expansion:+${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}}
+            (( include_expansion )) && expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
             _abbr:util_list_item $abbreviation $expansion ${session_prefix:+$session_prefix -g}
           done
         fi
 
         if [[ $type != 'global' ]]; then
           for abbreviation in ${(iko)ABBR_REGULAR_SESSION_ABBREVIATIONS}; do
-            expansion=${include_expansion:+${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}}
+            (( include_expansion )) && expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
             _abbr:util_list_item $abbreviation $expansion $session_prefix
           done
         fi
