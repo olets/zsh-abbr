@@ -9,7 +9,6 @@ typeset -a result
 
 test_abbr_abbreviation="zsh_abbr_test"
 test_abbr_expansion="zsh abbr test"
-test_abbr="$test_abbr_abbreviation=$test_abbr_expansion"
 
 # Can add an abbreviation with the add flag
 message="abbr add"
@@ -38,7 +37,7 @@ echo
 
 # Can add an abbreviation without the add flag
 message="abbr "
-abbr $test_abbr
+abbr $test_abbr_abbreviation=$test_abbr_expansion
 result=( ${(f)"$(abbr list-commands)"} )
 if [[ $result[1] == "abbr $test_abbr_abbreviation=${(qqq)test_abbr_expansion}" ]]; then
 	message="$fg[green]PASS$reset_color $message"
@@ -52,7 +51,7 @@ echo
 
 # Can clear session abbreviations
 message="abbr clear-session "
-abbr -S $test_abbr
+abbr -S $test_abbr_abbreviation=$test_abbr_expansion
 abbr clear-session
 result=( ${(f)"$(abbr list-commands)"} )
 if [[ ${#result} == 0 ]]; then
@@ -66,7 +65,7 @@ echo
 
 # Can expand an abbreviation in a script
 message="abbr expand "
-abbr $test_abbr
+abbr $test_abbr_abbreviation=$test_abbr_expansion
 result=( ${(f)"$(abbr expand $test_abbr_abbreviation)"} )
 if [[ $result[1] == $test_abbr_expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
@@ -80,7 +79,7 @@ echo
 
 # # Can rename an abbreviation
 message="abbr rename "
-abbr $test_abbr
+abbr $test_abbr_abbreviation=$test_abbr_expansion
 abbr rename $test_abbr_abbreviation ${test_abbr_abbreviation}_new
 result=( ${(f)"$(abbr expand ${test_abbr_abbreviation}_new)"} )
 if [[ $result[1] == $test_abbr_expansion ]]; then
@@ -293,7 +292,7 @@ unalias $abbreviation
 
 # Can delete a user abbreviation from outside abbr without unexpected retention
 message="abbreviation deleted externally cannot be expanded"
-abbr add $test_abbr
+abbr add $test_abbr_abbreviation=$test_abbr_expansion
 echo '' > $ABBR_USER_ABBREVIATIONS_FILE
 result=( ${(f)"$(abbr expand $test_abbr_abbreviation)"} )
 if [[ ${#result} == 0 ]]; then
