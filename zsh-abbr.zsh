@@ -860,15 +860,14 @@ _abbr() {
     fi
 
     if (( has_error )); then
-      [[ -n $output ]] && _abbr_print -P - $output >&2
+      [[ -n $output ]] && _abbr_echo - $output >&2
       return 1
     else
       if (( dry_run && ! ABBR_TESTING )); then
-        output+=$'\n'
         output+="\\n${warn_color}Dry run. Changes not saved.$reset_color"
       fi
 
-      [[ -n $output ]] && _abbr_print -P - $output >&1
+      [[ -n $output ]] && _abbr_echo - $output >&1
       return 0
     fi
   }
@@ -921,7 +920,7 @@ _abbr_debugger() {
   # user abbreviations are loaded on every git subcommand, making noise
   (( ABBR_LOADING_USER_ABBREVIATIONS && ! ABBR_INITIALIZING )) && return
 
-  (( ABBR_DEBUG )) && _abbr_print $funcstack[2]
+  (( ABBR_DEBUG )) && _abbr_echo - $funcstack[2]
 }
 
 _abbr_expand_and_accept() {
@@ -1029,11 +1028,11 @@ _abbr_job_push() {
 
       next_job_path=$job_dir/$next_job
 
-      _abbr_print "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job%.*}) has timed out."
-      _abbr_print "The job was related to $(cat $next_job_path)."
-      _abbr_print "This could be the result of manually terminating an abbr activity, for example during session startup."
-      _abbr_print "If you believe it reflects a abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
-      _abbr_print
+      _abbr_echo "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job%.*}) has timed out."
+      _abbr_echo "The job was related to $(cat $next_job_path)."
+      _abbr_echo "This could be the result of manually terminating an abbr activity, for example during session startup."
+      _abbr_echo "If you believe it reflects a abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
+      _abbr_echo
 
       rm $next_job_path &>/dev/null
     }
@@ -1192,10 +1191,6 @@ _abbr_wrap_external_commands() {
 
   _abbr_man() {
     'command' 'man' $@
-  }
-
-  _abbr_print() {
-    'builtin' 'print' $@
   }
 }
 
