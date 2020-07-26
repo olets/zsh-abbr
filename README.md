@@ -1,14 +1,12 @@
 # zsh-abbr ![GitHub release (latest by date)](https://img.shields.io/github/v/release/olets/zsh-abbr)
 
-The zsh manager for auto-expanding abbreviations, inspired by fish shell.
+**abbr** is the zsh manager for auto-expanding abbreviations - text that when written in a terminal is replaced with other (typically longer) text. Inspired by fish shell.
 
-**abbr** manages abbreviations - user-defined words that are replaced with longer phrases after they are entered.
+For example, a frequently-run command like `git checkout` can be abbreviated to `gco` (or even `co` or `c` or anything else). Type <kbd>Space</kbd> after an abbreviation to expand it. Type <kbd>Enter</kbd> after an abbreviation to expand it and run the expansion. To prevent expansion, add <kbd>Ctrl</kbd> (<kbd>Ctrl</kbd><kbd>Space</kbd> / <kbd>Ctrl</kbd><kbd>Enter</kbd>) or add a delimiter like `;` after the abbreviation.
 
-For example, a frequently-run command like `git checkout` can be abbreviated to `gco` (or even `co` or `c` or anything else). After entering `gco` and pressing <kbd>Space</kbd>, the full text `git checkout` will appear in the command line. To prevent expansion, press <kbd>Ctrl</kbd><kbd>Space</kbd> in place of <kbd>Space</kbd>. Pressing <kbd>Enter</kbd> after an abbreviation will expand the abbreviation and accept the current line.
+Like zsh's `alias`, zsh-abbr supports "regular" (i.e. command-position) and "global" (anywhere on the line) abbreviations. Like fish's abbr, zsh-abbr supports interactive creation of persistent abbreviations that are immediately available in all terminal sessions and.
 
-Like zsh's `alias`, zsh-abbr supports "regular" (i.e. command-position) and global (anywhere on the line) abbreviations. Like fish abbr, zsh-abbr supports session-specific and cross-session abbreviations.
-
-Run `abbr help` (or `abbr h`) for documentation; if the package is installed with Homebrew, `man abbr` is also available.
+Run `abbr help` for documentation; if the package is installed with Homebrew, `man abbr` is also available.
 
 ## Contents
 
