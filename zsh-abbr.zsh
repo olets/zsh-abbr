@@ -93,8 +93,8 @@ _abbr() {
         return
       fi
 
-      REGULAR_SESSION_ABBREVIATIONS=()
-      GLOBAL_SESSION_ABBREVIATIONS=()
+      ABBR_REGULAR_SESSION_ABBREVIATIONS=()
+      ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
     }
 
     _abbr:erase() {
@@ -118,16 +118,16 @@ _abbr() {
 
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
-          if (( ${+GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
             (( ABBR_DEBUG )) && _abbr_echo "  Found a global session abbreviation"
-            abbreviations_sets+=( GLOBAL_SESSION_ABBREVIATIONS )
+            abbreviations_sets+=( ABBR_GLOBAL_SESSION_ABBREVIATIONS )
           fi
         fi
 
         if [[ $type != 'global' ]]; then
-          if (( ${+REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
             (( ABBR_DEBUG )) && _abbr_echo "  Found a regular session abbreviation"
-            abbreviations_sets+=( REGULAR_SESSION_ABBREVIATIONS )
+            abbreviations_sets+=( ABBR_REGULAR_SESSION_ABBREVIATIONS )
           fi
         fi
       fi
@@ -138,9 +138,9 @@ _abbr() {
             source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
           fi
 
-          if (( ${+GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
             (( ABBR_DEBUG )) && _abbr_echo "  Found a global user abbreviation"
-            abbreviations_sets+=( GLOBAL_USER_ABBREVIATIONS )
+            abbreviations_sets+=( ABBR_GLOBAL_USER_ABBREVIATIONS )
           fi
         fi
 
@@ -149,9 +149,9 @@ _abbr() {
             source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
           fi
 
-          if (( ${+REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
             (( ABBR_DEBUG )) && _abbr_echo "  Found a regular user abbreviation"
-            abbreviations_sets+=( REGULAR_USER_ABBREVIATIONS )
+            abbreviations_sets+=( ABBR_REGULAR_USER_ABBREVIATIONS )
           fi
         fi
       fi
@@ -403,15 +403,15 @@ _abbr() {
 
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
-          expansion=${GLOBAL_SESSION_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$current_abbreviation]}
         else
-          expansion=${REGULAR_SESSION_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$current_abbreviation]}
         fi
       else
         if [[ $type == 'global' ]]; then
-          expansion=${GLOBAL_USER_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$current_abbreviation]}
         else
-          expansion=${REGULAR_USER_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$current_abbreviation]}
         fi
       fi
 
@@ -449,20 +449,20 @@ _abbr() {
 
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
-          if ! (( ${+GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+          if ! (( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
             _abbr:util_check_command $abbreviation || return
 
             if ! (( dry_run )); then
-              GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
+              ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
             fi
 
             success=1
           fi
-        elif ! (( ${+REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+        elif ! (( ${+ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
           _abbr:util_check_command $abbreviation || return
 
           if ! (( dry_run )); then
-            REGULAR_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
+            ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
           fi
 
           success=1
@@ -473,11 +473,11 @@ _abbr() {
             source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
           fi
 
-          if ! (( ${+GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
+          if ! (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
             _abbr:util_check_command $abbreviation || return
 
             if ! (( dry_run )); then
-              GLOBAL_USER_ABBREVIATIONS[$abbreviation]=$expansion
+              ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]=$expansion
               _abbr:util_sync_user
             fi
 
@@ -488,11 +488,11 @@ _abbr() {
             source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
           fi
 
-          if ! (( ${+REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
+          if ! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
             _abbr:util_check_command $abbreviation || return
 
             if ! (( dry_run )); then
-              REGULAR_USER_ABBREVIATIONS[$abbreviation]=$expansion
+              ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]=$expansion
               _abbr:util_sync_user
             fi
 
@@ -609,15 +609,15 @@ _abbr() {
 
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
-          for abbreviation in ${(iko)GLOBAL_USER_ABBREVIATIONS}; do
-            expansion=${include_expansion:+${GLOBAL_USER_ABBREVIATIONS[$abbreviation]}}
+          for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
+            expansion=${include_expansion:+${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}}
             _abbr:util_list_item $abbreviation $expansion ${user_prefix:+$user_prefix -g}
           done
         fi
 
         if [[ $type != 'global' ]]; then
-          for abbreviation in ${(iko)REGULAR_USER_ABBREVIATIONS}; do
-            expansion=${include_expansion:+${REGULAR_USER_ABBREVIATIONS[$abbreviation]}}
+          for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
+            expansion=${include_expansion:+${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}}
             _abbr:util_list_item $abbreviation $expansion $user_prefix
           done
         fi
@@ -625,15 +625,15 @@ _abbr() {
 
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
-          for abbreviation in ${(iko)GLOBAL_SESSION_ABBREVIATIONS}; do
-            expansion=${include_expansion:+${GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}}
+          for abbreviation in ${(iko)ABBR_GLOBAL_SESSION_ABBREVIATIONS}; do
+            expansion=${include_expansion:+${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}}
             _abbr:util_list_item $abbreviation $expansion ${session_prefix:+$session_prefix -g}
           done
         fi
 
         if [[ $type != 'global' ]]; then
-          for abbreviation in ${(iko)REGULAR_SESSION_ABBREVIATIONS}; do
-            expansion=${include_expansion:+${REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}}
+          for abbreviation in ${(iko)ABBR_REGULAR_SESSION_ABBREVIATIONS}; do
+            expansion=${include_expansion:+${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}}
             _abbr:util_list_item $abbreviation $expansion $session_prefix
           done
         fi
@@ -703,15 +703,15 @@ _abbr() {
 
       user_updated=$(mktemp ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations_updated.XXXXXX)
 
-      typeset -p GLOBAL_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
-      for abbreviation in ${(iko)GLOBAL_USER_ABBREVIATIONS}; do
-        expansion=${GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
+      typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+      for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
+        expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
         _abbr_echo "abbr -g ${abbreviation}=${(qqq)${(Q)expansion}}" >> "$user_updated"
       done
 
-      typeset -p REGULAR_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
-      for abbreviation in ${(iko)REGULAR_USER_ABBREVIATIONS}; do
-        expansion=${REGULAR_USER_ABBREVIATIONS[$abbreviation]}
+      typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+      for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
+        expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
         _abbr_echo "abbr ${abbreviation}=${(qqq)${(Q)expansion}}" >> $user_updated
       done
 
@@ -914,11 +914,11 @@ _abbr_cmd_expansion() {
   local expansion
 
   abbreviation=$1
-  expansion=${REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
+  expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
 
   if [[ ! $expansion ]]; then
     source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
-    expansion=${REGULAR_USER_ABBREVIATIONS[$abbreviation]}
+    expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
   fi
 
   _abbr_echo - $expansion
@@ -957,11 +957,11 @@ _abbr_global_expansion() {
   local expansion
 
   abbreviation=$1
-  expansion=${GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
+  expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
 
   if [[ ! $expansion ]]; then
     source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
-    expansion=${GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
+    expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
   fi
 
   _abbr_echo - $expansion
@@ -972,14 +972,14 @@ _abbr_init() {
 
   local job
 
-  typeset -gA REGULAR_USER_ABBREVIATIONS
-  typeset -gA GLOBAL_USER_ABBREVIATIONS
-  typeset -gA REGULAR_SESSION_ABBREVIATIONS
-  typeset -gA GLOBAL_SESSION_ABBREVIATIONS
+  typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
+  typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
+  typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
+  typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
 
   job=$(_abbr_job_name)
-  REGULAR_SESSION_ABBREVIATIONS=()
-  GLOBAL_SESSION_ABBREVIATIONS=()
+  ABBR_REGULAR_SESSION_ABBREVIATIONS=()
+  ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
 
   _abbr_job_push $job initialization
   (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
@@ -1090,8 +1090,8 @@ _abbr_load_user_abbreviations() {
     function _abbr_load_user_abbreviations:setup() {
       (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
-      REGULAR_USER_ABBREVIATIONS=()
-      GLOBAL_USER_ABBREVIATIONS=()
+      ABBR_REGULAR_USER_ABBREVIATIONS=()
+      ABBR_GLOBAL_USER_ABBREVIATIONS=()
 
       if ! [[ -d ${TMPDIR:-/tmp/}zsh-abbr ]]; then
         mkdir -p ${TMPDIR:-/tmp/}zsh-abbr
@@ -1148,8 +1148,8 @@ _abbr_load_user_abbreviations() {
         touch $ABBR_USER_ABBREVIATIONS_FILE
       fi
 
-      typeset -p REGULAR_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
-      typeset -p GLOBAL_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+      typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+      typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
     }
 
     ABBR_LOADING_USER_ABBREVIATIONS=1
