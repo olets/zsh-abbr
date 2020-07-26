@@ -28,10 +28,10 @@ Run `abbr help` (or `abbr h`) for documentation; if the package is installed wit
 # Add and use an abbreviation
 % abbr gc="git checkout"
 % gc[Space] # space expands this to `git checkout `
-% abbr gcm="git checkout master"
-% gcm[Enter] # enter expands this to `git checkout master` and then accepts
-Switched to branch 'master'
-Your branch is up to date with 'origin/master'.
+% abbr gcm="git checkout main"
+% gcm[Enter] # enter expands this to `git checkout main` and then accepts
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
 %
 
 # Abbreviations are immediately available to all current and future sessions
@@ -55,7 +55,7 @@ Your branch is up to date with 'origin/master'.
 # Rename an abbreviation
 % abbr -r gcm cm
 % gcm[Space] # does not expand
-% cm[Space] # expands to `git checkout master `
+% cm[Space] # expands to `git checkout main `
 
 # Make the switch from aliases
 % abbr import-aliases
@@ -168,9 +168,9 @@ To add a session abbreviation, use the **--session** or **-S** scope flag. Other
 To add a global abbreviation, use the **--global** flag. Otherwise the new abbreviation will be a command abbreviation.
 
 ```shell
-% abbr add gcm='git checkout master'
-% gcm[Space] # expands as git checkout master
-% gcm[Enter] # expands and accepts git checkout master
+% abbr add gcm='git checkout main'
+% gcm[Space] # expands as git checkout main
+% gcm[Enter] # expands and accepts git checkout main
 ```
 
 `add` is the default command, and does not need to be explicit:
@@ -221,9 +221,9 @@ Use the **--session** or **-S** scope flag to erase a session abbreviation. Othe
 Use the **--global** flag to erase a session abbreviation. Otherwise a cross-session abbreviation will be erased.
 
 ```shell
-% abbr gcm="git commit master"
-% gcm[Enter] # expands and accepts git commit master
-Switched to branch 'master'
+% abbr gcm="git checkout main"
+% gcm[Enter] # expands and accepts git checkout main
+Switched to branch 'main'
 % abbr -e gcm;[Enter] # or abbr -e gcm[Ctrl-Space][Enter]
 % gcm[Space|Enter] # normal
 ```
@@ -259,10 +259,10 @@ Use the **--global** or **-g** type flag to export only global abbreviations. Us
 Combine a scope flag and a type flag to further limit the output.
 
 ```shell
-% abbr gcm="git checkout master"
+% abbr gcm="git checkout main"
 % abbr -S g=git
 % abbr export-aliases
-alias gcm='git checkout master'
+alias gcm='git checkout main'
 % abbr export-aliases --session
 alias g='git'
 % abbr export-aliases ~/.zshrc
@@ -449,12 +449,12 @@ Use the **--global** flag to rename a global abbreviation. Otherwise a command a
 Rename is scope- and type-specific. If you get a "no matching abbreviation" error, make sure you added the right flags (list abbreviations if you are not sure).
 
 ```shell
-% abbr add gcm git checkout master
-% gcm[Space] # expands to git checkout master
+% abbr add gcm git checkout main
+% gcm[Space] # expands to git checkout main
 % gm[Space] # no expansion
 % abbr rename gcm[Ctrl-Space] gm
 % gcm[Space] # no expansion
-% gm[Space] # expands to git checkout master
+% gm[Space] # expands to git checkout main
 ```
 
 Use `--dry-run` to see what would result, without making any actual changes.
@@ -561,7 +561,7 @@ Thanks for your interest. Contributions are welcome!
 
 Check the [Issues](https://github.com/olets/zsh-abbr/issues) to see if your topic has been discussed before or if it is being worked on. You may also want to check the roadmap (see above). Discussing in an Issue before opening a Pull Request means future contributors only have to search in one place.
 
-This project loosely follows the [Angular commit message conventions](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit). This helps with searchability and with the changelog, which is generated automatically and touched up by hand only if necessary. Use the commit message format `<type>(<scope>): <subject>`, where `<type>` is **feat** for new or changed behavior, **fix** for fixes, **docs** for documentation, **style** for under the hood changes related to for example zshisms, **refactor** for other refactors, **test** for tests, or **chore** chore for general maintenance (this will be used primarily by maintainers not contributors, for example for version bumps). `<scope>` is more loosely defined. Look at the [commit history](https://github.com/olets/zsh-abbr/commits/master) for ideas.
+This project loosely follows the [Angular commit message conventions](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit). This helps with searchability and with the changelog, which is generated automatically and touched up by hand only if necessary. Use the commit message format `<type>(<scope>): <subject>`, where `<type>` is **feat** for new or changed behavior, **fix** for fixes, **docs** for documentation, **style** for under the hood changes related to for example zshisms, **refactor** for other refactors, **test** for tests, or **chore** chore for general maintenance (this will be used primarily by maintainers not contributors, for example for version bumps). `<scope>` is more loosely defined.
 
 Tests are in the `tests` directory. To run them, replace `zsh-abbr` with `zsh-abbr/tests` in .zshrc. For example, zinit users will run
 
