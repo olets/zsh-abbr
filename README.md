@@ -473,7 +473,8 @@ Variable | Type | Use | Default
 `ABBR_DRY_RUN` | integer Boolean | If non-zero, use dry run mode without passing `--dry-run` | 0
 `ABBR_FORCE` | integer Boolean | If non-zero, use force mode without passing `--force` (see [`add`](#add)) | 0
 `ABBR_QUIET` | integer Boolean | If non-zero, use quiet mode without passing `--quiet` | 0
-`ABBR_USER_ABBREVIATIONS_FILE` | path string | The location of the user abbreviation file (see [Storage and manual editing](#storage-and-manual-editing)) | `$HOME/.config/zsh/abbreviations`
+`ABBR_TMPDIR` | String | Path to the directory temporary files are stored in. _Ends in `/`_ | `${TMPDIR:-/tmp/}zsh-abbr/}`
+`ABBR_USER_ABBREVIATIONS_FILE` | String | Path to the file user abbreviation are stored in (see [Storage and manual editing](#storage-and-manual-editing)) | `$HOME/.config/zsh/abbreviations`
 
 ### Exported variables
 
@@ -535,7 +536,7 @@ bindkey "^A" _abbr_expand_space
 Delete the session data storage directory
 
 ```shell
-% rm -rf ${TMPDIR:-/tmp/}zsh-abbr
+% rm -rf $ABBR_TMPDIR
 ```
 
 To delete the user abbreviations file,

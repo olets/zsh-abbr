@@ -27,6 +27,9 @@ typeset -gi ABBR_FORCE=${ABBR_FORCE:-0}
 # Behave as if `--quiet` was passed? (default false)
 typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
 
+# Temp files are stored in
+typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${TMPDIR:-/tmp/}zsh-abbr/}
+
 # File abbreviations are stored in
 typeset -g ABBR_USER_ABBREVIATIONS_FILE=${ABBR_USER_ABBREVIATIONS_FILE:-$HOME/.config/zsh/abbreviations}
 
@@ -135,7 +138,7 @@ _abbr() {
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-            source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+            source ${ABBR_TMPDIR}global-user-abbreviations
           fi
 
           if (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
@@ -146,7 +149,7 @@ _abbr() {
 
         if [[ $type != 'global' ]]; then
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-            source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+            source ${ABBR_TMPDIR}regular-user-abbreviations
           fi
 
           if (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
@@ -470,7 +473,7 @@ _abbr() {
       else
         if [[ $type == 'global' ]]; then
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-            source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+            source ${ABBR_TMPDIR}global-user-abbreviations
           fi
 
           if ! (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
@@ -485,7 +488,7 @@ _abbr() {
           fi
         else
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-            source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+            source ${ABBR_TMPDIR}regular-user-abbreviations
           fi
 
           if ! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
@@ -701,15 +704,15 @@ _abbr() {
       local expansion
       local user_updated
 
-      user_updated=$(mktemp ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations_updated.XXXXXX)
+      user_updated=$(mktemp ${ABBR_TMPDIR}regular-user-abbreviations_updated.XXXXXX)
 
-      typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+      typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${ABBR_TMPDIR}global-user-abbreviations
       for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
         expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
         _abbr_echo "abbr -g ${abbreviation}=${(qqq)${(Q)expansion}}" >> "$user_updated"
       done
 
-      typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+      typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${ABBR_TMPDIR}regular-user-abbreviations
       for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
         expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
         _abbr_echo "abbr ${abbreviation}=${(qqq)${(Q)expansion}}" >> $user_updated
@@ -914,7 +917,7 @@ _abbr_cmd_expansion() {
   expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
 
   if [[ ! $expansion ]]; then
-    source ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+    source ${ABBR_TMPDIR}regular-user-abbreviations
     expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
   fi
 
@@ -966,7 +969,7 @@ _abbr_global_expansion() {
   expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
 
   if [[ ! $expansion ]]; then
-    source ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+    source ${ABBR_TMPDIR}global-user-abbreviations
     expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
   fi
 
@@ -1010,7 +1013,7 @@ _abbr_job_push() {
 
     job_id=${(q)1}
     job_description=$2
-    job_dir=${TMPDIR:-/tmp/}zsh-abbr/jobs
+    job_dir=${ABBR_TMPDIR}jobs
     job_path=$job_dir/$job_id
     timeout_age=30 # seconds
 
@@ -1076,7 +1079,7 @@ _abbr_job_pop() {
 
   job=${(q)1}
 
-  rm ${TMPDIR:-/tmp/}zsh-abbr/jobs/$job &>/dev/null
+  rm ${ABBR_TMPDIR}jobs/$job &>/dev/null
 }
 
 _abbr_job_name() {
@@ -1103,12 +1106,12 @@ _abbr_load_user_abbreviations() {
         mkdir -p ${TMPDIR:-/tmp/}zsh-abbr
       fi
 
-      if ! [[ -f ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations ]]; then
-        touch ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
+      if ! [[ -f ${ABBR_TMPDIR}regular-user-abbreviations ]]; then
+        touch ${ABBR_TMPDIR}regular-user-abbreviations
       fi
 
-      if ! [[ -f ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations ]]; then
-        touch ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+      if ! [[ -f ${ABBR_TMPDIR}global-user-abbreviations ]]; then
+        touch ${ABBR_TMPDIR}global-user-abbreviations
       fi
     }
 
@@ -1154,8 +1157,8 @@ _abbr_load_user_abbreviations() {
         touch $ABBR_USER_ABBREVIATIONS_FILE
       fi
 
-      typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/regular-user-abbreviations
-      typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${TMPDIR:-/tmp/}zsh-abbr/global-user-abbreviations
+      typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${ABBR_TMPDIR}regular-user-abbreviations
+      typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${ABBR_TMPDIR}global-user-abbreviations
     }
 
     ABBR_LOADING_USER_ABBREVIATIONS=1
