@@ -884,11 +884,11 @@ _abbr() {
       if [[ -n $logs ]]; then
         output=$logs${output:+$'\n'$output}
       fi
+    fi
 
-      if (( dry_run )); then
-        output+=$'\n'
-        output+="${warn_color}Dry run. Changes not saved.%f"
-      fi
+    if (( dry_run )); then
+      output+=$'\n'
+      output+="${warn_color}Dry run. Changes not saved.%f"
     fi
 
     if [[ -n $has_error ]]; then
