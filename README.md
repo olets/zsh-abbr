@@ -473,12 +473,12 @@ In addition to the following, setting `NO_COLOR` (regardless of its value) will 
 
 Variable | Type | Use | Default
 ---|---|---|---
-`ABBR_AUTOLOAD` | integer Boolean | If non-zero, automatically account for updates to the user abbrevations file (see [Storage and manual editing](#storage-and-manual-editing)) | 1
-`ABBR_DEBUG` | integer Boolean | If non-zero, print debugging messages | 0
-`ABBR_DEFAULT_BINDINGS` | integer Boolean | If non-zero, add the default bindings (see [Bindings](#bindings)) | 1
-`ABBR_DRY_RUN` | integer Boolean | If non-zero, use dry run mode without passing `--dry-run` | 0
-`ABBR_FORCE` | integer Boolean | If non-zero, use force mode without passing `--force` (see [`add`](#add)) | 0
-`ABBR_QUIET` | integer Boolean | If non-zero, use quiet mode without passing `--quiet` | 0
+`ABBR_AUTOLOAD` | integer | If non-zero, automatically account for updates to the user abbrevations file (see [Storage and manual editing](#storage-and-manual-editing)) | 1
+`ABBR_DEBUG` | integer | If non-zero, print debugging messages | 0
+`ABBR_DEFAULT_BINDINGS` | integer | If non-zero, add the default bindings (see [Bindings](#bindings)) | 1
+`ABBR_DRY_RUN` | integer | If non-zero, use dry run mode without passing `--dry-run` | 0
+`ABBR_FORCE` | integer | If non-zero, use force mode without passing `--force` (see [`add`](#add)) | 0
+`ABBR_QUIET` | integer | If non-zero, use quiet mode without passing `--quiet` | 0
 `ABBR_TMPDIR` | String | Path to the directory temporary files are stored in. _Ends in `/`_ | `${TMPDIR:-/tmp/}zsh-abbr/}`
 `ABBR_USER_ABBREVIATIONS_FILE` | String | Path to the file user abbreviation are stored in (see [Storage and manual editing](#storage-and-manual-editing)) | `$HOME/.config/zsh/abbreviations`
 
@@ -486,13 +486,13 @@ Variable | Type | Use | Default
 
 Variable | Type | Value
 ---|---|---
-`ABBR_GLOBAL_SESSION_ABBREVIATIONS` | Associative array | The global session abbreviations
-`ABBR_GLOBAL_USER_ABBREVIATIONS` | Associative array | The global user abbreviations
-`ABBR_LOADING_USER_ABBREVIATIONS` | Integer Boolean | Set to `1` when the interactive shell is refreshing its list of user abbreviations, otherwise not set
-`ABBR_REGULAR_SESSION_ABBREVIATIONS` | Associative array | The regular session abbreviations
-`ABBR_REGULAR_USER_ABBREVIATIONS` | Associative array | The regular user abbreviations
+`ABBR_GLOBAL_SESSION_ABBREVIATIONS` | associative array | The global session abbreviations
+`ABBR_GLOBAL_USER_ABBREVIATIONS` | associative array | The global user abbreviations
+`ABBR_LOADING_USER_ABBREVIATIONS` | integer | Set to `1` when the interactive shell is refreshing its list of user abbreviations, otherwise not set
+`ABBR_REGULAR_SESSION_ABBREVIATIONS` | associative array | The regular session abbreviations
+`ABBR_REGULAR_USER_ABBREVIATIONS` | associative array | The regular user abbreviations
 
-Each element in abbreviations associative arrays has the form `ABBREVIATION=EXPANSION`, and the expansion value is quoted. Scripters will probably want to remove one level of quotes, using the [Q modifier](http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers) (e.g. `for v in ${(Qv)ABBR_REGULAR_USER_ABBREVIATIONS}...`)
+Each element in `ABBR_GLOBAL_SESSION_ABBREVIATIONS`, `ABBR_GLOBAL_USER_ABBREVIATIONS`, `ABBR_REGULAR_SESSION_ABBREVIATIONS`, and `ABBR_REGULAR_USER_ABBREVIATIONS` has the form `ABBREVIATION=EXPANSION`.The expansion value is quoted. Scripters will probably want to remove one level of quotes, using the [Q modifier](http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers) (e.g. `for v in ${(Qv)ABBR_REGULAR_USER_ABBREVIATIONS}...`).
 
 ### Storage and manual editing
 
