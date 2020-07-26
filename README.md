@@ -479,8 +479,12 @@ Variable | Type | Use | Default
 `ABBR_DRY_RUN` | integer | If non-zero, use dry run mode without passing `--dry-run` | 0
 `ABBR_FORCE` | integer | If non-zero, use force mode without passing `--force` (see [`add`](#add)) | 0
 `ABBR_QUIET` | integer | If non-zero, use quiet mode without passing `--quiet` | 0
-`ABBR_TMPDIR` | String | Path to the directory temporary files are stored in. _Ends in `/`_ | `${TMPDIR:-/tmp/}zsh-abbr/}`
-`ABBR_USER_ABBREVIATIONS_FILE` | String | Path to the file user abbreviation are stored in (see [Storage and manual editing](#storage-and-manual-editing)) | `$HOME/.config/zsh/abbreviations`
+`ABBR_TMPDIR` | String | Path to the directory temporary files are stored in. _Ends in `/`_ | `${TMPDIR:-/tmp/}zsh-abbr/}` *
+`ABBR_USER_ABBREVIATIONS_FILE` | String | Path to the file user abbreviation are stored in (see [Storage and manual editing](#storage-and-manual-editing)) | `$HOME/.config/zsh/abbreviations` **
+
+\* If changing this, you may want to delete the default directory.
+
+\** If changing this, you may want to delete the default file.
 
 ### Exported variables
 
@@ -496,25 +500,13 @@ Each element in `ABBR_GLOBAL_SESSION_ABBREVIATIONS`, `ABBR_GLOBAL_USER_ABBREVIAT
 
 ### Storage and manual editing
 
-User abbreviations live in a plain text file which you can edit directly, share, keep in version control, etc. Abbreviations in this file are loaded when each new session is opened; non-`abbr` commands will be ignored excised from the file.
+User abbreviations live in a plain text file which you can edit directly, share, keep in version control, etc. Abbreviations in this file are loaded when each new session is opened; non-`abbr` commands will be ignored and then excised from the file.
 
-When zsh-abbr updates the user abbreviations storage file, the lines are alphabetized and global user abbreviations are moved to the top of the file.
+zsh-abbr automatically keeps the user abbreviations storage file alphabetized, with all global user abbreviations before the first regular user abbreviation.
 
-Run `abbr load` to load changes made directly to the user abbreviation file (that is, changes made with a text editor or `echo` as opposed to changes made with `abbr (add|erase|import…|rename)`) into the current session.
+Every time an `abbr` command is run, the session's updates its user abbreviatons with the latest from the user abbreviations file. This should add no appreciable time, but you prefer it can be turned off by setting `ABBR_AUTOLOAD=0`.
 
-`abbr load` is run automatically at the start of every other `abbr` command (`abbr (add|erase|import…|rename)`, not every expansion). This should add no appreciable time (clocked at 0.02ms per saved abbreviation), but it can be turned off by setting `ABBR_AUTOLOAD=0`.
-
-The user abbreviations storage file's default location is `${HOME}/.config/zsh/abbreviations`. Customize this by setting the `ABBR_USER_ABBREVIATIONS_FILE` variable in your `.zshrc` before loading zsh-abbr:
-
-```shell
-% cat ~/.zshrc
-# -- snip --
-ABBR_USER_ABBREVIATIONS_FILE="path/to/my/user/abbreviations"
-# -- snip --
-# load zsh-abbr
-```
-
-The default file is created the first time zsh-abbr is run. If you customize the path, you may want to delete the default file or even the default zsh-abbr config directory.
+To refresh the user abbreviations from the user abbreviation, run `abbr load` (or any other `abbr` command).
 
 ### Bindings
 
@@ -526,7 +518,7 @@ By default
 
 (In incremental search mode, <kbd>Space</kbd> is a normal space and <kbd>Ctrl</kbd><kbd>Space</kbd> expands abbreviations.)
 
-If you want to set your own bindings, set `ABBR_DEFAULT_BINDINGS` to `0` in your `.zshrc` before loading zsh-abbr. In the following example, expansion is bound to <kbd>Ctrl</kbd><kbd>a</kbd>:
+Custom bindings can be set in your `.zshrc` before loading zsh-abbr. In the following example, expansion is bound to <kbd>Ctrl</kbd><kbd>a</kbd>:
 
 ```shell
 % cat ~/.zshrc
@@ -553,7 +545,7 @@ Delete the session data storage directory
 % rm -rf $ABBR_TMPDIR
 ```
 
-To delete the user abbreviations file,
+If you want to delete the user abbreviations file,
 
 ```shell
 % rm $ABBR_USER_ABBREVIATIONS_FILE
