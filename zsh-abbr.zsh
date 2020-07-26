@@ -8,24 +8,24 @@
 # -------------
 
 # Should `abbr-load` run before every `abbr` command? (default true)
-ABBR_AUTOLOAD=${ABBR_AUTOLOAD:-1}
+typeset -i ABBR_AUTOLOAD=${ABBR_AUTOLOAD:-1}
 
 # Log debugging messages?
-ABBR_DEBUG=${ABBR_DEBUG:-0}
+typeset -i ABBR_DEBUG=${ABBR_DEBUG:-0}
 
 # Whether to add default bindings (expand on SPACE, expand and accept on ENTER,
 # add CTRL for normal SPACE/ENTER; in incremental search mode expand on CTRL+SPACE)
 # (default true)
-ABBR_DEFAULT_BINDINGS=${ABBR_DEFAULT_BINDINGS:-1}
+typeset -i ABBR_DEFAULT_BINDINGS=${ABBR_DEFAULT_BINDINGS:-1}
 
 # Behave as if `--dry-run` was passed? (default false)
-ABBR_DRY_RUN=${ABBR_DRY_RUN:-0}
+typeset -i ABBR_DRY_RUN=${ABBR_DRY_RUN:-0}
 
 # Behave as if `--force` was passed? (default false)
-ABBR_FORCE=${ABBR_FORCE:-0}
+typeset -i ABBR_FORCE=${ABBR_FORCE:-0}
 
 # Behave as if `--quiet` was passed? (default false)
-ABBR_QUIET=${ABBR_QUIET:-0}
+typeset -i ABBR_QUIET=${ABBR_QUIET:-0}
 
 # File abbreviations are stored in
 ABBR_USER_ABBREVIATIONS_FILE=${ABBR_USER_ABBREVIATIONS_FILE:-$HOME/.config/zsh/abbreviations}
@@ -37,9 +37,10 @@ _abbr() {
   emulate -LR zsh
 
   {
-    local action dry_run error_color force has_error number_opts opt logs \
-          output quiet release_date scope should_exit success_color \
-          type version warn_color
+    local action error_color opt logs output release_date scope \
+      success_color type version warn_color
+    local -i dry_run force has_error number_opts quiet should_exit
+
     dry_run=$ABBR_DRY_RUN
     force=$ABBR_FORCE
     number_opts=0
@@ -429,7 +430,7 @@ _abbr() {
       local cmd
       local expansion
       local job_group
-      local success
+      local -a success
       local verb_phrase
 
       abbreviation=$1
@@ -886,12 +887,12 @@ _abbr() {
       fi
     fi
 
-    if (( dry_run )); then
+    if (( dry_run && ! ABBR_TESTING )); then
       output+=$'\n'
       output+="${warn_color}Dry run. Changes not saved.%f"
     fi
 
-    if [[ -n $has_error ]]; then
+    if (( $has_error )); then
       [[ -n $output ]] && _abbr_print -P - $output >&2
       return 1
     else
@@ -1141,7 +1142,7 @@ _abbr_load_user_abbreviations() {
       local abbreviation
       local arguments
       local program
-      local shwordsplit_on
+      local -i shwordsplit_on
       typeset -a user_abbreviations
 
       shwordsplit_on=0
@@ -1238,7 +1239,7 @@ _abbr_expand_widget() {
   local expansion
   local word
   local words
-  local word_count
+  local -i word_count
 
   words=(${(z)LBUFFER})
   word=$words[-1]
