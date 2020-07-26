@@ -775,15 +775,12 @@ _abbr() {
           ;;
         "import-aliases")
           _abbr:util_set_once action import_aliases
-          importing=1
           ;;
         "import-fish")
           _abbr:util_set_once action import_fish
-          importing=1
           ;;
         "import-git-aliases")
           _abbr:util_set_once action import_git_aliases
-          importing=1
           ;;
         "list")
           _abbr:util_set_once action list
