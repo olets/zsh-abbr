@@ -1198,35 +1198,35 @@ _abbr_wrap_external_commands() {
   emulate -LR zsh
 
   _abbr_alias() {
-    \builtin \alias $@
+    'builtin' 'alias' $@
   }
 
   _abbr_cat() {
-    \command \cat $@
+    'command' 'cat' $@
   }
 
   _abbr_command() {
-    \builtin \command $@
+    'builtin' 'command' $@
   }
 
   _abbr_echo() {
-    \builtin \echo $@
+    'builtin' 'echo' $@
   }
 
   _abbr_less() {
-    \command \less $@
+    'command' 'less' $@
   }
 
   _abbr_ls() {
-    \command \ls $@
+    'command' 'ls' $@
   }
 
   _abbr_man() {
-    \command \man $@
+    'command' 'man' $@
   }
 
   _abbr_print() {
-    \builtin \print $@
+    'builtin' 'print' $@
   }
 }
 
