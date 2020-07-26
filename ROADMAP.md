@@ -7,20 +7,14 @@ Key:
 
 ---
 
-## ASAP
+_Currently considered feature complete._
 
 - [ ] Identify someone who contributors can contact if olets violates the code of conduct (note: not looking for volunteers)
 - [ ] Update code of conduct with their information
+- [ ] Tests for list commands
+- [ ] Test for export command
 
-## 4.0
+## Maybe?
 
-- [x] drop the `_zsh_` and `ZSH_` prefixes from functions and vars
-- [x] stop cleaning up the deprecated temp files
-- [x] drop support for deprecated subcommands
-
-## Maybes
-
-- [ ] Completion
+- [ ] completion
 - [ ] highlighting
-- [ ] maybe split abbr into its own file, and autoload it?
-- [ ] maybe add to Snapcraft?

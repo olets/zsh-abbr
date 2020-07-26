@@ -1,3 +1,25 @@
+# [v4.0.0](https://github.com/olets/zsh-abbr/compare/v3.3.4...v4.0.0) (2020-07-26)
+
+
+### Bug Fixes
+
+* **dry run:** message appended to log ([4dd118f](https://github.com/olets/zsh-abbr/commit/4dd118f5d5aadf67fd45a55d7f149c2203a97efa))
+
+
+### Features
+
+* **abbreviations arrays:** prefix var names with ABBR_ ([fef023b](https://github.com/olets/zsh-abbr/commit/fef023b9a626d27a417ae272ece371aef4eae396))
+* **color:** do not load module if NO_COLOR is set ([25264ae](https://github.com/olets/zsh-abbr/commit/25264ae99b5d8254aac08887109d7553358bb31f))
+* **export aliases:** drop support for output path arg ([35b9274](https://github.com/olets/zsh-abbr/commit/35b92744ab244e03d17751d9b330884f5e8de8c1))
+* **list, list-abbreviations:** swap; list is default ([39fd84d](https://github.com/olets/zsh-abbr/commit/39fd84d3863911242141993edadb10a07e446281))
+* **quiet:** does not silence dry run message ([0a4d5b6](https://github.com/olets/zsh-abbr/commit/0a4d5b66df109c00279c835b48c8616aebd2902b))
+* **subcommands:** drop support and messages for deprecateds ([f1b0ce7](https://github.com/olets/zsh-abbr/commit/f1b0ce705d1323b6ea62a714cb319408fa694a07))
+* **temp files:** new global var ABBR_TMPDIR ([2fa0e88](https://github.com/olets/zsh-abbr/commit/2fa0e88404a721e589fbc89d66719f490188e718))
+* **temp files:** no longer clean up v<3.2 temp files ([f15ab53](https://github.com/olets/zsh-abbr/commit/f15ab53a6a88442210f49d08b6a6539dd7babb1b))
+* **variables, functions:** drop support for 'zsh_' prefix... ([7557ef4](https://github.com/olets/zsh-abbr/commit/7557ef44b2eb9fae951241146b17305b2319b4e5))
+
+
+
 # [v.3.3.4](https://github.com/olets/zsh-abbr/compare/v3.3.3...v) (2020-07-26)
 
 Deprecates `ABBR_USER_PATH` in favor of `ABBR_USER_ABBREVIATIONS_FILE`.
