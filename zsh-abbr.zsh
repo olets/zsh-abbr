@@ -312,10 +312,10 @@ _abbr() {
         value=${git_alias#* }
 
         if [[ ${value[1]} == '!' ]]; then
-          verb_phrase="was not imported"
-          ((dry_run)) && verb_phrase="would not be imported"
+          verb_phrase="Did not"
+          ((dry_run)) && verb_phrase="Would not"
 
-          _abbr:util_warn "The Git alias \`$key\` $verb_phrase because its expansion is a function"
+          _abbr:util_warn "$verb_phrase import the Git alias \`$key\` because its expansion is a function"
         else
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
             key=${(q)key}
@@ -510,10 +510,10 @@ _abbr() {
 
         _abbr:util_log "${success_color}$verb_phrase%f the ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
       else
-        verb_phrase="was not added"
-        (( dry_run )) && verb_phrase="would not be added"
+        verb_phrase="Did not"
+        (( dry_run )) && verb_phrase="Would not"
 
-        _abbr:util_error "The ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` $verb_phrase because it already exists"
+        _abbr:util_error "$verb_phrase add the ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` because it already exists"
       fi
     }
 
@@ -587,10 +587,10 @@ _abbr() {
 
             _abbr:util_log "\`$abbreviation\` $verb_phrase as an abbreviation"
           else
-            verb_phrase="was not added"
-            (( dry_run )) && verb_phrase="would not be added"
+            verb_phrase="Did not"
+            (( dry_run )) && verb_phrase="Would not"
 
-            _abbr:util_warn "The abbreviation \`$abbreviation\` $verb_phrase because a command with the same name exists"
+            _abbr:util_warn "$verb_phrase add the abbreviation \`$abbreviation\` because a command with the same name exists"
             return 1
           fi
         fi
