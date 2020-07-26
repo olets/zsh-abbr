@@ -1,7 +1,7 @@
 abbr_quiet_saved=$ABBR_QUIET
 ABBR_QUIET=1
-ABBR_USER_PATH=${0:A:h}/abbreviations.$RANDOM
-touch $ABBR_USER_PATH
+ABBR_USER_ABBREVIATIONS_FILE=${0:A:h}/abbreviations.$RANDOM
+touch $ABBR_USER_ABBREVIATIONS_FILE
 source ${0:A:h}/../zsh-abbr.zsh
 pass=0
 
@@ -208,8 +208,8 @@ echo $message
 abbr erase $abbreviation
 echo
 unalias $abbreviation
-rm $ABBR_USER_PATH
-touch $ABBR_USER_PATH
+rm $ABBR_USER_ABBREVIATIONS_FILE
+touch $ABBR_USER_ABBREVIATIONS_FILE
 source ${0:A:h}/../zsh-abbr.zsh
 
 # Can import a multi-word alias
@@ -229,8 +229,8 @@ echo $message
 abbr erase $abbreviation
 echo
 unalias $abbreviation
-rm $ABBR_USER_PATH
-touch $ABBR_USER_PATH
+rm $ABBR_USER_ABBREVIATIONS_FILE
+touch $ABBR_USER_ABBREVIATIONS_FILE
 source ${0:A:h}/../zsh-abbr.zsh
 
 # Can import a double-quoted alias with escaped double quotation marks
@@ -250,8 +250,8 @@ echo $message
 abbr erase $abbreviation
 echo
 unalias $abbreviation
-rm $ABBR_USER_PATH
-touch $ABBR_USER_PATH
+rm $ABBR_USER_ABBREVIATIONS_FILE
+touch $ABBR_USER_ABBREVIATIONS_FILE
 source ${0:A:h}/../zsh-abbr.zsh
 
 # Can import a single-quoted alias with double quotation marks
@@ -271,8 +271,8 @@ echo $message
 abbr erase $abbreviation
 echo
 unalias $abbreviation
-rm $ABBR_USER_PATH
-touch $ABBR_USER_PATH
+rm $ABBR_USER_ABBREVIATIONS_FILE
+touch $ABBR_USER_ABBREVIATIONS_FILE
 source ${0:A:h}/../zsh-abbr.zsh
 
 # Can import a double-quoted alias with single quotation marks
@@ -296,7 +296,7 @@ unalias $abbreviation
 # Can delete a user abbreviation from outside abbr without unexpected retention
 message="abbreviation deleted externally cannot be expanded"
 abbr add $test_abbr
-echo '' > $ABBR_USER_PATH
+echo '' > $ABBR_USER_ABBREVIATIONS_FILE
 result=( ${(f)"$(abbr expand $test_abbr_abbreviation)"} )
 if [[ ${#result} == 0 ]]; then
 	message="$fg[green]PASS$reset_color $message"
@@ -310,7 +310,7 @@ echo
 
 # Can add a user abbreviation from outside abbr without data loss
 message="abbreviation added externally can be expanded"
-echo "abbr add $test_abbr_abbreviation='$test_abbr_expansion'" > $ABBR_USER_PATH
+echo "abbr add $test_abbr_abbreviation='$test_abbr_expansion'" > $ABBR_USER_ABBREVIATIONS_FILE
 result=( ${(f)"$(abbr expand $test_abbr_abbreviation)"} )
 if [[ $result[1] == $test_abbr_expansion ]]; then
 	message="$fg[green]PASS$reset_color $message"
@@ -322,7 +322,7 @@ echo $message
 abbr erase $test_abbr_abbreviation
 echo
 
-rm $ABBR_USER_PATH
+rm $ABBR_USER_ABBREVIATIONS_FILE
 if (( pass )); then
 	echo >&1
 	# exit 0
