@@ -463,17 +463,17 @@ Abbreviations can also be manually renamed in the `ABBR_USER_ABBREVIATIONS_FILE`
 
 ### Configuration variables
 
+In addition to the following, setting `NO_COLOR` (regardless of its value) will disable color output. See https://no-color.org/.
+
 Variable | Type | Use | Default
 ---|---|---|---
-`ABBR_AUTOLOAD` | integer Boolean | Automatically accounting for updates to the user abbrevations file (see [Storage and manual editing](#storage-and-manual-editing)) | 1
-`ABBR_DEBUG` | integer Boolean | Print debugging messages | 0
-`ABBR_DEFAULT_BINDINGS` | integer Boolean | Add the default bindings (see [Bindings](#bindings)) | 1
-`ABBR_DRY_RUN` | integer Boolean | Use dry run mode without passing `--dry-run` | 0
-`ABBR_FORCE` | integer Boolean | Use force mode without passing `--force` (see [`add`](#add)) | 0
-`ABBR_QUIET` | integer Boolean | Use quiet mode without passing `--quiet` | 0
+`ABBR_AUTOLOAD` | integer Boolean | If non-zero, automatically account for updates to the user abbrevations file (see [Storage and manual editing](#storage-and-manual-editing)) | 1
+`ABBR_DEBUG` | integer Boolean | If non-zero, print debugging messages | 0
+`ABBR_DEFAULT_BINDINGS` | integer Boolean | If non-zero, add the default bindings (see [Bindings](#bindings)) | 1
+`ABBR_DRY_RUN` | integer Boolean | If non-zero, use dry run mode without passing `--dry-run` | 0
+`ABBR_FORCE` | integer Boolean | If non-zero, use force mode without passing `--force` (see [`add`](#add)) | 0
+`ABBR_QUIET` | integer Boolean | If non-zero, use quiet mode without passing `--quiet` | 0
 `ABBR_USER_ABBREVIATIONS_FILE` | path string | The location of the user abbreviation file (see [Storage and manual editing](#storage-and-manual-editing)) | `$HOME/.config/zsh/abbreviations`
-
-In addition, setting `NO_COLOR` (regardless of its value) will disable color output. See https://no-color.org/.
 
 ### Storage and manual editing
 
