@@ -475,6 +475,18 @@ Variable | Type | Use | Default
 `ABBR_QUIET` | integer Boolean | If non-zero, use quiet mode without passing `--quiet` | 0
 `ABBR_USER_ABBREVIATIONS_FILE` | path string | The location of the user abbreviation file (see [Storage and manual editing](#storage-and-manual-editing)) | `$HOME/.config/zsh/abbreviations`
 
+### Exported variables
+
+Variable | Type | Value
+---|---|---
+`ABBR_GLOBAL_SESSION_ABBREVIATIONS` | Associative array | The global session abbreviations
+`ABBR_GLOBAL_USER_ABBREVIATIONS` | Associative array | The global user abbreviations
+`ABBR_LOADING_USER_ABBREVIATIONS` | Integer Boolean | Set to `1` when the interactive shell is refreshing its list of user abbreviations, otherwise not set
+`ABBR_REGULAR_SESSION_ABBREVIATIONS` | Associative array | The regular session abbreviations
+`ABBR_REGULAR_USER_ABBREVIATIONS` | Associative array | The regular user abbreviations
+
+Each element in abbreviations associative arrays has the form `ABBREVIATION=EXPANSION`, and the expansion value is quoted. Scripters will probably want to remove one level of quotes, using the [Q modifier](http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers) (e.g. `for v in ${(Qv)ABBR_REGULAR_USER_ABBREVIATIONS}...`)
+
 ### Storage and manual editing
 
 User abbreviations live in a plain text file which you can edit directly, share, keep in version control, etc. Abbreviations in this file are loaded when each new session is opened; non-`abbr` commands will be ignored excised from the file.
