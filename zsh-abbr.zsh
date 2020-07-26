@@ -331,6 +331,21 @@ _abbr() {
     _abbr:list() {
       _abbr_debugger
 
+      local -i include_expansion
+
+      if [[ $# > 0 ]]; then
+        _abbr:util_error "abbr list definitions: Unexpected argument"
+        return
+      fi
+
+      include_expansion=1
+
+      _abbr:util_list $include_expansion
+    }
+
+    _abbr:list_abbreviations() {
+      _abbr_debugger
+
       if [[ $# > 0 ]]; then
         _abbr:util_error "abbr list: Unexpected argument"
         return
@@ -356,21 +371,6 @@ _abbr() {
       user_prefix=abbr
 
       _abbr:util_list $include_expansion $session_prefix $user_prefix
-    }
-
-    _abbr:list_abbreviations() {
-      _abbr_debugger
-
-      local -i include_expansion
-
-      if [[ $# > 0 ]]; then
-        _abbr:util_error "abbr list definitions: Unexpected argument"
-        return
-      fi
-
-      include_expansion=1
-
-      _abbr:util_list $include_expansion
     }
 
     _abbr:print_version() {
@@ -851,7 +851,7 @@ _abbr() {
         _abbr:add $@
       else
         # default if no argument is provided
-        _abbr:list_abbreviations $@
+        _abbr:list $@
       fi
     fi
 

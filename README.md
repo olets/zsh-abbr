@@ -153,7 +153,7 @@ Default is regular.
 
 zsh-abbr has options to add, rename, and erase abbreviations; to add abbreviations for every alias or Git alias; to list the available abbreviations with or without their expansions; and to create aliases from abbreviations.
 
-`abbr` with no arguments is shorthand for `abbr list-commands`. `abbr ...` with arguments is shorthand for `abbr add ...`.
+`abbr` with no arguments is shorthand for `abbr list`. `abbr ...` with arguments is shorthand for `abbr add ...`.
 
 #### `add`
 
@@ -360,22 +360,30 @@ Use `--dry-run` to see what would result, without making any actual changes.
 abbr [list] [<SCOPE>] [<TYPE>]
 ```
 
-List the abbreviations only, like fish's `abbr -l`. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
+List the abbreviations with their expansions, like zsh's `alias`. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
 
 ```shell
 % abbr a=apple
 % abbr -g b=ball
 % abbr -S c=cat
 % abbr -S -g d=dog
-% abbr # or abbr list-abbreviations
+% abbr list
 a="apple"
 b="ball"
 c="cat"
 d="dog"
 % source ~/.zshrc
-% abbr # or abbr list-abbreviations
+% abbr list
 a="apple"
 b="ball"
+```
+
+`list` is the default when no additional arguments are passed; it does not need to be made explicit:
+
+```shell
+% abbr a=apple
+% abbr
+a="apple"
 ```
 
 #### `list-abbreviations`
@@ -384,7 +392,7 @@ b="ball"
 abbr (list-abbreviations | l) [<SCOPE>] [<TYPE>]
 ```
 
-List the abbreviations with their expansions, like zsh's `alias`. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
+List the abbreviations only, like fish's `abbr -l`. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
 
 ```shell
 % abbr a=apple
