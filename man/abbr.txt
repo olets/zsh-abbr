@@ -203,8 +203,8 @@ Configuration
               0)
 
 
-       o      ABBR_USER_PATH  File  abbreviations  are  stored   in   (default
-              ${HOME}/.config/zsh/abbreviations)
+       o      ABBR_USER_ABBREVIATIONS_FILE File abbreviations  are  stored  in
+              (default ${HOME}/.config/zsh/abbreviations)
 
 
        o      NO_COLOR  If  `NO_COLOR`  is  set, color output is disabled. See
@@ -262,4 +262,4 @@ AUTHORS
 
 
 
-abbr 3.3.3                       June 14 2020                      ZSH-ABBR(1)
+abbr 3.3.4                       July 26 2020                      ZSH-ABBR(1)

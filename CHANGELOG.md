@@ -1,3 +1,7 @@
+# [v.3.3.4](https://github.com/olets/zsh-abbr/compare/v3.3.3...v) (2020-07-26)
+
+Deprecates `ABBR_USER_PATH` in favor of `ABBR_USER_ABBREVIATIONS_FILE`.
+
 # [v3.3.3](https://github.com/olets/zsh-abbr/compare/v3.3.2...v3.3.3) (2020-06-14)
 
 Fix a session abbreviations bug, support NO_COLOR, and polish deprecation warnings.
