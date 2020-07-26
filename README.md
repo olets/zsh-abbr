@@ -126,32 +126,32 @@ Clone this repo and add `source path/to/zsh-abbr.zsh` to your `.zshrc`.
 ## Usage
 
 ```shell
-abbr [<SCOPE>] [<TYPE>] <OPTION> [<ARGS>]
+abbr [<SCOPE>] [<TYPE>] <COMMAND> [<ARGS>]
 ```
 
-Options which make changes can be passed `--dry-run`.
+Commands which make changes can be passed `--dry-run`.
 
-Options which have output can be passed `--quiet`.
+Commands which have output can be passed `--quiet`.
 
-`<OPTION> [<ARGS>]` must be last.
+`<COMMAND> [<ARGS>]` must be last.
 
-### Scope
+### Scopes
 
-A given abbreviation can be limited to the current zsh session (i.e. the current terminal) —these are called *session* abbreviations— or to all terminals —these are called *user* abbreviations. Select options take **scope** as an argument.
+A given abbreviation can be limited to the current zsh session (i.e. the current terminal) —these are called *session* abbreviations— or to all terminals —these are called *user* abbreviations. Select commands take **scope** as an argument.
 
 Newly added user abbreviations are available to all open sessions immediately.
 
 Default is user.
 
-### Type
+### Types
 
-Regular abbreviations match the word at the start of the command line, and global abbreviations match any word on the line. Select options take **type** as an argument.
+Regular abbreviations match the word at the start of the command line, and global abbreviations match any word on the line. Select commands take **type** as an argument.
 
 Default is regular.
 
-### Options
+### Commands
 
-zsh-abbr has options to add, rename, and erase abbreviations; to add abbreviations for every alias or Git alias; to list the available abbreviations with or without their expansions; and to create aliases from abbreviations.
+zsh-abbr has commands to add, rename, and erase abbreviations; to add abbreviations for every alias or Git alias; to list the available abbreviations with or without their expansions; and to create aliases from abbreviations.
 
 `abbr` with no arguments is shorthand for `abbr list`. `abbr ...` with arguments is shorthand for `abbr add ...`.
 
@@ -173,7 +173,7 @@ To add a global abbreviation, use the **--global** flag. Otherwise the new abbre
 % gcm[Enter] # expands and accepts git checkout master
 ```
 
-`add` is the default option, and does not need to be explicit:
+`add` is the default command, and does not need to be explicit:
 
 ```shell
 % abbr gco='git checkout'

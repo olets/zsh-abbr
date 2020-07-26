@@ -51,8 +51,8 @@ DESCRIPTION
        runs automatically before each of the above commands.
 
 
-Options
-       The following options are available:
+Commands
+       The following commands are available:
 
 
        o      add abbreviation expansion or a abbreviation expansion
@@ -133,7 +133,7 @@ Options
               Show the current version.
 
 
-       All options except for clear-session and expand can take a scope:
+       All commands except for clear-session and expand can take a scope:
 
               o      --session or -S
 
