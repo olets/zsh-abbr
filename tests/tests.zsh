@@ -3,9 +3,11 @@ ABBR_QUIET=1
 ABBR_USER_ABBREVIATIONS_FILE=${0:A:h}/abbreviations.$RANDOM
 touch $ABBR_USER_ABBREVIATIONS_FILE
 source ${0:A:h}/../zsh-abbr.zsh
-dependencies=
 
+dependencies=
 typeset -a result
+typeset -i failures=0
+typeset -i successes=0
 
 test_abbr_abbreviation="zsh_abbr_test"
 test_abbr_expansion="zsh abbr test"
@@ -15,8 +17,10 @@ dependencies="add"
 abbr add $test_abbr_abbreviation=$test_abbr_expansion
 abbr erase $test_abbr_abbreviation
 if [[ ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ]]; then
+	(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+	(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -26,8 +30,10 @@ test="Can add an abbreviation with the add flag"
 dependencies="erase"
 abbr add $test_abbr_abbreviation=$test_abbr_expansion
 if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation]} == $test_abbr_expansion ]]; then
+	(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+	(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -38,8 +44,10 @@ test="Can add a global abbreviation with the add flag"
 dependencies="erase"
 abbr add -g $test_abbr_abbreviation=$test_abbr_expansion
 if [[ ${(Q)ABBR_GLOBAL_USER_ABBREVIATIONS[$test_abbr_abbreviation]} == $test_abbr_expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -50,8 +58,10 @@ test="Can add a regular session abbreviation with the add flag"
 dependencies="erase"
 abbr add -S $test_abbr_abbreviation=$test_abbr_expansion
 if [[ ${(Q)ABBR_REGULAR_SESSION_ABBREVIATIONS[$test_abbr_abbreviation]} == $test_abbr_expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -62,8 +72,10 @@ test="Can add a global session abbreviation with the add flag"
 dependencies="erase"
 abbr add -S -g $test_abbr_abbreviation=$test_abbr_expansion
 if [[ ${(Q)ABBR_GLOBAL_SESSION_ABBREVIATIONS[$test_abbr_abbreviation]} == $test_abbr_expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -74,8 +86,10 @@ test="Can add an abbreviation without the add flag"
 dependencies="erase"
 abbr $test_abbr_abbreviation=$test_abbr_expansion
 if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation]} == $test_abbr_expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -87,8 +101,10 @@ dependencies=
 abbr -S $test_abbr_abbreviation=$test_abbr_expansion
 abbr clear-session
 if [[ ${#ABBR_REGULAR_SESSION_ABBREVIATIONS} == 0 ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -98,8 +114,10 @@ test="Can expand an abbreviation in a script"
 dependencies="erase"
 abbr $test_abbr_abbreviation=$test_abbr_expansion
 if [[ $(abbr expand $test_abbr_abbreviation) == $test_abbr_expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -112,9 +130,11 @@ abbr $test_abbr_abbreviation=$test_abbr_expansion
 abbr rename $test_abbr_abbreviation ${test_abbr_abbreviation}_new
 if ! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation]} )) && \
 	[[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[${test_abbr_abbreviation}_new]} == $test_abbr_expansion ]]; then
+(( successes++ ))
 
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -127,8 +147,10 @@ expansion="b'c'd"
 dependencies="erase"
 abbr $abbreviation=$expansion
 if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -141,8 +163,10 @@ expansion='b"c"d'
 dependencies="erase"
 abbr $abbreviation=$expansion
 if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -155,8 +179,10 @@ expansion='b'cd
 dependencies="erase"
 abbr $abbreviation=$expansion
 if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -169,8 +195,10 @@ expansion=b'c'd
 dependencies="erase"
 abbr $abbreviation=$expansion
 if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -183,8 +211,10 @@ expansion="b"cd
 dependencies="erase"
 abbr $abbreviation=$expansion
 if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -197,8 +227,10 @@ expansion=b"c"d
 dependencies="erase"
 abbr $abbreviation=$expansion
 if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -212,8 +244,10 @@ dependencies="erase"
 alias $abbreviation=$expansion
 abbr import-aliases
 if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -231,8 +265,10 @@ dependencies="erase"
 alias $abbreviation=$expansion
 abbr import-aliases
 if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -250,8 +286,10 @@ dependencies="erase"
 alias $abbreviation=$expansion
 abbr import-aliases
 if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -269,8 +307,10 @@ dependencies="erase"
 alias $abbreviation=$expansion
 abbr import-aliases
 if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -288,8 +328,10 @@ expansion="a 'b'"
 alias $abbreviation=$expansion
 abbr import-aliases
 if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
@@ -302,8 +344,10 @@ dependencies=
 abbr add $test_abbr_abbreviation=$test_abbr_expansion
 echo '' > $ABBR_USER_ABBREVIATIONS_FILE
 if [[ -z $(abbr expand $test_abbr_abbreviation) ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	echo $result[1]
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
@@ -314,13 +358,19 @@ test="Can add a user abbreviation from outside abbr without data loss"
 dependencies="erase"
 echo "abbr add $test_abbr_abbreviation='$test_abbr_expansion'" > $ABBR_USER_ABBREVIATIONS_FILE
 if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation]} == $test_abbr_expansion ]]; then
+(( successes++ ))
 	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 else
+(( failures++ ))
 	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
 fi
 echo $message
 abbr erase $test_abbr_abbreviation
 echo
+
+echo $(( successes + failures )) tests run
+echo $successes tests succeeded
+echo $failures test failed
 
 rm $ABBR_USER_ABBREVIATIONS_FILE
 ABBR_QUIET=$abbr_quiet_saved
