@@ -52,9 +52,9 @@ _abbr() {
     version="zsh-abbr version 3.3.4"
 
     if ! (( ${+NO_COLOR} )); then
-      error_color="red"
-      success_color="green"
-      warn_color="yellow"
+      error_color="$fg[red]"
+      success_color="$fg[green]"
+      warn_color="$fg[yellow]"
     fi
 
     if (( ABBR_LOADING_USER_ABBREVIATIONS )); then
@@ -173,17 +173,15 @@ _abbr() {
           fi
         fi
 
-        _abbr:util_log "${success_color:+%F{$success_color}}$verb_phrase%f ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
+        _abbr:util_log "$success_color$verb_phrase$reset_color ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
       else
         verb_phrase="Did not erase"
         (( dry_run )) && verb_phrase="Would not erase"
 
-        message="${error_color:+%F{$error_color}}$verb_phrase%f abbreviation \`$abbreviation\`. Please specify one of"
-        message=$'\n'
+        message="$error_color$verb_phrase$reset_color abbreviation \`$abbreviation\`. Please specify one of\\n"
 
         for abbreviations_set in ${abbreviations_sets[@]}; do
-          message+="  ${${${abbreviations_set:l}//_/ }//abbreviations/}"
-          message=$'\n'
+          message+="  ${${${abbreviations_set:l}//_/ }//abbreviations/}\\n"
         done
 
         _abbr:util_error $message
@@ -506,7 +504,7 @@ _abbr() {
         verb_phrase="Added"
         (( dry_run )) && verb_phrase="Would add"
 
-        _abbr:util_log "${success_color:+%F{$success_color}}$verb_phrase%f the ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
+        _abbr:util_log "$success_color$verb_phrase$reset_color the ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
       else
         verb_phrase="Did not"
         (( dry_run )) && verb_phrase="Would not"
@@ -547,7 +545,7 @@ _abbr() {
       _abbr_debugger
 
       has_error=1
-      logs+=${logs:+$'\n'}"${error_color:+%F{$error_color}}$@%f"
+      logs+="${logs:+\\n}$error_color$@$reset_color"
       should_exit=1
     }
 
@@ -663,13 +661,13 @@ _abbr() {
     _abbr:util_log() {
       _abbr_debugger
 
-      logs+=${logs:+'\n'}"$1"
+      logs+="${logs:+\\n}$1"
     }
 
     _abbr:util_print() {
       _abbr_debugger
 
-      output+=${output:+'\n'}"$1"
+      output+="${output:+\\n}$1"
     }
 
     _abbr:util_set_once() {
@@ -723,7 +721,7 @@ _abbr() {
     _abbr:util_warn() {
       _abbr_debugger
 
-      logs+=${logs:+'\n'}"${warn_color:+%F{$warn_color}}$@%f"
+      logs+="${logs:+\\n}$warn_color$@$reset_color"
     }
 
     for opt in "$@"; do
@@ -857,7 +855,7 @@ _abbr() {
 
     if ! (( quiet )); then
       if [[ -n $logs ]]; then
-        output=$logs${output:+$'\n'$output}
+        output=$logs${output:+\\n$output}
       fi
     fi
 
@@ -867,7 +865,7 @@ _abbr() {
     else
       if (( dry_run && ! ABBR_TESTING )); then
         output+=$'\n'
-        output+="${warn_color}Dry run. Changes not saved.%f"
+        output+="\\n${warn_color}Dry run. Changes not saved.$reset_color"
       fi
 
       [[ -n $output ]] && _abbr_print -P - $output >&1
