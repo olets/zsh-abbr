@@ -1115,6 +1115,8 @@ _abbr_load_user_abbreviations() {
       local -i shwordsplit_on
       typeset -a user_abbreviations
 
+      typeset -gi ABBR_LOADING_USER_ABBREVIATIONS
+
       shwordsplit_on=0
 
       if [[ $options[shwordsplit] = on ]]; then
@@ -1151,12 +1153,9 @@ _abbr_load_user_abbreviations() {
     }
 
     ABBR_LOADING_USER_ABBREVIATIONS=1
-
     _abbr_load_user_abbreviations:setup
     _abbr_load_user_abbreviations:load
-
-    ABBR_LOADING_USER_ABBREVIATIONS=0
-
+    unset ABBR_LOADING_USER_ABBREVIATIONS
     return
   } always {
     unfunction -m _abbr_load_user_abbreviations:setup
