@@ -865,15 +865,15 @@ _abbr() {
       fi
     fi
 
-    if (( dry_run && ! ABBR_TESTING )); then
-      output+=$'\n'
-      output+="${warn_color}Dry run. Changes not saved.%f"
-    fi
-
     if (( has_error )); then
       [[ -n $output ]] && _abbr_print -P - $output >&2
       return 1
     else
+      if (( dry_run && ! ABBR_TESTING )); then
+        output+=$'\n'
+        output+="${warn_color}Dry run. Changes not saved.%f"
+      fi
+
       [[ -n $output ]] && _abbr_print -P - $output >&1
       return 0
     fi
