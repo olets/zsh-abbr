@@ -126,20 +126,16 @@ Clone this repo and add `source path/to/zsh-abbr.zsh` to your `.zshrc`.
 ## Usage
 
 ```shell
-abbr <SCOPE> <OPTION> <ANY OPTION ARGUMENTS>
+abbr [<SCOPE>] [<TYPE>] <OPTION> [<ARGS>]
 ```
 
-or
+Options which make changes can be passed `--dry-run`.
 
-```shell
-abbr <OPTION> <SCOPE> <ANY OPTION ARGUMENTS>
-```
+Options which have output can be passed `--quiet`.
+
+`<OPTION> [<ARGS>]` must be last.
 
 ### Scope
-
-```shell
-[(--session | -S) | (--user | -U)]
-```
 
 A given abbreviation can be limited to the current zsh session (i.e. the current terminal) —these are called *session* abbreviations— or to all terminals —these are called *user* abbreviations. Select options take **scope** as an argument.
 
@@ -149,11 +145,7 @@ Default is user.
 
 ### Type
 
-```shell
-[(--global | -g) | (--regular | -r)]
-```
-
-zsh-abbr supports regular abbreviations, which match the word at the start of the command line, and global abbreviations, which match any word on the line. Select options take **type** as an argument.
+Regular abbreviations match the word at the start of the command line, and global abbreviations match any word on the line. Select options take **type** as an argument.
 
 Default is regular.
 
@@ -163,10 +155,10 @@ zsh-abbr has options to add, rename, and erase abbreviations; to add abbreviatio
 
 `abbr` with no arguments is shorthand for `abbr list-commands`. `abbr ...` with arguments is shorthand for `abbr add ...`.
 
-#### Add
+#### `add`
 
 ```shell
-abbr [(add | -a)] [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [--dry-run] [--quiet] [--force] ABBREVIATION=EXPANSION
+abbr [(add | -a)] [<SCOPE>] [<TYPE>] [--dry-run] [--quiet] [--force] ABBREVIATION=EXPANSION
 ```
 
 Add a new abbreviation.
@@ -181,16 +173,12 @@ To add a global abbreviation, use the **--global** flag. Otherwise the new abbre
 % gcm[Enter] # expands and accepts git checkout master
 ```
 
-The following are equivalent:
+`add` is the default option, and does not need to be explicit:
 
 ```shell
-% abbr add --user gcm='git checkout master'
-% abbr a --user gcm='git checkout master'
-% abbr --user gcm='git checkout master'
-% abbr add -U gcm='git checkout master'
-% abbr a -U gcm='git checkout master'
-% abbr -U gcm='git checkout master'
-% abbr gcm='git checkout master'
+% abbr gco='git checkout'
+% gco[Space] # expands as git checkout
+% gco[Enter] # expands and accepts git checkout
 ```
 
 The ABBREVIATION must be only one word long.
@@ -212,7 +200,7 @@ Will error rather than overwrite an existing abbreviation.
 
 Will warn if the abbreviation would replace an existing command. To add in spite of the warning, use `--force`.
 
-#### Clear Sessions
+#### `clear-session`
 
 ```shell
 abbr (clear-session | c)
@@ -220,10 +208,10 @@ abbr (clear-session | c)
 
 Erase all session abbreviations.
 
-#### Erase
+#### `erase`
 
 ```shell
-abbr (erase | e) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [--dry-run] [--quiet] ABBREVIATION
+abbr (erase | e) [<SCOPE>] [<TYPE>] [--dry-run] [--quiet] ABBREVIATION
 ```
 
 Erase an abbreviation.
@@ -242,7 +230,7 @@ Switched to branch 'master'
 
 User abbreviations can also be manually erased from the `ABBR_USER_ABBREVIATIONS_FILE`. See **Storage** below.
 
-#### Expand
+a `expand`
 
 ```shell
 abbr (expand | x) ABBREVIATION
@@ -256,10 +244,10 @@ Output the ABBREVIATION's EXPANSION.
 git checkout
 ```
 
-#### Export Aliases
+#### `export-aliases`
 
 ```shell
-abbr export-aliases [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [DESTINATION]
+abbr export-aliases [<SCOPE>] [<TYPE>] [DESTINATION]
 ```
 
 Export abbreviations as alias commands. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
@@ -283,9 +271,7 @@ alias g='git'
 alias g='git'
 ```
 
-#### Import
-
-##### Aliases
+#### `import-aliases`
 
 ```shell
 abbr import-aliases [<type>] [--dry-run] [--quiet]
@@ -307,40 +293,33 @@ Note that zsh-abbr does not lint the imported abbreviations. An effort is made t
 
 Use `--dry-run` to see what would result, without making any actual changes.
 
-##### Fish Abbreviations
+#### `import-fish`
 
 ```shell
-abbr import-fish [(--session | -S) | (--user | -U)] [(--global|-g)] FILE [--dry-run] [--quiet]
+abbr import-fish [<SCOPE>] FILE [--dry-run] [--quiet]
 ```
 
 Import fish abbr-syntax abbreviations (`abbreviation expansion` as compared to zsh abbr's `abbreviation=expansion`).
 
-To migrate from fish:
+In fish:
 
 ```shell
-fish
 abbr -s > file/to/save/fish/abbreviations/to
-zsh
-abbr [(--global|-g)] [SCOPE] import-fish file/to/save/fish/abbreviations/to
-# file is no longer needed, so feel free to
-# rm file/to/save/fish/abbreviations/to
 ```
 
-To migrate from zsh-abbr < 3:
+Then in zsh:
 
 ```shell
-zsh
-abbr [(--global|-g)] [SCOPE] ${HOME}/.config/zsh/universal-abbreviations
-# zsh-abbr > 2 no longer uses that file
-# If not customizing `ABBR_USER_ABBREVIATIONS_FILE=${HOME}/.config/zsh/universal-abbreviations` feel free to
-# rm ${HOME}/.config/zsh/universal-abbreviations
+abbr import-fish file/to/save/fish/abbreviations/to
+# file is no longer needed, so feel free to
+# rm file/to/save/fish/abbreviations/to
 ```
 
 Note that zsh-abbr does not lint the imported abbreviations. An effort is made to correctly wrap the expansion in single or double quotes, but it is possible that importing will add an abbreviation with a quotation mark problem in the expansion. It is up to the user to double check the result before taking further actions.
 
 Use `--dry-run` to see what would result, without making any actual changes.
 
-##### Git Aliases
+#### `import-git-aliases`
 
 ```shell
 abbr import-git-aliases [--dry-run] [--quiet]
@@ -375,71 +354,13 @@ Note that zsh-abbr does not lint the imported abbreviations. It is up to the use
 
 Use `--dry-run` to see what would result, without making any actual changes.
 
-#### List
-
-List all the abbreviations available in the current session. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
-
-Use the **--session** or **-S** scope flag to list only session abbreviations. Use the **--user** or **-U** scope flag to list only user abbreviations.
-
-Use the **--global** or **-g** type flag to list only global abbreviations. Use the **--regular** or **-r** type flag to list only regular abbreviations.
-
-Combine a scope flag and a type flag to further limit the output.
-
-##### Abbreviations
+#### `list`
 
 ```shell
-abbr (list-abbreviations | l) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
+abbr [list] [<SCOPE>] [<TYPE>]
 ```
 
-List the abbreviations only, like fish's `abbr -l`.
-
-```shell
-% abbr a=apple
-% abbr -g b=ball
-% abbr -S c=cat
-% abbr -S -g d=dog
-% abbr list-abbreviations
-a
-b
-c
-d
-% source ~/.zshrc
-% abbr list-abbreviations
-a
-b
-```
-
-##### Commands
-
-```shell
-abbr (list-commands | L) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
-```
-
-List as commands, like zsh's `alias -L`.
-
-```shell
-% abbr a=apple
-% abbr -g b=ball
-% abbr -S c=cat
-% abbr -S -g d=dog
-% abbr list-abbreviations
-abbr a="apple"
-abbr -g b="ball"
-abbr -S c="cat"
-abbr -S -g d="dog"
-% source ~/.zshrc
-% abbr list-abbreviations
-abbr a="apple"
-abbr -g b="ball"
-```
-
-##### Definitions
-
-```shell
-abbr [list-definitions] [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)]
-```
-
-List as commands, like zsh's `alias`.
+List the abbreviations only, like fish's `abbr -l`. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
 
 ```shell
 % abbr a=apple
@@ -457,10 +378,58 @@ a="apple"
 b="ball"
 ```
 
-#### Rename
+#### `list-abbreviations`
 
 ```shell
-abbr (rename | R) [(--session | -S) | (--user | -U)] [(--global | -g) | (--regular | -r)] [--dry-run] [--quiet] OLD NEW
+abbr (list-abbreviations | l) [<SCOPE>] [<TYPE>]
+```
+
+List the abbreviations with their expansions, like zsh's `alias`. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
+
+```shell
+% abbr a=apple
+% abbr -g b=ball
+% abbr -S c=cat
+% abbr -S -g d=dog
+% abbr list-abbreviations
+a
+b
+c
+d
+% source ~/.zshrc
+% abbr list-abbreviations
+a
+b
+```
+
+#### `list-commands`
+
+```shell
+abbr (list-commands | L) [<SCOPE>] [<TYPE>]
+```
+
+List as commands suitable for export, like zsh's `alias -L`. Regular abbreviations follow global abbreviations. Session abbreviations follow user abbreviations.
+
+```shell
+% abbr a=apple
+% abbr -g b=ball
+% abbr -S c=cat
+% abbr -S -g d=dog
+% abbr list-abbreviations
+abbr a="apple"
+abbr -g b="ball"
+abbr -S c="cat"
+abbr -S -g d="dog"
+% source ~/.zshrc
+% abbr list-abbreviations
+abbr a="apple"
+abbr -g b="ball"
+```
+
+#### `rename`
+
+```shell
+abbr (rename | R) [<SCOPE>] [<TYPE>] [--dry-run] [--quiet] OLD NEW
 ```
 
 Rename an abbreviation.
@@ -480,7 +449,7 @@ Rename is scope- and type-specific. If you get a "no matching abbreviation" erro
 % gm[Space] # expands to git checkout master
 ```
 
-Use `--dry-run` to see what would result, without making any actual changes..
+Use `--dry-run` to see what would result, without making any actual changes.
 
 Abbreviations can also be manually renamed in the `ABBR_USER_ABBREVIATIONS_FILE`. See **Storage** below.
 
