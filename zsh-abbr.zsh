@@ -59,7 +59,7 @@ _abbr() {
     fi
 
     _abbr:add() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local expansion
@@ -86,7 +86,7 @@ _abbr() {
     }
 
     _abbr:clear_session() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       if [[ $# > 0 ]]; then
         _abbr:util_error "abbr clear-session: Unexpected argument"
@@ -98,7 +98,7 @@ _abbr() {
     }
 
     _abbr:erase() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local abbreviations_sets
@@ -188,7 +188,7 @@ _abbr() {
     }
 
     _abbr:expand() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local expansion
@@ -209,7 +209,7 @@ _abbr() {
     }
 
     _abbr:export_aliases() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local type_saved
       local output_path
@@ -230,7 +230,7 @@ _abbr() {
     }
 
     _abbr:import_aliases() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local alias_to_import
       local abbreviation
@@ -266,7 +266,7 @@ _abbr() {
     }
 
     _abbr:import_fish() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local abbreviations
@@ -291,7 +291,7 @@ _abbr() {
     }
 
     _abbr:import_git_aliases() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local git_alias
       local git_aliases
@@ -329,7 +329,7 @@ _abbr() {
     }
 
     _abbr:list() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       if [[ $# > 0 ]]; then
         _abbr:util_error "abbr list: Unexpected argument"
@@ -340,7 +340,7 @@ _abbr() {
     }
 
     _abbr:list_commands() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local include_expansion
       local session_prefix
@@ -359,7 +359,7 @@ _abbr() {
     }
 
     _abbr:list_abbreviations() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local include_expansion
 
@@ -374,7 +374,7 @@ _abbr() {
     }
 
     _abbr:print_version() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       if [[ $# > 0 ]]; then
         _abbr:util_error "abbr version: Unexpected argument"
@@ -385,7 +385,7 @@ _abbr() {
     }
 
     _abbr:rename() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local err
       local expansion
@@ -424,7 +424,7 @@ _abbr() {
     }
 
     _abbr:util_add() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local cmd
@@ -515,7 +515,7 @@ _abbr() {
     }
 
     _abbr:util_alias() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local abbreviations_set
@@ -542,13 +542,13 @@ _abbr() {
     }
 
     _abbr:util_bad_options() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       _abbr:util_error "abbr: Illegal combination of options"
     }
 
     _abbr:util_error() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       has_error=1
       logs+=${logs:+$'\n'}"${error_color}$@%f"
@@ -566,7 +566,7 @@ _abbr() {
     }
 
     _abbr:util_check_command() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
 
@@ -595,7 +595,7 @@ _abbr() {
     }
 
     _abbr:util_list() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local expansion
@@ -641,7 +641,7 @@ _abbr() {
     }
 
     _abbr:util_list_item() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local expansion
@@ -665,19 +665,19 @@ _abbr() {
     }
 
     _abbr:util_log() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       logs+=${logs:+'\n'}"$1"
     }
 
     _abbr:util_print() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       output+=${output:+'\n'}"$1"
     }
 
     _abbr:util_set_once() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local option value
 
@@ -693,7 +693,7 @@ _abbr() {
     }
 
     _abbr:util_sync_user() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       (( ABBR_LOADING_USER_ABBREVIATIONS )) && return
 
@@ -719,13 +719,13 @@ _abbr() {
     }
 
     _abbr:util_usage() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       _abbr_man abbr 2>/dev/null || _abbr_cat ${ABBR_SOURCE_PATH}/man/abbr.txt | _abbr_less -F
     }
 
     _abbr:util_warn() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       logs+=${logs:+'\n'}"${warn_color}$@%f"
     }
@@ -886,7 +886,7 @@ _abbr() {
 _abbr_bind_widgets() {
   emulate -LR zsh
 
-  (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+  _abbr_debugger
 
   # spacebar expands abbreviations
   zle -N _abbr_expand_and_space
@@ -922,6 +922,12 @@ _abbr_cmd_expansion() {
   fi
 
   _abbr_echo - $expansion
+}
+
+_abbr_debugger() {
+  emulate -LR zsh
+
+  (( ABBR_DEBUG )) && _abbr_print $funcstack[2]
 }
 
 _abbr_expand_and_accept() {
@@ -982,7 +988,7 @@ _abbr_init() {
   ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
 
   _abbr_job_push $job initialization
-  (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+  _abbr_debugger
   _abbr_load_user_abbreviations
   _abbr_job_pop $job
 }
@@ -991,7 +997,7 @@ _abbr_job_push() {
   emulate -LR zsh
 
   {
-    (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+    _abbr_debugger
 
     local next_job
     local next_job_age
@@ -1009,7 +1015,7 @@ _abbr_job_push() {
     timeout_age=30 # seconds
 
     function _abbr_job_push:add_job() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       if ! [[ -d $job_dir ]]; then
         mkdir -p $job_dir
@@ -1025,7 +1031,7 @@ _abbr_job_push() {
     }
 
     function _abbr_job_push:handle_timeout() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       next_job_path=$job_dir/$next_job
 
@@ -1064,7 +1070,7 @@ _abbr_job_push() {
 _abbr_job_pop() {
   emulate -LR zsh
 
-  (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+  _abbr_debugger
 
   local job
 
@@ -1085,10 +1091,10 @@ _abbr_load_user_abbreviations() {
   emulate -LR zsh
 
   {
-    (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+    _abbr_debugger
 
     function _abbr_load_user_abbreviations:setup() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       ABBR_REGULAR_USER_ABBREVIATIONS=()
       ABBR_GLOBAL_USER_ABBREVIATIONS=()
@@ -1107,7 +1113,7 @@ _abbr_load_user_abbreviations() {
     }
 
     function _abbr_load_user_abbreviations:load() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+      _abbr_debugger
 
       local abbreviation
       local arguments
@@ -1238,7 +1244,7 @@ zle -N _abbr_expand_widget
 abbr() {
   emulate -LR zsh
 
-  (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
+  _abbr_debugger
   _abbr $*
 }
 
