@@ -14,6 +14,7 @@ Run `abbr help` for documentation; if the package is installed with Homebrew, `m
 1. [Installation](#installation)
 1. [Usage](#usage)
 1. [Advanced](#advanced)
+1. [Performance](#performance)
 1. [Uninstalling](#uninstalling)
 1. [Changelog](#changelog)
 1. [Roadmap](#roadmap)
@@ -74,7 +75,7 @@ and follow the post-install instructions logged to the terminal.
 
 ### Plugin
 
-Or install zsh-abbr with your favorite plugin manager:
+Or install zsh-abbr with your favorite plugin manager (if you're new to zsh plugin management, at this writing zinit is most performant).
 
 - **[antibody](https://getantibody.github.io/)**: Add `olets/zsh-abbr` to your plugins file. If you use static loading, reload plugins.
 
@@ -98,8 +99,14 @@ Or install zsh-abbr with your favorite plugin manager:
 
 - **[zinit](https://github.com/zdharma/zinit)** (formerly **zplugin**): add this to your `.zshrc`:
   ```shell
+  zinit light olets/zsh-abbr
+  ```
+
+  If you notice `zsh-abbr` significantly affecting the startup time of new terminals, delay loading zsh-abbr until after shell initialization is finished. Not recommended as the default so that abbreviatons are available the moment you are able to type. See also [Performance](#performance).
+
+  ```shell
   zinit ice wait lucid
-  zinit light olets/zsh-abbr # or `load` instead of `light` to enable zinit reporting
+  zinit light olets/zsh-abbr
   ```
 
 - **[zplug](https://github.com/zplug/zplug)**: add `zplug "olets/zsh-abbr"` to your `.zshrc`.
@@ -107,7 +114,6 @@ Or install zsh-abbr with your favorite plugin manager:
 If you prefer to manage the package with Homebrew but load it with a plugin manager, run the Homebrew installation command and then point the plugin manager to the file Homebrew logs to the console. For example with zinit:
 
 ```shell
-zinit ice wait lucid
 zinit light /usr/local/share/zsh-abbr
 ```
 
@@ -531,6 +537,14 @@ bindkey "^A" _abbr_expand_space
 # load zsh-abbr
 ```
 
+## Performance
+
+Snapshot with macOS 10.15 on early-2015 MacBook Pro (2.9 GHz Intel Core i5, 16 GB 1867 MHz DDR3), zsh 5.8, zinit 3.1, iTerm2 3.3.12. Profiled with `zprof`.
+
+`zinit light olets/zsh-abbr` adds roughly 120ms to the time it takes a new terminal session to load; each user abbreviation adds roughly another 1ms.
+
+zsh-abbr will not affect time between prompts.
+
 ## Uninstalling
 
 Delete the session data storage directory
@@ -577,14 +591,12 @@ This project loosely follows the [Angular commit message conventions](https://do
 Tests are in the `tests` directory. To run them, replace `zsh-abbr` with `zsh-abbr/tests` in .zshrc. For example, zinit users will run
 
 ```shell
-zinit ice lucid
 zinit light olets/zsh-abbr/tests
 ```
 
 in place of
 
 ```shell
-zinit ice lucid
 zinit light olets/zsh-abbr
 ```
 
