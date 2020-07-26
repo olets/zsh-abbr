@@ -75,57 +75,21 @@ and follow the post-install instructions logged to the terminal.
 
 ### Plugin
 
-Or install zsh-abbr with your favorite plugin manager (if you're new to zsh plugin management, at this writing zinit is most performant).
+You can install zsh-abbr with a zsh plugin manager. Each has their own way of doing things. See your package manager's documentation or the [zsh plugin manager plugin installation procedures gist](https://gist.github.com/olets/06009589d7887617e061481e22cf5a4a). If you're new to zsh plugin management, at this writing zinit is a good choice for its popularity, frequent updates, and great performance.
 
-- **[antibody](https://getantibody.github.io/)**: Add `olets/zsh-abbr` to your plugins file. If you use static loading, reload plugins.
-
-- **[Antigen](https://github.com/zsh-users/antigen)**: Add `antigen bundle olets/zsh-abbr` to your `.zshrc`.
-
-- **[Oh-My-Zsh](https://github.com/robbyrussell/oh-my-zsh)**:
-
-  - Clone to OMZ's plugins' directory:
-
-    ```shell
-    git clone https://github.com/olets/zsh-abbr.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-abbr
-    ```
-
-  - Add to the OMZ plugins array in your `.zshrc`:
-
-    ```shell
-    plugins=( [plugins...] zsh-abbr)
-    ```
-
-- **[zgen](https://github.com/tarjoilija/zgen)**: add `zgen load olets/zsh-abbr` to your `.zshrc`.
-
-- **[zinit](https://github.com/zdharma/zinit)** (formerly **zplugin**): add this to your `.zshrc`:
-  ```shell
-  zinit light olets/zsh-abbr
-  ```
-
-  If you notice `zsh-abbr` significantly affecting the startup time of new terminals, delay loading zsh-abbr until after shell initialization is finished. Not recommended as the default so that abbreviatons are available the moment you are able to type. See also [Performance](#performance).
-
-  ```shell
-  zinit ice wait lucid
-  zinit light olets/zsh-abbr
-  ```
-
-- **[zplug](https://github.com/zplug/zplug)**: add `zplug "olets/zsh-abbr"` to your `.zshrc`.
-
-If you prefer to manage the package with Homebrew but load it with a plugin manager, run the Homebrew installation command and then point the plugin manager to the file Homebrew logs to the console. For example with zinit:
+After adding the plugin to the manager, restart zsh:
 
 ```shell
-zinit light /usr/local/share/zsh-abbr
-```
-
-If running `abbr` gives an error "zsh: permission denied: abbr", reload zsh:
-
-```shell
-% source ~/.zshrc
+exec zsh
 ```
 
 ### Manual
 
-Clone this repo and add `source path/to/zsh-abbr.zsh` to your `.zshrc`.
+Clone this repo and add `source path/to/zsh-abbr.zsh` to your `.zshrc`. Then restart zsh:
+
+```shell
+exec zsh
+```
 
 ## Usage
 
