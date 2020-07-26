@@ -927,6 +927,9 @@ _abbr_cmd_expansion() {
 _abbr_debugger() {
   emulate -LR zsh
 
+  # user abbreviations are loaded on every git subcommand, making noise
+  (( ABBR_LOADING_USER_ABBREVIATIONS && ! ABBR_INITIALIZING )) && return
+
   (( ABBR_DEBUG )) && _abbr_print $funcstack[2]
 }
 
@@ -1255,8 +1258,10 @@ abbr() {
 # INITIALIZATION
 # --------------
 
+typeset -i ABBR_INITIALIZING=1
 ! (( ${+NO_COLOR} )) && autoload -U colors && colors
 ABBR_SOURCE_PATH=${0:A:h}
 _abbr_wrap_external_commands
 _abbr_init
 (( ABBR_DEFAULT_BINDINGS )) &&  _abbr_bind_widgets
+unset ABBR_INITIALIZING
