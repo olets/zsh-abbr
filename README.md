@@ -4,7 +4,7 @@
 
 For example, a frequently-run command like `git checkout` can be abbreviated to `gco` (or even `co` or `c` or anything else). Type <kbd>Space</kbd> after an abbreviation to expand it. Type <kbd>Enter</kbd> after an abbreviation to expand it and run the expansion. To prevent expansion, add <kbd>Ctrl</kbd> (<kbd>Ctrl</kbd><kbd>Space</kbd> / <kbd>Ctrl</kbd><kbd>Enter</kbd>) or add a delimiter like `;` after the abbreviation.
 
-Like zsh's `alias`, zsh-abbr supports "regular" (i.e. command-position) and "global" (anywhere on the line) abbreviations. Like fish's abbr, zsh-abbr supports interactive creation of persistent abbreviations that are immediately available in all terminal sessions and.
+Like zsh's `alias`, zsh-abbr supports "regular" (i.e. command-position) and "global" (anywhere on the line) abbreviations. Like fish's abbr, zsh-abbr supports interactive creation of persistent abbreviations that are immediately available in all terminal sessions.
 
 Run `abbr help` for documentation; if the package is installed with Homebrew, `man abbr` is also available.
 
