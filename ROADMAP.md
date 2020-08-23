@@ -16,5 +16,5 @@ _Currently considered feature complete._
 
 ## Maybe?
 
-- [ ] completion
-- [ ] highlighting
+- [ ] command completion
+- [ ] command highlighting
