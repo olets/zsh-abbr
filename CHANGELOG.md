@@ -1,3 +1,13 @@
+# [v4.0.1](https://github.com/olets/zsh-abbr/compare/v4.0.0...v4.0.1) (2020-08-23)
+
+### Bug Fixes
+
+`abbr e -g <existing global abbreviation>` finished with the log message "regular user abbreviation". No longer! And polishes up tests.
+
+* **fix,refactor(logs):** correct type and scope ([a5a4171](https://github.com/olets/zsh-abbr/commit/a5a4171d448f3ee2cfe83d8c1dc8fa2063bb3e2c))
+
+
+
 # [v4.0.0](https://github.com/olets/zsh-abbr/compare/v3.3.4...v4.0.0) (2020-07-26)
 
 
