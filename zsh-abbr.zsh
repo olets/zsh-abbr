@@ -160,7 +160,7 @@ _abbr() {
       fi
 
       if ! (( ${#abbreviations_sets} )); then
-        _abbr:util_error "abbr erase: No ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` found"
+        _abbr:util_error "abbr erase: No${type:+ $type}${scope:+ $scope} abbreviation \`$abbreviation\` found"
       elif [[ ${#abbreviations_sets} == 1 ]]; then
         verb_phrase="Would erase"
 
@@ -173,7 +173,7 @@ _abbr() {
           fi
         fi
 
-        _abbr:util_log "$success_color$verb_phrase$reset_color ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
+        _abbr:util_log "$success_color$verb_phrase$reset_color $(_abbr:util_set_to_typed_scope $abbreviations_sets) \`$abbreviation\`"
       else
         verb_phrase="Did not erase"
         (( dry_run )) && verb_phrase="Would not erase"
@@ -181,7 +181,7 @@ _abbr() {
         message="$error_color$verb_phrase$reset_color abbreviation \`$abbreviation\`. Please specify one of\\n"
 
         for abbreviations_set in $abbreviations_sets; do
-          message+="  ${${${${abbreviations_set:l}%s}#abbr_}//_/ }\\n"
+          message+="  $(_abbr:util_set_to_typed_scope $abbreviations_set)\\n"
         done
 
         _abbr:util_error $message
@@ -418,7 +418,7 @@ _abbr() {
         _abbr:util_add $new_abbreviation $expansion
         _abbr:erase $current_abbreviation
       else
-        _abbr:util_error "abbr rename: No ${type:-regular} ${scope:-user} abbreviation \`$current_abbreviation\` exists"
+        _abbr:util_error "abbr rename: No${type:+ $type}${scope:+ $scope} abbreviation \`$current_abbreviation\` exists"
       fi
     }
 
@@ -430,6 +430,7 @@ _abbr() {
       local expansion
       local job_group
       local -a success
+      local typed_scope
       local verb_phrase
 
       abbreviation=$1
@@ -450,6 +451,7 @@ _abbr() {
         if [[ $type == 'global' ]]; then
           if ! (( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
             _abbr:util_check_command $abbreviation || return
+            typed_scope=$(_abbr:util_set_to_typed_scope ABBR_GLOBAL_SESSION_ABBREVIATIONS)
 
             if ! (( dry_run )); then
               ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
@@ -459,6 +461,7 @@ _abbr() {
           fi
         elif ! (( ${+ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
           _abbr:util_check_command $abbreviation || return
+          typed_scope=$(_abbr:util_set_to_typed_scope ABBR_REGULAR_SESSION_ABBREVIATIONS)
 
           if ! (( dry_run )); then
             ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
@@ -474,6 +477,7 @@ _abbr() {
 
           if ! (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
             _abbr:util_check_command $abbreviation || return
+            typed_scope=$(_abbr:util_set_to_typed_scope ABBR_GLOBAL_USER_ABBREVIATIONS)
 
             if ! (( dry_run )); then
               ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]=$expansion
@@ -489,6 +493,7 @@ _abbr() {
 
           if ! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
             _abbr:util_check_command $abbreviation || return
+            typed_scope=$(_abbr:util_set_to_typed_scope ABBR_REGULAR_USER_ABBREVIATIONS)
 
             if ! (( dry_run )); then
               ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]=$expansion
@@ -504,12 +509,12 @@ _abbr() {
         verb_phrase="Added"
         (( dry_run )) && verb_phrase="Would add"
 
-        _abbr:util_log "$success_color$verb_phrase$reset_color the ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\`"
+        _abbr:util_log "$success_color$verb_phrase$reset_color the $typed_scope \`$abbreviation\`"
       else
         verb_phrase="Did not"
         (( dry_run )) && verb_phrase="Would not"
 
-        _abbr:util_error "$verb_phrase add the ${type:-regular} ${scope:-user} abbreviation \`$abbreviation\` because it already exists"
+        _abbr:util_error "$verb_phrase add the $typed_scope \`$abbreviation\` because it already exists"
       fi
     }
 
@@ -710,6 +715,15 @@ _abbr() {
       done
 
       mv $user_updated $ABBR_USER_ABBREVIATIONS_FILE
+    }
+
+    _abbr:util_set_to_typed_scope() {
+      _abbr_debugger
+
+      local abbreviations_set
+      abbreviations_set=$1
+
+      echo ${${${${abbreviations_set:l}%s}#abbr_}//_/ }
     }
 
     _abbr:util_usage() {
