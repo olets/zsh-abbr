@@ -104,7 +104,7 @@ _abbr() {
       _abbr_debugger
 
       local abbreviation
-      local abbreviations_sets
+      local -a abbreviations_sets
       local message
       local verb_phrase
 
@@ -180,8 +180,8 @@ _abbr() {
 
         message="$error_color$verb_phrase$reset_color abbreviation \`$abbreviation\`. Please specify one of\\n"
 
-        for abbreviations_set in ${abbreviations_sets[@]}; do
-          message+="  ${${${abbreviations_set:l}//_/ }//abbreviations/}\\n"
+        for abbreviations_set in $abbreviations_sets; do
+          message+="  ${${${${abbreviations_set:l}%s}#abbr_}//_/ }\\n"
         done
 
         _abbr:util_error $message
