@@ -1015,7 +1015,7 @@ _abbr_job_push() {
     local job_path
     local timeout_age
 
-    job_name=${(q)1}
+    job_name=$1
     job_description=$2
     timeout_age=30 # seconds
 
@@ -1079,7 +1079,7 @@ _abbr_job_pop() {
 
   local job_name
 
-  job_name=${(q)1}
+  job_name=$1
 
   'command' 'rm' ${ABBR_TMPDIR}jobs/$job_name &>/dev/null
 }
