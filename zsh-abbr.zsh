@@ -40,7 +40,7 @@ _abbr() {
   emulate -LR zsh
 
   {
-    local action error_color opt logs output release_date scope \
+    local action error_color job_name logs opt output release_date scope \
       success_color type version warn_color
     local -i dry_run force has_error number_opts quiet should_exit
 
@@ -844,8 +844,8 @@ _abbr() {
       shift $number_opts
 
       if ! (( ABBR_LOADING_USER_ABBREVIATIONS )) && [[ $scope != 'session' ]]; then
-        job=$(_abbr_job_name)
-        _abbr_job_push $job $action
+        job_name=$(_abbr_job_name)
+        _abbr_job_push $job_name $action
 
         if (( ABBR_AUTOLOAD )); then
           _abbr_load_user_abbreviations
@@ -864,7 +864,7 @@ _abbr() {
     fi
 
     if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-      _abbr_job_pop $job
+      _abbr_job_pop $job_name
     fi
 
     if ! (( quiet )); then
@@ -983,21 +983,22 @@ _abbr_global_expansion() {
 _abbr_init() {
   emulate -LR zsh
 
-  local job
+  local job_name
 
-  typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
   typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
-  typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
   typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
+  typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
+  typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
 
-  job=$(_abbr_job_name)
   ABBR_REGULAR_SESSION_ABBREVIATIONS=()
   ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
 
-  _abbr_job_push $job initialization
+  job_name=$(_abbr_job_name)
+
+  _abbr_job_push $job_name initialization
   _abbr_debugger
   _abbr_load_user_abbreviations
-  _abbr_job_pop $job
+  _abbr_job_pop $job_name
 }
 
 _abbr_job_push() {
@@ -1010,37 +1011,34 @@ _abbr_job_push() {
     local next_job_age
     local next_job_path
     local job_description
-    local job_dir
-    local job_id
+    local job_name
     local job_path
     local timeout_age
 
-    job_id=${(q)1}
+    job_name=${(q)1}
     job_description=$2
-    job_dir=${ABBR_TMPDIR}jobs
-    job_path=$job_dir/$job_id
     timeout_age=30 # seconds
 
     function _abbr_job_push:add_job() {
       _abbr_debugger
 
-      if ! [[ -d $job_dir ]]; then
-        mkdir -p $job_dir
+      if ! [[ -d ${ABBR_TMPDIR}jobs ]]; then
+        mkdir -p ${ABBR_TMPDIR}jobs
       fi
 
-      'builtin' 'echo' $job_description > $job_path
+      'builtin' 'echo' $job_description > ${ABBR_TMPDIR}jobs/$job_name
     }
 
-    function _abbr_job_push:next_job_id() {
+    function _abbr_job_push:next_job_name() {
       # cannout support debug message
 
-      'command' 'ls' -t $job_dir | tail -1
+      'command' 'ls' -t ${ABBR_TMPDIR}jobs | tail -1
     }
 
     function _abbr_job_push:handle_timeout() {
       _abbr_debugger
 
-      next_job_path=$job_dir/$next_job
+      next_job_path=${ABBR_TMPDIR}jobs/$next_job
 
       'builtin' 'echo' "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job%.*}) has timed out."
       'builtin' 'echo' "The job was related to $(cat $next_job_path)."
@@ -1052,8 +1050,8 @@ _abbr_job_push() {
     }
 
     function _abbr_job_push:wait_turn() {
-      while [[ $(_abbr_job_push:next_job_id) != $job_id ]]; do
-        next_job=$(_abbr_job_push:next_job_id)
+      while [[ $(_abbr_job_push:next_job_name) != $job_name ]]; do
+        next_job=$(_abbr_job_push:next_job_name)
         next_job_age=$(( $(date +%s) - ${next_job%.*} ))
 
         if ((  $next_job_age > $timeout_age )); then
@@ -1068,7 +1066,7 @@ _abbr_job_push() {
     _abbr_job_push:wait_turn
   } always {
     unfunction -m _abbr_job_push:add_job
-    unfunction -m _abbr_job_push:next_job_id
+    unfunction -m _abbr_job_push:next_job_name
     unfunction -m _abbr_job_push:handle_timeout
     unfunction -m _abbr_job_push:wait_turn
   }
@@ -1079,11 +1077,11 @@ _abbr_job_pop() {
 
   _abbr_debugger
 
-  local job
+  local job_name
 
-  job=${(q)1}
+  job_name=${(q)1}
 
-  'command' 'rm' ${ABBR_TMPDIR}jobs/$job &>/dev/null
+  'command' 'rm' ${ABBR_TMPDIR}jobs/$job_name &>/dev/null
 }
 
 _abbr_job_name() {
