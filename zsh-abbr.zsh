@@ -1083,7 +1083,7 @@ _abbr_job_pop() {
 
   job=${(q)1}
 
-  rm ${ABBR_TMPDIR}jobs/$job &>/dev/null
+  'command' 'rm' ${ABBR_TMPDIR}jobs/$job &>/dev/null
 }
 
 _abbr_job_name() {
