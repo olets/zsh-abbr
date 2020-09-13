@@ -987,8 +987,10 @@ _abbr_init() {
 
   typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
   typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
+  typeset -gi ABBR_INITIALIZING=1
   typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
   typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
+  typeset -g ABBR_SOURCE_PATH=${0:A:h}
 
   ABBR_REGULAR_SESSION_ABBREVIATIONS=()
   ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
@@ -998,7 +1000,10 @@ _abbr_init() {
   _abbr_job_push $job_name initialization
   _abbr_debugger
   _abbr_load_user_abbreviations
+  ! (( ${+NO_COLOR} )) && autoload -U colors && colors
+  (( ABBR_DEFAULT_BINDINGS )) &&  _abbr_bind_widgets
   _abbr_job_pop $job_name
+  unset ABBR_INITIALIZING
 }
 
 _abbr_job_pop() {
@@ -1224,9 +1229,4 @@ abbr() {
 # INITIALIZATION
 # --------------
 
-typeset -i ABBR_INITIALIZING=1
-! (( ${+NO_COLOR} )) && autoload -U colors && colors
-ABBR_SOURCE_PATH=${0:A:h}
 _abbr_init
-(( ABBR_DEFAULT_BINDINGS )) &&  _abbr_bind_widgets
-unset ABBR_INITIALIZING
