@@ -1106,8 +1106,8 @@ _abbr_load_user_abbreviations() {
       ABBR_REGULAR_USER_ABBREVIATIONS=()
       ABBR_GLOBAL_USER_ABBREVIATIONS=()
 
-      if ! [[ -d ${TMPDIR:-/tmp/}zsh-abbr ]]; then
-        mkdir -p ${TMPDIR:-/tmp/}zsh-abbr
+      if ! [[ -d $ABBR_TMPDIR ]]; then
+        mkdir -p $ABBR_TMPDIR
       fi
 
       if ! [[ -f ${ABBR_TMPDIR}regular-user-abbreviations ]]; then
