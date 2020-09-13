@@ -1001,6 +1001,18 @@ _abbr_init() {
   _abbr_job_pop $job_name
 }
 
+_abbr_job_pop() {
+  emulate -LR zsh
+
+  _abbr_debugger
+
+  local job_name
+
+  job_name=$1
+
+  'command' 'rm' ${ABBR_TMPDIR}jobs/$job_name &>/dev/null
+}
+
 _abbr_job_push() {
   emulate -LR zsh
 
@@ -1070,18 +1082,6 @@ _abbr_job_push() {
     unfunction -m _abbr_job_push:handle_timeout
     unfunction -m _abbr_job_push:wait_turn
   }
-}
-
-_abbr_job_pop() {
-  emulate -LR zsh
-
-  _abbr_debugger
-
-  local job_name
-
-  job_name=$1
-
-  'command' 'rm' ${ABBR_TMPDIR}jobs/$job_name &>/dev/null
 }
 
 _abbr_job_name() {
