@@ -122,14 +122,14 @@ _abbr() {
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
           if (( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
-            (( ABBR_DEBUG )) && _abbr_echo "  Found a global session abbreviation"
+            (( ABBR_DEBUG )) && 'builtin' 'echo' "  Found a global session abbreviation"
             abbreviations_sets+=( ABBR_GLOBAL_SESSION_ABBREVIATIONS )
           fi
         fi
 
         if [[ $type != 'global' ]]; then
           if (( ${+ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
-            (( ABBR_DEBUG )) && _abbr_echo "  Found a regular session abbreviation"
+            (( ABBR_DEBUG )) && 'builtin' 'echo' "  Found a regular session abbreviation"
             abbreviations_sets+=( ABBR_REGULAR_SESSION_ABBREVIATIONS )
           fi
         fi
@@ -142,7 +142,7 @@ _abbr() {
           fi
 
           if (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
-            (( ABBR_DEBUG )) && _abbr_echo "  Found a global user abbreviation"
+            (( ABBR_DEBUG )) && 'builtin' 'echo' "  Found a global user abbreviation"
             abbreviations_sets+=( ABBR_GLOBAL_USER_ABBREVIATIONS )
           fi
         fi
@@ -153,7 +153,7 @@ _abbr() {
           fi
 
           if (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
-            (( ABBR_DEBUG )) && _abbr_echo "  Found a regular user abbreviation"
+            (( ABBR_DEBUG )) && 'builtin' 'echo' "  Found a regular user abbreviation"
             abbreviations_sets+=( ABBR_REGULAR_USER_ABBREVIATIONS )
           fi
         fi
@@ -246,7 +246,7 @@ _abbr() {
       fi
 
       if [[ $saved_type != 'global' ]]; then
-        aliases_to_import=( ${(f)"$(_abbr_alias -r)"} )
+        aliases_to_import=( ${(f)"$('builtin' 'alias' -r)"} )
         for alias_to_import in $aliases_to_import; do
           _abbr:util_import_alias $alias_to_import
         done
@@ -255,7 +255,7 @@ _abbr() {
       if [[ $saved_type != 'regular' ]]; then
         type='global'
 
-        aliases_to_import=( ${(f)"$(_abbr_alias -g)"} )
+        aliases_to_import=( ${(f)"$('builtin' 'alias' -g)"} )
         for alias_to_import in $aliases_to_import; do
           _abbr:util_import_alias $alias_to_import
         done
@@ -561,7 +561,7 @@ _abbr() {
       abbreviation=${1%%=*}
       expansion=${1#*=}
 
-      _abbr:util_add $abbreviation "$(_abbr_echo $expansion)"
+      _abbr:util_add $abbreviation "$('builtin' 'echo' $expansion)"
     }
 
     _abbr:util_check_command() {
@@ -574,7 +574,7 @@ _abbr() {
       # Warn if abbreviation would interfere with system command use, e.g. `cp="git cherry-pick"`
       # Apply force to add regardless
       if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-        cmd=$(_abbr_command -v $abbreviation)
+        cmd=$('builtin' 'command' -v $abbreviation)
 
         if [[ $cmd && ${cmd:0:6} != 'alias ' ]]; then
           if (( force )); then
@@ -705,13 +705,13 @@ _abbr() {
       typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${ABBR_TMPDIR}global-user-abbreviations
       for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
         expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
-        _abbr_echo "abbr -g ${abbreviation}=${(qqq)${(Q)expansion}}" >> "$user_updated"
+        'builtin' 'echo' "abbr -g ${abbreviation}=${(qqq)${(Q)expansion}}" >> "$user_updated"
       done
 
       typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${ABBR_TMPDIR}regular-user-abbreviations
       for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
         expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
-        _abbr_echo "abbr ${abbreviation}=${(qqq)${(Q)expansion}}" >> $user_updated
+        'builtin' 'echo' "abbr ${abbreviation}=${(qqq)${(Q)expansion}}" >> $user_updated
       done
 
       mv $user_updated $ABBR_USER_ABBREVIATIONS_FILE
@@ -729,7 +729,7 @@ _abbr() {
     _abbr:util_usage() {
       _abbr_debugger
 
-      _abbr_man abbr 2>/dev/null || _abbr_cat ${ABBR_SOURCE_PATH}/man/abbr.txt | _abbr_less -F
+      'command' 'man' abbr 2>/dev/null || 'command' 'cat' ${ABBR_SOURCE_PATH}/man/abbr.txt | 'command' 'less' -F
     }
 
     _abbr:util_warn() {
@@ -874,14 +874,14 @@ _abbr() {
     fi
 
     if (( has_error )); then
-      [[ -n $output ]] && _abbr_echo - $output >&2
+      [[ -n $output ]] && 'builtin' 'echo' - $output >&2
       return 1
     else
       if (( dry_run && ! ABBR_TESTING )); then
         output+="\\n${warn_color}Dry run. Changes not saved.$reset_color"
       fi
 
-      [[ -n $output ]] && _abbr_echo - $output >&1
+      [[ -n $output ]] && 'builtin' 'echo' - $output >&1
       return 0
     fi
   }
@@ -925,7 +925,7 @@ _abbr_cmd_expansion() {
     expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
   fi
 
-  _abbr_echo - $expansion
+  'builtin' 'echo' - $expansion
 }
 
 _abbr_debugger() {
@@ -934,7 +934,7 @@ _abbr_debugger() {
   # user abbreviations are loaded on every git subcommand, making noise
   (( ABBR_LOADING_USER_ABBREVIATIONS && ! ABBR_INITIALIZING )) && return
 
-  (( ABBR_DEBUG )) && _abbr_echo - $funcstack[2]
+  (( ABBR_DEBUG )) && 'builtin' 'echo' - $funcstack[2]
 }
 
 _abbr_expand_and_accept() {
@@ -977,7 +977,7 @@ _abbr_global_expansion() {
     expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
   fi
 
-  _abbr_echo - $expansion
+  'builtin' 'echo' - $expansion
 }
 
 _abbr_init() {
@@ -1028,13 +1028,13 @@ _abbr_job_push() {
         mkdir -p $job_dir
       fi
 
-      _abbr_echo $job_description > $job_path
+      'builtin' 'echo' $job_description > $job_path
     }
 
     function _abbr_job_push:next_job_id() {
       # cannout support debug message
 
-      _abbr_ls -t $job_dir | tail -1
+      'command' 'ls' -t $job_dir | tail -1
     }
 
     function _abbr_job_push:handle_timeout() {
@@ -1042,11 +1042,11 @@ _abbr_job_push() {
 
       next_job_path=$job_dir/$next_job
 
-      _abbr_echo "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job%.*}) has timed out."
-      _abbr_echo "The job was related to $(cat $next_job_path)."
-      _abbr_echo "This could be the result of manually terminating an abbr activity, for example during session startup."
-      _abbr_echo "If you believe it reflects a abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
-      _abbr_echo
+      'builtin' 'echo' "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job%.*}) has timed out."
+      'builtin' 'echo' "The job was related to $(cat $next_job_path)."
+      'builtin' 'echo' "This could be the result of manually terminating an abbr activity, for example during session startup."
+      'builtin' 'echo' "If you believe it reflects a abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
+      'builtin' 'echo'
 
       rm $next_job_path &>/dev/null
     }
@@ -1091,7 +1091,7 @@ _abbr_job_name() {
 
   # cannout support debug message
 
-  _abbr_echo "$(date +%s).$RANDOM"
+  'builtin' 'echo' "$(date +%s).$RANDOM"
 }
 
 _abbr_load_user_abbreviations() {
@@ -1176,38 +1176,6 @@ _abbr_load_user_abbreviations() {
   }
 }
 
-_abbr_wrap_external_commands() {
-  emulate -LR zsh
-
-  _abbr_alias() {
-    'builtin' 'alias' $@
-  }
-
-  _abbr_cat() {
-    'command' 'cat' $@
-  }
-
-  _abbr_command() {
-    'builtin' 'command' $@
-  }
-
-  _abbr_echo() {
-    'builtin' 'echo' $@
-  }
-
-  _abbr_less() {
-    'command' 'less' $@
-  }
-
-  _abbr_ls() {
-    'command' 'ls' $@
-  }
-
-  _abbr_man() {
-    'command' 'man' $@
-  }
-}
-
 # WIDGETS
 # -------
 
@@ -1261,7 +1229,6 @@ abbr() {
 typeset -i ABBR_INITIALIZING=1
 ! (( ${+NO_COLOR} )) && autoload -U colors && colors
 ABBR_SOURCE_PATH=${0:A:h}
-_abbr_wrap_external_commands
 _abbr_init
 (( ABBR_DEFAULT_BINDINGS )) &&  _abbr_bind_widgets
 unset ABBR_INITIALIZING
