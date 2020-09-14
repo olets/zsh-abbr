@@ -1,6 +1,6 @@
 # abbreviation management for zsh, inspired by fish shell and enhanced
 # https://github.com/olets/zsh-abbr
-# v4.0.1
+# v4.0.2
 # Copyright (c) 2019-2020 Henry Bley-Vroman
 
 
@@ -48,8 +48,8 @@ _abbr() {
     force=$ABBR_FORCE
     number_opts=0
     quiet=$ABBR_QUIET
-    release_date="Aug 23 2020"
-    version="zsh-abbr version 4.0.1"
+    release_date="Sept 14 2020"
+    version="zsh-abbr version 4.0.2"
 
     if ! (( ${+NO_COLOR} )); then
       error_color="$fg[red]"

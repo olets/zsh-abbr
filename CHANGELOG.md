@@ -1,3 +1,17 @@
+# [v4.0.2](https://github.com/olets/zsh-abbr/compare/v4.0.1...v4.0.2) (2020-09-14)
+
+
+### Bug Fixes
+
+* **init:** all initialization happens in function [[#22](https://github.com/olets/zsh-abbr/issues/22)] ([8bbaa84](https://github.com/olets/zsh-abbr/commit/8bbaa841254e95b22144243d317f95051be31bf0))
+
+
+### Features
+
+* **abbr_job_pop:** use command 'rm' ([15e383b](https://github.com/olets/zsh-abbr/commit/15e383b8fff34fe14cf5191fe420f86d16058bd7))
+
+
+
 # [v4.0.1](https://github.com/olets/zsh-abbr/compare/v4.0.0...v4.0.1) (2020-08-23)
 
 `abbr e -g <existing global abbreviation>` finished with the log message "regular user abbreviation". No longer! And polishes up tests.
