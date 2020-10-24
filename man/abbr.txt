@@ -261,4 +261,4 @@ AUTHORS
 
 
 
-abbr 4.0.2                     September 14 2020                   ZSH-ABBR(1)
+abbr 4.1.0                      October 24 2020                    ZSH-ABBR(1)

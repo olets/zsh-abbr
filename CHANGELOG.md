@@ -1,3 +1,15 @@
+# [v4.1.0](https://github.com/olets/zsh-abbr/compare/v4.0.2...v4.1.0) (2020-10-24)
+
+Friendlier widget names, and syntax highlighting snippets for `zsh-syntax-highlighting`.
+
+### Features
+
+* **deprecations:** reinstate support for warnings + add example forms ([73c4626](https://github.com/olets/zsh-abbr/commit/73c4626c06f6d0d7a50e83f1f32a0d614f84116e))
+* **widgets:** rename widgets, deprecate old names, add precmd ([35a2c15](https://github.com/olets/zsh-abbr/commit/35a2c155636dfd4510646fa51d80c1a9d01059c1))
+* **precmd:** add precmd logging ([35a2c15](https://github.com/olets/zsh-abbr/commit/35a2c155636dfd4510646fa51d80c1a9d01059c1))
+
+
+
 # [v4.0.2](https://github.com/olets/zsh-abbr/compare/v4.0.1...v4.0.2) (2020-09-14)
 
 
