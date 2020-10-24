@@ -919,9 +919,13 @@ _abbr_add_widgets() {
 
   _abbr_debugger
 
-  zle -N abbr-expand-and-accept
-  zle -N abbr-expand-and-space
-  zle -N abbr-expand
+  zle -N abbr-expand _abbr_widget_expand
+  zle -N abbr-expand-and-accept _abbr_widget_expand_and_accept
+  zle -N abbr-expand-and-space _abbr_widget_expand_and_space
+
+  zle -N _abbr_widget_expand
+  zle -N _abbr_widget_expand_and_accept
+  zle -N _abbr_widget_expand_and_space
 }
 
 _abbr_bind_widgets() {
@@ -930,18 +934,18 @@ _abbr_bind_widgets() {
   _abbr_debugger
 
   # spacebar expands abbreviations
-  bindkey " " abbr-expand-and-space
+  bindkey " " _abbr_widget_expand_and_space
 
   # control-spacebar is a normal space
   bindkey "^ " magic-space
 
   # when running an incremental search,
   # spacebar behaves normally and control-space expands abbreviations
-  bindkey -M isearch "^ " abbr-expand-and-space
+  bindkey -M isearch "^ " _abbr_widget_expand_and_space
   bindkey -M isearch " " magic-space
 
   # enter key expands and accepts abbreviations
-  bindkey "^M" abbr-expand-and-accept
+  bindkey "^M" _abbr_widget_expand_and_accept
 }
 
 _abbr_cmd_expansion() {
@@ -1217,7 +1221,7 @@ _abbr_precmd() {
 # WIDGETS
 # -------
 
-abbr-expand() {
+_abbr_widget_expand() {
   emulate -LR zsh
 
   local expansion
@@ -1244,7 +1248,7 @@ abbr-expand() {
   fi
 }
 
-abbr-expand-and-accept() {
+_abbr_widget_expand_and_accept() {
   emulate -LR zsh
 
   # do not support debug message
@@ -1253,16 +1257,18 @@ abbr-expand-and-accept() {
   trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
 
   if [[ -z $trailing_space ]]; then
-    zle abbr-expand
+    zle _abbr_widget_expand
   fi
+
+  _zsh_autosuggest_clear
 
   zle accept-line
 }
 
-abbr-expand-and-space() {
+_abbr_widget_expand_and_space() {
   emulate -LR zsh
 
-  abbr-expand
+  _abbr_widget_expand
   zle self-insert
 }
 
