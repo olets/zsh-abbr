@@ -887,13 +887,22 @@ _abbr() {
   }
 }
 
+_abbr_add_widgets() {
+  emulate -LR zsh
+
+  _abbr_debugger
+
+  zle -N _abbr_expand_and_accept
+  zle -N _abbr_expand_and_space
+  zle -N _abbr_expand_widget
+}
+
 _abbr_bind_widgets() {
   emulate -LR zsh
 
   _abbr_debugger
 
   # spacebar expands abbreviations
-  zle -N _abbr_expand_and_space
   bindkey " " _abbr_expand_and_space
 
   # control-spacebar is a normal space
@@ -905,7 +914,6 @@ _abbr_bind_widgets() {
   bindkey -M isearch " " magic-space
 
   # enter key expands and accepts abbreviations
-  zle -N _abbr_expand_and_accept
   bindkey "^M" _abbr_expand_and_accept
 }
 
@@ -935,30 +943,6 @@ _abbr_debugger() {
   (( ABBR_LOADING_USER_ABBREVIATIONS && ! ABBR_INITIALIZING )) && return
 
   (( ABBR_DEBUG )) && 'builtin' 'echo' - $funcstack[2]
-}
-
-_abbr_expand_and_accept() {
-  emulate -LR zsh
-
-  # do not support debug message
-
-  local trailing_space
-  trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
-
-  if [[ -z $trailing_space ]]; then
-    zle _abbr_expand_widget
-  fi
-
-  zle accept-line
-}
-
-_abbr_expand_and_space() {
-  emulate -LR zsh
-
-  # do not support debug message
-
-  zle _abbr_expand_widget
-  zle self-insert
 }
 
 _abbr_global_expansion() {
@@ -1001,6 +985,7 @@ _abbr_init() {
   _abbr_debugger
   _abbr_load_user_abbreviations
   ! (( ${+NO_COLOR} )) && autoload -U colors && colors
+  _abbr_add_widgets
   (( ABBR_DEFAULT_BINDINGS )) &&  _abbr_bind_widgets
   _abbr_job_pop $job_name
   unset ABBR_INITIALIZING
@@ -1182,6 +1167,28 @@ _abbr_load_user_abbreviations() {
 # WIDGETS
 # -------
 
+_abbr_expand_and_accept() {
+  emulate -LR zsh
+
+  # do not support debug message
+
+  local trailing_space
+  trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
+
+  if [[ -z $trailing_space ]]; then
+    zle _abbr_expand_widget
+  fi
+
+  zle accept-line
+}
+
+_abbr_expand_and_space() {
+  emulate -LR zsh
+
+  _abbr_expand_widget
+  zle self-insert
+}
+
 _abbr_expand_widget() {
   emulate -LR zsh
 
@@ -1208,8 +1215,6 @@ _abbr_expand_widget() {
     LBUFFER=$preceding_lbuffer${(Q)expansion}
   fi
 }
-
-zle -N _abbr_expand_widget
 
 
 # SHARE
