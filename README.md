@@ -478,15 +478,34 @@ By default
 
 (In incremental search mode, <kbd>Space</kbd> is a normal space and <kbd>Ctrl</kbd><kbd>Space</kbd> expands abbreviations.)
 
-Custom bindings can be set in your `.zshrc` before loading zsh-abbr. In the following example, expansion is bound to <kbd>Ctrl</kbd><kbd>a</kbd>:
+There are three available widgets:
+
+Widget | Behavior | Default binding
+---|---|---
+`_abbr_expand_and_accept` | If following an abbreviation, expands it.<br>Then accepts the line | <kbd>Enter</kbd>
+`_abbr_expand_and_space` | If following an abbreviation, expands it.<br>Then adds a space (` `) | <kbd>Space</kbd>
+`_abbr_expand_widget` | If following an abbreviation, expands it. | not bound
+
+In the following example, additional bindings are added such that <kbd>Ctrl</kbd><kbd>e</kbd> expands abbreviations without adding a trailing space and <kbd>Ctrl</kbd><kbd>a</kbd> has the same behavior as <kbd>Space</kbd>.
+
+```shell
+% cat ~/.zshrc
+# -- snip --
+bindkey "^E" _abbr_expand_widget
+bindkey "^A" _abbr_expand_and_space
+# -- snip --
+```
+
+To prevent the creation of the default bindings, set `ABBR_DEFAULT_BINDINGS` to `0` before initializing zsh-abbr. In the following example, <kbd>Ctrl</kbd><kbd>Space</kbd> expands abbreviations and <kbd>Space</kbd> is not bound to any zsh-abbr widget.
 
 ```shell
 % cat ~/.zshrc
 # -- snip --
 ABBR_DEFAULT_BINDINGS=0
-bindkey "^A" _abbr_expand_space
+bindkey "^ " _abbr_expand_and_space
 # -- snip --
 # load zsh-abbr
+# -- snip --
 ```
 
 ### Highlighting
