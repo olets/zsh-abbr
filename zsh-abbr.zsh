@@ -24,6 +24,9 @@ typeset -gi ABBR_DRY_RUN=${ABBR_DRY_RUN:-0}
 # Behave as if `--force` was passed? (default false)
 typeset -gi ABBR_FORCE=${ABBR_FORCE:-0}
 
+# Enable logging after commands, for example to warn that a deprecated widget was used?
+typeset -gi ABBR_PRECMD_LOGS=${ABBR_PRECMD_LOGS:-1}
+
 # Behave as if `--quiet` was passed? (default false)
 typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
 
@@ -53,7 +56,7 @@ _abbr() {
 
     # Deprecation notices for values that could be meaningfully set after initialization
     # Example form:
-    # (( ${+DEPRECATED_VAL} )) && _abbr_deprecated DEPRECATED_VAL VAL
+    # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
     # VAL=$DEPRECATED_VAL
 
     if ! (( ${+NO_COLOR} )); then
@@ -541,7 +544,7 @@ _abbr() {
         fi
         alias_definition+="$abbreviation='$expansion'"
 
-        print "$alias_definition"
+        'builtin' 'print' "$alias_definition"
       done
     }
 
@@ -916,9 +919,9 @@ _abbr_add_widgets() {
 
   _abbr_debugger
 
-  zle -N _abbr_expand_and_accept
-  zle -N _abbr_expand_and_space
-  zle -N _abbr_expand_widget
+  zle -N abbr-expand-and-accept
+  zle -N abbr-expand-and-space
+  zle -N abbr-expand
 }
 
 _abbr_bind_widgets() {
@@ -927,18 +930,18 @@ _abbr_bind_widgets() {
   _abbr_debugger
 
   # spacebar expands abbreviations
-  bindkey " " _abbr_expand_and_space
+  bindkey " " abbr-expand-and-space
 
   # control-spacebar is a normal space
   bindkey "^ " magic-space
 
   # when running an incremental search,
   # spacebar behaves normally and control-space expands abbreviations
-  bindkey -M isearch "^ " _abbr_expand_and_space
+  bindkey -M isearch "^ " abbr-expand-and-space
   bindkey -M isearch " " magic-space
 
   # enter key expands and accepts abbreviations
-  bindkey "^M" _abbr_expand_and_accept
+  bindkey "^M" abbr-expand-and-accept
 }
 
 _abbr_cmd_expansion() {
@@ -969,17 +972,6 @@ _abbr_debugger() {
   (( ABBR_DEBUG )) && 'builtin' 'echo' - $funcstack[2]
 }
 
-_abbr_deprecated() {
-  emulate -LR zsh
-  local message
-
-  message="$1 is deprecated. Please use $2 instead."
-  if ! (( ${+NO_COLOR} )); then
-    message="%F{yellow}$message%f"
-  fi
-  _abbr_print $message
-}
-
 _abbr_global_expansion() {
   emulate -LR zsh
 
@@ -1004,24 +996,34 @@ _abbr_init() {
 
   local job_name
 
-  typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
   typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
-  typeset -gi ABBR_INITIALIZING=1
+  typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
+  typeset -gi ABBR_INITIALIZING
+  typeset -g ABBR_PRECMD_MESSAGE
   typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
   typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
-  typeset -g ABBR_SOURCE_PATH=${0:A:h}
+  typeset -g ABBR_SOURCE_PATH
 
+  ABBR_INITIALIZING=1
+  ABBR_PRECMD_MESSAGE=
   ABBR_REGULAR_SESSION_ABBREVIATIONS=()
   ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
+  ABBR_SOURCE_PATH=${0:A:h}
 
   job_name=$(_abbr_job_name)
 
   _abbr_job_push $job_name initialization
   _abbr_debugger
+
+  'builtin' 'autoload' -Uz add-zsh-hook
+  add-zsh-hook precmd _abbr_precmd
+  ! (( ${+NO_COLOR} )) && 'builtin' 'autoload' -U colors && colors
+
   _abbr_load_user_abbreviations
-  ! (( ${+NO_COLOR} )) && autoload -U colors && colors
   _abbr_add_widgets
+  _abbr_deprecations
   (( ABBR_DEFAULT_BINDINGS )) &&  _abbr_bind_widgets
+
   _abbr_job_pop $job_name
   unset ABBR_INITIALIZING
 }
@@ -1199,32 +1201,23 @@ _abbr_load_user_abbreviations() {
   }
 }
 
-# WIDGETS
-# -------
-
-_abbr_expand_and_accept() {
+_abbr_precmd() {
   emulate -LR zsh
 
   # do not support debug message
 
-  local trailing_space
-  trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
+  (( ABBR_PRECMD_LOGS )) || return
 
-  if [[ -z $trailing_space ]]; then
-    zle _abbr_expand_widget
+  if [[ -n $ABBR_PRECMD_MESSAGE ]]; then
+    'builtin' 'print' -P $ABBR_PRECMD_MESSAGE
+    ABBR_PRECMD_MESSAGE=
   fi
-
-  zle accept-line
 }
 
-_abbr_expand_and_space() {
-  emulate -LR zsh
+# WIDGETS
+# -------
 
-  _abbr_expand_widget
-  zle self-insert
-}
-
-_abbr_expand_widget() {
+abbr-expand() {
   emulate -LR zsh
 
   local expansion
@@ -1251,6 +1244,28 @@ _abbr_expand_widget() {
   fi
 }
 
+abbr-expand-and-accept() {
+  emulate -LR zsh
+
+  # do not support debug message
+
+  local trailing_space
+  trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
+
+  if [[ -z $trailing_space ]]; then
+    zle abbr-expand
+  fi
+
+  zle accept-line
+}
+
+abbr-expand-and-space() {
+  emulate -LR zsh
+
+  abbr-expand
+  zle self-insert
+}
+
 
 # SHARE
 # -----
@@ -1265,17 +1280,104 @@ abbr() {
 # DEPRECATION
 # -----------
 
-# Deprecation notices for values that could not be meaningfully set after initialization
-# Example form:
-# (( ${+DEPRECATED_VAL} )) && _abbr_deprecated DEPRECATED_VAL VAL
-# VAL=$DEPRECATED_VAL
+_abbr_deprecations() {
+  {
+    emulate -LR zsh
 
-# Deprecation notices for functions
-# Example form:
-# deprecated_fn() {
-#   _abbr_deprecated deprecated_fn fn
-#   fn
-# }
+    _abbr_debugger
+
+    # Deprecation notices for values that could not be meaningfully set after initialization
+    # Example form:
+    # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
+    # VAL=$DEPRECATED_VAL
+
+    # Deprecation notices for functions
+    # Example form:
+    # deprecated_fn() {
+    #   _abbr_warn_deprecation deprecated_fn fn
+    #   fn
+    # }
+
+    # Deprecation notices for zle widgets
+    _abbr_deprecations:widgets() {
+      _abbr_debugger
+
+      local bindkey_declaration
+      local bindkey_declarations
+      local replacement
+      local deprecated
+      local -A deprecated_widgets
+
+      bindkey_declarations=$(bindkey)
+
+      deprecated_widgets[_abbr_expand_and_accept]=abbr-expand-and-accept
+      deprecated_widgets[_abbr_expand_and_space]=abbr-expand-and-space
+      deprecated_widgets[_abbr_expand_widget]=abbr-expand
+
+      for deprecated replacement in ${(kv)deprecated_widgets}; do
+        bindkey_declaration=$(echo $bindkey_declarations | grep $deprecated)
+
+        zle -N $deprecated
+
+        if [[ -n $bindkey_declaration ]]; then
+          _abbr_warn_deprecation $deprecated $replacement "bindkey $bindkey_declaration"
+        fi
+      done
+    }
+
+    _abbr_deprecations:widgets
+  } always {
+    unfunction -m _abbr_deprecations:widgets
+  }
+}
+
+_abbr_warn_deprecation() {
+  emulate -LR zsh
+
+  _abbr_debugger
+
+  local callstack
+  local deprecated
+  local message
+  local replacement
+
+  deprecated=$1
+  replacement=$2
+  callstack=$3
+
+  message="$deprecated is deprecated. Please use $replacement instead."
+
+  if [[ -n $callstack ]]; then
+    message+="\\nCalled by \`$callstack\`"
+  fi
+
+  if ! (( ${+NO_COLOR} )); then
+    message="%F{yellow}$message%f"
+  fi
+
+  'builtin' 'print' -P $message
+}
+
+_abbr_expand_and_accept() {
+  emulate -LR zsh
+
+  ABBR_PRECMD_MESSAGE+="\\n$(_abbr_warn_deprecation _abbr_expand_and_accept abbr-expand-and-accept)"
+  abbr-expand-and-accept
+}
+
+_abbr_expand_and_space() {
+  emulate -LR zsh
+
+  ABBR_PRECMD_MESSAGE+="\\n$(_abbr_warn_deprecation _abbr_expand_and_space abbr-expand-and-space)"
+  abbr-expand-and-space
+}
+
+_abbr_expand_widget() {
+  emulate -LR zsh
+
+  ABBR_PRECMD_MESSAGE+="\\n$(_abbr_warn_deprecation _abbr_expand_widget abbr-expand)"
+  abbr-expand
+}
 
 
 # INITIALIZATION
