@@ -491,6 +491,8 @@ bindkey "^A" _abbr_expand_space
 
 ### Highlighting
 
+[fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting) users see [#24](https://github.com/olets/zsh-abbr/issues/24).
+
 To highlight user abbreviations that will expand, [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) users can add these lines to `.zshrc` *below* where zsh-abbr is loaded.
 
 Replace `<styles for global abbreviations>` with a [zsh character highlighting](http://zsh.sourceforge.net/Doc/Release/Zsh-Line-Editor.html#Character-Highlighting) string (start at "The available types of highlighting are the following."). For example `fg=blue`, `fg=blue,bg=red,bold`, etc.
@@ -499,17 +501,15 @@ Linux:
 
 ```shell
 ZSH_HIGHLIGHT_REGEXP+=('^[[:blank:][:space:]]*('"${(j:|:)${(k)ABBR_REGULAR_USER_ABBREVIATIONS}}"')$' <styles for regular abbreviations>)
-ZSH_HIGHLIGHT_REGEXP+=('\<('${(j:|:)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS}}')$' <styles for global abbreviations>)
+ZSH_HIGHLIGHT_REGEXP+=('\<('"${(j:|:)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS}}"')$' <styles for global abbreviations>)
 ```
 
 macOS:
 
 ```shell
-ZSH_HIGHLIGHT_REGEXP=('^[[:blank:][:space:]]*('${(j:|:)${(k)ABBR_REGULAR_USER_ABBREVIATIONS}}')$' <styles for regular abbreviations>)
-ZSH_HIGHLIGHT_REGEXP+=('[[:<:]]('${(j:|:)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS}}')$' <styles for global abbreviations>)
+ZSH_HIGHLIGHT_REGEXP=('^[[:blank:][:space:]]*('"${(j:|:)${(k)ABBR_REGULAR_USER_ABBREVIATIONS}}"')$' <styles for regular abbreviations>)
+ZSH_HIGHLIGHT_REGEXP+=('[[:<:]]('"${(j:|:)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS}}"')$' <styles for global abbreviations>)
 ```
-
- [fast-syntax-highlighting](https://github.com/zdharma/fast-syntax-highlighting) users see [#24](https://github.com/olets/zsh-abbr/issues/24).
 
 ## Performance
 
