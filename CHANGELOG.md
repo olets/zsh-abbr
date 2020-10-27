@@ -1,3 +1,12 @@
+# [v4.1.1](https://github.com/olets/zsh-abbr/compare/v4.1.0...v4.1.1) (2020-10-27)
+
+
+### Bug Fixes
+
+* **homebrew:** shas match (empty) [[#27](https://github.com/olets/zsh-abbr/issues/27)] ([97b5fc2](https://github.com/olets/zsh-abbr/commit/97b5fc25205614d85b6a53f72b997935afa20d93))
+
+
+
 # [v4.1.0](https://github.com/olets/zsh-abbr/compare/v4.0.2...v4.1.0) (2020-10-24)
 
 Friendlier widget names, and syntax highlighting snippets for `zsh-syntax-highlighting`.
