@@ -1260,7 +1260,7 @@ _abbr_widget_expand_and_accept() {
     zle _abbr_widget_expand
   fi
 
-  _zsh_autosuggest_clear
+  'builtin' 'command' -v _zsh_autosuggest_clear &>/dev/null && _zsh_autosuggest_clear
 
   zle accept-line
 }
