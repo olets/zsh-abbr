@@ -1,3 +1,11 @@
+# [v4.1.2](https://github.com/olets/zsh-abbr/compare/v4.1.1...v4.1.2) (2020-11-02)
+
+
+### Bug Fixes
+
+* **expand and accept:** autosuggestions not required [[#28](https://github.com/olets/zsh-abbr/issues/28)] ([7cdc57a](https://github.com/olets/zsh-abbr/commit/7cdc57a58f83b9ec929fdfd955716df97ee58919))
+
+
 # [v4.1.1](https://github.com/olets/zsh-abbr/compare/v4.1.0...v4.1.1) (2020-10-27)
 
 
