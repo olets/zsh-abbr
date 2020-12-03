@@ -326,6 +326,9 @@ _abbr() {
             value=${(q)value}
           fi
 
+          type="git"
+          _abbr:util_add "$key" "$value"
+
           type="global"
           _abbr:util_add "g$key" "git $value"
 
@@ -456,7 +459,18 @@ _abbr() {
       fi
 
       if [[ $scope == 'session' ]]; then
-        if [[ $type == 'global' ]]; then
+        if [[ $type == 'git' ]]; then
+          if ! (( ${+ABBR_GIT_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+            _abbr:util_check_command $abbreviation || return
+            typed_scope=$(_abbr:util_set_to_typed_scope ABBR_GIT_SESSION_ABBREVIATIONS)
+
+            if ! (( dry_run )); then
+              ABBR_GIT_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
+            fi
+
+            success=1
+          fi
+        elif [[ $type == 'global' ]]; then
           if ! (( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
             _abbr:util_check_command $abbreviation || return
             typed_scope=$(_abbr:util_set_to_typed_scope ABBR_GLOBAL_SESSION_ABBREVIATIONS)
@@ -478,7 +492,23 @@ _abbr() {
           success=1
         fi
       else
-        if [[ $type == 'global' ]]; then
+        if [[ $type == 'git' ]]; then
+          if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
+            source ${ABBR_TMPDIR}git-user-abbreviations
+          fi
+
+          if ! (( ${+ABBR_GIT_USER_ABBREVIATIONS[$abbreviation]} )); then
+            _abbr:util_check_command $abbreviation || return
+            typed_scope=$(_abbr:util_set_to_typed_scope ABBR_GIT_USER_ABBREVIATIONS)
+
+            if ! (( dry_run )); then
+              ABBR_GIT_USER_ABBREVIATIONS[$abbreviation]=$expansion
+              _abbr:util_sync_user
+            fi
+
+            success=1
+          fi
+        elif [[ $type == 'global' ]]; then
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
             source ${ABBR_TMPDIR}global-user-abbreviations
           fi
@@ -729,6 +759,12 @@ _abbr() {
 
       user_updated=$(mktemp ${ABBR_TMPDIR}regular-user-abbreviations_updated.XXXXXX)
 
+      typeset -p ABBR_GIT_USER_ABBREVIATIONS > ${ABBR_TMPDIR}git-user-abbreviations
+      for abbreviation in ${(iko)ABBR_GIT_USER_ABBREVIATIONS}; do
+        expansion=${ABBR_GIT_USER_ABBREVIATIONS[$abbreviation]}
+        'builtin' 'echo' "abbr -g ${abbreviation}=${(qqq)${(Q)expansion}}" >> "$user_updated"
+      done
+
       typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${ABBR_TMPDIR}global-user-abbreviations
       for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
         expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
@@ -798,6 +834,9 @@ _abbr() {
         "-f")
           force=1
           ((number_opts++))
+          ;;
+        "--git")
+          _abbr:util_set_once type git
           ;;
         "--global"|\
         "-g")
@@ -976,6 +1015,25 @@ _abbr_debugger() {
   (( ABBR_DEBUG )) && 'builtin' 'echo' - $funcstack[2]
 }
 
+_abbr_git_expansion() {
+  emulate -LR zsh
+
+  # cannout support debug message
+
+  local abbreviation
+  local expansion
+
+  abbreviation=$1
+  expansion=${ABBR_GIT_SESSION_ABBREVIATIONS[$abbreviation]}
+
+  if [[ ! $expansion ]]; then
+    # source ${ABBR_TMPDIR}git-user-abbreviations
+    expansion=${ABBR_GIT_USER_ABBREVIATIONS[$abbreviation]}
+  fi
+
+  'builtin' 'echo' - $expansion
+}
+
 _abbr_global_expansion() {
   emulate -LR zsh
 
@@ -1000,6 +1058,8 @@ _abbr_init() {
 
   local job_name
 
+  typeset -gA ABBR_GIT_SESSION_ABBREVIATIONS
+  typeset -gA ABBR_GIT_USER_ABBREVIATIONS
   typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
   typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
   typeset -gi ABBR_INITIALIZING
@@ -1146,6 +1206,10 @@ _abbr_load_user_abbreviations() {
       if ! [[ -f ${ABBR_TMPDIR}global-user-abbreviations ]]; then
         touch ${ABBR_TMPDIR}global-user-abbreviations
       fi
+
+      if ! [[ -f ${ABBR_TMPDIR}git-user-abbreviations ]]; then
+        touch ${ABBR_TMPDIR}git-user-abbreviations
+      fi
     }
 
     function _abbr_load_user_abbreviations:load() {
@@ -1235,6 +1299,8 @@ _abbr_widget_expand() {
 
   if [[ $word_count == 1 ]]; then
     expansion=$(_abbr_cmd_expansion $word)
+  elif [[ ${words[1]} == 'git' ]]; then
+    expansion=$(_abbr_git_expansion $word)
   fi
 
   if [[ ! $expansion ]]; then
