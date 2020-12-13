@@ -97,10 +97,12 @@ Commands
               Adds abbreviations exported from fish.
 
 
-       o      import-git-aliases
+       o      import-git-aliases [--file <config-file>]
 
               Adds two abbreviations for each git alias: a  regular  abbrevia-
-              tion, and a "g"-prefixed global abbreviation.
+              tion,  and a "g"-prefixed global abbreviation. Use `--file <con-
+              fig-file>` to use a config file instead of the one specified  by
+              GIT_CONFIG (see `man git-config`).
 
 
        o      abbr list

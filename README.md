@@ -286,10 +286,12 @@ zsh-abbr has commands to add, rename, and erase abbreviations; to add abbreviati
 - **`import-git-aliases`**
 
   ```shell
-  abbr import-git-aliases [--dry-run] [--quiet]
+  abbr [--dry-run] [--quiet] import-git-aliases [--file <config-file>]
   ```
 
   Add two abbreviations for every Git alias available in the current session: a global abbreviation where the WORD is prefixed with `g`, and a command abbreviation. For both the EXPANSION is prefixed with `git[Space]`.
+
+  Use `--file <config-file>` to use a config file instead of the one specified by GIT_CONFIG (see `man git-config`).
 
   Use the **--session**  or **-S** scope flag to create session abbreviations. Otherwise, or if the **--user** or **-U** scope flag is used, the Git abbreviations will be user.
 

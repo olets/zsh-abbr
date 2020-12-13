@@ -300,16 +300,27 @@ _abbr() {
     _abbr:import_git_aliases() {
       _abbr_debugger
 
+      local config_file
       local git_alias
-      local git_aliases
+      local -a git_aliases
 
-      if [[ $# > 0 ]]; then
+      if [[ ($# != 0 && $# != 2) || ($# == 2 && $1 != "--file") ]]; then
         _abbr:util_error "abbr import-git-aliases: Unexpected argument"
         return
       fi
 
-      typeset -a git_aliases
-      git_aliases=( ${(ps|\nalias.|)"$(git config --get-regexp '^alias\.')"} )
+      if [[ -n $1 ]]; then
+        config_file=$2
+
+        if [[ ! -f $config_file ]]; then
+          _abbr:util_error "abbr import-git-aliases: Config file not found"
+          return
+        fi
+
+        git_aliases=( ${(ps|\nalias.|)"$(git config --file $config_file --get-regexp '^alias\.')"} )
+      else
+        git_aliases=( ${(ps|\nalias.|)"$(git config --get-regexp '^alias\.')"} )
+      fi
 
       for git_alias in $git_aliases; do
         key=${${git_alias%% *}#alias.}
