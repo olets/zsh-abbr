@@ -1,3 +1,14 @@
+# [4.2.0](https://github.com/olets/zsh-abbr/compare/v4.1.2...v4.2.0) (2020-12-13)
+
+
+### Features
+
+* **add:** logs always include type and scope ([70ee858](https://github.com/olets/zsh-abbr/commit/70ee8580402bc7ce766ecfac4f57c22bf0ec8f3d))
+* **import-git-aliases:** respect multiline Git aliases ([#30](https://github.com/olets/zsh-abbr/issues/30) / PR [#31](https://github.com/olets/zsh-abbr/issues/31)) by [@henrebotha](https://github.com/olets/zsh-abbr/commits?author=henrebotha) ([5deee28](https://github.com/olets/zsh-abbr/commit/5deee288b1c29441358922f437b9e04c2d99c86d))
+* **import-git-aliases:** support specifying config file path ([31fca3f](https://github.com/olets/zsh-abbr/commit/31fca3f21103c2ddcb02b69b6d4c62a3fc7b988c))
+
+
+
 # [v4.1.2](https://github.com/olets/zsh-abbr/compare/v4.1.1...v4.1.2) (2020-11-02)
 
 
