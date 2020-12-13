@@ -309,7 +309,7 @@ _abbr() {
       fi
 
       typeset -a git_aliases
-      git_aliases=( ${(f)"$(git config --get-regexp '^alias\.')"} )
+      git_aliases=( ${(ps|\nalias.|)"$(git config --get-regexp '^alias\.')"} )
 
       for git_alias in $git_aliases; do
         key=${${git_alias%% *}#alias.}
