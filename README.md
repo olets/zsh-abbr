@@ -536,6 +536,15 @@ ZSH_HIGHLIGHT_REGEXP=('^[[:blank:][:space:]]*('"${(j:|:)${(k)ABBR_REGULAR_USER_A
 ZSH_HIGHLIGHT_REGEXP+=('[[:<:]]('"${(j:|:)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS}}"')$' <styles for global abbreviations>)
 ```
 
+### vi mode compatibility
+
+Switching to vi mode —with plain old `bindkey -v` or with plugin vi/Vim mode plugin that calls `bindkey -v` — will wipe out the keybindings zsh-abbr's interactive behavior relies on. If you use vi mode, enable it before initializing zsh-abbr. For example, the simplest `.zshrc` for a zinit user would be
+
+```shell
+bindkey -v
+zinit light olets/zsh-abbr
+```
+
 ## Performance
 
 Snapshot with macOS 10.15 on early-2015 MacBook Pro (2.9 GHz Intel Core i5, 16 GB 1867 MHz DDR3), zsh 5.8, zinit 3.1, iTerm2 3.3.12. Profiled with `zprof`.
