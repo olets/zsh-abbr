@@ -1,0 +1,8 @@
+[alias]
+	test-subcommand = status
+	test-subcommand-multiword = checkout main
+	test-command = !git status
+	test-function = ! "f() { git status }; f"
+	test-function-multiline = ! "f() { \n\
+		git status \n\
+	}; f"

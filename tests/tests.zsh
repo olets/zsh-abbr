@@ -368,6 +368,77 @@ echo $message
 abbr erase $test_abbr_abbreviation
 echo
 
+abbr import-git-aliases --file ${0:A:h}/test-gitconfig
+
+test="Can import single-word subcommand Git aliases"
+dependencies="erase"
+if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[test-subcommand]} == "git status" ]] \
+	&& [[ ${(Q)ABBR_GLOBAL_USER_ABBREVIATIONS[gtest-subcommand]} == "git status" ]] ; then
+	(( successes++ ))
+	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
+else
+	(( failures++ ))
+	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
+fi
+echo $message
+abbr erase test-subcommand
+abbr erase gtest-subcommand
+echo
+
+test="Can import multi-word subcommand Git aliases"
+dependencies="erase"
+if [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[test-subcommand-multiword]} == "git checkout main" ]] \
+	&& [[ ${(Q)ABBR_GLOBAL_USER_ABBREVIATIONS[gtest-subcommand-multiword]} == "git checkout main" ]] ; then
+	(( successes++ ))
+	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
+else
+	(( failures++ ))
+	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
+fi
+echo $message
+abbr erase test-subcommand-multiword
+abbr erase gtest-subcommand-multiword
+echo
+
+test="Cannot import command Git aliases"
+dependencies="erase"
+if (( ! ${+ABBR_REGULAR_USER_ABBREVIATIONS[test-command]} )) \
+	&& (( ! ${+ABBR_GLOBAL_USER_ABBREVIATIONS[gtest-command]} )); then
+	(( successes++ ))
+	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
+else
+	(( failures++ ))
+	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
+fi
+echo $message
+echo
+
+test="Cannot import single-line function Git aliases"
+dependencies="erase"
+if (( ! ${+ABBR_REGULAR_USER_ABBREVIATIONS[test-function]} )) \
+	&& (( ! ${+ABBR_GLOBAL_USER_ABBREVIATIONS[gtest-function]} )); then
+	(( successes++ ))
+	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
+else
+	(( failures++ ))
+	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
+fi
+echo $message
+echo
+
+test="Cannot import multi-line function Git aliases"
+dependencies="erase"
+if (( ! ${+ABBR_REGULAR_USER_ABBREVIATIONS[test-function-multiline]} )) \
+	&& (( ! ${+ABBR_GLOBAL_USER_ABBREVIATIONS[gtest-function-multiline]} )); then
+	(( successes++ ))
+	message="$fg[green]PASS$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
+else
+	(( failures++ ))
+	message="$fg[red]FAIL$reset_color $test${dependencies:+\\nDependencies: $dependencies}"
+fi
+echo $message
+echo
+
 echo $(( successes + failures )) tests run
 echo $successes tests succeeded
 echo $failures test failed
