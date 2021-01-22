@@ -223,6 +223,52 @@ ztr test '(( ! ${+ABBR_REGULAR_USER_ABBREVIATIONS[test-function-multiline]} )) \
 	"Cannot import multi-line function Git aliases" \
 	"Dependencies: erase"
 
+ztr skip '@TODO' \
+	"Can add a multi-word abbreviation"
+
+ztr skip '@TODO' \
+	"Can add multiple multi-word abbreviations"
+
+ztr skip '@TODO' \
+	"Can add multi-word abbreviations which reuse abbreviations"
+
+# things are getting shuffled :(
+#
+# abbr a=b && abbr
+# "a"="b"
+#
+# abbr "a c"=d && abbr
+# "a c"="d"
+# "a"="b"
+#
+# abbr c=e && abbr
+# "a c"="a"
+# "b"="d"
+# "c"="e"
+#
+# abbr x=y && abbr
+# "a c"="a"
+# "b"="c"
+# "d"="e"
+# "x"="y"
+
+# ztr skip 'abbr "\'a"=…' \
+# 	"Double-quoted single quotes in the abbreviation are preserved"
+
+# ztr skip 'abbr \\'"a\'=…' \
+# 	"Single-quoted double quotes in the abbreviation are preserved"
+
+ztr skip '@TODO' \
+	"Bare single quotes at the start of the abbreviation are swallowed"
+
+ztr skip '@TODO' \
+	"Bare single quotes in the middle of the abbreviation are swallowed"
+
+ztr skip '@TODO' \
+	"Bare double quotes at the start of the abbreviation are swallowed"
+
+ztr skip '@TODO' \
+	"Bare double quotes in the middle of the abbreviation are swallowed"
 
 ### ### ### All tests must be above this line ### ### ###
 
