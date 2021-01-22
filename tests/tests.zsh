@@ -85,7 +85,8 @@ test_name="Can rename an abbreviation"
 dependencies="erase"
 abbr $test_abbr_abbreviation=$test_abbr_expansion
 abbr rename $test_abbr_abbreviation ${test_abbr_abbreviation}_new
-run '! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation]} )) && [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[${test_abbr_abbreviation}_new]} == $test_abbr_expansion ]]'
+run '! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation]} )) \
+	&& [[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[${test_abbr_abbreviation}_new]} == $test_abbr_expansion ]]'
 abbr erase ${test_abbr_abbreviation}_new
 
 test_name="Double-quoted single quotes in the expansion are preserved"
@@ -214,13 +215,15 @@ abbr import-git-aliases --file ${0:A:h}/test-gitconfig
 
 test_name="Can import single-word subcommand Git aliases"
 dependencies="erase"
-run '[[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[test-subcommand]} == "git status" ]] && [[ ${(Q)ABBR_GLOBAL_USER_ABBREVIATIONS[gtest-subcommand]} == "git status" ]]'
+run '[[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[test-subcommand]} == "git status" ]] \
+	&& [[ ${(Q)ABBR_GLOBAL_USER_ABBREVIATIONS[gtest-subcommand]} == "git status" ]]'
 abbr erase test-subcommand
 abbr erase gtest-subcommand
 
 test_name="Can import multi-word subcommand Git aliases"
 dependencies="erase"
-run '[[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[test-subcommand-multiword]} == "git checkout main" ]] && [[ ${(Q)ABBR_GLOBAL_USER_ABBREVIATIONS[gtest-subcommand-multiword]} == "git checkout main" ]]'
+run '[[ ${(Q)ABBR_REGULAR_USER_ABBREVIATIONS[test-subcommand-multiword]} == "git checkout main" ]] \
+	&& [[ ${(Q)ABBR_GLOBAL_USER_ABBREVIATIONS[gtest-subcommand-multiword]} == "git checkout main" ]]'
 abbr erase test-subcommand-multiword
 abbr erase gtest-subcommand-multiword
 
