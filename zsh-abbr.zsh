@@ -1107,7 +1107,7 @@ _abbr_job_push() {
       'builtin' 'echo' "If you believe it reflects a abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
       'builtin' 'echo'
 
-      rm $next_job_path &>/dev/null
+      'command' 'rm' $next_job_path &>/dev/null
     }
 
     function _abbr_job_push:wait_turn() {
