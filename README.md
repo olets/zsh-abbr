@@ -547,6 +547,15 @@ bindkey -v
 zinit light olets/zsh-abbr
 ```
 
+## macOS System Text Substitutions
+
+To have your global macOS text substitutions available in the shell, add the following snippet to `.zshrc`
+
+```shell
+for substitution in ${(@f)"$(defaults read ~/Library/Preferences/.GlobalPreferences.plist NSUserDictionaryReplacementItems | plutil -convert json -o - - | jq -r "map({ (.replace): .with}) | add | to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]")"}; do
+  abbr add --session --global --quiet "$substitution"
+done
+```
 ## Performance
 
 Snapshot with macOS 10.15 on early-2015 MacBook Pro (2.9 GHz Intel Core i5, 16 GB 1867 MHz DDR3), zsh 5.8, zinit 3.1, iTerm2 3.3.12. Profiled with `zprof`.
