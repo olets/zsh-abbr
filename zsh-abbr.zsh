@@ -619,6 +619,10 @@ _abbr() {
       # Warn if abbreviation would interfere with system command use, e.g. `cp="git cherry-pick"`
       # Apply force to add regardless
       if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
+        if (( force && quiet )); then
+          return 0
+        fi
+
         cmd=$('builtin' 'command' -v $abbreviation)
 
         if [[ $cmd && ${cmd:0:6} != 'alias ' ]]; then
