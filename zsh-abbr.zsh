@@ -939,10 +939,18 @@ _abbr_add_widgets() {
 
   zle -N abbr-expand _abbr_widget_expand
   zle -N abbr-expand-and-accept _abbr_widget_expand_and_accept
+  zle -N abbr-expand-and-accept-and-down-history _abbr_widget_expand_and_accept_and_down_history
+  zle -N abbr-expand-and-accept-and-hold _abbr_widget_expand_and_accept_and_hold
+  zle -N abbr-expand-and-accept-and-infer-next-history _abbr_widget_expand_and_accept_and_infer_next_history
+  zle -N abbr-expand-and-accept-and-menu-complete _abbr_widget_expand_and_accept_and_menu_complete
   zle -N abbr-expand-and-space _abbr_widget_expand_and_space
 
   zle -N _abbr_widget_expand
   zle -N _abbr_widget_expand_and_accept
+  zle -N _abbr_widget_expand_and_accept_and_down_history
+  zle -N _abbr_widget_expand_and_accept_and_hold
+  zle -N _abbr_widget_expand_and_accept_and_infer_next_history
+  zle -N _abbr_widget_expand_and_accept_and_menu_complete
   zle -N _abbr_widget_expand_and_space
 }
 
@@ -1271,16 +1279,69 @@ _abbr_widget_expand_and_accept() {
 
   # do not support debug message
 
-  local trailing_space
-  trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
-
-  if [[ -z $trailing_space ]]; then
+  if [[ -z ${LBUFFER##*[^[:IFSSPACE:]]} ]]; then
     zle _abbr_widget_expand
   fi
 
   'builtin' 'command' -v _zsh_autosuggest_clear &>/dev/null && _zsh_autosuggest_clear
 
   zle accept-line
+}
+
+_abbr_widget_expand_and_accept_and_down_history() {
+  emulate -LR zsh
+
+  # do not support debug message
+
+  if [[ -z ${LBUFFER##*[^[:IFSSPACE:]]} ]]; then
+    zle _abbr_widget_expand
+  fi
+
+  'builtin' 'command' -v _zsh_autosuggest_clear &>/dev/null && _zsh_autosuggest_clear
+
+  zle accept-line-and-down-history
+}
+
+_abbr_widget_expand_and_accept_and_hold() {
+  emulate -LR zsh
+
+  # do not support debug message
+
+  if [[ -z ${LBUFFER##*[^[:IFSSPACE:]]} ]]; then
+    zle _abbr_widget_expand
+  fi
+
+  'builtin' 'command' -v _zsh_autosuggest_clear &>/dev/null && _zsh_autosuggest_clear
+
+  zle accept-and-hold
+}
+
+_abbr_widget_expand_and_accept_and_infer_next_history() {
+  emulate -LR zsh
+
+  # do not support debug message
+
+  if [[ -z ${LBUFFER##*[^[:IFSSPACE:]]} ]]; then
+    zle _abbr_widget_expand
+  fi
+
+  'builtin' 'command' -v _zsh_autosuggest_clear &>/dev/null && _zsh_autosuggest_clear
+
+  zle accept-and-infer-next-history
+}
+
+_abbr_widget_expand_and_accept_and_menu_complete() {
+  emulate -LR zsh
+
+  # do not support debug message
+
+  if [[ -z ${LBUFFER##*[^[:IFSSPACE:]]} ]]; then
+    zle _abbr_widget_expand
+  fi
+
+  'builtin' 'command' -v _zsh_autosuggest_clear &>/dev/null && _zsh_autosuggest_clear
+
+  zle accept-and-menu-complete
 }
 
 _abbr_widget_expand_and_space() {
