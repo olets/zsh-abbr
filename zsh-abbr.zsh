@@ -51,8 +51,8 @@ _abbr() {
     force=$ABBR_FORCE
     number_opts=0
     quiet=$ABBR_QUIET
-    release_date="Nov 2 2020"
-    version="zsh-abbr version 4.2.0"
+    release_date="Feb 28 2021"
+    version="zsh-abbr version 4.2.1"
 
     # Deprecation notices for values that could be meaningfully set after initialization
     # Example form:

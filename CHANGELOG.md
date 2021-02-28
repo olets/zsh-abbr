@@ -1,3 +1,13 @@
+# [4.2.1](https://github.com/olets/zsh-abbr/compare/v4.2.0...v4.2.1) (2021-02-28)
+
+
+### Features
+
+* **echo:** always use builtin ([093269a](https://github.com/olets/zsh-abbr/commit/093269a6a687dd28cb4d5c5122809725c8724998))
+* **tests:** new harness + support skipping ([b884a9f](https://github.com/olets/zsh-abbr/commit/b884a9f533c6f2ca1bd696ad056e06c6257b0bff))
+* **rm:** Make sure "rm" is run as command and not as alias, by [@hojerst](https://github.com/olets/zsh-abbr/commits?author=hojerst)) ([d275169](https://github.com/olets/zsh-abbr/commit/d275169fe16be53dcaad93e4ad18d1bb1d11d542))
+
+
 # [4.2.0](https://github.com/olets/zsh-abbr/compare/v4.1.2...v4.2.0) (2020-12-13)
 
 
