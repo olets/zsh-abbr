@@ -768,7 +768,7 @@ _abbr() {
       local abbreviations_set
       abbreviations_set=$1
 
-      echo ${${${${abbreviations_set:l}%s}#abbr_}//_/ }
+      'builtin' 'echo' ${${${${abbreviations_set:l}%s}#abbr_}//_/ }
     }
 
     _abbr:util_usage() {
@@ -1339,7 +1339,7 @@ _abbr_deprecations() {
       deprecated_widgets[_abbr_expand_widget]=abbr-expand
 
       for deprecated replacement in ${(kv)deprecated_widgets}; do
-        bindkey_declaration=$(echo $bindkey_declarations | grep $deprecated)
+        bindkey_declaration=$('builtin' 'echo' $bindkey_declarations | grep $deprecated)
 
         zle -N $deprecated
 
