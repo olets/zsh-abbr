@@ -549,11 +549,13 @@ zinit light olets/zsh-abbr
 
 ## Performance
 
-Snapshot with macOS 10.15 on early-2015 MacBook Pro (2.9 GHz Intel Core i5, 16 GB 1867 MHz DDR3), zsh 5.8, zinit 3.1, iTerm2 3.3.12. Profiled with `zprof`.
+zsh-abbr will not affect time between prompts. The following is the impact of zsh-abbr on time to start a new session, profiled with `zprof` and `zinit light olets/zsh-abbr`.
 
-`zinit light olets/zsh-abbr` adds roughly 120ms to the time it takes a new terminal session to load; each user abbreviation adds roughly another 1ms.
+Machine | Initialization overhead | Time per user abbreviation
+---|---|---
+macOS 10.15 on early-2015 MacBook Pro (2.9 GHz Intel Core i5, 16 GB), zsh 5.8, zinit 3.1, iTerm2 3.3.12 | Approx. 120ms | Approx. 1ms
+macOS 11.2.1 on 2020 MacBook Pro (M1, 16 GB), zsh 5.8, zinit 3.7, iTerm 3.4.4 | Approx. 40ms | Under 1ms
 
-zsh-abbr will not affect time between prompts.
 
 ## Uninstalling
 
