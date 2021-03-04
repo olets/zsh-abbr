@@ -549,11 +549,11 @@ zinit light olets/zsh-abbr
 
 ## macOS System Text Substitutions
 
-To have your global macOS text substitutions available in the shell, add the following snippet to `.zshrc`
+The following snippet will make your global macOS text substitutions available in the shell.
 
 ```shell
-for substitution in ${(@f)"$(defaults read ~/Library/Preferences/.GlobalPreferences.plist NSUserDictionaryReplacementItems | plutil -convert json -o - - | jq -r "map({ (.replace): .with}) | add | to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]")"}; do
-  abbr add --session --global --quiet "$substitution"
+for substitution in ${(f)"$(defaults read ~/Library/Preferences/.GlobalPreferences.plist NSUserDictionaryReplacementItems | plutil -convert json -o - - | jq -r 'to_entries[] | "\(.value.replace)=\(.value.with)"')"}; do
+  abbr add [options] "$substitution"
 done
 ```
 ## Performance
