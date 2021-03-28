@@ -11,5 +11,5 @@ This project loosely follows the [Angular commit message conventions](https://do
 The test suite uses [zsh-test-runner](https://github.com/olets/zsh-test-runner). Run with test suite with
 
 ```shell
-. ./tests/tests.zsh
+. ./tests/abbr.ztr
 ```

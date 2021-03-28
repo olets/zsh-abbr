@@ -600,7 +600,7 @@ Check the [Issues](https://github.com/olets/zsh-abbr/issues) to see if your topi
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
 
-The test suite uses [zsh-test-runner](https://github.com/olets/zsh-test-runner). Run with test suite with `. ./tests/tests.zsh`.
+The test suite uses [zsh-test-runner](https://github.com/olets/zsh-test-runner). Run with test suite with `. ./tests/abbr.ztr`.
 
 ## License
 
