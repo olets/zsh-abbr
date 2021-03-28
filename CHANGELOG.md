@@ -1,3 +1,11 @@
+# [4.3.0](https://github.com/olets/zsh-abbr/compare/v4.3.0...v4.3.0) (2021-03-28)
+
+
+### Features
+
+* **tests:** use zsh-test-runner (ztr) ([da2b0b9](https://github.com/olets/zsh-abbr/commit/da2b0b989b57e0828a766f330ccc0b2df889f8e3))
+
+
 # [4.2.1](https://github.com/olets/zsh-abbr/compare/v4.2.0...v4.2.1) (2021-02-28)
 
 
