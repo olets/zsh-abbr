@@ -547,6 +547,15 @@ bindkey -v
 zinit light olets/zsh-abbr
 ```
 
+## macOS System Text Substitutions
+
+The following snippet will make your global macOS text substitutions available in the shell.
+
+```shell
+for substitution in ${(f)"$(defaults read ~/Library/Preferences/.GlobalPreferences.plist NSUserDictionaryReplacementItems | plutil -convert json -o - - | jq -r 'to_entries[] | "\(.value.replace)=\(.value.with)"')"}; do
+  abbr add [options] "$substitution"
+done
+```
 ## Performance
 
 zsh-abbr will not affect time between prompts. The following is the impact of zsh-abbr on time to start a new session, profiled with `zprof` and `zinit light olets/zsh-abbr`.
