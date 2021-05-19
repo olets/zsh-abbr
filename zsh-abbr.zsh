@@ -31,7 +31,7 @@ typeset -gi ABBR_PRECMD_LOGS=${ABBR_PRECMD_LOGS:-1}
 typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
 
 # Temp files are stored in
-typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${TMPDIR:-/tmp/}zsh-abbr/}
+typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr}
 
 # File abbreviations are stored in
 typeset -g ABBR_USER_ABBREVIATIONS_FILE=${ABBR_USER_ABBREVIATIONS_FILE:-$HOME/.config/zsh/abbreviations}
@@ -146,7 +146,7 @@ _abbr() {
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-            source ${ABBR_TMPDIR}global-user-abbreviations
+            source ${ABBR_TMPDIR}/global-user-abbreviations
           fi
 
           if (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
@@ -157,7 +157,7 @@ _abbr() {
 
         if [[ $type != 'global' ]]; then
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-            source ${ABBR_TMPDIR}regular-user-abbreviations
+            source ${ABBR_TMPDIR}/regular-user-abbreviations
           fi
 
           if (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
@@ -497,7 +497,7 @@ _abbr() {
           typed_scope=$(_abbr:util_set_to_typed_scope ABBR_GLOBAL_USER_ABBREVIATIONS)
 
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-            source ${ABBR_TMPDIR}global-user-abbreviations
+            source ${ABBR_TMPDIR}/global-user-abbreviations
           fi
 
           if ! (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
@@ -514,7 +514,7 @@ _abbr() {
           typed_scope=$(_abbr:util_set_to_typed_scope ABBR_REGULAR_USER_ABBREVIATIONS)
 
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-            source ${ABBR_TMPDIR}regular-user-abbreviations
+            source ${ABBR_TMPDIR}/regular-user-abbreviations
           fi
 
           if ! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
@@ -745,15 +745,15 @@ _abbr() {
       local expansion
       local user_updated
 
-      user_updated=$(mktemp ${ABBR_TMPDIR}regular-user-abbreviations_updated.XXXXXX)
+      user_updated=$(mktemp ${ABBR_TMPDIR}/regular-user-abbreviations_updated.XXXXXX)
 
-      typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${ABBR_TMPDIR}global-user-abbreviations
+      typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${ABBR_TMPDIR}/global-user-abbreviations
       for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
         expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
         'builtin' 'echo' "abbr -g ${abbreviation}=${(qqq)${(Q)expansion}}" >> "$user_updated"
       done
 
-      typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${ABBR_TMPDIR}regular-user-abbreviations
+      typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${ABBR_TMPDIR}/regular-user-abbreviations
       for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
         expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
         'builtin' 'echo' "abbr ${abbreviation}=${(qqq)${(Q)expansion}}" >> $user_updated
@@ -978,7 +978,7 @@ _abbr_cmd_expansion() {
   expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
 
   if [[ ! $expansion ]]; then
-    source ${ABBR_TMPDIR}regular-user-abbreviations
+    source ${ABBR_TMPDIR}/regular-user-abbreviations
     expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
   fi
 
@@ -1006,7 +1006,7 @@ _abbr_global_expansion() {
   expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
 
   if [[ ! $expansion ]]; then
-    source ${ABBR_TMPDIR}global-user-abbreviations
+    source ${ABBR_TMPDIR}/global-user-abbreviations
     expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
   fi
 
@@ -1059,7 +1059,7 @@ _abbr_job_pop() {
 
   job_name=$1
 
-  'command' 'rm' ${ABBR_TMPDIR}jobs/$job_name &>/dev/null
+  'command' 'rm' ${ABBR_TMPDIR}/jobs/$job_name &>/dev/null
 }
 
 _abbr_job_push() {
@@ -1083,23 +1083,23 @@ _abbr_job_push() {
     function _abbr_job_push:add_job() {
       _abbr_debugger
 
-      if ! [[ -d ${ABBR_TMPDIR}jobs ]]; then
-        mkdir -p ${ABBR_TMPDIR}jobs
+      if ! [[ -d ${ABBR_TMPDIR}/jobs ]]; then
+        mkdir -p ${ABBR_TMPDIR}/jobs
       fi
 
-      'builtin' 'echo' $job_description > ${ABBR_TMPDIR}jobs/$job_name
+      'builtin' 'echo' $job_description > ${ABBR_TMPDIR}/jobs/$job_name
     }
 
     function _abbr_job_push:next_job_name() {
       # cannout support debug message
 
-      'command' 'ls' -t ${ABBR_TMPDIR}jobs | tail -1
+      'command' 'ls' -t ${ABBR_TMPDIR}/jobs | tail -1
     }
 
     function _abbr_job_push:handle_timeout() {
       _abbr_debugger
 
-      next_job_path=${ABBR_TMPDIR}jobs/$next_job
+      next_job_path=${ABBR_TMPDIR}/jobs/$next_job
 
       'builtin' 'echo' "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job%.*}) has timed out."
       'builtin' 'echo' "The job was related to $(cat $next_job_path)."
@@ -1157,12 +1157,12 @@ _abbr_load_user_abbreviations() {
         mkdir -p $ABBR_TMPDIR
       fi
 
-      if ! [[ -f ${ABBR_TMPDIR}regular-user-abbreviations ]]; then
-        touch ${ABBR_TMPDIR}regular-user-abbreviations
+      if ! [[ -f ${ABBR_TMPDIR}/regular-user-abbreviations ]]; then
+        touch ${ABBR_TMPDIR}/regular-user-abbreviations
       fi
 
-      if ! [[ -f ${ABBR_TMPDIR}global-user-abbreviations ]]; then
-        touch ${ABBR_TMPDIR}global-user-abbreviations
+      if ! [[ -f ${ABBR_TMPDIR}/global-user-abbreviations ]]; then
+        touch ${ABBR_TMPDIR}/global-user-abbreviations
       fi
     }
 
@@ -1208,8 +1208,8 @@ _abbr_load_user_abbreviations() {
         touch $ABBR_USER_ABBREVIATIONS_FILE
       fi
 
-      typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${ABBR_TMPDIR}regular-user-abbreviations
-      typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${ABBR_TMPDIR}global-user-abbreviations
+      typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${ABBR_TMPDIR}/regular-user-abbreviations
+      typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${ABBR_TMPDIR}/global-user-abbreviations
     }
 
     ABBR_LOADING_USER_ABBREVIATIONS=1
