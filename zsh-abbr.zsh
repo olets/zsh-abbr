@@ -31,7 +31,7 @@ typeset -gi ABBR_PRECMD_LOGS=${ABBR_PRECMD_LOGS:-1}
 typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
 
 # Temp files are stored in
-typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${TMPDIR:-/tmp/}zsh-abbr/}
+typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr/}
 
 # File abbreviations are stored in
 typeset -g ABBR_USER_ABBREVIATIONS_FILE=${ABBR_USER_ABBREVIATIONS_FILE:-$HOME/.config/zsh/abbreviations}
