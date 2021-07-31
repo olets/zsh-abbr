@@ -126,7 +126,7 @@ zsh-abbr has commands to add, rename, and erase abbreviations; to add abbreviati
 - **`add`**
 
   ```shell
-  abbr [(add | -a)] [<SCOPE>] [<TYPE>] [--dry-run] [--quiet] [--force] ABBREVIATION=EXPANSION
+  abbr [(add | -a)] [<SCOPE>] [<TYPE>] [--dry-run] [(--quiet | --quieter)] [--force] ABBREVIATION=EXPANSION
   ```
 
   Add a new abbreviation.
@@ -166,7 +166,7 @@ zsh-abbr has commands to add, rename, and erase abbreviations; to add abbreviati
 
   Will error rather than overwrite an existing abbreviation.
 
-  Will warn if the abbreviation would replace an existing command. To add in spite of the warning, use `--force`.
+  Will warn if the abbreviation would replace an existing command. To add in spite of the warning, use `--force`. To silence the warning, use `--quieter`.
 
 - **`clear-session`**
 
@@ -403,7 +403,7 @@ zsh-abbr has commands to add, rename, and erase abbreviations; to add abbreviati
 - **`rename`**
 
   ```shell
-  abbr (rename | R) [<SCOPE>] [<TYPE>] [--dry-run] [--quiet] OLD NEW
+  abbr (rename | R) [<SCOPE>] [<TYPE>] [--dry-run] [(--quiet | --quieter)] OLD NEW
   ```
 
   Rename an abbreviation.
@@ -427,6 +427,8 @@ zsh-abbr has commands to add, rename, and erase abbreviations; to add abbreviati
 
   Abbreviations can also be manually renamed in the `ABBR_USER_ABBREVIATIONS_FILE`. See **Storage** below.
 
+  Conflicts will error or warn. See **add** for details.
+
 ## Advanced
 
 ### Configuration variables
@@ -442,6 +444,7 @@ Variable | Type | Use | Default
 `ABBR_FORCE` | integer | If non-zero, use force mode without passing `--force` (see [`add`](#add)) | 0
 `ABBR_PRECMD_LOGS` | interger | If non-zero, support precmd logs, for example to warn that a deprecated widget was used | 1
 `ABBR_QUIET` | integer | If non-zero, use quiet mode without passing `--quiet` | 0
+`ABBR_QUIETER` | integer | If non-zero, use quieter mode without passing `--quieter` | 0
 `ABBR_TMPDIR` | String | Path to the directory temporary files are stored in. _Ends in `/`_ | `${TMPDIR:-/tmp/}zsh-abbr/}` *
 `ABBR_USER_ABBREVIATIONS_FILE` | String | Path to the file user abbreviation are stored in (see [Storage and manual editing](#storage-and-manual-editing)) | `$HOME/.config/zsh/abbreviations` **
 
