@@ -1,3 +1,16 @@
+# [4.4.0](https://github.com/olets/zsh-abbr/compare/v4.3.0...v4.4.0) (2021-07-31)
+ 
+
+### Bug Fixes
+
+* **help:** show manpage regardless of installation method ([55c4c29](https://github.com/olets/zsh-abbr/commit/55c4c2916f153717269c6ef8a77a14608548ab28))
+
+
+### Other
+
+The README now includes instructions for importing macOS substitutions, by [@mortenscheel](https://github.com/olets/zsh-abbr/commits?author=mortenscheel)) ([99af045](https://github.com/olets/zsh-abbr/commit/99af0455b7b86ff3894a4bcf73380be2d595fa54))
+
+
 # [4.3.0](https://github.com/olets/zsh-abbr/compare/v4.3.0...v4.3.0) (2021-03-28)
 
 
