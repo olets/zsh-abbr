@@ -3,7 +3,7 @@
 
 ### Features
 
-* **add:** use --quieter to silence 'command expands' logs, idea from [@knu](https://github.com/olets/zsh-abbr/commits?author=knu)) [pr [#38](https://github.com/olets/zsh-abbr/issues/38)] ([8c02d9a](https://github.com/olets/zsh-abbr/commit/8c02d9affd1820be9dad9df9f8c3e992d5725b5b))
+* **add:** use --quieter to silence 'command expands' logs, idea from [@knu](https://github.com/olets/zsh-abbr/commits?author=knu) in [#38](https://github.com/olets/zsh-abbr/issues/38) ([8c02d9a](https://github.com/olets/zsh-abbr/commit/8c02d9affd1820be9dad9df9f8c3e992d5725b5b))
  
 
 ### Bug Fixes
@@ -13,7 +13,7 @@
 
 ### Other
 
-The README now includes instructions for importing macOS substitutions, by [@mortenscheel](https://github.com/olets/zsh-abbr/commits?author=mortenscheel)) ([99af045](https://github.com/olets/zsh-abbr/commit/99af0455b7b86ff3894a4bcf73380be2d595fa54))
+The README now includes instructions for importing macOS substitutions, by [@mortenscheel](https://github.com/olets/zsh-abbr/commits?author=mortenscheel) ([99af045](https://github.com/olets/zsh-abbr/commit/99af0455b7b86ff3894a4bcf73380be2d595fa54))
 
 
 # [4.3.0](https://github.com/olets/zsh-abbr/compare/v4.3.0...v4.3.0) (2021-03-28)
@@ -31,7 +31,7 @@ The README now includes instructions for importing macOS substitutions, by [@mor
 
 * **echo:** always use builtin ([093269a](https://github.com/olets/zsh-abbr/commit/093269a6a687dd28cb4d5c5122809725c8724998))
 * **tests:** new harness + support skipping ([b884a9f](https://github.com/olets/zsh-abbr/commit/b884a9f533c6f2ca1bd696ad056e06c6257b0bff))
-* **rm:** Make sure "rm" is run as command and not as alias, by [@hojerst](https://github.com/olets/zsh-abbr/commits?author=hojerst)) ([d275169](https://github.com/olets/zsh-abbr/commit/d275169fe16be53dcaad93e4ad18d1bb1d11d542))
+* **rm:** Make sure "rm" is run as command and not as alias, by [@hojerst](https://github.com/olets/zsh-abbr/commits?author=hojerst) ([d275169](https://github.com/olets/zsh-abbr/commit/d275169fe16be53dcaad93e4ad18d1bb1d11d542))
 
 
 # [4.2.0](https://github.com/olets/zsh-abbr/compare/v4.1.2...v4.2.0) (2020-12-13)
