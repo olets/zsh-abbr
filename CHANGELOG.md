@@ -1,4 +1,9 @@
-# [4.4.0](https://github.com/olets/zsh-abbr/compare/v4.3.0...v4.4.0) (2021-07-31)
+# [4.4.0](https://github.com/olets/zsh-abbr/compare/v4.3.0...v4.4.0) (2021-08-1)
+
+
+### Features
+
+* **add:** use --quieter to silence 'command expands' logs, idea from [@knu](https://github.com/olets/zsh-abbr/commits?author=knu)) [pr [#38](https://github.com/olets/zsh-abbr/issues/38)] ([8c02d9a](https://github.com/olets/zsh-abbr/commit/8c02d9affd1820be9dad9df9f8c3e992d5725b5b))
  
 
 ### Bug Fixes
