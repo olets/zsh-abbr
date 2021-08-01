@@ -30,6 +30,9 @@ typeset -gi ABBR_PRECMD_LOGS=${ABBR_PRECMD_LOGS:-1}
 # Behave as if `--quiet` was passed? (default false)
 typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
 
+# Behave as if `--quieter` was passed? (default false)
+typeset -gi ABBR_QUIETER=${ABBR_QUIETER:-0}
+
 # Temp files are stored in
 typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr/}
 
@@ -43,14 +46,16 @@ _abbr() {
   emulate -LR zsh
 
   {
-    local action error_color job_name logs opt output release_date scope \
-      success_color type version warn_color
-    local -i dry_run force has_error number_opts quiet should_exit
+    local action error_color job_name logs_silent_when_quiet logs_silent_when_quieter \
+      opt output release_date scope success_color type version warn_color
+    local -i dry_run force has_error number_opts quiet quieter should_exit
 
     dry_run=$ABBR_DRY_RUN
     force=$ABBR_FORCE
     number_opts=0
     quiet=$ABBR_QUIET
+    quiet=$(( ABBR_QUIETER || ABBR_QUIET ))
+    quieter=$ABBR_QUIETER
     release_date="July 30 2021"
     version="zsh-abbr version 4.4.0"
 
@@ -67,6 +72,7 @@ _abbr() {
 
     if (( ABBR_LOADING_USER_ABBREVIATIONS )); then
       quiet=1
+      quieter=1
     fi
 
     _abbr:add() {
@@ -181,7 +187,7 @@ _abbr() {
           fi
         fi
 
-        _abbr:util_log "$success_color$verb_phrase$reset_color $(_abbr:util_set_to_typed_scope $abbreviations_sets) \`$abbreviation\`"
+        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color $(_abbr:util_set_to_typed_scope $abbreviations_sets) \`$abbreviation\`"
       else
         verb_phrase="Did not erase"
         (( dry_run )) && verb_phrase="Would not erase"
@@ -535,7 +541,7 @@ _abbr() {
         verb_phrase="Added"
         (( dry_run )) && verb_phrase="Would add"
 
-        _abbr:util_log "$success_color$verb_phrase$reset_color the $typed_scope \`$abbreviation\`"
+        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color the $typed_scope \`$abbreviation\`"
       else
         verb_phrase="Did not"
         (( dry_run )) && verb_phrase="Would not"
@@ -595,7 +601,7 @@ _abbr() {
       _abbr_debugger
 
       has_error=1
-      logs+="${logs:+\\n}$error_color$@$reset_color"
+      logs_silent_when_quiet+="${logs_silent_when_quiet:+\\n}$error_color$@$reset_color"
       should_exit=1
     }
 
@@ -616,24 +622,26 @@ _abbr() {
 
       abbreviation=$1
 
+      (( ABBR_LOADING_USER_ABBREVIATIONS )) && return 0
+
+      (( force && quieter )) && return 0
+
       # Warn if abbreviation would interfere with system command use, e.g. `cp="git cherry-pick"`
       # Apply force to add regardless
-      if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-        cmd=$('builtin' 'command' -v $abbreviation)
+      cmd=$('builtin' 'command' -v $abbreviation)
 
-        if [[ $cmd && ${cmd:0:6} != 'alias ' ]]; then
-          if (( force )); then
-            verb_phrase="will now expand"
-            (( dry_run )) && verb_phrase="would now expand"
+      if [[ $cmd && ${cmd:0:6} != 'alias ' ]]; then
+        if (( force )); then
+          verb_phrase="will now expand"
+          (( dry_run )) && verb_phrase="would now expand"
 
-            _abbr:util_log "\`$abbreviation\` $verb_phrase as an abbreviation"
-          else
-            verb_phrase="Did not"
-            (( dry_run )) && verb_phrase="Would not"
+          _abbr:util_log_unless_quieter "\`$abbreviation\` $verb_phrase as an abbreviation"
+        else
+          verb_phrase="Did not"
+          (( dry_run )) && verb_phrase="Would not"
 
-            _abbr:util_warn "$verb_phrase add the abbreviation \`$abbreviation\` because a command with the same name exists"
-            return 1
-          fi
+          _abbr:util_warn "$verb_phrase add the abbreviation \`$abbreviation\` because a command with the same name exists"
+          return 1
         fi
       fi
     }
@@ -708,10 +716,16 @@ _abbr() {
       _abbr:util_print $result
     }
 
-    _abbr:util_log() {
+    _abbr:util_log_unless_quiet() {
       _abbr_debugger
 
-      logs+="${logs:+\\n}$1"
+      logs_silent_when_quiet+="${logs_silent_when_quiet:+\\n}$1"
+    }
+
+    _abbr:util_log_unless_quieter() {
+      _abbr_debugger
+
+      logs_silent_when_quieter+="${logs_silent_when_quieter:+\\n}$1"
     }
 
     _abbr:util_print() {
@@ -780,7 +794,7 @@ _abbr() {
     _abbr:util_warn() {
       _abbr_debugger
 
-      logs+="${logs:+\\n}$warn_color$@$reset_color"
+      logs_silent_when_quiet+="${logs_silent_when_quiet:+\\n}$warn_color$@$reset_color"
     }
 
     for opt in "$@"; do
@@ -857,6 +871,12 @@ _abbr() {
           quiet=1
           ((number_opts++))
           ;;
+        "--quieter"|\
+        "-qq")
+          quiet=1
+          quieter=1
+          ((number_opts++))
+          ;;
         "--regular"|\
         "-r")
           _abbr:util_set_once type regular
@@ -913,8 +933,14 @@ _abbr() {
     fi
 
     if ! (( quiet )); then
-      if [[ -n $logs ]]; then
-        output=$logs${output:+\\n$output}
+      if [[ -n $logs_silent_when_quiet ]]; then
+        output=$logs_silent_when_quiet${output:+\\n$output}
+      fi
+    fi
+
+    if ! (( quieter )); then
+      if [[ -n $logs_silent_when_quieter ]]; then
+        output=$logs_silent_when_quieter${output:+\\n$output}
       fi
     fi
 
