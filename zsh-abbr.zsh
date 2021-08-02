@@ -64,7 +64,7 @@ _abbr() {
     # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
     # VAL=$DEPRECATED_VAL
 
-    if ! (( ${+NO_COLOR} )); then
+    if ! _abbr_no_color; then
       error_color="$fg[red]"
       success_color="$fg[green]"
       warn_color="$fg[yellow]"
@@ -992,6 +992,17 @@ _abbr_bind_widgets() {
   bindkey "^M" _abbr_widget_expand_and_accept
 }
 
+_abbr_no_color() {
+  local -a shell_vars
+  local -i found
+
+  shell_vars=( ${(k)parameters} )
+
+  found=$(( ! $shell_vars[(Ie)NO_COLOR] ))
+
+  return $found
+}
+
 _abbr_cmd_expansion() {
   emulate -LR zsh
 
@@ -1058,12 +1069,15 @@ _abbr_init() {
 
   job_name=$(_abbr_job_name)
 
+  if ! _abbr_no_color; then
+    'builtin' 'autoload' -U colors && colors
+  fi
+
   _abbr_job_push $job_name initialization
   _abbr_debugger
 
   'builtin' 'autoload' -Uz add-zsh-hook
   add-zsh-hook precmd _abbr_precmd
-  ! (( ${+NO_COLOR} )) && 'builtin' 'autoload' -U colors && colors
 
   _abbr_load_user_abbreviations
   _abbr_add_widgets
