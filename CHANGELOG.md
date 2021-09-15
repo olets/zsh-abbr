@@ -1,4 +1,4 @@
-# [4.5.0](https://github.com/olets/zsh-abbr/compare/v4.4.0...v4.5.0) (2021-09-15)
+# [4.5.0](https://github.com/olets/zsh-abbr/compare/v4.4.0...v4.5.0) (2021-09-14)
 
 
 ### Bug Fixes
