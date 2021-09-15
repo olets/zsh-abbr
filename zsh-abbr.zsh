@@ -1015,11 +1015,24 @@ _abbr_cmd_expansion() {
   expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
 
   if [[ ! $expansion ]]; then
+    _abbr_create_files
     source ${ABBR_TMPDIR}regular-user-abbreviations
     expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
   fi
 
   'builtin' 'echo' - $expansion
+}
+
+_abbr_create_files() {
+  emulate -LR zsh
+
+  _abbr_debugger
+
+  [[ -d $ABBR_TMPDIR ]] || mkdir -p $ABBR_TMPDIR
+
+  [[ -f ${ABBR_TMPDIR}regular-user-abbreviations ]] || touch ${ABBR_TMPDIR}regular-user-abbreviations
+
+  [[ -f ${ABBR_TMPDIR}global-user-abbreviations ]] || touch ${ABBR_TMPDIR}global-user-abbreviations
 }
 
 _abbr_debugger() {
@@ -1043,6 +1056,7 @@ _abbr_global_expansion() {
   expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
 
   if [[ ! $expansion ]]; then
+    _abbr_create_files
     source ${ABBR_TMPDIR}global-user-abbreviations
     expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
   fi
@@ -1191,17 +1205,7 @@ _abbr_load_user_abbreviations() {
       ABBR_REGULAR_USER_ABBREVIATIONS=()
       ABBR_GLOBAL_USER_ABBREVIATIONS=()
 
-      if ! [[ -d $ABBR_TMPDIR ]]; then
-        mkdir -p $ABBR_TMPDIR
-      fi
-
-      if ! [[ -f ${ABBR_TMPDIR}regular-user-abbreviations ]]; then
-        touch ${ABBR_TMPDIR}regular-user-abbreviations
-      fi
-
-      if ! [[ -f ${ABBR_TMPDIR}global-user-abbreviations ]]; then
-        touch ${ABBR_TMPDIR}global-user-abbreviations
-      fi
+      _abbr_create_files
     }
 
     function _abbr_load_user_abbreviations:load() {
