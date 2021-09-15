@@ -14,6 +14,8 @@ test_abbr_expansion="zsh abbr test"
 source ${0:A:h}/../zsh-abbr.zsh
 source $ZTR_PATH
 
+ztr clear
+
 ### ### ### All tests must be below this line ### ### ###
 
 abbr add $test_abbr_abbreviation=$test_abbr_expansion
