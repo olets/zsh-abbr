@@ -1,7 +1,7 @@
 # abbreviation management for zsh, inspired by fish shell and enhanced
 # https://github.com/olets/zsh-abbr
-# v4.4.0
-# Copyright (c) 2019-2020 Henry Bley-Vroman
+# v4.5.0
+# Copyright (c) 2019-2021 Henry Bley-Vroman
 
 
 # CONFIGURATION
@@ -56,7 +56,7 @@ _abbr() {
     quiet=$ABBR_QUIET
     quiet=$(( ABBR_QUIETER || ABBR_QUIET ))
     quieter=$ABBR_QUIETER
-    release_date="August 1 2021"
+    release_date="September 14 2021"
     version="zsh-abbr version 4.4.0"
 
     # Deprecation notices for values that could be meaningfully set after initialization

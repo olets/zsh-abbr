@@ -1,3 +1,17 @@
+# [4.5.0](https://github.com/olets/zsh-abbr/compare/v4.4.0...v4.5.0) (2021-09-15)
+
+
+### Bug Fixes
+
+* **temp files:** account for possibility of garbage cleaning [[#42](https://github.com/olets/zsh-abbr/issues/42)] ([38ffea2](https://github.com/olets/zsh-abbr/commit/38ffea289e31980e52d140868cdb4d0adf475e56))
+
+
+### Features
+
+* **color:** more reliable respect for NO_COLOR ([4706cf4](https://github.com/olets/zsh-abbr/commit/4706cf4722debb7ca2d9b9cc0b7089c74c89fd4b))
+
+
+
 # [4.4.0](https://github.com/olets/zsh-abbr/compare/v4.3.0...v4.4.0) (2021-08-1)
 
 
