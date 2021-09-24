@@ -1,5 +1,15 @@
+# [4.6.0](https://github.com/olets/zsh-abbr/compare/v4.5.0...v4.6.0) (2021-09-24)
+
+- `--version` shows the correct version number again.
+### Features
+
+* **license:** new license ([cfe5abb](https://github.com/olets/zsh-abbr/commit/cfe5abb2c16fa5ceb4fd6b965b5667c69e375628))
+
+
 # [4.5.0](https://github.com/olets/zsh-abbr/compare/v4.4.0...v4.5.0) (2021-09-14)
 
+
+_In this version `abbr -v` gives `zsh-abbr version 4.4.0`_
 
 ### Bug Fixes
 
