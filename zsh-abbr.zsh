@@ -94,7 +94,7 @@ _abbr() {
         expansion=${(q)expansion}
       fi
 
-      if ! [[ $abbreviation && $expansion && $abbreviation != $1 ]]; then
+      if [[ -z $abbreviation || -z $expansion || $abbreviation == $1 ]]; then
         _abbr:util_error "abbr add: Requires abbreviation and expansion"
         return
       fi
