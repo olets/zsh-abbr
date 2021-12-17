@@ -1151,7 +1151,7 @@ _abbr_job_push() {
       'builtin' 'echo' "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job%.*}) has timed out."
       'builtin' 'echo' "The job was related to $(cat $next_job_path)."
       'builtin' 'echo' "This could be the result of manually terminating an abbr activity, for example during session startup."
-      'builtin' 'echo' "If you believe it reflects a abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
+      'builtin' 'echo' "If you believe it reflects an abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
       'builtin' 'echo'
 
       'command' 'rm' $next_job_path &>/dev/null
