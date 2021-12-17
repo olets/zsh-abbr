@@ -1285,27 +1285,32 @@ _abbr_widget_expand() {
   emulate -LR zsh
 
   local expansion
-  local word
-  local words
-  local -i word_count
+  local abbreviation
+  local preceding_lbuffer
+  local -a words
 
-  words=(${(z)LBUFFER})
-  word=$words[-1]
-  word_count=${#words}
-
-  if [[ $word_count == 1 ]]; then
-    expansion=$(_abbr_cmd_expansion $word)
-  fi
-
-  if [[ ! $expansion ]]; then
-    expansion=$(_abbr_global_expansion $word)
-  fi
+  expansion=$(_abbr_cmd_expansion $LBUFFER)
 
   if [[ -n $expansion ]]; then
-    local preceding_lbuffer
-    preceding_lbuffer=${LBUFFER%%$word}
-    LBUFFER=$preceding_lbuffer${(Q)expansion}
+    LBUFFER=${(Q)expansion}
+    return
   fi
+
+  words=(${(z)LBUFFER})
+  
+  while (( i < ${#words} )); do
+    abbreviation=${words:$i}
+    expansion=$(_abbr_global_expansion $abbreviation)
+
+    if [[ -n $expansion ]]; then
+      preceding_lbuffer=${LBUFFER%%$abbreviation}
+
+      LBUFFER=$preceding_lbuffer${(Q)expansion}
+      break
+    fi
+
+    (( i++ ))
+  done
 }
 
 _abbr_widget_expand_and_accept() {
