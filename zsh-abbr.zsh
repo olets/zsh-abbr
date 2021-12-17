@@ -471,11 +471,6 @@ _abbr() {
       expansion=$2
       success=0
 
-      if [[ ${(w)#abbreviation} > 1 ]]; then
-        _abbr:util_error "abbr add: ABBREVIATION (\`$abbreviation\`) must be only one word"
-        return
-      fi
-
       if [[ ${abbreviation%=*} != $abbreviation ]]; then
         _abbr:util_error "abbr add: ABBREVIATION (\`$abbreviation\`) may not contain an equals sign"
         return
