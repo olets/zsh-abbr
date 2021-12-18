@@ -1021,7 +1021,7 @@ _abbr_cmd_expansion() {
     expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]}
   fi
 
-  'builtin' 'echo' - $expansion
+  'builtin' 'echo' - ${(Q)expansion}
 }
 
 _abbr_create_files() {
@@ -1290,7 +1290,7 @@ abbr-expand() {
   local preceding_lbuffer
   local -a words
 
-  expansion=$(_abbr_cmd_expansion $LBUFFER)
+  expansion=$(_abbr_cmd_expansion ${(qqq)LBUFFER})
 
   if [[ -n $expansion ]]; then
     LBUFFER=${(Q)expansion}
