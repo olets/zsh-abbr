@@ -89,10 +89,6 @@ _abbr() {
       abbreviation=${1%%=*}
       expansion=${1#*=}
 
-      if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-        abbreviation=${(q)abbreviation}
-        expansion=${(q)expansion}
-      fi
 
       if [[ -z $abbreviation || -z $expansion || $abbreviation == $1 ]]; then
         _abbr:util_error "abbr add: Requires abbreviation and expansion"
