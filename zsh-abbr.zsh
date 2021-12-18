@@ -753,15 +753,15 @@ _abbr() {
       user_updated=$(mktemp ${ABBR_TMPDIR}regular-user-abbreviations_updated.XXXXXX)
 
       typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${ABBR_TMPDIR}global-user-abbreviations
-      for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
-        expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
-        'builtin' 'echo' "abbr -g ${abbreviation}=${(qqq)${(Q)expansion}}" >> "$user_updated"
+      for abbreviation in ${(ikoQ)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
+        expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)abbreviation}]}
+        'builtin' 'echo' "abbr -g ${(qqq)${(Q)abbreviation}}=${(qqq)${(Q)expansion}}" >> "$user_updated"
       done
 
       typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${ABBR_TMPDIR}regular-user-abbreviations
-      for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
-        expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
-        'builtin' 'echo' "abbr ${abbreviation}=${(qqq)${(Q)expansion}}" >> $user_updated
+      for abbreviation in ${(ikoQ)ABBR_REGULAR_USER_ABBREVIATIONS}; do
+        expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]}
+        'builtin' 'echo' "abbr ${(qqq)${(Q)abbreviation}}=${(qqq)${(Q)expansion}}" >> $user_updated
       done
 
       mv $user_updated $ABBR_USER_ABBREVIATIONS_FILE
