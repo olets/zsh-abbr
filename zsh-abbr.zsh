@@ -755,13 +755,13 @@ _abbr() {
       typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${ABBR_TMPDIR}global-user-abbreviations
       for abbreviation in ${(ikoQ)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
         expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
-        'builtin' 'echo' "abbr -g ${(qqq)${(Q)abbreviation}}=${(qqq)${(Q)expansion}}" >> "$user_updated"
+        'builtin' 'echo' "abbr -g ${(qqq)abbreviation}=${(qqq)expansion}" >> "$user_updated"
       done
 
       typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${ABBR_TMPDIR}regular-user-abbreviations
       for abbreviation in ${(ikoQ)ABBR_REGULAR_USER_ABBREVIATIONS}; do
         expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
-        'builtin' 'echo' "abbr ${(qqq)${(Q)abbreviation}}=${(qqq)${(Q)expansion}}" >> $user_updated
+        'builtin' 'echo' "abbr ${(qqq)abbreviation}=${(qqq)expansion}" >> $user_updated
       done
 
       mv $user_updated $ABBR_USER_ABBREVIATIONS_FILE
