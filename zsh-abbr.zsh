@@ -174,7 +174,7 @@ _abbr() {
       fi
 
       if ! (( ${#abbreviations_sets} )); then
-        _abbr:util_error "abbr erase: No${type:+ $type}${scope:+ $scope} abbreviation \`$abbreviation\` found"
+        _abbr:util_error "abbr erase: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)abbreviation}\` found"
       elif [[ ${#abbreviations_sets} == 1 ]]; then
         verb_phrase="Would erase"
 
@@ -187,12 +187,12 @@ _abbr() {
           fi
         fi
 
-        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color $(_abbr:util_set_to_typed_scope $abbreviations_sets) \`$abbreviation\`"
+        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color $(_abbr:util_set_to_typed_scope $abbreviations_sets) \`${(Q)abbreviation}\`"
       else
         verb_phrase="Did not erase"
         (( dry_run )) && verb_phrase="Would not erase"
 
-        message="$error_color$verb_phrase$reset_color abbreviation \`$abbreviation\`. Please specify one of\\n"
+        message="$error_color$verb_phrase$reset_color abbreviation \`${(Q)abbreviation}\`. Please specify one of\\n"
 
         for abbreviations_set in $abbreviations_sets; do
           message+="  $(_abbr:util_set_to_typed_scope $abbreviations_set)\\n"
@@ -443,7 +443,7 @@ _abbr() {
         _abbr:util_add $new_abbreviation $expansion
         _abbr:erase $current_abbreviation
       else
-        _abbr:util_error "abbr rename: No${type:+ $type}${scope:+ $scope} abbreviation \`$current_abbreviation\` exists"
+        _abbr:util_error "abbr rename: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)current_abbreviation}\` exists"
       fi
     }
 
@@ -463,7 +463,7 @@ _abbr() {
       success=0
 
       if [[ ${abbreviation%=*} != $abbreviation ]]; then
-        _abbr:util_error "abbr add: ABBREVIATION (\`$abbreviation\`) may not contain an equals sign"
+        _abbr:util_error "abbr add: ABBREVIATION (\`${(Q)abbreviation}\`) may not contain an equals sign"
         return
       fi
 
@@ -536,12 +536,12 @@ _abbr() {
         verb_phrase="Added"
         (( dry_run )) && verb_phrase="Would add"
 
-        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color the $typed_scope \`$abbreviation\`"
+        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color the $typed_scope \`${(Q)abbreviation}\`"
       else
         verb_phrase="Did not"
         (( dry_run )) && verb_phrase="Would not"
 
-        _abbr:util_error "$verb_phrase add the $typed_scope \`$abbreviation\` because it already exists"
+        _abbr:util_error "$verb_phrase add the $typed_scope \`${(Q)abbreviation}\` because it already exists"
       fi
     }
 
@@ -630,12 +630,12 @@ _abbr() {
           verb_phrase="will now expand"
           (( dry_run )) && verb_phrase="would now expand"
 
-          _abbr:util_log_unless_quieter "\`$abbreviation\` $verb_phrase as an abbreviation"
+          _abbr:util_log_unless_quieter "\`${(Q)abbreviation}\` $verb_phrase as an abbreviation"
         else
           verb_phrase="Did not"
           (( dry_run )) && verb_phrase="Would not"
 
-          _abbr:util_warn "$verb_phrase add the abbreviation \`$abbreviation\` because a command with the same name exists"
+          _abbr:util_warn "$verb_phrase add the abbreviation \`${(Q)abbreviation}\` because a command with the same name exists"
           return 1
         fi
       fi
