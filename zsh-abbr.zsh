@@ -436,15 +436,15 @@ _abbr() {
 
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
-          expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)current_abbreviation}]}
         else
-          expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)current_abbreviation}]}
         fi
       else
         if [[ $type == 'global' ]]; then
-          expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)current_abbreviation}]}
         else
-          expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)current_abbreviation}]}
         fi
       fi
 
