@@ -93,7 +93,7 @@ _abbr() {
         abbreviation=${(q)abbreviation}
         expansion=${(q)expansion}
       fi
-
+      
       if [[ -z $abbreviation || -z $expansion || $abbreviation == $1 ]]; then
         _abbr:util_error "abbr add: Requires abbreviation and expansion"
         return
@@ -135,14 +135,14 @@ _abbr() {
 
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
-          if (( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]} )); then
             (( ABBR_DEBUG )) && 'builtin' 'echo' "  Found a global session abbreviation"
             abbreviations_sets+=( ABBR_GLOBAL_SESSION_ABBREVIATIONS )
           fi
         fi
 
         if [[ $type != 'global' ]]; then
-          if (( ${+ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]} )); then
             (( ABBR_DEBUG )) && 'builtin' 'echo' "  Found a regular session abbreviation"
             abbreviations_sets+=( ABBR_REGULAR_SESSION_ABBREVIATIONS )
           fi
@@ -155,7 +155,7 @@ _abbr() {
             source ${ABBR_TMPDIR}global-user-abbreviations
           fi
 
-          if (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)abbreviation}]} )); then
             (( ABBR_DEBUG )) && 'builtin' 'echo' "  Found a global user abbreviation"
             abbreviations_sets+=( ABBR_GLOBAL_USER_ABBREVIATIONS )
           fi
@@ -166,7 +166,7 @@ _abbr() {
             source ${ABBR_TMPDIR}regular-user-abbreviations
           fi
 
-          if (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]} )); then
             (( ABBR_DEBUG )) && 'builtin' 'echo' "  Found a regular user abbreviation"
             abbreviations_sets+=( ABBR_REGULAR_USER_ABBREVIATIONS )
           fi
@@ -180,7 +180,7 @@ _abbr() {
 
         if ! (( dry_run )); then
           verb_phrase="Erased"
-          unset "${abbreviations_sets}[${(b)abbreviation}]" # quotation marks required
+          unset "${abbreviations_sets}[${(b)${(qqq)abbreviation}}]" # quotation marks required
 
           if [[ $abbreviations_sets =~ USER ]]; then
             _abbr:util_sync_user
