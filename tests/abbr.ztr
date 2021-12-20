@@ -112,7 +112,7 @@ abbr erase $test_abbr_abbreviation_multiword
 abbr $test_abbr_abbreviation=$test_abbr_expansion
 abbr rename $test_abbr_abbreviation $test_abbr_abbreviation_2
 ztr test '! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} )) \
-		&& [[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_2]} == ${(qqq)test_abbr_expansion} ]]' \
+		&& [[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_2}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can rename a single-word abbreviation to another single word" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation_2
