@@ -1049,15 +1049,15 @@ _abbr_global_expansion() {
   local expansion
 
   abbreviation=$1
-  expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
+  expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]}
 
   if [[ ! $expansion ]]; then
     _abbr_create_files
     source ${ABBR_TMPDIR}global-user-abbreviations
-    expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
+    expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)abbreviation}]}
   fi
 
-  'builtin' 'echo' - $expansion
+  'builtin' 'echo' - ${(Q)expansion}
 }
 
 _abbr_init() {
@@ -1282,6 +1282,7 @@ _abbr_widget_expand() {
 
   local expansion
   local abbreviation
+  local -i i
   local preceding_lbuffer
   local -a words
 
@@ -1296,7 +1297,7 @@ _abbr_widget_expand() {
   
   while (( i < ${#words} )); do
     abbreviation=${words:$i}
-    expansion=$(_abbr_global_expansion $abbreviation)
+    expansion=$(_abbr_global_expansion "$abbreviation")
 
     if [[ -n $expansion ]]; then
       preceding_lbuffer=${LBUFFER%%$abbreviation}
