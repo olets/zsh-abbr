@@ -98,6 +98,10 @@ _abbr() {
       abbreviation=${1%%=*}
       expansion=${1#*=}
 
+      if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
+        abbreviation=${(q)abbreviation}
+        expansion=${(q)expansion}
+      fi
 
       if [[ -z $abbreviation || -z $expansion || $abbreviation == $1 ]]; then
         _abbr:util_error "abbr add: Requires abbreviation and expansion"
@@ -476,11 +480,11 @@ _abbr() {
         if [[ $type == 'global' ]]; then
           typed_scope=$(_abbr:util_set_to_typed_scope ABBR_GLOBAL_SESSION_ABBREVIATIONS)
 
-          if ! (( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(Q)abbreviation}]} )); then
+          if ! (( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
             _abbr:util_check_command $abbreviation || return
 
             if ! (( dry_run )); then
-              ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(Q)abbreviation}]=${(Q)expansion}
+              ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}
             fi
 
             success=1
@@ -488,11 +492,11 @@ _abbr() {
         else
           typed_scope=$(_abbr:util_set_to_typed_scope ABBR_REGULAR_SESSION_ABBREVIATIONS)
 
-          if ! (( ${+ABBR_REGULAR_SESSION_ABBREVIATIONS[${(Q)abbreviation}]} )); then
+          if ! (( ${+ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
             _abbr:util_check_command $abbreviation || return
 
             if ! (( dry_run )); then
-              ABBR_REGULAR_SESSION_ABBREVIATIONS[${(Q)abbreviation}]=${(Q)expansion}
+              ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}
             fi
 
             success=1
@@ -506,11 +510,11 @@ _abbr() {
             source ${ABBR_TMPDIR}global-user-abbreviations
           fi
 
-          if ! (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[${(Q)abbreviation}]} )); then
+          if ! (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
             _abbr:util_check_command $abbreviation || return
 
             if ! (( dry_run )); then
-              ABBR_GLOBAL_USER_ABBREVIATIONS[${(Q)abbreviation}]=${(Q)expansion}
+              ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}
               _abbr:util_sync_user
             fi
 
@@ -523,12 +527,12 @@ _abbr() {
             source ${ABBR_TMPDIR}regular-user-abbreviations
           fi
 
-          if ! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[${(Q)abbreviation}]} )); then
+          if ! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
             _abbr:util_check_command $abbreviation || return
             typed_scope=$(_abbr:util_set_to_typed_scope ABBR_REGULAR_USER_ABBREVIATIONS)
 
             if ! (( dry_run )); then
-              ABBR_REGULAR_USER_ABBREVIATIONS[${(Q)abbreviation}]=${(Q)expansion}
+              ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}
               _abbr:util_sync_user
             fi
 
@@ -762,15 +766,15 @@ _abbr() {
       user_updated=$(mktemp ${ABBR_TMPDIR}regular-user-abbreviations_updated.XXXXXX)
 
       typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${ABBR_TMPDIR}global-user-abbreviations
-      for abbreviation in ${(ikoQ)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
+      for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
         expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
-        'builtin' 'echo' "abbr -g ${(qqq)abbreviation}=${(qqq)expansion}" >> "$user_updated"
+        'builtin' 'echo' "abbr -g $abbreviation=$expansion" >> "$user_updated"
       done
 
       typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${ABBR_TMPDIR}regular-user-abbreviations
-      for abbreviation in ${(ikoQ)ABBR_REGULAR_USER_ABBREVIATIONS}; do
+      for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
         expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
-        'builtin' 'echo' "abbr ${(qqq)abbreviation}=${(qqq)expansion}" >> $user_updated
+        'builtin' 'echo' "abbr $abbreviation=$expansion" >> $user_updated
       done
 
       mv $user_updated $ABBR_USER_ABBREVIATIONS_FILE
@@ -1013,15 +1017,15 @@ _abbr_cmd_expansion() {
 
   abbreviation=$1
   
-  expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
+  expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]
 
   if [[ ! $expansion ]]; then
     _abbr_create_files
     source ${ABBR_TMPDIR}regular-user-abbreviations
-    expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
+    expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]
   fi
 
-  'builtin' 'echo' - $expansion
+  'builtin' 'echo' - ${(Q)expansion}
 }
 
 _abbr_create_files() {
@@ -1293,7 +1297,7 @@ abbr-expand() {
   expansion=$(_abbr_cmd_expansion "$LBUFFER")
 
   if [[ -n $expansion ]]; then
-    LBUFFER=${(Q)expansion}
+    LBUFFER=$expansion
     return
   fi
 
@@ -1306,7 +1310,7 @@ abbr-expand() {
     if [[ -n $expansion ]]; then
       preceding_lbuffer=${LBUFFER%%$abbreviation}
 
-      LBUFFER=$preceding_lbuffer${(Q)expansion}
+      LBUFFER=$preceding_lbuffer$expansion
       break
     fi
 
