@@ -1001,7 +1001,7 @@ _abbr_no_color() {
 _abbr_cmd_expansion() {
   emulate -LR zsh
 
-  # cannout support debug message
+  # cannot support debug message
 
   local abbreviation
   local expansion
@@ -1043,7 +1043,7 @@ _abbr_debugger() {
 _abbr_global_expansion() {
   emulate -LR zsh
 
-  # cannout support debug message
+  # cannot support debug message
 
   local abbreviation
   local expansion
@@ -1139,7 +1139,7 @@ _abbr_job_push() {
     }
 
     function _abbr_job_push:next_job_name() {
-      # cannout support debug message
+      # cannot support debug message
 
       'command' 'ls' -t ${ABBR_TMPDIR}jobs | tail -1
     }
@@ -1184,7 +1184,7 @@ _abbr_job_push() {
 _abbr_job_name() {
   emulate -LR zsh
 
-  # cannout support debug message
+  # cannot support debug message
 
   'builtin' 'echo' "$(date +%s).$RANDOM"
 }
