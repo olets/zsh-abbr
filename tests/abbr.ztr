@@ -8,6 +8,7 @@ ABBR_USER_ABBREVIATIONS_FILE=${0:A:h}/abbreviations.$RANDOM
 touch $ABBR_USER_ABBREVIATIONS_FILE
 
 test_abbr_abbreviation="zsh_abbr_test"
+test_abbr_abbreviation_2="zsh_abbr_test_2"
 test_abbr_abbreviation_multiword="zsh_abbr_test second_word"
 test_abbr_abbreviation_multiword_2="zsh_abbr_test other_second_word"
 test_abbr_expansion="zsh abbr test"
@@ -32,61 +33,61 @@ ztr test '[[ ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ]]' \
 	"Dependencies: add"
 
 abbr add $test_abbr_abbreviation=$test_abbr_expansion
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation]} == $test_abbr_expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can add an abbreviation with the add flag" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation
 
 abbr add $test_abbr_abbreviation_multiword=$test_abbr_expansion
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation_multiword]} == $test_abbr_expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_multiword}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can add a multi-word abbreviation with the add flag" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation_multiword
 
 abbr add -g $test_abbr_abbreviation=$test_abbr_expansion
-ztr test '[[ ${ABBR_GLOBAL_USER_ABBREVIATIONS[$test_abbr_abbreviation]} == $test_abbr_expansion ]]' \
+ztr test '[[ ${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can add a global abbreviation with the add flag" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation
 
 abbr add -g $test_abbr_abbreviation_multiword=$test_abbr_expansion
-ztr test '[[ ${ABBR_GLOBAL_USER_ABBREVIATIONS[$test_abbr_abbreviation_multiword]} == $test_abbr_expansion ]]' \
+ztr test '[[ ${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_multiword}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can add a multi-word global abbreviation with the add flag" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation_multiword
 
 abbr add -S $test_abbr_abbreviation=$test_abbr_expansion
-ztr test '[[ ${ABBR_REGULAR_SESSION_ABBREVIATIONS[$test_abbr_abbreviation]} == $test_abbr_expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can add a regular session abbreviation with the add flag" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation
 
 abbr add -S $test_abbr_abbreviation_multiword=$test_abbr_expansion
-ztr test '[[ ${ABBR_REGULAR_SESSION_ABBREVIATIONS[$test_abbr_abbreviation_multiword]} == $test_abbr_expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_multiword}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can add a multi-word regular session abbreviation with the add flag" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation_multiword
 
 abbr add -S -g $test_abbr_abbreviation=$test_abbr_expansion
-ztr test '[[ ${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$test_abbr_abbreviation]} == $test_abbr_expansion ]]' \
+ztr test '[[ ${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can add a global session abbreviation with the add flag" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation
 
 abbr add -S -g $test_abbr_abbreviation_multiword=$test_abbr_expansion
-ztr test '[[ ${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$test_abbr_abbreviation_multiword]} == $test_abbr_expansion ]]' \
+ztr test '[[ ${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_multiword}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can add a multi-word global session abbreviation with the add flag" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation_multiword
 
 abbr $test_abbr_abbreviation=$test_abbr_expansion
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation]} == $test_abbr_expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can add an abbreviation without the add flag" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation
 
 abbr $test_abbr_abbreviation_multiword=$test_abbr_expansion
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation_multiword]} == $test_abbr_expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_multiword}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can add a multi-word abbreviation without the add flag" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation_multiword
@@ -96,7 +97,7 @@ abbr clear-session
 ztr test '[[ ${#ABBR_REGULAR_SESSION_ABBREVIATIONS} == 0 ]]' \
 	"Can clear session abbreviations"
 
-abbr $test_abbr_abbreviation=$test_abbr_expansion
+abbr add $test_abbr_abbreviation=$test_abbr_expansion
 ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $test_abbr_expansion ]]' \
 	"Can expand an abbreviation in a script" \
 	"Dependencies: erase"
@@ -109,33 +110,33 @@ ztr test '[[ $(abbr expand $test_abbr_abbreviation_multiword) == $test_abbr_expa
 abbr erase $test_abbr_abbreviation_multiword
 
 abbr $test_abbr_abbreviation=$test_abbr_expansion
-abbr rename $test_abbr_abbreviation ${test_abbr_abbreviation}_new
-ztr test '! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation]} )) \
-		&& [[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${test_abbr_abbreviation}_new]} == $test_abbr_expansion ]]' \
+abbr rename $test_abbr_abbreviation $test_abbr_abbreviation_2
+ztr test '! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} )) \
+		&& [[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_2]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can rename a single-word abbreviation to another single word" \
 	"Dependencies: erase"
-abbr erase ${test_abbr_abbreviation}_new
+abbr erase $test_abbr_abbreviation_2
 
 abbr $test_abbr_abbreviation=$test_abbr_expansion
 abbr rename $test_abbr_abbreviation $test_abbr_abbreviation_multiword
-ztr test '! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation]} )) \
-		&& [[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation_multiword]} == $test_abbr_expansion ]]' \
+ztr test '! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} )) \
+		&& [[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_multiword}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can rename an single-word abbreviation to multiple words" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation_multiword
 
 abbr $test_abbr_abbreviation_multiword=$test_abbr_expansion
 abbr rename $test_abbr_abbreviation_multiword $test_abbr_abbreviation_multiword_2
-ztr test '! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation_multiword]} )) \
-		&& [[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation_multiword_2]} == $test_abbr_expansion ]]' \
+ztr test '! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_multiword}]} )) \
+		&& [[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_multiword_2}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can rename an multi-word abbreviation to different words" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation_multiword_2
 
 abbr $test_abbr_abbreviation_multiword=$test_abbr_expansion
 abbr rename $test_abbr_abbreviation_multiword $test_abbr_abbreviation
-ztr test '! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation_multiword]} )) \
-		&& [[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation]} == $test_abbr_expansion ]]' \
+ztr test '! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_multiword}]} )) \
+		&& [[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can rename an multi-word abbreviation to a single word" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation
@@ -143,7 +144,7 @@ abbr erase $test_abbr_abbreviation
 abbreviation=a
 expansion="b'c'd"
 abbr $abbreviation=$expansion
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]} == ${(qqq)expansion} ]]' \
 	"Double-quoted single quotes in the expansion are preserved" \
 	"Dependencies: erase"
 abbr erase $abbreviation
@@ -151,7 +152,7 @@ abbr erase $abbreviation
 abbreviation=a
 expansion='b"c"d'
 abbr $abbreviation=$expansion
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]} == ${(qqq)expansion} ]]' \
 	"Single-quoted double quotes in the expansion are preserved" \
 	"Dependencies: erase"
 abbr erase $abbreviation
@@ -159,7 +160,7 @@ abbr erase $abbreviation
 abbreviation=a
 expansion='b'cd
 abbr $abbreviation=$expansion
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]} == ${(qqq)expansion} ]]' \
 	"Bare single quotes at the start of the expansion are swallowed" \
 	"Dependencies: erase"
 abbr erase $abbreviation
@@ -167,7 +168,7 @@ abbr erase $abbreviation
 abbreviation=a
 expansion=b'c'd
 abbr $abbreviation=$expansion
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]} == ${(qqq)expansion} ]]' \
 	"Bare single quotes in the middle of the expansion are swallowed" \
 	"Dependencies: erase"
 abbr erase $abbreviation
@@ -175,7 +176,7 @@ abbr erase $abbreviation
 abbreviation=a
 expansion="b"cd
 abbr $abbreviation=$expansion
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]} == ${(qqq)expansion} ]]' \
 	"Bare double quotes at the start of the expansion are swallowed" \
 	"Dependencies: erase"
 abbr erase $abbreviation
@@ -183,7 +184,7 @@ abbr erase $abbreviation
 abbreviation=a
 expansion=b"c"d
 abbr $abbreviation=$expansion
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]} == ${(qqq)expansion} ]]' \
 	"Bare double quotes in the middle of the expansion are swallowed" \
 	"Dependencies: erase"
 abbr erase $abbreviation
@@ -192,7 +193,7 @@ abbreviation=zsh_abbr_test_alias
 expansion=abc
 alias $abbreviation=$expansion
 abbr import-aliases
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]} == ${(qqq)expansion} ]]' \
 	"Can import aliases" \
 	"Dependencies: erase"
 abbr erase $abbreviation
@@ -205,7 +206,7 @@ abbreviation=zsh_abbr_test_alias
 expansion="a b"
 alias $abbreviation=$expansion
 abbr import-aliases
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]} == ${(qqq)expansion} ]]' \
 	"Can import a multi-word alias" \
 	"Dependencies: erase"
 abbr erase $abbreviation
@@ -218,7 +219,7 @@ abbreviation=zsh_abbr_test_alias
 expansion="a \"b\""
 alias $abbreviation=$expansion
 abbr import-aliases
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]} == ${(qqq)expansion} ]]' \
 	"Can import a double-quoted alias with escaped double quotation marks" \
 	"Dependencies: erase"
 abbr erase $abbreviation
@@ -231,7 +232,7 @@ abbreviation=zsh_abbr_test_alias
 expansion='a "b"'
 alias $abbreviation=$expansion
 abbr import-aliases
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]} == ${(qqq)expansion} ]]' \
 	"Can import a single-quoted alias with double quotation marks" \
 	"Dependencies: erase"
 abbr erase $abbreviation
@@ -244,7 +245,7 @@ abbreviation=zsh_abbr_test_alias
 expansion="a 'b'"
 alias $abbreviation=$expansion
 abbr import-aliases
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} == $expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]} == ${(qqq)expansion} ]]' \
 	"Can import a double-quoted alias with single quotation marks" \
 	"Dependencies: erase"
 abbr erase $abbreviation
@@ -256,7 +257,7 @@ ztr test '[[ -z $(abbr expand $test_abbr_abbreviation) ]]' \
 	"Can delete a user abbreviation from outside abbr without unexpected retention"
 
 echo "abbr add $test_abbr_abbreviation='$test_abbr_expansion'" > $ABBR_USER_ABBREVIATIONS_FILE
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[$test_abbr_abbreviation]} == $test_abbr_expansion ]]' \
+ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} == ${(qqq)test_abbr_expansion} ]]' \
 	"Can add a user abbreviation from outside abbr without data loss" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation
