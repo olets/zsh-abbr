@@ -9,10 +9,18 @@ Key:
 
 _Currently considered feature complete._
 
+## 4.0.0
+
+- [x] multi-word abbreviations
+- [ ] `--prefix` option for `import-git-aliases`
+- [ ] VuePress docs site
+
+## Maybe?
+
 - [ ] Tests for list commands
 - [ ] Test for export command
 
-## Maybe?
+## Maybe maybe?
 
 - [ ] command completion
 - [ ] command highlighting
