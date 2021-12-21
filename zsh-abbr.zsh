@@ -102,8 +102,8 @@ _abbr() {
         abbreviation=${(q)abbreviation}
         expansion=${(q)expansion}
       fi
-
-      if ! [[ $abbreviation && $expansion && $abbreviation != $1 ]]; then
+      
+      if [[ -z $abbreviation || -z $expansion || $abbreviation == $1 ]]; then
         _abbr:util_error "abbr add: Requires abbreviation and expansion"
         return
       fi
@@ -144,14 +144,14 @@ _abbr() {
 
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
-          if (( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]} )); then
             (( ABBR_DEBUG )) && 'builtin' 'echo' "  Found a global session abbreviation"
             abbreviations_sets+=( ABBR_GLOBAL_SESSION_ABBREVIATIONS )
           fi
         fi
 
         if [[ $type != 'global' ]]; then
-          if (( ${+ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]} )); then
             (( ABBR_DEBUG )) && 'builtin' 'echo' "  Found a regular session abbreviation"
             abbreviations_sets+=( ABBR_REGULAR_SESSION_ABBREVIATIONS )
           fi
@@ -164,7 +164,7 @@ _abbr() {
             source ${ABBR_TMPDIR}global-user-abbreviations
           fi
 
-          if (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)abbreviation}]} )); then
             (( ABBR_DEBUG )) && 'builtin' 'echo' "  Found a global user abbreviation"
             abbreviations_sets+=( ABBR_GLOBAL_USER_ABBREVIATIONS )
           fi
@@ -175,7 +175,7 @@ _abbr() {
             source ${ABBR_TMPDIR}regular-user-abbreviations
           fi
 
-          if (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]} )); then
+          if (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]} )); then
             (( ABBR_DEBUG )) && 'builtin' 'echo' "  Found a regular user abbreviation"
             abbreviations_sets+=( ABBR_REGULAR_USER_ABBREVIATIONS )
           fi
@@ -183,25 +183,25 @@ _abbr() {
       fi
 
       if ! (( ${#abbreviations_sets} )); then
-        _abbr:util_error "abbr erase: No${type:+ $type}${scope:+ $scope} abbreviation \`$abbreviation\` found"
+        _abbr:util_error "abbr erase: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)abbreviation}\` found"
       elif [[ ${#abbreviations_sets} == 1 ]]; then
         verb_phrase="Would erase"
 
         if ! (( dry_run )); then
           verb_phrase="Erased"
-          unset "${abbreviations_sets}[${(b)abbreviation}]" # quotation marks required
+          unset "${abbreviations_sets}[${(b)${(qqq)abbreviation}}]" # quotation marks required
 
           if [[ $abbreviations_sets =~ USER ]]; then
             _abbr:util_sync_user
           fi
         fi
 
-        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color $(_abbr:util_set_to_typed_scope $abbreviations_sets) \`$abbreviation\`"
+        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color $(_abbr:util_set_to_typed_scope $abbreviations_sets) \`${(Q)abbreviation}\`"
       else
         verb_phrase="Did not erase"
         (( dry_run )) && verb_phrase="Would not erase"
 
-        message="$error_color$verb_phrase$reset_color abbreviation \`$abbreviation\`. Please specify one of\\n"
+        message="$error_color$verb_phrase$reset_color abbreviation \`${(Q)abbreviation}\`. Please specify one of\\n"
 
         for abbreviations_set in $abbreviations_sets; do
           message+="  $(_abbr:util_set_to_typed_scope $abbreviations_set)\\n"
@@ -436,15 +436,15 @@ _abbr() {
 
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
-          expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)current_abbreviation}]}
         else
-          expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)current_abbreviation}]}
         fi
       else
         if [[ $type == 'global' ]]; then
-          expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)current_abbreviation}]}
         else
-          expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$current_abbreviation]}
+          expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)current_abbreviation}]}
         fi
       fi
 
@@ -452,7 +452,7 @@ _abbr() {
         _abbr:util_add $new_abbreviation $expansion
         _abbr:erase $current_abbreviation
       else
-        _abbr:util_error "abbr rename: No${type:+ $type}${scope:+ $scope} abbreviation \`$current_abbreviation\` exists"
+        _abbr:util_error "abbr rename: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)current_abbreviation}\` exists"
       fi
     }
 
@@ -471,13 +471,8 @@ _abbr() {
       expansion=$2
       success=0
 
-      if [[ ${(w)#abbreviation} > 1 ]]; then
-        _abbr:util_error "abbr add: ABBREVIATION (\`$abbreviation\`) must be only one word"
-        return
-      fi
-
       if [[ ${abbreviation%=*} != $abbreviation ]]; then
-        _abbr:util_error "abbr add: ABBREVIATION (\`$abbreviation\`) may not contain an equals sign"
+        _abbr:util_error "abbr add: ABBREVIATION (\`${(Q)abbreviation}\`) may not contain an equals sign"
         return
       fi
 
@@ -489,7 +484,7 @@ _abbr() {
             _abbr:util_check_command $abbreviation || return
 
             if ! (( dry_run )); then
-              ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
+              ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}
             fi
 
             success=1
@@ -501,7 +496,7 @@ _abbr() {
             _abbr:util_check_command $abbreviation || return
 
             if ! (( dry_run )); then
-              ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]=$expansion
+              ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}
             fi
 
             success=1
@@ -519,7 +514,7 @@ _abbr() {
             _abbr:util_check_command $abbreviation || return
 
             if ! (( dry_run )); then
-              ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]=$expansion
+              ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}
               _abbr:util_sync_user
             fi
 
@@ -537,7 +532,7 @@ _abbr() {
             typed_scope=$(_abbr:util_set_to_typed_scope ABBR_REGULAR_USER_ABBREVIATIONS)
 
             if ! (( dry_run )); then
-              ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]=$expansion
+              ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}
               _abbr:util_sync_user
             fi
 
@@ -550,12 +545,12 @@ _abbr() {
         verb_phrase="Added"
         (( dry_run )) && verb_phrase="Would add"
 
-        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color the $typed_scope \`$abbreviation\`"
+        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color the $typed_scope \`${(Q)abbreviation}\`"
       else
         verb_phrase="Did not"
         (( dry_run )) && verb_phrase="Would not"
 
-        _abbr:util_error "$verb_phrase add the $typed_scope \`$abbreviation\` because it already exists"
+        _abbr:util_error "$verb_phrase add the $typed_scope \`${(Q)abbreviation}\` because it already exists"
       fi
     }
 
@@ -644,12 +639,12 @@ _abbr() {
           verb_phrase="will now expand"
           (( dry_run )) && verb_phrase="would now expand"
 
-          _abbr:util_log_unless_quieter "\`$abbreviation\` $verb_phrase as an abbreviation"
+          _abbr:util_log_unless_quieter "\`${(Q)abbreviation}\` $verb_phrase as an abbreviation"
         else
           verb_phrase="Did not"
           (( dry_run )) && verb_phrase="Would not"
 
-          _abbr:util_warn "$verb_phrase add the abbreviation \`$abbreviation\` because a command with the same name exists"
+          _abbr:util_warn "$verb_phrase add the abbreviation \`${(Q)abbreviation}\` because a command with the same name exists"
           return 1
         fi
       fi
@@ -773,13 +768,13 @@ _abbr() {
       typeset -p ABBR_GLOBAL_USER_ABBREVIATIONS > ${ABBR_TMPDIR}global-user-abbreviations
       for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
         expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
-        'builtin' 'echo' "abbr -g ${abbreviation}=${(qqq)${(Q)expansion}}" >> "$user_updated"
+        'builtin' 'echo' "abbr -g $abbreviation=$expansion" >> "$user_updated"
       done
 
       typeset -p ABBR_REGULAR_USER_ABBREVIATIONS > ${ABBR_TMPDIR}regular-user-abbreviations
       for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
         expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
-        'builtin' 'echo' "abbr ${abbreviation}=${(qqq)${(Q)expansion}}" >> $user_updated
+        'builtin' 'echo' "abbr $abbreviation=$expansion" >> $user_updated
       done
 
       mv $user_updated $ABBR_USER_ABBREVIATIONS_FILE
@@ -1015,21 +1010,22 @@ _abbr_no_color() {
 _abbr_cmd_expansion() {
   emulate -LR zsh
 
-  # cannout support debug message
+  # cannot support debug message
 
   local abbreviation
   local expansion
 
   abbreviation=$1
-  expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
+  
+  expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]
 
   if [[ ! $expansion ]]; then
     _abbr_create_files
     source ${ABBR_TMPDIR}regular-user-abbreviations
-    expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
+    expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]
   fi
 
-  'builtin' 'echo' - $expansion
+  'builtin' 'echo' - ${(Q)expansion}
 }
 
 _abbr_create_files() {
@@ -1056,21 +1052,21 @@ _abbr_debugger() {
 _abbr_global_expansion() {
   emulate -LR zsh
 
-  # cannout support debug message
+  # cannot support debug message
 
   local abbreviation
   local expansion
 
   abbreviation=$1
-  expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
+  expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]}
 
   if [[ ! $expansion ]]; then
     _abbr_create_files
     source ${ABBR_TMPDIR}global-user-abbreviations
-    expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
+    expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)abbreviation}]}
   fi
 
-  'builtin' 'echo' - $expansion
+  'builtin' 'echo' - ${(Q)expansion}
 }
 
 _abbr_init() {
@@ -1152,7 +1148,7 @@ _abbr_job_push() {
     }
 
     function _abbr_job_push:next_job_name() {
-      # cannout support debug message
+      # cannot support debug message
 
       'command' 'ls' -t ${ABBR_TMPDIR}jobs | tail -1
     }
@@ -1165,7 +1161,7 @@ _abbr_job_push() {
       'builtin' 'echo' "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job%.*}) has timed out."
       'builtin' 'echo' "The job was related to $(cat $next_job_path)."
       'builtin' 'echo' "This could be the result of manually terminating an abbr activity, for example during session startup."
-      'builtin' 'echo' "If you believe it reflects a abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
+      'builtin' 'echo' "If you believe it reflects an abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
       'builtin' 'echo'
 
       'command' 'rm' $next_job_path &>/dev/null
@@ -1197,7 +1193,7 @@ _abbr_job_push() {
 _abbr_job_name() {
   emulate -LR zsh
 
-  # cannout support debug message
+  # cannot support debug message
 
   'builtin' 'echo' "$(date +%s).$RANDOM"
 }
@@ -1294,27 +1290,33 @@ abbr-expand() {
   emulate -LR zsh
 
   local expansion
-  local word
-  local words
-  local -i word_count
+  local abbreviation
+  local -i i
+  local preceding_lbuffer
+  local -a words
 
-  words=(${(z)LBUFFER})
-  word=$words[-1]
-  word_count=${#words}
-
-  if [[ $word_count == 1 ]]; then
-    expansion=$(_abbr_cmd_expansion $word)
-  fi
-
-  if [[ ! $expansion ]]; then
-    expansion=$(_abbr_global_expansion $word)
-  fi
+  expansion=$(_abbr_cmd_expansion "$LBUFFER")
 
   if [[ -n $expansion ]]; then
-    local preceding_lbuffer
-    preceding_lbuffer=${LBUFFER%%$word}
-    LBUFFER=$preceding_lbuffer${(Q)expansion}
+    LBUFFER=$expansion
+    return
   fi
+
+  words=(${(z)LBUFFER})
+  
+  while (( i < ${#words} )); do
+    abbreviation=${words:$i}
+    expansion=$(_abbr_global_expansion "$abbreviation")
+
+    if [[ -n $expansion ]]; then
+      preceding_lbuffer=${LBUFFER%%$abbreviation}
+
+      LBUFFER=$preceding_lbuffer$expansion
+      break
+    fi
+
+    (( i++ ))
+  done
 }
 
 abbr-expand-and-accept() {
