@@ -149,7 +149,14 @@ zsh-abbr has commands to add, rename, and erase abbreviations; to add abbreviati
   % gco[Enter] # expands and accepts git checkout
   ```
 
-  The ABBREVIATION must be only one word long.
+  The ABBREVIATION may be more than one word long.
+
+  ```shell
+  % abbr "git cp"="git cherry-pick"
+  % git cp[Space] # expands as git cherry-pick
+  % abbr g=git
+  % g[Space]cp[Space] # expands to git cherry-pick
+  ```
 
   As with aliases, to include whitespace, quotation marks, or other special characters like `;`, `|`, or `&` in the EXPANSION, quote the EXPANSION or `\`-escape the characters as necessary.
 
