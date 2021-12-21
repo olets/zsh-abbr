@@ -12,6 +12,7 @@ _Currently considered feature complete._
 ## 5.0.0
 
 - [x] multi-word abbreviations
+- [x] upgrade Hippocratic License to v3
 - [ ] `--prefix` option for `import-git-aliases`
 - [ ] VuePress docs site
 
