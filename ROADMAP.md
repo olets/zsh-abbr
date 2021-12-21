@@ -15,6 +15,7 @@ _Currently considered feature complete._
 - [x] upgrade Hippocratic License to v3
 - [ ] `--prefix` option for `import-git-aliases`
 - [ ] VuePress docs site
+- [ ] importing does not override an existing alias (as of this writing, a regression from v4)
 
 ## Maybe?
 
