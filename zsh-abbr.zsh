@@ -64,15 +64,13 @@ _abbr() {
     # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
     # VAL=$DEPRECATED_VAL
 
-    if ! _abbr_no_color; then
-      error_color="$fg[red]"
-      success_color="$fg[green]"
-      warn_color="$fg[yellow]"
-    fi
-
     if (( ABBR_LOADING_USER_ABBREVIATIONS )); then
       quiet=1
       quieter=1
+    elif ! _abbr_no_color; then
+      error_color="$fg[red]"
+      success_color="$fg[green]"
+      warn_color="$fg[yellow]"
     fi
 
     _abbr:add() {
