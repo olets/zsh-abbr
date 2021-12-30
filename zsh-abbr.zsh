@@ -1374,10 +1374,6 @@ _abbr_deprecations() {
 
       bindkey_declarations=$(bindkey)
 
-      deprecated_widgets[_abbr_expand_and_accept]=abbr-expand-and-accept
-      deprecated_widgets[_abbr_expand_and_space]=abbr-expand-and-space
-      deprecated_widgets[_abbr_expand_widget]=abbr-expand
-
       for deprecated replacement in ${(kv)deprecated_widgets}; do
         bindkey_declaration=$('builtin' 'echo' $bindkey_declarations | grep $deprecated)
 
@@ -1417,28 +1413,6 @@ _abbr_warn_deprecation() {
 
   'builtin' 'print' -P $message
 }
-
-_abbr_expand_and_accept() {
-  emulate -LR zsh
-
-  ABBR_PRECMD_MESSAGE+="\\n$(_abbr_warn_deprecation _abbr_expand_and_accept abbr-expand-and-accept)"
-  abbr-expand-and-accept
-}
-
-_abbr_expand_and_space() {
-  emulate -LR zsh
-
-  ABBR_PRECMD_MESSAGE+="\\n$(_abbr_warn_deprecation _abbr_expand_and_space abbr-expand-and-space)"
-  abbr-expand-and-space
-}
-
-_abbr_expand_widget() {
-  emulate -LR zsh
-
-  ABBR_PRECMD_MESSAGE+="\\n$(_abbr_warn_deprecation _abbr_expand_widget abbr-expand)"
-  abbr-expand
-}
-
 
 # INITIALIZATION
 # --------------
