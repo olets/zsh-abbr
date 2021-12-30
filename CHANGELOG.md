@@ -1,3 +1,15 @@
+# [4.7.0](https://github.com/olets/zsh-abbr/compare/v4.6.0...v4.7.0) (2021-12-30)
+
+
+### Breaking
+
+* **widgets:** drop support for functions deprecated in 4.1.0 ([4166395](https://github.com/olets/zsh-abbr/commit/4166395f623ab44cfe992afd7d8d4e904f9aa9ea))
+
+### Features
+
+* **init:** no unnecessary NO_COLOR checks ([da5205a](https://github.com/olets/zsh-abbr/commit/da5205ab5b9a5508d0ca818cceb7dc27fc0d83fa))
+
+
 # [4.6.0](https://github.com/olets/zsh-abbr/compare/v4.5.0...v4.6.0) (2021-09-24)
 
 - `--version` shows the correct version number again.
