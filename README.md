@@ -293,33 +293,32 @@ zsh-abbr has commands to add, rename, and erase abbreviations; to add abbreviati
 - **`import-git-aliases`**
 
   ```shell
-  abbr [--dry-run] [--quiet] import-git-aliases [--file <config-file>]
+  abbr import-git-aliases [<SCOPE>] [<TYPE>] [--dry-run] [--quiet] [--file <config-file>] [--prefix <ABBREVIATION prefix>]
   ```
 
-  Add two abbreviations for every Git alias available in the current session: a global abbreviation where the WORD is prefixed with `g`, and a command abbreviation. For both the EXPANSION is prefixed with `git[Space]`.
+  Add an abbreviation for every Git alias available in the current session. The EXPANSION is prefixed with `git[Space]`.
 
   Use `--file <config-file>` to use a config file instead of the one specified by GIT_CONFIG (see `man git-config`).
 
+  Use `--prefix <prefix>` to add a prefix to the ABBREVIATION.
+
+  > Tip: add the abbreviation `g=git` and then prefix Git abbreviations with `git `
+  > ```shell
+  > % abbr g=git
+  > % abbr import-git-aliases -g --prefix "git "
+  > Added the regular user abbreviation `co` # for example
+  > % g[Space]co[Space] # expands to `git checkout`
+  > ```
+
+  > The zsh-abbr v4 `import-git-aliases` behavior can be recreated with
+  > ```shell
+  > abbr import-git-aliases
+  > abbr import-git-aliases -g --prefix g
+  > ```
+
   Use the **--session**  or **-S** scope flag to create session abbreviations. Otherwise, or if the **--user** or **-U** scope flag is used, the Git abbreviations will be user.
 
-  ```shell
-  % git config alias.co checkout
-
-  # session
-  % abbr import-git-aliases -S
-  % gco[Space] # git checkout
-  % echo gco[Space] # echo git checkout
-  % co[Space] # git checkout
-  % echo co[Space] # echo co
-  % source ~/.zshrc
-  % gco[Space] # gco
-
-  # user
-  % abbr import-git-aliases
-  % gco[Space] # git checkout
-  % source ~/.zshrc
-  % gco[Space] # git checkout
-  ```
+  Use the **--global** or **-g** type flag to export only global abbreviations. Use the **--regular** or **-r** type flag to export only regular abbreviations.
 
   Note for users migrating from Oh-My-Zsh: [OMZ's Git aliases are shell aliases](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh), not aliases in the Git config. To add abbreviations for them, use **import-aliases**.
 
