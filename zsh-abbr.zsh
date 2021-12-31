@@ -343,10 +343,6 @@ _abbr() {
             value=${(q)value}
           fi
 
-          type="global"
-          _abbr:util_add "g$key" "git $value"
-
-          type="regular"
           _abbr:util_add "$key" "git $value"
         fi
       done
