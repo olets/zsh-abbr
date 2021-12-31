@@ -11,11 +11,11 @@ _Currently considered feature complete._
 
 ## 5.0.0
 
-- [x] multi-word abbreviations
-- [x] upgrade Hippocratic License to v3
 - [ ] `--prefix` option for `import-git-aliases`
 - [ ] VuePress docs site
-- [ ] importing does not override an existing alias (as of this writing, a regression from v4)
+- [x] multi-word abbreviations
+- [x] upgrade Hippocratic License to v3
+- [x] importing does not override an existing alias (as of this writing, a regression from v4)
 
 ## Maybe?
 
