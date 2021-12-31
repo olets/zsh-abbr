@@ -282,34 +282,60 @@ abbr erase $test_abbr_abbreviation
 
 abbr import-git-aliases --file ${0:A:h}/test-gitconfig
 
-ztr test '[[ $(abbr expand test-subcommand) == "git status" ]] \
-		&& [[ $(abbr expand gtest-subcommand) == "git status" ]]' \
-	"Can import single-word subcommand Git aliases" \
+ztr test '[[ $(abbr expand test-subcommand) == "git status" ]]' \
+	"Can import regular user single-word subcommand Git aliases" \
 	"Dependencies: erase, expand"
 abbr erase test-subcommand
-abbr erase gtest-subcommand
 
-ztr test '[[ $(abbr expand test-subcommand-multiword) == "git checkout main" ]] \
-		&& [[ $(abbr expand gtest-subcommand-multiword) == "git checkout main" ]]' \
-	"Can import multi-word subcommand Git aliases" \
+ztr test '[[ $(abbr expand test-subcommand-multiword) == "git checkout main" ]]' \
+	"Can import regular user multi-word subcommand Git aliases" \
 	"Dependencies: erase, expand"
 abbr erase test-subcommand-multi-word
-abbr erase gtest-subcommand-multi-word
 
-ztr test '(( ! ${+ABBR_REGULAR_USER_ABBREVIATIONS["test-command"]} )) \
-		&& (( ! ${+ABBR_GLOBAL_USER_ABBREVIATIONS["gtest-command"]} ))' \
-	"Cannot import command Git aliases" \
-	"Dependencies: erase"
+ztr test '(( ! ${+ABBR_REGULAR_USER_ABBREVIATIONS["test-command"]} ))' \
+	"Cannot import command Git aliases"
 
-ztr test '(( ! ${+ABBR_REGULAR_USER_ABBREVIATIONS["test-function"]} )) \
-		&& (( ! ${+ABBR_GLOBAL_USER_ABBREVIATIONS["gtest-function"]} ))' \
-	"Cannot import single-line function Git aliases" \
-	"Dependencies: erase"
+ztr test '(( ! ${+ABBR_REGULAR_USER_ABBREVIATIONS["test-function"]} ))' \
+	"Cannot import single-line function Git aliases"
 
-ztr test '(( ! ${+ABBR_REGULAR_USER_ABBREVIATIONS["test-function-multiline"]} )) \
-		&& (( ! ${+ABBR_GLOBAL_USER_ABBREVIATIONS["gtest-function-multiline"]} ))' \
-	"Cannot import multi-line function Git aliases" \
-	"Dependencies: erase"
+ztr test '(( ! ${+ABBR_REGULAR_USER_ABBREVIATIONS["test-function-multiline"]} ))' \
+	"Cannot import multi-line function Git aliases"
+
+abbr import-git-aliases -g --file ${0:A:h}/test-gitconfig
+
+ztr test '(( ${+ABBR_GLOBAL_USER_ABBREVIATIONS["test-subcommand"]} ))' \
+	"Can import global single-word subcommand Git aliases" \
+	"Dependencies: erase, expand"
+abbr erase test-subcommand
+abbr erase test-subcommand-multi-word
+
+abbr import-git-aliases -S --file ${0:A:h}/test-gitconfig
+
+ztr test '(( ${+ABBR_REGULAR_SESSION_ABBREVIATIONS["test-subcommand"]} ))' \
+	"Can import regular session single-word subcommand Git aliases" \
+	"Dependencies: erase, expand"
+abbr erase test-subcommand
+abbr erase test-subcommand-multi-word
+
+abbr import-git-aliases -S -g --file ${0:A:h}/test-gitconfig
+
+ztr test '(( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS["test-subcommand"]} ))' \
+	"Can import global session single-word subcommand Git aliases" \
+	"Dependencies: erase, expand"
+abbr erase test-subcommand
+abbr erase test-subcommand-multi-word
+
+abbr import-git-aliases --file ${0:A:h}/test-gitconfig --prefix "git "
+
+ztr test '[[ $(abbr expand "git test-subcommand") == "git status" ]]' \
+	"Can import prefixed regular user single-word subcommand Git aliases" \
+	"Dependencies: erase, expand"
+abbr erase test-subcommand
+
+ztr test '[[ $(abbr expand "git test-subcommand-multiword") == "git checkout main" ]]' \
+	"Can import prefixed regular user multi-word subcommand Git aliases" \
+	"Dependencies: erase, expand"
+abbr erase test-subcommand-multi-word
 
 
 ### ### ### All tests must be above this line ### ### ###

@@ -87,9 +87,9 @@ Adds abbreviations for all aliases.
 Adds abbreviations exported from fish.
 
 .IP \(bu
-\fBimport\-git\-aliases\fR [\fI--file <config-file>\fR]
+\fBimport\-git\-aliases\fR [\fI--file <config-file>\fR] [\fI--prefix <ABBREVIATION prefix>\fR]
 
-Adds two abbreviations for each git alias: a regular abbreviation, and a "g"-prefixed global abbreviation. Use `--file <config-file>` to use a config file instead of the one specified by GIT_CONFIG (see `man git-config`).
+Add an abbreviation for every Git alias available in the current session. The EXPANSION is prefixed with `git[Space]`. Use `--file <config-file>` to use a config file instead of the one specified by GIT_CONFIG (see `man git-config`). Use `--prefix <prefix>` to add a prefix to the ABBREVIATION.
 
 .IP \(bu
 \fBabbr list\fR
@@ -133,7 +133,7 @@ Abbreviations available to all current and future sessions.
 
 .RE
 
-All except for \fBclear-session\fR, \fBexpand\fR, \fBimport-fish\fR, and \fBimport-git-aliases\fR can take a \fBtype\fR:
+All except for \fBclear-session\fR, \fBexpand\fR, and \fBimport-fish\fR can take a \fBtype\fR:
 .RS
 
 .IP \(bu

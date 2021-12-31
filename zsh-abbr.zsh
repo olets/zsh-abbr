@@ -308,16 +308,38 @@ _abbr() {
 
       local config_file
       local git_alias
+      local prefix
       local -a git_aliases
 
-      if [[ ($# != 0 && $# != 2) || ($# == 2 && $1 != "--file") ]]; then
-        _abbr:util_error "abbr import-git-aliases: Unexpected argument"
-        return
-      fi
+      while (( $# )); do
+        case $1 in
+          "--file")
+            if [[ -z $2 ]]; then
+              _abbr:util_error "abbr import-git-aliases: --file requires a file path"
+              return
+            fi
 
-      if [[ -n $1 ]]; then
-        config_file=$2
+            config_file=$2
 
+            shift 2
+            ;;
+          "--prefix")
+            if [[ -z $2 ]]; then
+              _abbr:util_error "abbr import-git-aliases: --prefix requires a prefix string"
+              return
+            fi
+
+            prefix=$2
+
+            shift 2
+            ;;
+          *)
+            _abbr:util_error "abbr import-git-aliases: Unexpected argument"
+            return
+        esac
+      done
+
+      if [[ -n $config_file ]]; then
         if [[ ! -f $config_file ]]; then
           _abbr:util_error "abbr import-git-aliases: Config file not found"
           return
@@ -343,11 +365,7 @@ _abbr() {
             value=${(q)value}
           fi
 
-          type="global"
-          _abbr:util_add "g$key" "git $value"
-
-          type="regular"
-          _abbr:util_add "$key" "git $value"
+          _abbr:util_add "$prefix$key" "git $value"
         fi
       done
     }
