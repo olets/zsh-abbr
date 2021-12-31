@@ -317,6 +317,7 @@ _abbr() {
 
       local config_file
       local git_alias
+      local prefix
       local -a git_aliases
 
       while (( $# )); do
@@ -328,6 +329,16 @@ _abbr() {
             fi
 
             config_file=$2
+
+            shift 2
+            ;;
+          "--prefix")
+            if [[ -z $2 ]]; then
+              _abbr:util_error "abbr import-git-aliases: --prefix requires a prefix string"
+              return
+            fi
+
+            prefix=$2
 
             shift 2
             ;;
@@ -363,7 +374,7 @@ _abbr() {
             value=${(q)value}
           fi
 
-          _abbr:util_add "$key" "git $value"
+          _abbr:util_add "$prefix$key" "git $value"
         fi
       done
     }
