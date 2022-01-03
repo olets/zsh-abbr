@@ -454,21 +454,9 @@ _abbr() {
       new_abbreviation=$2
       job_group='_abbr:rename'
 
-      if [[ $scope == 'session' ]]; then
-        if [[ $type == 'global' ]]; then
-          expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)current_abbreviation}]}
-        else
-          expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)current_abbreviation}]}
-        fi
-      else
-        if [[ $type == 'global' ]]; then
-          expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)current_abbreviation}]}
-        else
-          expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)current_abbreviation}]}
-        fi
-      fi
+      expansion=$(abbr expand $current_abbreviation)
 
-      if [[ $expansion ]]; then
+      if [[ -n $expansion ]]; then
         _abbr:util_add $new_abbreviation $expansion
         _abbr:erase $current_abbreviation
       else
