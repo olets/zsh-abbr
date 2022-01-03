@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # Tests require ztr
 # https://github.com/olets/zsh-test-runner
 # Run the suite by sourcing it or by passing it to `zsh`
