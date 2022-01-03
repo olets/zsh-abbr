@@ -1,3 +1,9 @@
+# [4.7.1](https://github.com/olets/zsh-abbr/compare/v4.7.0...v4.7.1) (2022-01-03)
+
+Copyright update
+
+
+
 # [4.7.0](https://github.com/olets/zsh-abbr/compare/v4.6.0...v4.7.0) (2021-12-30)
 
 
