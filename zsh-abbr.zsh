@@ -1030,7 +1030,7 @@ _abbr_cmd_expansion() {
 _abbr_create_files() {
   emulate -LR zsh
 
-  _abbr_debugger
+  # cannot support debug message
 
   [[ -d $ABBR_TMPDIR ]] || mkdir -p $ABBR_TMPDIR
 
