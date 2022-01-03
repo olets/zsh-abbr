@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # abbreviation management for zsh, inspired by fish shell and enhanced
 # https://github.com/olets/zsh-abbr
 # v4.6.0
