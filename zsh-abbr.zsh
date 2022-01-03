@@ -1,7 +1,7 @@
 # abbreviation management for zsh, inspired by fish shell and enhanced
 # https://github.com/olets/zsh-abbr
 # v4.7.0
-# Copyright (c) 2019-2021 Henry Bley-Vroman
+# Copyright (c) 2019-present Henry Bley-Vroman
 
 
 # CONFIGURATION
