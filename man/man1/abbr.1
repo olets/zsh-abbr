@@ -5,6 +5,8 @@ zsh\-abbr \- manage zsh abbreviations
 
 \fBabbr\fR (\fBadd\fR | \fBa\fR) [\fIscope\fR] [\fI\-\-force\fR] <\fIabbreviation\fR> <\fIexpansion\fR>
 
+\fBabbr\fR (\fBadd-git\fR | \fBg\fR) [\fIscope\fR] [\fI\-\-force\fR] <\fIabbreviation\fR> <\fIexpansion\fR>
+
 \fBabbr\fR (\fBclear\-session\fR | \fBc\fR)
 
 \fBabbr\fR (\fBerase\fR | \fBe\fR) [\fIscope\fR] <\fIabbreviation\fR>
@@ -55,6 +57,15 @@ Will error rather than overwrite an existing abbreviation.
 Will warn if the abbreviation would replace an existing command. To add in spite of the warning, use [\fI\-\-force\fR].
 
 May be multiple words. Quote or escape word delimiters.
+
+.IP \(bu
+\fBadd-git \fIabbreviation\fR \fIexpansion\fR or \fBg\fR \fIabbreviation\fR \fIexpansion\fR
+
+Shorthand for
+
+add abbreviation "git expansion"
+
+add "git abbreviation" "git expansion"
 
 .IP \(bu
 \fBclear\-session\fR or \fBc\fR
