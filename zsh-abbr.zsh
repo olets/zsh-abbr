@@ -113,6 +113,31 @@ _abbr() {
       _abbr:util_add $abbreviation $expansion
     }
 
+    _abbr:add_git() {
+      _abbr_debugger
+
+      local abbreviation
+      local expansion
+      local type_saved
+
+      if [[ $# > 1 ]]; then
+        _abbr:util_error "abbr add: Expected one argument, got $#: $*"
+        return
+      fi
+
+      abbreviation=${1%%=*}
+      expansion=${1#*=}
+      type_saved=$type
+
+      type='regular'
+      _abbr:add ${abbreviation}="git $expansion"
+
+      type='global'
+      _abbr:add "git ${abbreviation}"="git $expansion"
+
+      type=$type_saved
+    }
+
     _abbr:clear_session() {
       _abbr_debugger
 
@@ -818,6 +843,10 @@ _abbr() {
         "add"|\
         "a")
           _abbr:util_set_once action add
+          ;;
+        "add-git"|\
+        "g")
+          _abbr:util_set_once action add_git
           ;;
         "clear-session"|\
         "c")
