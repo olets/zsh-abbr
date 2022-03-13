@@ -48,9 +48,9 @@ To prevent expansion, press [\fBCTRL\-SPACE\fR] in place of [\fBSPACE\fR].
 The following commands are available:
 
 .IP \(bu
-\fBadd \fIabbreviation\fR=\fIexpansion\fR or \fBa\fR \fIabbreviation\fR=\fIexpansion\fR
+\fBadd <\fIabbreviation\fR>=<\fIexpansion\fR> or \fBa\fR <\fIabbreviation\fR>=<\fIexpansion\fR>
 
-Adds a new abbreviation, causing \fIabbreviation\fR to be expanded as \fIexpansion\fR.
+Adds a new abbreviation, causing <\fIabbreviation\fR> to be expanded as <\fIexpansion\fR>.
 
 Will error rather than overwrite an existing abbreviation.
 
@@ -59,7 +59,7 @@ Will warn if the abbreviation would replace an existing command. To add in spite
 May be multiple words. Quote or escape word delimiters.
 
 .IP \(bu
-\fBadd-git \fIabbreviation\fR=\fIexpansion\fR or \fBg\fR \fIabbreviation\fR=\fIexpansion\fR
+\fBadd-git <\fIabbreviation\fR>=<\fIexpansion\fR> or \fBg\fR <\fIabbreviation\fR>=<\fIexpansion\fR>
 
 Shorthand for
 
@@ -73,14 +73,14 @@ add "git abbreviation"="git expansion"
 Erases all session abbreviations.
 
 .IP \(bu
-\fBerase \fIabbreviation\fR or \fBe\fR \fIabbreviation\fR
+\fBerase <\fIabbreviation\fR> or \fBe\fR <\fIabbreviation\fR>
 
-Erases the abbreviation \fIabbreviation\fR .
+Erases the abbreviation <\fIabbreviation\fR> .
 
 .IP \(bu
-\fBexpand \fIabbreviation\fR or \fBx \fIabbreviation\fR
+\fBexpand <\fIabbreviation\fR> or \fBx <\fIabbreviation\fR>
 
-Returns the \fIexpansion\fR of the abbreviation \fIabbreviation\fR.
+Returns the <\fIexpansion\fR> of the abbreviation <\fIabbreviation\fR>.
 
 .IP \(bu
 \fBexport\-aliases\fR [<\fIdestination\fR>]
@@ -98,7 +98,7 @@ Adds abbreviations for all aliases.
 Adds abbreviations exported from fish.
 
 .IP \(bu
-\fBimport\-git\-aliases\fR [\fI--file <config-file>\fR] [\fI--prefix <ABBREVIATION prefix>\fR]
+\fBimport\-git\-aliases\fR [\fI--file <config-file>\fR] [\fI--prefix\fR <\fIABBREVIATION prefix\fR>]
 
 Add an abbreviation for every Git alias available in the current session. The EXPANSION is prefixed with `git[Space]`. Use `--file <config-file>` to use a config file instead of the one specified by GIT_CONFIG (see `man git-config`). Use `--prefix <prefix>` to add a prefix to the ABBREVIATION.
 
@@ -118,9 +118,9 @@ Lists all abbreviations.
 Lists all abbreviations as commands suitable for export and import.
 
 .IP \(bu
-\fBrename\fR \fIold_abbreviation\fR \fInew_abbreviation\fR or \fBR\fR \fIold_abbreviation\fR \fInew_abbreviation\fR
+\fBrename\fR <\fIold_abbreviation\fR> <\fInew_abbreviation\fR> or \fBR\fR <\fIold_abbreviation\fR> <\fInew_abbreviation\fR>
 
-Renames an abbreviation, from \fIold_abbreviation\fR to \fInew_abbreviation\fR.
+Renames an abbreviation, from <\fIold_abbreviation\fR> to <\fInew_abbreviation\fR>.
 
 .IP \(bu
 \fBversion\fR or \fB\-\-version\fR or \fB\-v\fR
