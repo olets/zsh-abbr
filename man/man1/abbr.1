@@ -3,9 +3,9 @@
 zsh\-abbr \- manage zsh abbreviations
 .SH SYNOPSIS
 
-\fBabbr\fR (\fBadd\fR | \fBa\fR) [\fIscope\fR] [\fI\-\-force\fR] <\fIabbreviation\fR> <\fIexpansion\fR>
+\fBabbr\fR (\fBadd\fR | \fBa\fR) [\fIscope\fR] [\fI\-\-force\fR] <\fIabbreviation\fR>=<\fIexpansion\fR>
 
-\fBabbr\fR (\fBadd-git\fR | \fBg\fR) [\fIscope\fR] [\fI\-\-force\fR] <\fIabbreviation\fR> <\fIexpansion\fR>
+\fBabbr\fR (\fBadd-git\fR | \fBg\fR) [\fIscope\fR] [\fI\-\-force\fR] <\fIabbreviation\fR>=<\fIexpansion\fR>
 
 \fBabbr\fR (\fBclear\-session\fR | \fBc\fR)
 
@@ -48,7 +48,7 @@ To prevent expansion, press [\fBCTRL\-SPACE\fR] in place of [\fBSPACE\fR].
 The following commands are available:
 
 .IP \(bu
-\fBadd \fIabbreviation\fR \fIexpansion\fR or \fBa\fR \fIabbreviation\fR \fIexpansion\fR
+\fBadd \fIabbreviation\fR=\fIexpansion\fR or \fBa\fR \fIabbreviation\fR=\fIexpansion\fR
 
 Adds a new abbreviation, causing \fIabbreviation\fR to be expanded as \fIexpansion\fR.
 
@@ -59,13 +59,13 @@ Will warn if the abbreviation would replace an existing command. To add in spite
 May be multiple words. Quote or escape word delimiters.
 
 .IP \(bu
-\fBadd-git \fIabbreviation\fR \fIexpansion\fR or \fBg\fR \fIabbreviation\fR \fIexpansion\fR
+\fBadd-git \fIabbreviation\fR=\fIexpansion\fR or \fBg\fR \fIabbreviation\fR=\fIexpansion\fR
 
 Shorthand for
 
-add abbreviation "git expansion"
+add abbreviation="git expansion"
 
-add "git abbreviation" "git expansion"
+add "git abbreviation"="git expansion"
 
 .IP \(bu
 \fBclear\-session\fR or \fBc\fR
