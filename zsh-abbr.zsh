@@ -39,7 +39,7 @@ typeset -gi ABBR_QUIETER=${ABBR_QUIETER:-0}
 typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr/}
 
 # File abbreviations are stored in
-typeset -g ABBR_USER_ABBREVIATIONS_FILE=${ABBR_USER_ABBREVIATIONS_FILE:-$HOME/.config/zsh/abbreviations}
+typeset -g ABBR_USER_ABBREVIATIONS_FILE=${ABBR_USER_ABBREVIATIONS_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh/abbreviations}
 
 # FUNCTIONS
 # ---------
