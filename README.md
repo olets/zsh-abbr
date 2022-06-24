@@ -530,15 +530,15 @@ Replace `<styles for global abbreviations>` with a [zsh character highlighting](
 Linux:
 
 ```shell
-ZSH_HIGHLIGHT_REGEXP+=('^[[:blank:][:space:]]*('"${(j:|:)${(k)ABBR_REGULAR_USER_ABBREVIATIONS}}"')$' <styles for regular abbreviations>)
-ZSH_HIGHLIGHT_REGEXP+=('\<('"${(j:|:)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS}}"')$' <styles for global abbreviations>)
+ZSH_HIGHLIGHT_REGEXP+=('^[[:blank:][:space:]]*('${(j:|:)${(k)ABBR_REGULAR_USER_ABBREVIATIONS}}')$' <styles for regular abbreviations>)
+ZSH_HIGHLIGHT_REGEXP+=('\<('${(j:|:)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS}}')$' <styles for global abbreviations>)
 ```
 
 macOS:
 
 ```shell
-ZSH_HIGHLIGHT_REGEXP=('^[[:blank:][:space:]]*('"${(j:|:)${(k)ABBR_REGULAR_USER_ABBREVIATIONS}}"')$' <styles for regular abbreviations>)
-ZSH_HIGHLIGHT_REGEXP+=('[[:<:]]('"${(j:|:)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS}}"')$' <styles for global abbreviations>)
+ZSH_HIGHLIGHT_REGEXP=('^[[:blank:][:space:]]*('${(j:|:)${(k)ABBR_REGULAR_USER_ABBREVIATIONS}}')$' <styles for regular abbreviations>)
+ZSH_HIGHLIGHT_REGEXP+=('[[:<:]]('${(j:|:)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS}}')$' <styles for global abbreviations>)
 ```
 
 ### vi mode compatibility
