@@ -83,6 +83,13 @@ After adding the plugin to the manager, restart zsh:
 exec zsh
 ```
 
+### Fig
+
+Install `zsh-abbr` with [Fig](https://fig.io) in just one click.
+
+<a href="https://fig.io/plugins/other/zsh-abbr_olets" target="_blank"><img src="https://fig.io/badges/install-with-fig.svg" /></a>
+
+
 ### Manual
 
 Clone this repo and add `source path/to/zsh-abbr.zsh` to your `.zshrc`. Then restart zsh:
