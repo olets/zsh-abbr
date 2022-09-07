@@ -11,6 +11,7 @@ _Currently considered feature complete._
 
 - [ ] Tests for list commands
 - [ ] Test for export command
+- [ ] Test for XDG_CONFIG_HOME support
 
 ## Maybe?
 

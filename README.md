@@ -446,11 +446,13 @@ Variable | Type | Use | Default
 `ABBR_QUIET` | integer | If non-zero, use quiet mode without passing `--quiet` | 0
 `ABBR_QUIETER` | integer | If non-zero, use quieter mode without passing `--quieter` | 0
 `ABBR_TMPDIR` | String | Path to the directory temporary files are stored in. _Ends in `/`_ | `${${TMPDIR:-/tmp}%/}/zsh-abbr/` *
-`ABBR_USER_ABBREVIATIONS_FILE` | String | Path to the file user abbreviation are stored in (see [Storage and manual editing](#storage-and-manual-editing)) | `$HOME/.config/zsh/abbreviations` **
+`ABBR_USER_ABBREVIATIONS_FILE` | String | Path to the file user abbreviation are stored in (see [Storage and manual editing](#storage-and-manual-editing)) | `$XDG_CONFIG_HOME/zsh/abbreviations` if you have `XDG_CONFIG_HOME` defined\*\*, otherwise `$HOME/.config/zsh/abbreviations` \*\*\*
 
 \* If changing this, you may want to delete the default directory.
 
-\** If changing this, you may want to delete the default file.
+\*\* Unless you've been using zsh-abbr without a customized `ABBR_USER_ABBREVIATIONS_FILE` since before `XDG_CONFIG_HOME` support was added (v4.8.0). In that case zsh-abbr will use the pre-4.8.0 `$HOME/.config/zsh/abbreviations`.
+
+\*\*\* If changing this, you may want to delete the default file.
 
 ### Exported variables
 

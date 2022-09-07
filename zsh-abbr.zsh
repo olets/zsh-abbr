@@ -37,7 +37,18 @@ typeset -gi ABBR_QUIETER=${ABBR_QUIETER:-0}
 typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr/}
 
 # File abbreviations are stored in
-typeset -g ABBR_USER_ABBREVIATIONS_FILE=${ABBR_USER_ABBREVIATIONS_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh/abbreviations}
+typeset -g ABBR_USER_ABBREVIATIONS_FILE=$ABBR_USER_ABBREVIATIONS_FILE
+if [[ -z $ABBR_USER_ABBREVIATIONS_FILE ]]; then
+  # Respect XDG_CONFIG_HOME with a caveat:
+  # Users with XDG_CONFIG_HOME defined who have been using zsh-abbr with the
+  # default ABBR_USER_ABBREVIATIONS_FILE will already have a file in $HOME/.config
+  
+  ABBR_USER_ABBREVIATIONS_FILE=$HOME/.config/zsh/abbreviations
+
+  if [[ ! -f ABBR_USER_ABBREVIATIONS_FILE && -n $XDG_CONFIG_HOME && -d $XDG_CONFIG_HOME ]]; then
+    ABBR_USER_ABBREVIATIONS_FILE=$XDG_CONFIG_HOME/zsh/abbreviations
+  fi
+fi
 
 # FUNCTIONS
 # ---------
