@@ -1,3 +1,12 @@
+# [4.8.0](https://github.com/olets/zsh-abbr/compare/v4.7.1...v4.8.0) (2022-09-08)
+
+
+### Features
+
+* **user abbreviation file:** respect XDG_CONFIG_HOME if defined (unless there's already an abbreviations file in the old default location), with [@qubidt](https://github.com/qubidt) ([5d59cd0](https://github.com/olets/zsh-abbr/commit/5d59cd0a62af1367aa4e6f0f548ee00914031013), [2df61f9](https://github.com/olets/zsh-abbr/commit/2df61f96f142e7ba13ffecbaae1256254608cf25))
+
+
+
 # [4.7.1](https://github.com/olets/zsh-abbr/compare/v4.7.0...v4.7.1) (2022-01-03)
 
 Copyright update
