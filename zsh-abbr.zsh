@@ -42,7 +42,7 @@ if [[ -z $ABBR_USER_ABBREVIATIONS_FILE ]]; then
   # Respect XDG_CONFIG_HOME with a caveat:
   # Users with XDG_CONFIG_HOME defined who have been using zsh-abbr with the
   # default ABBR_USER_ABBREVIATIONS_FILE will already have a file in $HOME/.config
-  
+
   ABBR_USER_ABBREVIATIONS_FILE=$HOME/.config/zsh/abbreviations
 
   if [[ ! -f ABBR_USER_ABBREVIATIONS_FILE && -n $XDG_CONFIG_HOME && -d $XDG_CONFIG_HOME ]]; then
@@ -1338,7 +1338,13 @@ _abbr_widget_expand_and_space() {
   emulate -LR zsh
 
   _abbr_widget_expand
-  zle self-insert
+  if [[ "${BUFFER}" =~ "__CURSOR__" ]]
+  then
+    RBUFFER=${LBUFFER[(ws:__CURSOR__:)2]}
+    LBUFFER=${LBUFFER[(ws:__CURSOR__:)1]}
+  else
+    zle self-insert
+  fi
 }
 
 
