@@ -1,3 +1,26 @@
+# [5.0.0.beta-1](https://github.com/olets/zsh-abbr/compare/v4.8.0...v5.0.0.beta-1) (2022-11-06)
+
+Notably the first release of multi-word abbreviations and the move of the documentation out of the README and into a dedicated site.
+
+### Features
+
+* **multi-word abbreviations**! Thanks to [@henrebotha](https://github.com/henrebotha) for discussion in [#32](https://github.com/olets/zsh-abbr/issues/32)
+  * add ([641d94f](https://github.com/olets/zsh-abbr/commit/641d94f77f11c13faae01b141c9d9801bd795f3a))
+  * erase, expand ([218cd8e](https://github.com/olets/zsh-abbr/commit/218cd8e497ade6efd40d3c5bf1c32a9b07b0e717)), ([2a3f111](https://github.com/olets/zsh-abbr/commit/2a3f11193f9ac5f669fa4e3ce7a9e30d677e64d9))
+  * import-git-aliases ([c98729b](https://github.com/olets/zsh-abbr/commit/c98729ba691c72a8340138dce382a0c7192c45c9))
+  * rename ([5c2308f](https://github.com/olets/zsh-abbr/commit/5c2308f2cc2ac781f054140421d755aac8bd0e51))
+* **contributors:** use all-contributors ([32da6fb](https://github.com/olets/zsh-abbr/commit/32da6fb74f7688851e03d52eaa838084ce811b83))
+* **erase,add:** remove some possibly unnecessary quoting ([02b84b5](https://github.com/olets/zsh-abbr/commit/02b84b551fba7c4f853d3feddb48637ae9033983))
+* **expand:** try all substrings from longest to shortest ([4d8ea0f](https://github.com/olets/zsh-abbr/commit/4d8ea0ffd8acd74e8a4216764bba219c343cc09c))
+* **git:** support new subcommand ([364a4b0](https://github.com/olets/zsh-abbr/commit/364a4b006cdc6ab9d558f2c7fbc14e4bc8f850fd)), ([ceeca77](https://github.com/olets/zsh-abbr/commit/ceeca776155201f3115ca5a5c01f24db58716751))
+* **import-git-aliases:** create only one type ([9979861](https://github.com/olets/zsh-abbr/commit/997986107e4e8c883b44c660b6d7af957d90777d))
+* **license:**
+  * Hippocratic License v3 is released. Apply it in place of v2.1 clause ([584be08](https://github.com/olets/zsh-abbr/commit/584be08fa0dee1daf03568e76f45a54946dfb96c))
+  * add Sky's Edge-inspired stipulations ([1c4c501](https://github.com/olets/zsh-abbr/commit/1c4c50147ef9e79b37f49a5e901599a1f906330e))
+* **widgets:** drop support for deprecated names ([6aedbe9](https://github.com/olets/zsh-abbr/commit/6aedbe94297263a39b1f3b6bbaee7685e7a73787))
+
+
+
 # [4.8.1](https://github.com/olets/zsh-abbr/compare/v4.8.0...v4.8.1) (2022-11-10)
 
 
@@ -13,8 +36,6 @@
 ### Features
 
 * **user abbreviation file:** respect XDG_CONFIG_HOME if defined (unless there's already an abbreviations file in the old default location), with [@qubidt](https://github.com/qubidt) ([5d59cd0](https://github.com/olets/zsh-abbr/commit/5d59cd0a62af1367aa4e6f0f548ee00914031013), [2df61f9](https://github.com/olets/zsh-abbr/commit/2df61f96f142e7ba13ffecbaae1256254608cf25))
-
-
 
 # [4.7.1](https://github.com/olets/zsh-abbr/compare/v4.7.0...v4.7.1) (2022-01-03)
 
