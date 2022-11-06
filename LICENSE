@@ -1,20 +1,45 @@
 zsh-abbr Copyright (2020-present) (Henry Bley-Vroman)(“Licensor”)
 
-Lay summary: This license requires that reusers give credit to the
+Lay summary: The license requires that reusers give credit to the
 creator. It allows reusers to distribute, remix, adapt, and build
 upon the material in any medium or format, for noncommercial purposes
 only. If others modify or adapt the material, they must license the
-modified material under identical terms. This license prohibits the
-use of software to violate universal standards of human rights.
+modified material under identical terms.  The license prohibits the
+use of software to violate human rights. The license requires that
+derivative products differ substantially different from what they
+build off of. The license requires that derivative products be released
+under names which cannot be mistaken for the work they derive from.
+(If the lay summary is at odds with the full license, the full license
+is considered the source of truth.)
 
-This license brings together CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode) and the Hippocratic
-License (https://firstdonoharm.dev/version/3/0/license/license.txt). The combination was not put together
-by a lawyer; it should be read in the spirit of "CC BY-NC-SA 4.0 with additional Hippocratic License conditions".
+
+This license brings together CC BY-NC-SA 4.0
+(https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode),
+the Hippocratic License
+(https://firstdonoharm.dev/version/3/0/license/license.txt),
+and stipulations inspired by the Sky's Edge Open Source License
+(https://skysedge.com/opensource/index.html). The combination was not
+put together by a lawyer; it should be read in the spirit of
+"CC BY-NC-SA 4.0 plus the Hippocratic License v3 and stipulations
+inspired by the Sky's Edge Open Source License".
 
 Commercial use is disallowed but commercial code but the possibility
 of an agreement being reached whereby the code is used commercially
 is not ruled out. Any such agreement must be reached with its original
 creator and Licensor, Henry Bley-Vroman.
+
+----------------------------------------------------------------
+
+**Stipulations inspired by Sky's Edge**
+
+Any derivative product must, unless it is explicitly, clearly, and
+where those who come across it will see declared as as fork or unless
+otherwise agreed upon:
+
+1. differ significantly from the originator's work.
+
+2. have a name which not include the name that the originator used,
+or suggest a connection with the originator.
 
 ----------------------------------------------------------------
 
