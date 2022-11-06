@@ -24,6 +24,8 @@ See the [ROADMAP](ROADMAP.md) file.
 
 ## Contributing
 
+_Looking for the documentation site's source? See <https://github.com/olets/zsh-abbr-docs>
+
 Thanks for your interest. Contributions are welcome!
 
 > Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
