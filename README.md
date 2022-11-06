@@ -12,7 +12,7 @@ Run `abbr help` for documentation; if the package is installed with Homebrew, `m
 
 ## Documentation
 
-📖 See the guide at https://zsh-abbr.netlify.app/
+📖 See the guide at https://zsh-abbr.olets.dev/
 
 ## Changelog
 
