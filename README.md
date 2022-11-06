@@ -24,7 +24,7 @@ See the [ROADMAP](ROADMAP.md) file.
 
 ## Contributing
 
-_Looking for the documentation site's source? See <https://github.com/olets/zsh-abbr-docs>
+_Looking for the documentation site's source? See <https://github.com/olets/zsh-abbr-docs>_
 
 Thanks for your interest. Contributions are welcome!
 
