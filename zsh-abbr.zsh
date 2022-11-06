@@ -1345,13 +1345,6 @@ _abbr_widget_expand_and_space() {
   else
     zle self-insert
   fi
-  _abbr_widget_trigger_syntax_highlighting
-}
-
-_abbr_widget_trigger_syntax_highlighting() {
-  if typeset -f _zsh_highlight > /dev/null; then
-      _zsh_highlight
-  fi
 }
 
 
