@@ -1,5 +1,9 @@
 {
   "projectName": "zsh-abbr",
   "projectOwner": "olets",
-  "contributorsSortAlphabetically": true
+  "contributorsSortAlphabetically": true,
+  "files": [
+    "README.md",
+    "CONTRIBUTORS.md"
+  ]
 }

@@ -1,4 +1,4 @@
-## zsh-abbr ![GitHub release (latest by date)](https://img.shields.io/github/v/release/olets/zsh-abbr) ![All Contributors badge](https://img.shields.io/github/all-contributors/olets/all-contributors-test?color=3b3999)
+## zsh-abbr ![GitHub release (latest by date)](https://img.shields.io/github/v/release/olets/zsh-abbr) ![All Contributors badge](https://img.shields.io/github/all-contributors/olets/zsh-abbr?color=3b3999)
 
 **abbr** is the zsh manager for **auto-expanding abbreviations** - text that when written in a terminal is replaced with other (typically longer) text. Inspired by fish shell.
 
@@ -37,6 +37,8 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
 The test suite uses [zsh-test-runner](https://github.com/olets/zsh-test-runner). Run with test suite with `. ./tests/abbr.ztr`.
 
 ## Contributors
+
+This project uses [all-contributors](https://allcontributors.org). See its [emoji key](https://allcontributors.org/docs/en/emoji-key).
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
