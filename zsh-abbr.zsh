@@ -1295,13 +1295,10 @@ _abbr_precmd() {
 _abbr_set_cursor_position() {
   emulate -LR zsh
 
-  local buffer_arr
-
   if [[ "${BUFFER}" =~ "${ABBR_CURSOR_MARKER}" ]]; then
-    IFS=${ABBR_CURSOR_MARKER} read -rA buffer_arr <<< "${BUFFER}"
-    buffer_arr=(${buffer_arr})
-    RBUFFER=${buffer_arr[2]}
-    LBUFFER=${buffer_arr[1]}
+    local buffer="${BUFFER}"
+    LBUFFER="${buffer%%"$ABBR_CURSOR_MARKER"*}"
+    RBUFFER="${buffer#*"$ABBR_CURSOR_MARKER"}"
     ABBR_NO_ADDITIONAL_SPACE=1
   else
     ABBR_NO_ADDITIONAL_SPACE=0
