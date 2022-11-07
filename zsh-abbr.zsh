@@ -50,6 +50,9 @@ if [[ -z $ABBR_USER_ABBREVIATIONS_FILE ]]; then
   fi
 fi
 
+# Cursor position marker after expansion
+typeset -g ABBR_CURSOR_MARKER=${ABBR_CURSOR_MARKER:-__CURSOR__}
+
 # FUNCTIONS
 # ---------
 
@@ -1084,11 +1087,13 @@ _abbr_init() {
   typeset -g ABBR_PRECMD_MESSAGE
   typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
   typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
+  typeset -gi ABBR_NO_ADDITIONAL_SPACE
 
   ABBR_INITIALIZING=1
   ABBR_PRECMD_MESSAGE=
   ABBR_REGULAR_SESSION_ABBREVIATIONS=()
   ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
+  ABBR_NO_ADDITIONAL_SPACE=0
 
   job_name=$(_abbr_job_name)
 
@@ -1287,6 +1292,23 @@ _abbr_precmd() {
   fi
 }
 
+_abbr_set_cursor_position() {
+  emulate -LR zsh
+
+  local buffer_arr
+
+  if [[ "${BUFFER}" =~ "${ABBR_CURSOR_MARKER}" ]]; then
+    IFS=${ABBR_CURSOR_MARKER} read -rA buffer_arr <<< "${BUFFER}"
+    buffer_arr=(${buffer_arr})
+    RBUFFER=${buffer_arr[2]}
+    LBUFFER=${buffer_arr[1]}
+    ABBR_NO_ADDITIONAL_SPACE=1
+  else
+    ABBR_NO_ADDITIONAL_SPACE=0
+  fi
+}
+
+
 # WIDGETS
 # -------
 
@@ -1315,6 +1337,8 @@ _abbr_widget_expand() {
     preceding_lbuffer=${LBUFFER%%$word}
     LBUFFER=$preceding_lbuffer${(Q)expansion}
   fi
+
+  _abbr_set_cursor_position
 }
 
 _abbr_widget_expand_and_accept() {
@@ -1338,13 +1362,12 @@ _abbr_widget_expand_and_space() {
   emulate -LR zsh
 
   _abbr_widget_expand
-  if [[ "${BUFFER}" =~ "__CURSOR__" ]]
-  then
-    RBUFFER=${LBUFFER[(ws:__CURSOR__:)2]}
-    LBUFFER=${LBUFFER[(ws:__CURSOR__:)1]}
-  else
+
+  if [[ $ABBR_NO_ADDITIONAL_SPACE == 0 ]]; then
     zle self-insert
   fi
+
+  ABBR_NO_ADDITIONAL_SPACE=0
 }
 
 
