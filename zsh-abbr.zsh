@@ -1087,13 +1087,13 @@ _abbr_init() {
   typeset -g ABBR_PRECMD_MESSAGE
   typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
   typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
-  typeset -gi ABBR_NO_ADDITIONAL_SPACE
+  typeset -gi ABBR_SUPPRESS_SPACE
 
   ABBR_INITIALIZING=1
   ABBR_PRECMD_MESSAGE=
   ABBR_REGULAR_SESSION_ABBREVIATIONS=()
   ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
-  ABBR_NO_ADDITIONAL_SPACE=0
+  ABBR_SUPPRESS_SPACE=0
 
   job_name=$(_abbr_job_name)
 
@@ -1299,9 +1299,9 @@ _abbr_set_cursor_position() {
     local buffer="${BUFFER}"
     LBUFFER="${buffer%%"$ABBR_CURSOR_MARKER"*}"
     RBUFFER="${buffer#*"$ABBR_CURSOR_MARKER"}"
-    ABBR_NO_ADDITIONAL_SPACE=1
+    ABBR_SUPPRESS_SPACE=1
   else
-    ABBR_NO_ADDITIONAL_SPACE=0
+    ABBR_SUPPRESS_SPACE=0
   fi
 }
 
@@ -1360,11 +1360,11 @@ _abbr_widget_expand_and_space() {
 
   _abbr_widget_expand
 
-  if [[ $ABBR_NO_ADDITIONAL_SPACE == 0 ]]; then
+  if [[ $ABBR_SUPPRESS_SPACE == 0 ]]; then
     zle self-insert
   fi
 
-  ABBR_NO_ADDITIONAL_SPACE=0
+  ABBR_SUPPRESS_SPACE=0
 }
 
 
