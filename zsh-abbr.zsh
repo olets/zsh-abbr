@@ -51,7 +51,7 @@ if [[ -z $ABBR_USER_ABBREVIATIONS_FILE ]]; then
 fi
 
 # Cursor position marker after expansion
-typeset -g ABBR_CURSOR_MARKER=${ABBR_CURSOR_MARKER:-__CURSOR__}
+typeset -g ABBR_CURSOR_MARKER=${ABBR_CURSOR_MARKER:-__ABBR_CURSOR__}
 
 # FUNCTIONS
 # ---------
