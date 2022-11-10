@@ -1,3 +1,12 @@
+# [4.8.1](https://github.com/olets/zsh-abbr/compare/v4.8.0...v4.8.1) (2022-11-10)
+
+
+### Features
+
+* **widgets:** deprecate functions which were not dropped in v4.1.0... ([8a01f32](https://github.com/olets/zsh-abbr/commit/8a01f32514257422a4d50484e22a1ea40386f098))
+
+
+
 # [4.8.0](https://github.com/olets/zsh-abbr/compare/v4.7.1...v4.8.0) (2022-09-08)
 
 
