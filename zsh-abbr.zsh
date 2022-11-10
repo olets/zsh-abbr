@@ -972,13 +972,13 @@ _abbr_add_widgets() {
 
   _abbr_debugger
 
-  zle -N abbr-expand _abbr_widget_expand
-  zle -N abbr-expand-and-accept _abbr_widget_expand_and_accept
-  zle -N abbr-expand-and-space _abbr_widget_expand_and_space
-
   zle -N _abbr_widget_expand
   zle -N _abbr_widget_expand_and_accept
   zle -N _abbr_widget_expand_and_space
+
+  zle -N abbr-expand
+  zle -N abbr-expand-and-accept
+  zle -N abbr-expand-and-space
 }
 
 _abbr_bind_widgets() {
@@ -987,18 +987,18 @@ _abbr_bind_widgets() {
   _abbr_debugger
 
   # spacebar expands abbreviations
-  bindkey " " _abbr_widget_expand_and_space
+  bindkey " " abbr-expand-and-space
 
   # control-spacebar is a normal space
   bindkey "^ " magic-space
 
   # when running an incremental search,
   # spacebar behaves normally and control-space expands abbreviations
-  bindkey -M isearch "^ " _abbr_widget_expand_and_space
+  bindkey -M isearch "^ " abbr-expand-and-space
   bindkey -M isearch " " magic-space
 
   # enter key expands and accepts abbreviations
-  bindkey "^M" _abbr_widget_expand_and_accept
+  bindkey "^M" abbr-expand-and-accept
 }
 
 _abbr_no_color() {
@@ -1290,7 +1290,7 @@ _abbr_precmd() {
 # WIDGETS
 # -------
 
-_abbr_widget_expand() {
+abbr-expand() {
   emulate -LR zsh
 
   local expansion
@@ -1317,7 +1317,7 @@ _abbr_widget_expand() {
   fi
 }
 
-_abbr_widget_expand_and_accept() {
+abbr-expand-and-accept() {
   emulate -LR zsh
 
   # do not support debug message
@@ -1326,7 +1326,7 @@ _abbr_widget_expand_and_accept() {
   trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
 
   if [[ -z $trailing_space ]]; then
-    zle _abbr_widget_expand
+    zle abbr-expand
   fi
 
   'builtin' 'command' -v _zsh_autosuggest_clear &>/dev/null && _zsh_autosuggest_clear
@@ -1334,11 +1334,32 @@ _abbr_widget_expand_and_accept() {
   zle accept-line
 }
 
+abbr-expand-and-space() {
+  emulate -LR zsh
+
+  abbr-expand
+  zle self-insert
+}
+
+_abbr_widget_expand_and_accept() {
+  emulate -LR zsh
+
+  ABBR_PRECMD_MESSAGE+="\\n$(_abbr_warn_deprecation _abbr_widget_expand_and_accept abbr-expand-and-accept)"
+  abbr-expand-and-accept
+}
+
 _abbr_widget_expand_and_space() {
   emulate -LR zsh
 
-  _abbr_widget_expand
-  zle self-insert
+  ABBR_PRECMD_MESSAGE+="\\n$(_abbr_warn_deprecation _abbr_widget_expand_and_space abbr-expand-and-space)"
+  abbr-expand-and-space
+}
+
+_abbr_widget_expand() {
+  emulate -LR zsh
+
+  ABBR_PRECMD_MESSAGE+="\\n$(_abbr_warn_deprecation _abbr_abbr_widget_expand_expand_widget abbr-expand)"
+  abbr-expand
 }
 
 
@@ -1384,6 +1405,10 @@ _abbr_deprecations() {
       local -A deprecated_widgets
 
       bindkey_declarations=$(bindkey)
+
+      deprecated_widgets[_abbr_widget_expand_and_accept]=abbr-expand-and-accept
+      deprecated_widgets[_abbr_widget_expand_and_space]=abbr-expand-and-space
+      deprecated_widgets[_abbr_widget_expand]=abbr-expand
 
       for deprecated replacement in ${(kv)deprecated_widgets}; do
         bindkey_declaration=$('builtin' 'echo' $bindkey_declarations | grep $deprecated)
