@@ -113,7 +113,7 @@ _abbr() {
       _abbr:util_add $abbreviation $expansion
     }
 
-    _abbr:add_git() {
+    _abbr:git() {
       _abbr_debugger
 
       local abbreviation
@@ -844,9 +844,9 @@ _abbr() {
         "a")
           _abbr:util_set_once action add
           ;;
-        "add-git"|\
+        "git"|\
         "g")
-          _abbr:util_set_once action add_git
+          _abbr:util_set_once action git
           ;;
         "clear-session"|\
         "c")

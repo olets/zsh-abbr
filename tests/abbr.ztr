@@ -339,12 +339,12 @@ ztr test '[[ $(abbr expand "git test-subcommand-multiword") == "git checkout mai
 	"Dependencies: erase, expand"
 abbr erase test-subcommand-multi-word
 
-abbr add-git $test_abbr_abbreviation=$test_abbr_expansion
+abbr git $test_abbr_abbreviation=$test_abbr_expansion
 ztr test '[[ $(abbr expand "git $test_abbr_abbreviation") == "git $test_abbr_expansion" ]]' \
-	"add-git adds a regular user abbreviation, prefixing the expansion with 'git '" \
+	"git adds a regular user abbreviation, prefixing the expansion with 'git '" \
 	"Dependencies: erase, expand"
 ztr test '[[ $(abbr expand $test_abbr_abbreviation) == "git $test_abbr_expansion" ]]' \
-	"add-git adds a regular user abbreviation, prefixing the abbreviation with 'g' and prefixing the expansion with 'git '" \
+	"git adds a regular user abbreviation, prefixing the abbreviation with 'g' and prefixing the expansion with 'git '" \
 	"Dependencies: erase, expand"
 abbr erase $test_abbr_abbreviation
 abbr erase -g "git $test_abbr_abbreviation"
