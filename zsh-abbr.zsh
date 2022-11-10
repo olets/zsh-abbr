@@ -975,10 +975,6 @@ _abbr_add_widgets() {
 
   _abbr_debugger
 
-  zle -N _abbr_widget_expand
-  zle -N _abbr_widget_expand_and_accept
-  zle -N _abbr_widget_expand_and_space
-
   zle -N abbr-expand
   zle -N abbr-expand-and-accept
   zle -N abbr-expand-and-space
@@ -1351,27 +1347,6 @@ abbr-expand-and-space() {
   zle self-insert
 }
 
-_abbr_widget_expand_and_accept() {
-  emulate -LR zsh
-
-  ABBR_PRECMD_MESSAGE+="\\n$(_abbr_warn_deprecation _abbr_widget_expand_and_accept abbr-expand-and-accept)"
-  abbr-expand-and-accept
-}
-
-_abbr_widget_expand_and_space() {
-  emulate -LR zsh
-
-  ABBR_PRECMD_MESSAGE+="\\n$(_abbr_warn_deprecation _abbr_widget_expand_and_space abbr-expand-and-space)"
-  abbr-expand-and-space
-}
-
-_abbr_widget_expand() {
-  emulate -LR zsh
-
-  ABBR_PRECMD_MESSAGE+="\\n$(_abbr_warn_deprecation _abbr_abbr_widget_expand_expand_widget abbr-expand)"
-  abbr-expand
-}
-
 
 # SHARE
 # -----
@@ -1415,10 +1390,6 @@ _abbr_deprecations() {
       local -A deprecated_widgets
 
       bindkey_declarations=$(bindkey)
-
-      deprecated_widgets[_abbr_widget_expand_and_accept]=abbr-expand-and-accept
-      deprecated_widgets[_abbr_widget_expand_and_space]=abbr-expand-and-space
-      deprecated_widgets[_abbr_widget_expand]=abbr-expand
 
       for deprecated replacement in ${(kv)deprecated_widgets}; do
         bindkey_declaration=$('builtin' 'echo' $bindkey_declarations | grep $deprecated)
