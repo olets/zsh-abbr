@@ -21,6 +21,15 @@ Notably the first release of multi-word abbreviations and the move of the docume
 
 
 
+# [4.8.2](https://github.com/olets/zsh-abbr/compare/v4.8.1...v4.8.2) (2022-11-19)
+
+
+### Features
+
+* **binaries:** remove [[#65](https://github.com/olets/zsh-abbr/issues/65)] ([347f2fa](https://github.com/olets/zsh-abbr/commit/347f2fa0c6b0a4069acc56dabd86911f04d777e5))
+
+
+
 # [4.8.1](https://github.com/olets/zsh-abbr/compare/v4.8.0...v4.8.1) (2022-11-10)
 
 
