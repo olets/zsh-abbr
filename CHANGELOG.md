@@ -1,3 +1,12 @@
+# [5.0.0.beta-2](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-1...v5.0.0.beta-2) (2022-11-19)
+
+### Features
+
+From v4.8.2:
+
+* **binaries:** remove [[#65](https://github.com/olets/zsh-abbr/issues/65)] ([347f2fa](https://github.com/olets/zsh-abbr/commit/347f2fa0c6b0a4069acc56dabd86911f04d777e5))
+
+
 # [5.0.0.beta-1](https://github.com/olets/zsh-abbr/compare/v4.8.0...v5.0.0.beta-1) (2022-11-06)
 
 Notably the first release of multi-word abbreviations and the move of the documentation out of the README and into a dedicated site.
