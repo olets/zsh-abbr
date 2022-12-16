@@ -972,6 +972,12 @@ _abbr_add_widgets() {
 
   _abbr_debugger
 
+  typeset -ga ZSH_AUTOSUGGEST_IGNORE_WIDGETS
+  ZSH_AUTOSUGGEST_IGNORE_WIDGETS+=(
+    _abbr_widget_expand_and_accept
+    abbr-expand-and-accept
+  )
+
   zle -N _abbr_widget_expand
   zle -N _abbr_widget_expand_and_accept
   zle -N _abbr_widget_expand_and_space
