@@ -1335,8 +1335,7 @@ abbr-expand-and-accept() {
     zle abbr-expand
   fi
 
-  'builtin' 'command' -v _zsh_autosuggest_clear &>/dev/null && _zsh_autosuggest_clear
-
+  zle autosuggest-clear
   zle accept-line
 }
 
