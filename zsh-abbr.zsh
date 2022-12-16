@@ -1003,7 +1003,12 @@ _abbr_add_widgets() {
   emulate -LR zsh
 
   _abbr_debugger
-
+  
+  typeset -ga ZSH_AUTOSUGGEST_IGNORE_WIDGETS
+  ZSH_AUTOSUGGEST_IGNORE_WIDGETS+=(
+    abbr-expand-and-accept
+  )
+  
   zle -N abbr-expand
   zle -N abbr-expand-and-accept
   zle -N abbr-expand-and-space
@@ -1364,8 +1369,7 @@ abbr-expand-and-accept() {
     zle abbr-expand
   fi
 
-  'builtin' 'command' -v _zsh_autosuggest_clear &>/dev/null && _zsh_autosuggest_clear
-
+  zle autosuggest-clear
   zle accept-line
 }
 

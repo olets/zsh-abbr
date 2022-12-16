@@ -29,6 +29,19 @@ Notably the first release of multi-word abbreviations and the move of the docume
 * **widgets:** drop support for deprecated names ([6aedbe9](https://github.com/olets/zsh-abbr/commit/6aedbe94297263a39b1f3b6bbaee7685e7a73787))
 
 
+# [4.8.3](https://github.com/olets/zsh-abbr/compare/v4.8.2...v4.8.3) (2022-12-16)
+
+
+### Bug Fixes
+
+* **expand-and-accept:** accepting clears zsh-autosuggestions' suggestions [[#67](https://github.com/olets/zsh-abbr/issues/67)] ([752cef8](https://github.com/olets/zsh-abbr/commit/752cef83eed89912ebed68c54d9c07241b8b60e8))
+
+
+### Features
+
+* **expand-and-accept:** use zsh-autosuggestions' recommendation for how to clear suggestions ([c71302d](https://github.com/olets/zsh-abbr/commit/c71302df14e10c6227367b02901027b77f753711))
+
+
 
 # [4.8.2](https://github.com/olets/zsh-abbr/compare/v4.8.1...v4.8.2) (2022-11-19)
 
