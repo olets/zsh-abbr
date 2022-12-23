@@ -1335,7 +1335,10 @@ abbr-expand-and-accept() {
     zle abbr-expand
   fi
 
-  zle autosuggest-clear
+  if (( ${+widgets[autosuggest-clear]} )); then
+    zle autosuggest-clear
+  fi
+  
   zle accept-line
 }
 
