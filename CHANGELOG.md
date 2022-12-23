@@ -4,14 +4,14 @@
 
 From v4.8.3:
 
-* **expand-and-accept:** accepting clears zsh-autosuggestions' suggestions [[#67](https://github.com/olets/zsh-abbr/issues/67)] ([752cef8](https://github.com/olets/zsh-abbr/commit/752cef83eed89912ebed68c54d9c07241b8b60e8))
+* **expand-and-accept:** accepting clears zsh-autosuggestions' suggestions [[#67](https://github.com/olets/zsh-abbr/issues/67)] ([a994077](https://github.com/olets/zsh-abbr/commit/a994077e1614d2aed0e07557b3b6452da956868a))
 
 
 ### Features
 
 From v4.8.3:
 
-* **expand-and-accept:** use zsh-autosuggestions' recommendation for how to clear suggestions ([c71302d](https://github.com/olets/zsh-abbr/commit/c71302df14e10c6227367b02901027b77f753711))
+* **expand-and-accept:** use zsh-autosuggestions' recommendation for how to clear suggestions ([a994077](https://github.com/olets/zsh-abbr/commit/a994077e1614d2aed0e07557b3b6452da956868a))
 
 
 # [5.0.0.beta-2](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-1...v5.0.0.beta-2) (2022-11-19)
@@ -20,7 +20,7 @@ From v4.8.3:
 
 From v4.8.2:
 
-* **binaries:** remove [[#65](https://github.com/olets/zsh-abbr/issues/65)] ([347f2fa](https://github.com/olets/zsh-abbr/commit/347f2fa0c6b0a4069acc56dabd86911f04d777e5))
+* **binaries:** remove [[#65](https://github.com/olets/zsh-abbr/issues/65)] ([a1a530b](https://github.com/olets/zsh-abbr/commit/a1a530bdae2d3a6a85885c1b890d632265c528b4))
 
 
 # [5.0.0.beta-1](https://github.com/olets/zsh-abbr/compare/v4.8.0...v5.0.0.beta-1) (2022-11-06)
