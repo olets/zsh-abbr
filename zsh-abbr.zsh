@@ -1369,7 +1369,11 @@ abbr-expand-and-accept() {
     zle abbr-expand
   fi
 
-  zle autosuggest-clear
+  # zsh-autosuggestions integration
+  if (( ${+widgets[autosuggest-clear]} )); then
+    zle autosuggest-clear
+  fi
+  
   zle accept-line
 }
 
