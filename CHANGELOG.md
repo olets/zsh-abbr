@@ -1,3 +1,12 @@
+# [5.0.0.beta-4](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-3...v5.0.0.beta-4) (2022-12-23)
+
+### Bug Fixes
+
+From v4.8.4:
+
+* **expand and accept:** check for zsh-autosuggestion widget ([8c84b54](https://github.com/olets/zsh-abbr/commit/8c84b54af78b6f541e49ec4279a8bb7506b7c381))
+
+
 # [5.0.0.beta-3](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-2...v5.0.0.beta-3) (2022-12-16)
 
 ### Bug Fixes
