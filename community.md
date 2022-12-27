@@ -1,15 +1,15 @@
 ---
 next:
-  text: Uninstalling
-  link: /uninstalling
+  text: Migrating between versions
+  link: /migrating-between-versions
 ---
 <!-- the above used by the docs site -->
 
-# Contributors
+# Community
 
 ![All Contributors badge](https://img.shields.io/github/all-contributors/olets/zsh-abbr?color=3b3999)
 
-zsh-abbr uses [all-contributors](https://allcontributors.org). See its [emoji key](https://allcontributors.org/docs/en/emoji-key).
+This project uses all-contributors to recognize its community. The key to the emojis is on the [all-contributors website](https://allcontributors.org/docs/en/emoji-key).
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
