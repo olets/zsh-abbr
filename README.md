@@ -60,12 +60,23 @@ This project uses [all-contributors](https://allcontributors.org). See its [emoj
 
 ## License
 
-<p xmlns:dct="http://purl.org/dc/terms/" xmlns:cc="http://creativecommons.org/ns#" class="license-text"><a rel="cc:attributionURL" property="dct:title" href="https://www.github.com/olets/zsh-abbr">zsh-abbr</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://www.github.com/olets">Henry Bley-Vroman</a> is licensed under <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>, <a rel="license" href="https://firstdonoharm.dev">Hippocratic License 3</a>, and stipulations inspired by the <a rel="license" href="https://skysedge.com/opensource/index.html">Sky's Edge Open Source License</a>. Persons interested in using or adapting this work for commercial purposes should contact the author.</p>
+<p xmlns:dct="http://purl.org/dc/terms/" xmlns:cc="http://creativecommons.org/ns#" class="license-text"><a rel="cc:attributionURL" property="dct:title" href="https://www.github.com/olets/zsh-abbr">zsh-abbr</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://www.github.com/olets">Henry Bley-Vroman</a> is licensed under a license which combines the text of <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> and the text of <a rel="license" href="https://firstdonoharm.dev/build?modules=eco,extr,media,mil,sv,usta">Hippocratic License 3</a>. It is not affiliated with either.
 
-Lay summary: The license requires that reusers give credit to the creator. It allows reusers to distribute, remix, adapt, and build upon the material in any medium or format, for noncommercial purposes only. If others modify or adapt the material, they must license the modified material under identical terms.  The license prohibits the use of software to violate human rights. The license requires that derivative products differ substantially different from what they build off of. The license requires that derivative products be released under names which cannot be mistaken for the work they derive from. (If the lay summary is at odds with the full license, the full license is considered the source of truth.)
+Human-readable summary of (and not a substitute for) the [LICENSE](LICENSE) file:
 
-For more information on ethical licenses, see the [Organization for Ethical Source](https://ethicalsource.dev).
+You are free to
 
-<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" title="Creative Commons-licensed" alt="Creative Commons-licensed" /> <img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" title="Creative Commons: Attribution" alt="Creative Commons: Attribution" /> <img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" title="Creative Commons: NonCommercial" alt="Creative Commons: NonCommercial"/> <img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" title="Creative Commons: ShareAlike" alt="Creative Commons: ShareAlike" />
+- Share — copy and redistribute the material in any medium or format
+- Adapt — remix, transform, and build upon the material
 
-For the full text of the license, see the [LICENSE](LICENSE) file.
+Under the following terms
+
+- Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+- NonCommercial — You may not use the material for commercial purposes.
+- Ethics - You must abide by the ethical standards specified in the Hippocratic License 3 with Ecocide, Extractive Industries, US Tariff Act, Mass Surveillance, Military Activities, and Media modules.
+- ShareAlike — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+- No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+
+## Acknowledgments
+
+- Human-readable license summary is the text of https://creativecommons.org/licenses/by-nc-sa/4.0 plus the ethics point
