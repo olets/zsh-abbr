@@ -1,10 +1,3 @@
----
-next:
-  text: Migrating between versions
-  link: /migrating-between-versions
----
-<!-- the above used by the docs site -->
-
 # Community
 
 ![All Contributors badge](https://img.shields.io/github/all-contributors/olets/zsh-abbr?color=3b3999)
