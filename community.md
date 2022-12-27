@@ -1,3 +1,14 @@
+---
+editLink: false
+permalink: /community
+---
+<!--
+  This file managed in olets/zsh-abbr
+
+  The above frontmatter is used by olets/zsh-abbr-v5-docs
+-->
+
+
 # Community
 
 ![All Contributors badge](https://img.shields.io/github/all-contributors/olets/zsh-abbr?color=3b3999)
