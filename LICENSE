@@ -1,25 +1,41 @@
-zsh-abbr Copyright (2020-2021) (Henry Bley-Vroman)(“Licensor”)
+zsh-abbr Copyright (2020-2022) (Henry Bley-Vroman)(“Licensor”)
 
-Lay summary: This license requires that reusers give credit to the
-creator. It allows reusers to distribute, remix, adapt, and build
-upon the material in any medium or format, for noncommercial purposes
-only. If others modify or adapt the material, they must license the
-modified material under identical terms. This license prohibits the
-use of software to violate universal standards of human rights.
+The following summary is informational purposes only, is not exhaustive, and does not
+form part of the license.
 
-This license brings together CC BY-NC-SA 4.0 and the Hippocratic
-License. The Hippocratic License clause follows the form of the
-"Commons Clause" License Condition v1.0
-(https://commonsclause.com/). The combination was not put together
-by a lawyer; it should be read in the spirit of the conversation at
-https://github.com/EthicalSource/hippocratic-license/issues/56.
+  This license is a clause taken without modification from Hippocratic License 2.1
+  (https://firstdonoharm.dev/version/2/1/license.html) followed by the text of
+  CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode). The
+  combination was not put together by a lawyer and is not affiliated with either
+  Hippocratic License or CC BY-NC-SA 4.0; it should be understood in the spirit of
+  "CC BY-NC-SA 4.0 with Hippocratic License v2.1 ethical requirements".
 
-Commercial use is disallowed but commercial code but the possibility
-of an agreement being reached whereby the code is used commercially
-is not ruled out. Any such agreement must be reached with its original
-creator and Licensor, Henry Bley-Vroman.
+  [The following is quoted from https://creativecommons.org/licenses/by-nc-sa/4.0,
+  except where otherwise noted]
 
----
+  You are free to
+
+  - Share — copy and redistribute the material in any medium or format
+  - Adapt — remix, transform, and build upon the material
+
+  Under the following terms
+
+  - Attribution — You must give appropriate credit, provide a link to the license,
+  and indicate if changes were made. You may do so in any reasonable manner, but
+  not in any way that suggests the licensor endorses you or your use.
+  - NonCommercial — You may not use the material for commercial purposes.
+  - [Hippocratic License 2.1 not CC BY-NC-SA 4.0]
+  Ethics - You must abide by the ethical standards specified in the Hippocratic License clause.
+  - ShareAlike — If you remix, transform, or build upon the material, you must
+  distribute your contributions under the same license as the original.
+  - No additional restrictions — You may not apply legal terms or technological measures
+  that legally restrict others from doing anything the license permits.
+
+  [End quote]
+
+----------------------------------------------------------------
+
+**HIPPOCRATIC LICENSE CLAUSE**
 
 The Software is provided to you by the Licensor under the License,
 as defined below, subject to the following condition which comes from
@@ -88,10 +104,9 @@ Hippocratic License Version Number: 2.1:
     of or relating to Licensee’s use of the Software in violation of
     Human Rights Laws or Human Rights Principles.
 
+----------------------------------------------------------------
 
-Attribution-NonCommercial-ShareAlike 4.0 International
-
-=======================================================================
+**Attribution-NonCommercial-ShareAlike 4.0 International**
 
 Creative Commons Corporation ("Creative Commons") is not a law firm and
 does not provide legal services or legal advice. Distribution of
