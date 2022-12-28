@@ -428,7 +428,6 @@ _abbr() {
       fi
 
       zsh_version=$(zsh --version)
-      zsh_version=$(zsh --version)
 
       _abbr:util_print $version
       _abbr:util_print $zsh_version
