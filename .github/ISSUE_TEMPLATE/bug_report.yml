@@ -1,6 +1,6 @@
 name: Bug report
 description: If you've confirmed something is broken, create a bug report.
-title: "[Bug report] <title>"
+title: "[Bug report] <description>"
 labels: [needs triage]
 body:
 - type: checkboxes
@@ -10,6 +10,14 @@ body:
     description: Please search to see if an issue already exists for the bug you encountered.
     options:
       - label: I have searched the existing issues
+        required: true
+- type: checkboxes
+  id: update-title
+  attributes:
+    label: Update the issue title
+    description: Replace `<description> with a description of the bug` 
+    options:
+      - label: I have updated the title
         required: true
 - type: textarea
   id: expected-behavior
