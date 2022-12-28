@@ -1,3 +1,11 @@
+# [4.9.1](https://github.com/olets/zsh-abbr/compare/v4.8.4...v4.9.1) (2022-12-28)
+
+
+### Bug Fixes
+
+* **man:** correct version and release date ([a6ae1c9](https://github.com/olets/zsh-abbr/commit/a6ae1c972356f092602276a0d369f34f56b5a6cc))
+
+
 # [4.9](https://github.com/olets/zsh-abbr/compare/v4.8.4...v4.9) (2022-12-28)
 
 
