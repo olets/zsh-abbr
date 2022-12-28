@@ -1,3 +1,12 @@
+# [5.0.0.beta-5](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-4...v5.0.0.beta-5) (2022-12-23)
+
+### Features
+
+From v4.9:
+
+* **profile:** new command ([4ba4bc8](https://github.com/olets/zsh-abbr/commit/4ba4bc8831d1b3bbd228570a212160494955cc2f))
+
+
 # [5.0.0.beta-4](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-3...v5.0.0.beta-4) (2022-12-23)
 
 ### Bug Fixes
