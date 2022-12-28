@@ -1,3 +1,12 @@
+# [4.9](https://github.com/olets/zsh-abbr/compare/v4.8.4...v4.9) (2022-12-28)
+
+
+### Features
+
+* **profile:** new command ([4ba4bc8](https://github.com/olets/zsh-abbr/commit/4ba4bc8831d1b3bbd228570a212160494955cc2f))
+
+
+
 # [4.8.4](https://github.com/olets/zsh-abbr/compare/v4.8.3...v4.8.4) (2022-12-23)
 
 
