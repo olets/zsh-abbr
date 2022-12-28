@@ -53,6 +53,15 @@ Notably the first release of multi-word abbreviations and the move of the docume
   * add Sky's Edge-inspired stipulations ([1c4c501](https://github.com/olets/zsh-abbr/commit/1c4c50147ef9e79b37f49a5e901599a1f906330e))
 * **widgets:** drop support for deprecated names ([6aedbe9](https://github.com/olets/zsh-abbr/commit/6aedbe94297263a39b1f3b6bbaee7685e7a73787))
 
+# [4.9](https://github.com/olets/zsh-abbr/compare/v4.8.4...v4.9) (2022-12-28)
+
+
+### Features
+
+* **profile:** new command ([4ba4bc8](https://github.com/olets/zsh-abbr/commit/4ba4bc8831d1b3bbd228570a212160494955cc2f))
+
+
+
 # [4.8.4](https://github.com/olets/zsh-abbr/compare/v4.8.3...v4.8.4) (2022-12-23)
 
 

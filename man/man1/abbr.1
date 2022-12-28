@@ -35,6 +35,8 @@ zsh\-abbr \- manage zsh abbreviations
 
 \fBabbr\fR (\fBversion | \-\-version\fR | \fB\-v)
 
+\fBabbr profile\fR
+
 .SH DESCRIPTION
 \fBabbr\fR manages abbreviations \- user\-defined words that are replaced with longer phrases after they are entered.
 
@@ -123,9 +125,15 @@ Lists all abbreviations as commands suitable for export and import.
 Renames an abbreviation, from <\fIold_abbreviation\fR> to <\fInew_abbreviation\fR>.
 
 .IP \(bu
+\fBprofile\fR
+
+Log profile information for debugging.
+
+.IP \(bu
 \fBversion\fR or \fB\-\-version\fR or \fB\-v\fR
 
 Show the current version.
+
 
 .PP
 All commands except for \fBclear-session\fR and \fBexpand\fR can take a \fBscope\fR:

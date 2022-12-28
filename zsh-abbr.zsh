@@ -462,6 +462,23 @@ _abbr() {
       _abbr:util_print $version
     }
 
+    _abbr:profile() {
+      _abbr_debugger
+
+      local zsh_version
+
+      if [[ $# > 0 ]]; then
+        _abbr:util_error "abbr version: Unexpected argument"
+        return
+      fi
+
+      zsh_version=$(zsh --version)
+
+      _abbr:util_print $version
+      _abbr:util_print $zsh_version
+      _abbr:util_print "OSTYPE $OSTYPE"
+    }
+
     _abbr:rename() {
       _abbr_debugger
 
@@ -906,6 +923,9 @@ _abbr() {
         "load")
           _abbr_load_user_abbreviations
           should_exit=1
+          ;;
+        "profile")
+          _abbr:util_set_once action profile
           ;;
         "--quiet"|\
         "-q")
