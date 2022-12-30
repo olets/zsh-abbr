@@ -1,4 +1,11 @@
-## zsh-abbr ![GitHub release (latest by date)](https://img.shields.io/github/v/release/olets/zsh-abbr) ![All Contributors badge](https://img.shields.io/github/all-contributors/olets/zsh-abbr?color=3b3999)
+# zsh-abbr ![GitHub release (latest by date)](https://img.shields.io/github/v/release/olets/zsh-abbr?include_prereleases&label=pre-release) ![All Contributors badge](https://img.shields.io/github/all-contributors/olets/zsh-abbr?color=3b3999)
+
+> &nbsp;
+>
+> This is the v5 beta branch. See the [pre-release discussion](https://github.com/olets/zsh-abbr/discussions/64).  
+> For latest stable (v4.x) release docs see <https://github.com/olets/zsh-abbr>
+>
+> &nbsp;
 
 **zsh-abbr** is the zsh manager for **auto-expanding abbreviations** - text that when written in a terminal is replaced with other (typically longer) text. Inspired by fish shell.
 
