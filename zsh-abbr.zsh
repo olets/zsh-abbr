@@ -38,17 +38,14 @@ typeset -gi ABBR_QUIETER=${ABBR_QUIETER:-0}
 # Temp files are stored in
 typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr/}
 
-# File abbreviations are stored in
+# The file abbreviations are stored in
 typeset -g ABBR_USER_ABBREVIATIONS_FILE=$ABBR_USER_ABBREVIATIONS_FILE
 if [[ -z $ABBR_USER_ABBREVIATIONS_FILE ]]; then
-  # Respect XDG_CONFIG_HOME with a caveat:
-  # Users with XDG_CONFIG_HOME defined who have been using zsh-abbr with the
-  # default ABBR_USER_ABBREVIATIONS_FILE will already have a file in $HOME/.config
-  
-  ABBR_USER_ABBREVIATIONS_FILE=$HOME/.config/zsh/abbreviations
+  # Legacy support for the zsh-abbr < v5.0.0 default
+  ABBR_USER_ABBREVIATIONS_FILE=${XDG_CONFIG_HOME:-$HOME/.config}/zsh/abbreviations
 
-  if [[ ! -f ABBR_USER_ABBREVIATIONS_FILE && -n $XDG_CONFIG_HOME && -d $XDG_CONFIG_HOME ]]; then
-    ABBR_USER_ABBREVIATIONS_FILE=$XDG_CONFIG_HOME/zsh/abbreviations
+  if [[ ! -f $ABBR_USER_ABBREVIATIONS_FILE ]]; then
+    ABBR_USER_ABBREVIATIONS_FILE=${XDG_CONFIG_HOME:-$HOME/.config}/zsh-abbr/user-abbreviations
   fi
 fi
 
@@ -1337,9 +1334,10 @@ _abbr_precmd() {
 
   if [[ -n $ABBR_PRECMD_MESSAGE ]]; then
     'builtin' 'print' -P $ABBR_PRECMD_MESSAGE
-    ABBR_PRECMD_MESSAGE=
+    ABBR_PRECMD_MESSAGE=git 
   fi
 }
+
 
 # WIDGETS
 # -------
