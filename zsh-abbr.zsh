@@ -45,7 +45,7 @@ if [[ -z $ABBR_USER_ABBREVIATIONS_FILE ]]; then
   
   ABBR_USER_ABBREVIATIONS_FILE=$HOME/.config/zsh/abbreviations
 
-  if [[ ! -f ABBR_USER_ABBREVIATIONS_FILE && -n $XDG_CONFIG_HOME && -d $XDG_CONFIG_HOME ]]; then
+  if [[ ! -f $ABBR_USER_ABBREVIATIONS_FILE && -n $XDG_CONFIG_HOME && -d $XDG_CONFIG_HOME ]]; then
     ABBR_USER_ABBREVIATIONS_FILE=$XDG_CONFIG_HOME/zsh/abbreviations
   fi
 fi
