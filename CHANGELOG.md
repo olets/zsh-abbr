@@ -1,3 +1,9 @@
+# [5.0.0.beta-6](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-5...v5.0.0.beta-6) (2023-01-05)
+
+### Features
+
+* **user file:** default is now <dir>/zsh-abbr/user-abbreviations ([aa3e42f](https://github.com/olets/zsh-abbr/commit/aa3e42f7f2c62559c406f97c26a1722072e4ca01))
+
 # [5.0.0.beta-5](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-4...v5.0.0.beta-5) (2022-12-23)
 
 ### Features
