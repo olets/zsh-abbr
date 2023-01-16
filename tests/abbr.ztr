@@ -4,11 +4,16 @@
 # https://github.com/olets/zsh-test-runner
 # Run the suite by sourcing it or by passing it to `zsh`
 
+# Save user configuration
 abbr_quiet_saved=$ABBR_QUIET
+abbr_user_abbreviations_file_saved=$ABBR_USER_ABBREVIATIONS_FILE
+
+# Configure
 ABBR_QUIET=1
 ABBR_USER_ABBREVIATIONS_FILE=${0:A:h}/abbreviations.$RANDOM
-touch $ABBR_USER_ABBREVIATIONS_FILE
 
+# Set up data
+touch $ABBR_USER_ABBREVIATIONS_FILE
 test_abbr_abbreviation="zsh_abbr_test"
 test_abbr_abbreviation_2="zsh_abbr_test_2"
 test_abbr_abbreviation_multiword="zsh_abbr_test second_word"
@@ -17,7 +22,6 @@ test_abbr_expansion="zsh abbr test"
 
 source ${0:A:h}/../zsh-abbr.zsh
 source $ZTR_PATH
-
 ztr clear
 
 ### ### ### All tests must be below this line ### ### ###
@@ -26,13 +30,13 @@ abbr add $test_abbr_abbreviation=$test_abbr_expansion
 abbr erase $test_abbr_abbreviation
 ztr test '[[ ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ]]' \
 	"Can erase an abbreviation" \
-	"Dependencies: add"
+	"Dependencies: add, erase"
 
 abbr add $test_abbr_abbreviation_multiword=$test_abbr_expansion
 abbr erase $test_abbr_abbreviation_multiword
 ztr test '[[ ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ]]' \
 	"Can erase a multi-word abbreviation" \
-	"Dependencies: add"
+	"Dependencies: add, erase"
 
 abbr add $test_abbr_abbreviation=$test_abbr_expansion
 ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} == ${(qqq)test_abbr_expansion} ]]' \
@@ -337,7 +341,7 @@ abbr erase test-subcommand
 ztr test '[[ $(abbr expand "git test-subcommand-multiword") == "git checkout main" ]]' \
 	"Can import prefixed regular user multi-word subcommand Git aliases" \
 	"Dependencies: erase, expand"
-abbr erase test-subcommand-multi-word
+abbr erase test-subcommand-multiword
 
 abbr git $test_abbr_abbreviation=$test_abbr_expansion
 ztr test '[[ $(abbr expand "git $test_abbr_abbreviation") == "git $test_abbr_expansion" ]]' \
@@ -351,8 +355,21 @@ abbr erase -g "git $test_abbr_abbreviation"
 
 ### ### ### All tests must be above this line ### ### ###
 
+# Remove artifacts
+unset test_abbr_abbreviation
+unset test_abbr_abbreviation_2
+unset test_abbr_abbreviation_multiword
+unset test_abbr_abbreviation_multiword_2
+unset test_abbr_expansion
 rm $ABBR_USER_ABBREVIATIONS_FILE
+
+# Reset
 ABBR_QUIET=$abbr_quiet_saved
+ABBR_USER_ABBREVIATIONS_FILE=$abbr_user_abbreviations_file_saved
+
+if $('builtin' 'command' -v abbr); then
+	abbr load
+fi
 
 echo
 ztr summary
