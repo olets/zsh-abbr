@@ -678,10 +678,9 @@ _abbr() {
       (( force && quieter )) && return 0
 
       # Warn if abbreviation would interfere with system command use, e.g. `cp="git cherry-pick"`
-      # Apply force to add regardless
-      cmd=$('builtin' 'command' -v $abbreviation)
+      # To add regardless, use --force
 
-      if [[ $cmd && ${cmd:0:6} != 'alias ' ]]; then
+      if (( $+commands[$abbreviation] && ! $+aliases[$abbreviation] )); then
         if (( force )); then
           verb_phrase="will now expand"
           (( dry_run )) && verb_phrase="would now expand"
