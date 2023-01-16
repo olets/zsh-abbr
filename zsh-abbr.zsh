@@ -248,7 +248,7 @@ _abbr() {
         return
       fi
 
-      expansion=$(_abbr_cmd_expansion "$abbreviation")
+      expansion=$(_abbr_regular_expansion "$abbreviation")
 
       if [[ ! "$expansion" ]]; then
         expansion=$(_abbr_global_expansion "$abbreviation")
@@ -1061,7 +1061,7 @@ _abbr_no_color() {
   return $found
 }
 
-_abbr_cmd_expansion() {
+_abbr_regular_expansion() {
   emulate -LR zsh
 
   # cannot support debug message
@@ -1350,7 +1350,7 @@ abbr-expand() {
   local preceding_lbuffer
   local -a words
 
-  expansion=$(_abbr_cmd_expansion "$LBUFFER")
+  expansion=$(_abbr_regular_expansion "$LBUFFER")
 
   if [[ -n $expansion ]]; then
     LBUFFER=$expansion
