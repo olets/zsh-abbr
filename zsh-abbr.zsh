@@ -1379,7 +1379,10 @@ abbr-expand-and-accept() {
 
   # do not support debug message
 
-  if [[ $LBUFFER =~ '[[:space:]]$' ]]; then
+  local trailing_space
+  trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
+
+  if [[ -z $trailing_space ]]; then
     zle abbr-expand
   fi
 
