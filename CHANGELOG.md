@@ -1,3 +1,17 @@
+# [5.0.0.beta-7](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-6...v5.0.0.beta-7) (2023-02-10)
+
+
+### Bug Fixes
+
+From v4.9.2:
+
+* **binaries:** delete file missed in 347f2fa [[#73](https://github.com/olets/zsh-abbr/issues/73)] ([627490b](https://github.com/olets/zsh-abbr/commit/627490b169b3011a69491df5b536c264f7278900))
+
+From v4.9.1:
+
+* **man:** correct version and release date ([a6ae1c9](https://github.com/olets/zsh-abbr/commit/a6ae1c972356f092602276a0d369f34f56b5a6cc))
+
+
 # [5.0.0.beta-6](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-5...v5.0.0.beta-6) (2023-01-05)
 
 ### Features
@@ -67,6 +81,15 @@ Notably the first release of multi-word abbreviations and the move of the docume
   * Hippocratic License v3 is released. Apply it in place of v2.1 clause ([584be08](https://github.com/olets/zsh-abbr/commit/584be08fa0dee1daf03568e76f45a54946dfb96c))
   * add Sky's Edge-inspired stipulations ([1c4c501](https://github.com/olets/zsh-abbr/commit/1c4c50147ef9e79b37f49a5e901599a1f906330e))
 * **widgets:** drop support for deprecated names ([6aedbe9](https://github.com/olets/zsh-abbr/commit/6aedbe94297263a39b1f3b6bbaee7685e7a73787))
+
+# [4.9.2](https://github.com/olets/zsh-abbr/compare/v4.9.1...v4.9.2) (2023-02-10)
+
+
+### Bug Fixes
+
+* **binaries:** delete file missed in 347f2fa [[#73](https://github.com/olets/zsh-abbr/issues/73)] ([627490b](https://github.com/olets/zsh-abbr/commit/627490b169b3011a69491df5b536c264f7278900))
+
+
 
 # [4.9](https://github.com/olets/zsh-abbr/compare/v4.8.4...v4.9) (2022-12-28)
 
