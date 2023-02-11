@@ -1,3 +1,12 @@
+# [4.9.2](https://github.com/olets/zsh-abbr/compare/v4.9.1...v4.9.2) (2023-02-10)
+
+
+### Bug Fixes
+
+* **binaries:** delete file missed in 347f2fa [[#73](https://github.com/olets/zsh-abbr/issues/73)] ([627490b](https://github.com/olets/zsh-abbr/commit/627490b169b3011a69491df5b536c264f7278900))
+
+
+
 # [4.9.1](https://github.com/olets/zsh-abbr/compare/v4.8.4...v4.9.1) (2022-12-28)
 
 
