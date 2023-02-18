@@ -1020,11 +1020,6 @@ _abbr_add_widgets() {
 
   _abbr_debugger
   
-  typeset -ga ZSH_AUTOSUGGEST_IGNORE_WIDGETS
-  ZSH_AUTOSUGGEST_IGNORE_WIDGETS+=(
-    abbr-expand-and-accept
-  )
-  
   zle -N abbr-expand
   zle -N abbr-expand-and-accept
   zle -N abbr-expand-and-space
@@ -1048,6 +1043,16 @@ _abbr_bind_widgets() {
 
   # enter key expands and accepts abbreviations
   bindkey "^M" abbr-expand-and-accept
+}
+
+_abbr_integrations() {
+  emulate -LR zsh
+
+  _abbr_debugger
+  
+  # Support zsh-users/zsh-autosuggestions
+  typeset -ga ZSH_AUTOSUGGEST_CLEAR_WIDGETS
+  ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=( abbr-expand-and-accept )
 }
 
 _abbr_no_color() {
@@ -1156,6 +1161,7 @@ _abbr_init() {
   _abbr_add_widgets
   _abbr_deprecations
   (( ABBR_DEFAULT_BINDINGS )) &&  _abbr_bind_widgets
+  _abbr_integrations
 
   _abbr_job_pop $job_name
   unset ABBR_INITIALIZING
@@ -1384,11 +1390,6 @@ abbr-expand-and-accept() {
 
   if [[ -z $trailing_space ]]; then
     zle abbr-expand
-  fi
-
-  # zsh-autosuggestions integration
-  if (( ${+widgets[autosuggest-clear]} )); then
-    zle autosuggest-clear
   fi
   
   zle accept-line
