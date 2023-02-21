@@ -9,7 +9,7 @@ The process for cutting new releases.
     ```
     Requires [conventional-changelog-cli](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-cli)
 1. Update `./man/man1/abbr.1`: bump date and version at top.
-1. Update `./zsh-abbr.zsh`: bump date at top, and version at top and in `_abbr()`
+1. Update `./zsh-abbr.zsh`: bump version at top, and date and version in `_abbr()`
 1. Commit with message (replacing `<VERSION>` with the version)
     ```
     chore(bump): bump to v<VERSION>, update changelog
