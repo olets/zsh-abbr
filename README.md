@@ -1,4 +1,4 @@
-# zsh-abbr ![GitHub release (latest by date)](https://img.shields.io/github/v/release/olets/zsh-abbr?include_prereleases&label=pre-release) ![All Contributors badge](https://img.shields.io/github/all-contributors/olets/zsh-abbr?color=3b3999)
+# zsh-abbr ![GitHub release (latest by date)](https://img.shields.io/github/v/release/olets/zsh-abbr?include_prereleases&label=pre-release)
 
 > &nbsp;
 >
