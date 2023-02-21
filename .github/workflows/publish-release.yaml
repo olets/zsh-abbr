@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+jobs:
+  homebrew:
+    name: Bump Homebrew formula
+    runs-on: ubuntu-latest
+    steps:
+      - name: Bump v5.x formula
+        uses: mislav/bump-homebrew-formula-action@v2.2
+        if: "contains(github.ref, 'v5')"
+        with:
+          formula-name: zsh-abbr
+          formula-path: zsh-abbr.rb
+          homebrew-tap: olets/homebrew-tap
+          commit-message: |
+            feat({{formulaName}}): publish {{version}}
+
+            Created by https://github.com/mislav/bump-homebrew-formula-action
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
+
+      - name: Bump v4.x formula
+        uses: mislav/bump-homebrew-formula-action@v2.2
+        if: "contains(github.ref, 'v4')"
+        with:
+          formula-name: zsh-abbr@4
+          formula-path: zsh-abbr@4.rb
+          homebrew-tap: olets/homebrew-tap
+          commit-message: |
+            feat({{formulaName}}): publish {{version}}
+
+            Created by https://github.com/mislav/bump-homebrew-formula-action
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
