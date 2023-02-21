@@ -1,3 +1,7 @@
+# [4.9.4](https://github.com/olets/zsh-abbr/compare/v4.9.3...v4.9.4) (2023-02-21)
+
+Update release date
+
 # [4.9.3](https://github.com/olets/zsh-abbr/compare/v4.9.2...4.9.3) (2023-02-21)
 
 
