@@ -67,7 +67,7 @@ _abbr() {
     quiet=$ABBR_QUIET
     quiet=$(( ABBR_QUIETER || ABBR_QUIET ))
     quieter=$ABBR_QUIETER
-    release_date="December 28 2022"
+    release_date="February 20 2023"
     version="zsh-abbr version 4.9.3"
 
     # Deprecation notices for values that could be meaningfully set after initialization
