@@ -1,3 +1,14 @@
+# [5.0.0.beta-8](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-6...v5.0.0.beta-8) (2023-02-20)
+
+### Features
+
+From 4.9.3:
+
+* **actions:** publishing releases automatically bumps homebrew ([a87679d](https://github.com/olets/zsh-abbr/commit/a87679d3097e4c9f1c536f94a700b88900387c33))
+* **bench:** add configs ([4277de1](https://github.com/olets/zsh-abbr/commit/4277de1dec3726527c50c59376fc2fa4fa822f9d))
+
+
+
 # [5.0.0.beta-7](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-6...v5.0.0.beta-7) (2023-02-10)
 
 
