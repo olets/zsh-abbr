@@ -1,3 +1,18 @@
+# [v5.0.0](https://github.com/olets/zsh-abbr/compare/v4.9.3...v5.0.0) (2023-02-23)
+
+Has breaking changes. See the [migration guide](https://zsh-abbr.olets.dev/migrating-between-versions).
+
+- 🆕 Support for [multi-word abbreviations](https://zsh-abbr.olets.dev/essential-commands)
+- 🆕 New documentation site
+- 🆕 [`abbr git`](https://v5.zsh-abbr.olets.dev/commands.html#git) command!
+- 📄 Default `ABBR_USER_ABBREVIATIONS_FILE` is now `${XDG_CONFIG_HOME:-$HOME/.config}/zsh-abbr/user-abbreviations` (but if you have a file in the legacy path `${XDG_CONFIG_HOME:-$HOME/.config}/zsh/abbreviations`, that will be used instead)
+- ⚠️ zsh-syntax-highlighting users have to update their snippets
+- ⚠️ All features deprecated in the latest v4.x are dropped
+- License's ethics requirements are now Hippocratic License v3 (was HL v2.1)
+
+For details see v5.0.0.beta-x release notes below.
+
+
 # [5.0.0.beta-8](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-6...v5.0.0.beta-8) (2023-02-20)
 
 ### Features
