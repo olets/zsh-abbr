@@ -4,4 +4,4 @@ emulate -L zsh -o err_return
 
 cp -r -- ${ZSH_SCRIPT:h}/skel/*(D) ~/
 cd
-git clone -q --depth=1 --single-branch --branch v4 https://github.com/olets/zsh-abbr.git
+git clone -q --depth=1 --single-branch --branch v5 https://github.com/olets/zsh-abbr.git

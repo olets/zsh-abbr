@@ -1,16 +1,97 @@
-# [4.9.4](https://github.com/olets/zsh-abbr/compare/v4.9.3...v4.9.4) (2023-02-21)
-
-Update release date
-
-# [4.9.3](https://github.com/olets/zsh-abbr/compare/v4.9.2...4.9.3) (2023-02-21)
-
+# [5.0.0.beta-8](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-6...v5.0.0.beta-8) (2023-02-20)
 
 ### Features
+
+From 4.9.3:
 
 * **actions:** publishing releases automatically bumps homebrew ([a87679d](https://github.com/olets/zsh-abbr/commit/a87679d3097e4c9f1c536f94a700b88900387c33))
 * **bench:** add configs ([4277de1](https://github.com/olets/zsh-abbr/commit/4277de1dec3726527c50c59376fc2fa4fa822f9d))
 
 
+
+# [5.0.0.beta-7](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-6...v5.0.0.beta-7) (2023-02-10)
+
+
+### Bug Fixes
+
+From v4.9.2:
+
+* **binaries:** delete file missed in 347f2fa [[#73](https://github.com/olets/zsh-abbr/issues/73)] ([627490b](https://github.com/olets/zsh-abbr/commit/627490b169b3011a69491df5b536c264f7278900))
+
+From v4.9.1:
+
+* **man:** correct version and release date ([a6ae1c9](https://github.com/olets/zsh-abbr/commit/a6ae1c972356f092602276a0d369f34f56b5a6cc))
+
+
+# [5.0.0.beta-6](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-5...v5.0.0.beta-6) (2023-01-05)
+
+### Features
+
+* **user file:** default is now <dir>/zsh-abbr/user-abbreviations ([aa3e42f](https://github.com/olets/zsh-abbr/commit/aa3e42f7f2c62559c406f97c26a1722072e4ca01))
+
+# [5.0.0.beta-5](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-4...v5.0.0.beta-5) (2022-12-23)
+
+### Features
+
+From v4.9:
+
+* **profile:** new command ([4ba4bc8](https://github.com/olets/zsh-abbr/commit/4ba4bc8831d1b3bbd228570a212160494955cc2f))
+
+
+# [5.0.0.beta-4](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-3...v5.0.0.beta-4) (2022-12-23)
+
+### Bug Fixes
+
+From v4.8.4:
+
+* **expand and accept:** check for zsh-autosuggestion widget ([8c84b54](https://github.com/olets/zsh-abbr/commit/8c84b54af78b6f541e49ec4279a8bb7506b7c381))
+
+
+# [5.0.0.beta-3](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-2...v5.0.0.beta-3) (2022-12-16)
+
+### Bug Fixes
+
+From v4.8.3:
+
+* **expand-and-accept:** accepting clears zsh-autosuggestions' suggestions [[#67](https://github.com/olets/zsh-abbr/issues/67)] ([a994077](https://github.com/olets/zsh-abbr/commit/a994077e1614d2aed0e07557b3b6452da956868a))
+
+
+### Features
+
+From v4.8.3:
+
+* **expand-and-accept:** use zsh-autosuggestions' recommendation for how to clear suggestions ([a994077](https://github.com/olets/zsh-abbr/commit/a994077e1614d2aed0e07557b3b6452da956868a))
+
+
+# [5.0.0.beta-2](https://github.com/olets/zsh-abbr/compare/v5.0.0.beta-1...v5.0.0.beta-2) (2022-11-19)
+
+### Features
+
+From v4.8.2:
+
+* **binaries:** remove [[#65](https://github.com/olets/zsh-abbr/issues/65)] ([a1a530b](https://github.com/olets/zsh-abbr/commit/a1a530bdae2d3a6a85885c1b890d632265c528b4))
+
+
+# [5.0.0.beta-1](https://github.com/olets/zsh-abbr/compare/v4.8.0...v5.0.0.beta-1) (2022-11-06)
+
+Notably the first release of multi-word abbreviations and the move of the documentation out of the README and into a dedicated site.
+
+### Features
+
+* **multi-word abbreviations**! Thanks to [@henrebotha](https://github.com/henrebotha) for discussion in [#32](https://github.com/olets/zsh-abbr/issues/32)
+  * add ([641d94f](https://github.com/olets/zsh-abbr/commit/641d94f77f11c13faae01b141c9d9801bd795f3a))
+  * erase, expand ([218cd8e](https://github.com/olets/zsh-abbr/commit/218cd8e497ade6efd40d3c5bf1c32a9b07b0e717)), ([2a3f111](https://github.com/olets/zsh-abbr/commit/2a3f11193f9ac5f669fa4e3ce7a9e30d677e64d9))
+  * import-git-aliases ([c98729b](https://github.com/olets/zsh-abbr/commit/c98729ba691c72a8340138dce382a0c7192c45c9))
+  * rename ([5c2308f](https://github.com/olets/zsh-abbr/commit/5c2308f2cc2ac781f054140421d755aac8bd0e51))
+* **contributors:** use all-contributors ([32da6fb](https://github.com/olets/zsh-abbr/commit/32da6fb74f7688851e03d52eaa838084ce811b83))
+* **erase,add:** remove some possibly unnecessary quoting ([02b84b5](https://github.com/olets/zsh-abbr/commit/02b84b551fba7c4f853d3feddb48637ae9033983))
+* **expand:** try all substrings from longest to shortest ([4d8ea0f](https://github.com/olets/zsh-abbr/commit/4d8ea0ffd8acd74e8a4216764bba219c343cc09c))
+* **git:** support new subcommand ([364a4b0](https://github.com/olets/zsh-abbr/commit/364a4b006cdc6ab9d558f2c7fbc14e4bc8f850fd)), ([ceeca77](https://github.com/olets/zsh-abbr/commit/ceeca776155201f3115ca5a5c01f24db58716751))
+* **import-git-aliases:** create only one type ([9979861](https://github.com/olets/zsh-abbr/commit/997986107e4e8c883b44c660b6d7af957d90777d))
+* **license:**
+  * Hippocratic License v3 is released. Apply it in place of v2.1 clause ([584be08](https://github.com/olets/zsh-abbr/commit/584be08fa0dee1daf03568e76f45a54946dfb96c))
+  * add Sky's Edge-inspired stipulations ([1c4c501](https://github.com/olets/zsh-abbr/commit/1c4c50147ef9e79b37f49a5e901599a1f906330e))
+* **widgets:** drop support for deprecated names ([6aedbe9](https://github.com/olets/zsh-abbr/commit/6aedbe94297263a39b1f3b6bbaee7685e7a73787))
 
 # [4.9.2](https://github.com/olets/zsh-abbr/compare/v4.9.1...v4.9.2) (2023-02-10)
 
@@ -19,14 +100,6 @@ Update release date
 
 * **binaries:** delete file missed in 347f2fa [[#73](https://github.com/olets/zsh-abbr/issues/73)] ([627490b](https://github.com/olets/zsh-abbr/commit/627490b169b3011a69491df5b536c264f7278900))
 
-
-
-# [4.9.1](https://github.com/olets/zsh-abbr/compare/v4.8.4...v4.9.1) (2022-12-28)
-
-
-### Bug Fixes
-
-* **man:** correct version and release date ([a6ae1c9](https://github.com/olets/zsh-abbr/commit/a6ae1c972356f092602276a0d369f34f56b5a6cc))
 
 
 # [4.9](https://github.com/olets/zsh-abbr/compare/v4.8.4...v4.9) (2022-12-28)
@@ -85,8 +158,6 @@ Update release date
 ### Features
 
 * **user abbreviation file:** respect XDG_CONFIG_HOME if defined (unless there's already an abbreviations file in the old default location), with [@qubidt](https://github.com/qubidt) ([5d59cd0](https://github.com/olets/zsh-abbr/commit/5d59cd0a62af1367aa4e6f0f548ee00914031013), [2df61f9](https://github.com/olets/zsh-abbr/commit/2df61f96f142e7ba13ffecbaae1256254608cf25))
-
-
 
 # [4.7.1](https://github.com/olets/zsh-abbr/compare/v4.7.0...v4.7.1) (2022-01-03)
 

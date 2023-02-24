@@ -12,7 +12,9 @@ Run `abbr help` for documentation; if the package is installed with Homebrew, `m
 
 ## Documentation
 
-📖 See the guide at https://v4.zsh-abbr.olets.dev/
+📖 See the guide at https://zsh-abbr.olets.dev/
+
+v5 is a major release. It makes changes that will require some users to update their configurations. Details are in the [migration guide](https://zsh-abbr.olets.dev/migrating-between-versions).
 
 ## Changelog
 
@@ -24,7 +26,7 @@ See the [ROADMAP](ROADMAP.md) file.
 
 ## Contributing
 
-_Looking for the documentation site's source? See <https://github.com/olets/zsh-abbr-v4-docs>_
+_Looking for the documentation site's source? See <https://github.com/olets/zsh-abbr-docs>_
 
 Thanks for your interest. Contributions are welcome!
 
@@ -47,7 +49,7 @@ Love zsh-abbr? I'm happy to be able to provide it for free. If you are moved to 
 
 ## License
 
-<a href="https://www.github.com/olets/zsh-abbr">zsh-abbr</a> by <a href="https://www.github.com/olets">Henry Bley-Vroman</a> is licensed under a license which is the unmodified text of <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> and ethics conditions taken without modification from <a href="https://firstdonoharm.dev/version/2/1/license.html">Hippocratic License 2.1</a>. It is not affiliated with Creative Commons or the Organization for Ethical Source.
+<a href="https://www.github.com/olets/zsh-abbr">zsh-abbr</a> by <a href="https://www.github.com/olets">Henry Bley-Vroman</a> is licensed under a license which is the unmodified text of <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> and the unmodified text of a <a href="https://firstdonoharm.dev/build?modules=eco,extr,media,mil,sv,usta">Hippocratic License 3</a>. It is not affiliated with Creative Commons or the Organization for Ethical Source.
 
 Human-readable summary of (and not a substitute for) the [LICENSE](LICENSE) file:
 
@@ -60,7 +62,7 @@ Under the following terms
 
 - Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
 - Non-commercial — You may not use the material for commercial purposes.
-- Ethics - You must abide by the ethical standards specified in the Hippocratic License clause.
+- Ethics - You must abide by the ethical standards specified in the Hippocratic License 3 with Ecocide, Extractive Industries, US Tariff Act, Mass Surveillance, Military Activities, and Media modules.
 - Preserve terms — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
 - No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
 
