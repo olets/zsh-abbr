@@ -20,6 +20,15 @@
         "question",
         "tool"
       ]
+    },
+    {
+      "login": "knu",
+      "name": "Akinori MUSHA",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10236?v=4",
+      "profile": "https://github.com/knu",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }
