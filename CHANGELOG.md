@@ -1,3 +1,15 @@
+> This is a legacy version. For the latest CHANGELOG see <https://github.com/olets/zsh-abbr/blob/main/CHANGELOG.md>.
+
+
+
+
+
+
+# [4.9.5](https://github.com/olets/zsh-abbr/compare/v4.9.3...v4.9.5) (2023-02-24)
+
+Updates in support of v5.0.0's release
+
+
 # [4.9.4](https://github.com/olets/zsh-abbr/compare/v4.9.3...v4.9.4) (2023-02-21)
 
 Update release date
