@@ -5,5 +5,21 @@
   "files": [
     "README.md",
     "community.md"
+  ],
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "olets",
+      "name": "Henry Bley-Vroman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3282350?v=4",
+      "profile": "https://olets.dev",
+      "contributions": [
+        "doc",
+        "design",
+        "question",
+        "tool"
+      ]
+    }
   ]
 }

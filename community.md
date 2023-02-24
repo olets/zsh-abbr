@@ -18,6 +18,13 @@ This project uses all-contributors to recognize its community. The key to the em
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://olets.dev"><img src="https://avatars.githubusercontent.com/u/3282350?v=4?s=100" width="100px;" alt="Henry Bley-Vroman"/><br /><sub><b>Henry Bley-Vroman</b></sub></a><br /><a href="#doc-olets" title="Documentation">📖</a> <a href="#design-olets" title="Design">🎨</a> <a href="#question-olets" title="Answering Questions">💬</a> <a href="#tool-olets" title="Tools">🔧</a></td>
+    </tr>
+  </tbody>
+</table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
