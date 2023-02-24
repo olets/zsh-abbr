@@ -1,4 +1,6 @@
-# zsh-abbr ![GitHub release (latest by date)](https://img.shields.io/github/v/release/olets/zsh-abbr)
+# zsh-abbr ![Legacy release 4.x](https://img.shields.io/badge/legacy%20release-4.x-A20707) 
+
+> ⚠️ You are on a legacy branch. Consider switching to [the latest](https://github.com/olets/zsh-abbr).
 
 **zsh-abbr** is the zsh manager for **auto-expanding abbreviations** - text that when written in a terminal is replaced with other (typically longer) text. Inspired by fish shell.
 
