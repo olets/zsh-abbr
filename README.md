@@ -14,6 +14,8 @@ Run `abbr help` for documentation; if the package is installed with Homebrew, `m
 
 📖 See the guide at https://zsh-abbr.olets.dev/
 
+v5 is a major release. It makes changes that will require some users to update their configurations. Details are in the [migration guide](https://zsh-abbr.olets.dev/migrating-between-versions).
+
 ## Changelog
 
 See the [CHANGELOG](CHANGELOG.md) file.
