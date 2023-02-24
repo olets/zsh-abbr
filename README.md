@@ -58,6 +58,7 @@ This project uses all-contributors to recognize its community. The key to the em
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://olets.dev"><img src="https://avatars.githubusercontent.com/u/3282350?v=4?s=100" width="100px;" alt="Henry Bley-Vroman"/><br /><sub><b>Henry Bley-Vroman</b></sub></a><br /><a href="#doc-olets" title="Documentation">📖</a> <a href="#design-olets" title="Design">🎨</a> <a href="#question-olets" title="Answering Questions">💬</a> <a href="#tool-olets" title="Tools">🔧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.stefanhojer.de/"><img src="https://avatars.githubusercontent.com/u/436889?v=4?s=100" width="100px;" alt="Stefan Hojer"/><br /><sub><b>Stefan Hojer</b></sub></a><br /><a href="#code-hojerst" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
