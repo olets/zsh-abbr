@@ -20,6 +20,15 @@
         "question",
         "tool"
       ]
+    },
+    {
+      "login": "hojerst",
+      "name": "Stefan Hojer",
+      "avatar_url": "https://avatars.githubusercontent.com/u/436889?v=4",
+      "profile": "https://www.stefanhojer.de/",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }
