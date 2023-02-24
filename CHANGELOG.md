@@ -108,6 +108,26 @@ Notably the first release of multi-word abbreviations and the move of the docume
   * add Sky's Edge-inspired stipulations ([1c4c501](https://github.com/olets/zsh-abbr/commit/1c4c50147ef9e79b37f49a5e901599a1f906330e))
 * **widgets:** drop support for deprecated names ([6aedbe9](https://github.com/olets/zsh-abbr/commit/6aedbe94297263a39b1f3b6bbaee7685e7a73787))
 
+
+# [4.9.5](https://github.com/olets/zsh-abbr/compare/v4.9.3...v4.9.5) (2023-02-24)
+
+Updates in support of v5.0.0's release
+
+
+# [4.9.4](https://github.com/olets/zsh-abbr/compare/v4.9.3...v4.9.4) (2023-02-21)
+
+Update release date
+
+# [4.9.3](https://github.com/olets/zsh-abbr/compare/v4.9.2...4.9.3) (2023-02-21)
+
+
+### Features
+
+* **actions:** publishing releases automatically bumps homebrew ([a87679d](https://github.com/olets/zsh-abbr/commit/a87679d3097e4c9f1c536f94a700b88900387c33))
+* **bench:** add configs ([4277de1](https://github.com/olets/zsh-abbr/commit/4277de1dec3726527c50c59376fc2fa4fa822f9d))
+
+
+
 # [4.9.2](https://github.com/olets/zsh-abbr/compare/v4.9.1...v4.9.2) (2023-02-10)
 
 
