@@ -22,19 +22,26 @@
       ]
     },
     {
-      "login": "hojerst",
-      "name": "Stefan Hojer",
-      "avatar_url": "https://avatars.githubusercontent.com/u/436889?v=4",
-      "profile": "https://www.stefanhojer.de/",
+      "login": "knu",
+      "name": "Akinori MUSHA",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10236?v=4",
+      "profile": "https://github.com/knu",
       "contributions": [
         "code"
       ]
     },
     {
-      "login": "knu",
-      "name": "Akinori MUSHA",
-      "avatar_url": "https://avatars.githubusercontent.com/u/10236?v=4",
-      "profile": "https://github.com/knu",
+      "login": "alwinw",
+      "name": "Alwin Wang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16846521?v=4",
+      "profile": "http://researchgate.net/profile/Alwin_Wang",
+      ]
+    },
+    {
+      "login": "hojerst",
+      "name": "Stefan Hojer",
+      "avatar_url": "https://avatars.githubusercontent.com/u/436889?v=4",
+      "profile": "https://www.stefanhojer.de/",
       "contributions": [
         "code"
       ]
