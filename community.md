@@ -13,6 +13,7 @@ permalink: /community
 
 This project uses all-contributors to recognize its community. The key to the emojis is on the [all-contributors website](https://allcontributors.org/docs/en/emoji-key).
 
+<div class="community">
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -32,3 +33,4 @@ This project uses all-contributors to recognize its community. The key to the em
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+</div>
