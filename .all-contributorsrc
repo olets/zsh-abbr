@@ -58,6 +58,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "LucasLarson",
+      "name": "Lucas Larson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/91468?v=4",
+      "profile": "https://lucaslarson.net",
+      "contributions": [
+        "bug"
+      ]
     }
   ]
 }
