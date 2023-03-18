@@ -241,12 +241,12 @@ _abbr() {
       local abbreviation
       local expansion
 
-      abbreviation=$1
-
-      if [[ $# != 1 ]]; then
-        _abbr:util_error "abbr expand: requires exactly one argument"
+      if ! (( $# )); then
+        _abbr:util_error "abbr expand: requires an argument"
         return
       fi
+
+      abbreviation=$*
 
       expansion=$(_abbr_regular_expansion "$abbreviation")
 
