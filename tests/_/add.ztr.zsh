@@ -2,13 +2,13 @@
 
 abbr add $test_abbr_abbreviation=$test_abbr_expansion
 ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} == ${(qqq)test_abbr_expansion} ]]' \
-	"Can add an abbreviation with the add flag" \
+	"Can add an abbreviation with the add subcommand" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation
 
 abbr add -S $test_abbr_abbreviation=$test_abbr_expansion
 ztr test '[[ ${ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} == ${(qqq)test_abbr_expansion} ]]' \
-	"Can add a regular session abbreviation with the add flag" \
+	"Can add a regular session abbreviation with the add subcommand" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation
 
@@ -24,13 +24,13 @@ abbr erase $test_abbr_abbreviation
 
 abbr $test_abbr_abbreviation=$test_abbr_expansion
 ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} == ${(qqq)test_abbr_expansion} ]]' \
-	"Can add an abbreviation without the add flag" \
+	"Can add an abbreviation without the add subcommand" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation
 
 abbr $test_abbr_abbreviation_multiword=$test_abbr_expansion
 ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_multiword}]} == ${(qqq)test_abbr_expansion} ]]' \
-	"Can add a multi-word abbreviation without the add flag" \
+	"Can add a multi-word abbreviation without the add subcommand" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation_multiword
 
@@ -38,13 +38,13 @@ abbr erase $test_abbr_abbreviation_multiword
 
 abbr add -g $test_abbr_abbreviation=$test_abbr_expansion
 ztr test '[[ ${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} == ${(qqq)test_abbr_expansion} ]]' \
-	"Can add a global abbreviation with the add flag" \
+	"Can add a global abbreviation with the add subcommand" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation
 
 abbr add -S -g $test_abbr_abbreviation=$test_abbr_expansion
 ztr test '[[ ${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} == ${(qqq)test_abbr_expansion} ]]' \
-	"Can add a global session abbreviation with the add flag" \
+	"Can add a global session abbreviation with the add subcommand" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation
 
@@ -52,13 +52,13 @@ abbr erase $test_abbr_abbreviation
 
 abbr add $test_abbr_abbreviation_multiword=$test_abbr_expansion
 ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_multiword}]} == ${(qqq)test_abbr_expansion} ]]' \
-	"Can add a multi-word abbreviation with the add flag" \
+	"Can add a multi-word abbreviation with the add subcommand" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation_multiword
 
 abbr add -S $test_abbr_abbreviation_multiword=$test_abbr_expansion
 ztr test '[[ ${ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_multiword}]} == ${(qqq)test_abbr_expansion} ]]' \
-	"Can add a multi-word regular session abbreviation with the add flag" \
+	"Can add a multi-word regular session abbreviation with the add subcommand" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation_multiword
 
@@ -66,13 +66,13 @@ abbr erase $test_abbr_abbreviation_multiword
 
 abbr add -g $test_abbr_abbreviation_multiword=$test_abbr_expansion
 ztr test '[[ ${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_multiword}]} == ${(qqq)test_abbr_expansion} ]]' \
-	"Can add a multi-word global abbreviation with the add flag" \
+	"Can add a multi-word global abbreviation with the add subcommand" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation_multiword
 
 abbr add -S -g $test_abbr_abbreviation_multiword=$test_abbr_expansion
 ztr test '[[ ${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)test_abbr_abbreviation_multiword}]} == ${(qqq)test_abbr_expansion} ]]' \
-	"Can add a multi-word global session abbreviation with the add flag" \
+	"Can add a multi-word global session abbreviation with the add subcommand" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation_multiword
 
