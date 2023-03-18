@@ -11,7 +11,7 @@ abbr erase $abbreviation
 unalias $abbreviation
 rm $ABBR_USER_ABBREVIATIONS_FILE
 touch $ABBR_USER_ABBREVIATIONS_FILE
-source $abbr_dir/zsh-abbr.zsh
+. $abbr_dir/zsh-abbr.zsh
 
 # Multiword
 
@@ -26,7 +26,7 @@ abbr erase $abbreviation
 unalias $abbreviation
 rm $ABBR_USER_ABBREVIATIONS_FILE
 touch $ABBR_USER_ABBREVIATIONS_FILE
-source $abbr_dir/zsh-abbr.zsh
+. $abbr_dir/zsh-abbr.zsh
 
 # Quotes
 
@@ -41,7 +41,7 @@ abbr erase $abbreviation
 unalias $abbreviation
 rm $ABBR_USER_ABBREVIATIONS_FILE
 touch $ABBR_USER_ABBREVIATIONS_FILE
-source $abbr_dir/zsh-abbr.zsh
+. $abbr_dir/zsh-abbr.zsh
 
 abbreviation=zsh_abbr_test_alias
 expansion='a "b"'
@@ -54,7 +54,7 @@ abbr erase $abbreviation
 unalias $abbreviation
 rm $ABBR_USER_ABBREVIATIONS_FILE
 touch $ABBR_USER_ABBREVIATIONS_FILE
-source $abbr_dir/zsh-abbr.zsh
+. $abbr_dir/zsh-abbr.zsh
 
 abbreviation=zsh_abbr_test_alias
 expansion="a 'b'"
