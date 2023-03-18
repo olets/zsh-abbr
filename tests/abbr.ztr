@@ -5,6 +5,10 @@
 # Run the suite by sourcing it or by passing it to `zsh`
 
 main() {
+	local file
+
+	file=$1
+
 	# Save user configuration
 	local abbr_quiet_saved=$ABBR_QUIET
 	local abbr_user_abbreviations_file_saved=$ABBR_USER_ABBREVIATIONS_FILE
@@ -29,7 +33,11 @@ main() {
 	ztr clear
 
 	# Run tests
-	for f ($test_dir/_/*.ztr.zsh(N.))  . $f
+	if [[ -n $file ]]; then
+		. $test_dir/_/$file.ztr.zsh
+	else
+		for f ($test_dir/_/*.ztr.zsh(N.))  . $f
+	fi
 
 	# Remove artifacts
 	echo deleteing
@@ -49,4 +57,4 @@ main() {
 	ztr summary
 }
 
-main
+main $@
