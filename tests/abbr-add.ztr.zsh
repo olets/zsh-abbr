@@ -14,11 +14,13 @@ abbr erase $test_abbr_abbreviation
 
 # Manual
 
-echo "abbr add $test_abbr_abbreviation='$test_abbr_expansion'" > $ABBR_USER_ABBREVIATIONS_FILE
-ztr test '[[ ${ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)test_abbr_abbreviation}]} == ${(qqq)test_abbr_expansion} ]]' \
+echo "abbr \"$test_abbr_abbreviation\"=\"$test_abbr_expansion\"" > $ABBR_USER_ABBREVIATIONS_FILE
+abbr load
+ztr test '[[ $(abbr expand $test_abbr_abbreviation) == ${(qqq)test_abbr_expansion} ]]' \
 	"Can add a user abbreviation from outside abbr without data loss" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation
+
 
 # Implicit
 

@@ -5,9 +5,9 @@
 # Run the suite by sourcing it or by passing it to `zsh`
 
 main() {
-	local file
+	local cmd
 
-	file=$1
+	cmd=$1
 
 	# Save user configuration
 	local abbr_quiet_saved=$ABBR_QUIET
@@ -33,17 +33,15 @@ main() {
 	ztr clear
 
 	# Run tests
-	if [[ -n $file ]]; then
-		. $test_dir/_/$file.ztr.zsh
+	if [[ -n $cmd ]]; then
+		. $test_dir/abbr-$cmd.ztr.zsh
 	else
-		for f ($test_dir/_/*.ztr.zsh(N.))  . $f
+		for f ($test_dir/abbr-*.ztr.zsh(N.))  . $f
 	fi
 
 	# Remove artifacts
-	echo deleteing
 	echo $ABBR_USER_ABBREVIATIONS_FILE
 	rm $ABBR_USER_ABBREVIATIONS_FILE
-	echo deleted
 
 	if $('builtin' 'command' -v abbr); then
 		abbr load
