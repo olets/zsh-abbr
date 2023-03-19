@@ -36,12 +36,14 @@ main() {
 	if [[ -n $cmd ]]; then
 		. $test_dir/abbr-$cmd.ztr.zsh
 	else
-		for f ($test_dir/abbr-*.ztr.zsh(N.))  . $f
+		for f ($test_dir/abbr-*.ztr.zsh(N.)); do
+			printf "\nFile: %s\n\n" $f
+			. $f
+		done
 	fi
 
 	# Remove artifacts
-	echo $ABBR_USER_ABBREVIATIONS_FILE
-	rm $ABBR_USER_ABBREVIATIONS_FILE
+	rm -f $ABBR_USER_ABBREVIATIONS_FILE
 
 	if $('builtin' 'command' -v abbr); then
 		abbr load
