@@ -253,7 +253,7 @@ _abbr() {
       if [[ ! "$expansion" ]]; then
         expansion=$(_abbr_global_expansion "$abbreviation")
       fi
-      _abbr:util_print "${(Q)expansion}"
+      _abbr:util_print $expansion
     }
 
     _abbr:export_aliases() {
