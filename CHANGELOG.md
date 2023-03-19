@@ -1,4 +1,20 @@
-# [v5.0.0](https://github.com/olets/zsh-abbr/compare/v4.9.3...v5.0.0) (2023-02-23)
+# [5.0.1](https://github.com/olets/zsh-abbr/compare/v5.0.0...v5.0.1) (2023-03-19)
+
+
+### Bug Fixes
+
+* **expand:** quotation marks are preserved ([2cb3613](https://github.com/olets/zsh-abbr/commit/2cb3613d0bb584507b6fb8744c7b3ce61fba5abc))
+* Corrected false-negative tests
+
+
+### Features
+
+* **expand:** support multi-word string ([70663b1](https://github.com/olets/zsh-abbr/commit/70663b1955427e988671b6e2f34e296c766a673f))
+* Test suite runs multiple file, logs file names
+
+
+
+# [5.0.0](https://github.com/olets/zsh-abbr/compare/v4.9.3...v5.0.0) (2023-02-23)
 
 Has breaking changes. See the [migration guide](https://zsh-abbr.olets.dev/migrating-between-versions).
 
