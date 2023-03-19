@@ -18,7 +18,7 @@ main() {
 
 	# Configure
 	ABBR_QUIET=1
-	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM
+	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
 
 	# Set up data
 	touch $ABBR_USER_ABBREVIATIONS_FILE
