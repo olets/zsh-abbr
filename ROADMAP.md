@@ -9,14 +9,6 @@ Key:
 
 _Currently considered feature complete._
 
-## 5.0.0
-
-- [x] `--prefix` option for `import-git-aliases`
-- [x] VuePress docs site
-- [x] multi-word abbreviations
-- [x] upgrade Hippocratic License to v3
-- [x] importing does not override an existing alias (as of this writing, a regression from v4)
-
 ## Maybe?
 
 - [ ] Tests for list commands
