@@ -14,9 +14,9 @@ abbr erase $test_abbr_abbreviation
 
 # Manual
 
-echo "abbr \"manualabbreviation\"=\"manualexpansion\"" > $ABBR_USER_ABBREVIATIONS_FILE
+echo "abbr \"$test_abbr_abbreviation\"=\"$test_abbr_expansion\"" > $ABBR_USER_ABBREVIATIONS_FILE
 abbr load
-ztr test '[[ $(abbr expand manualabbreviation) == manualexpansion ]]' \
+ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $test_abbr_expansion ]]' \
 	"Can add a user abbreviation from outside abbr without data loss" \
 	"Dependencies: erase, expand"
 abbr erase $test_abbr_abbreviation
