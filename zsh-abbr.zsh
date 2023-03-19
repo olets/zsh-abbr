@@ -208,7 +208,7 @@ _abbr() {
 
       if ! (( ${#abbreviations_sets} )); then
         _abbr:util_error "abbr erase: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)abbreviation}\` found"
-      elif [[ ${#abbreviations_sets} == 1 ]]; then
+      elif (( ${#abbreviations_sets} == 1 )); then
         verb_phrase="Would erase"
 
         if ! (( dry_run )); then
