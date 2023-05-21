@@ -3,9 +3,9 @@
 zsh\-abbr \- manage zsh abbreviations
 .SH SYNOPSIS
 
-\fBabbr\fR (\fBadd\fR | \fBa\fR) [\fIscope\fR] [\fI\-\-force\fR] <\fIabbreviation\fR>=<\fIexpansion\fR>
+\fBabbr\fR (\fBadd\fR | \fBa\fR) [\fIscope\fR] [(\fI\-force\fR | \fI\-\-force\fR)] <\fIabbreviation\fR>=<\fIexpansion\fR>
 
-\fBabbr\fR (\fBgit\fR | \fBg\fR) [\fIscope\fR] [\fI\-\-force\fR] <\fIabbreviation\fR>=<\fIexpansion\fR>
+\fBabbr\fR (\fBgit\fR | \fBg\fR) [\fIscope\fR] [(\fI\-force\fR | \fI\-\-force\fR)] <\fIabbreviation\fR>=<\fIexpansion\fR>
 
 \fBabbr\fR (\fBclear\-session\fR | \fBc\fR)
 
@@ -56,7 +56,7 @@ Adds a new abbreviation, causing <\fIabbreviation\fR> to be expanded as <\fIexpa
 
 Will error rather than overwrite an existing abbreviation.
 
-Will warn if the abbreviation would replace an existing command. To add in spite of the warning, use [\fI\-\-force\fR].
+Will warn if the abbreviation would replace an existing command. To add in spite of the warning, use [(\fI\-force\fR | \fI\-\-force\fR)].
 
 May be multiple words. Quote or escape word delimiters.
 
