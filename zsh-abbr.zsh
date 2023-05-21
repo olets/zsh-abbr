@@ -497,6 +497,12 @@ _abbr() {
 
       if [[ -n $expansion ]]; then
         _abbr:util_add $new_abbreviation $expansion
+        
+        if (( $? )); then
+          _abbr:util_error "abbr rename: ${type:+$type }${scope:+$scope }abbreviation \`${(Q)current_abbreviation}\` left untouched"
+          return 1
+        fi
+
         _abbr:erase $current_abbreviation
       else
         _abbr:util_error "abbr rename: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)current_abbreviation}\` exists"
@@ -524,7 +530,7 @@ _abbr() {
 
       if [[ ${abbreviation%=*} != $abbreviation ]]; then
         _abbr:util_error "abbr add: ABBREVIATION (\`${(Q)abbreviation}\`) may not contain an equals sign"
-        return
+        return 1
       fi
 
       if [[ $scope == 'session' ]]; then
@@ -559,14 +565,14 @@ _abbr() {
           (( dry_run )) && verb_phrase="Would not add"
 
           _abbr:util_error "$verb_phrase the $typed_scope \`${(Q)abbreviation}\`. It already has an expansion"
-          return
+          return 2
         fi
 
         verb_phrase="Redefined"
         (( dry_run )) && verb_phrase="Would redefine"
       fi
 
-      _abbr:util_check_command $abbreviation || return
+      _abbr:util_check_command $abbreviation || return 3
 
       if ! (( dry_run )); then
         eval $abbreviations_set'[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}'
