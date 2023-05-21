@@ -518,6 +518,9 @@ _abbr() {
       expansion=$2
       success=0
 
+      verb_phrase="Did not"
+      (( dry_run )) && verb_phrase="Would not"
+
       if [[ ${abbreviation%=*} != $abbreviation ]]; then
         _abbr:util_error "abbr add: ABBREVIATION (\`${(Q)abbreviation}\`) may not contain an equals sign"
         return
@@ -525,67 +528,40 @@ _abbr() {
 
       if [[ $scope == 'session' ]]; then
         if [[ $type == 'global' ]]; then
-          typed_scope=$(_abbr:util_set_to_typed_scope ABBR_GLOBAL_SESSION_ABBREVIATIONS)
-
-          if ! (( ${+ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]} )); then
-            _abbr:util_check_command $abbreviation || return
-
-            if ! (( dry_run )); then
-              ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}
-            fi
-
-            success=1
-          fi
+          abbreviations_set=ABBR_GLOBAL_SESSION_ABBREVIATIONS
         else
-          typed_scope=$(_abbr:util_set_to_typed_scope ABBR_REGULAR_SESSION_ABBREVIATIONS)
-
-          if ! (( ${+ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]} )); then
-            _abbr:util_check_command $abbreviation || return
-
-            if ! (( dry_run )); then
-              ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}
-            fi
-
-            success=1
-          fi
+          abbreviations_set=ABBR_REGULAR_SESSION_ABBREVIATIONS
         fi
       else
         if [[ $type == 'global' ]]; then
-          typed_scope=$(_abbr:util_set_to_typed_scope ABBR_GLOBAL_USER_ABBREVIATIONS)
+          abbreviations_set=ABBR_GLOBAL_USER_ABBREVIATIONS
 
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
             source ${ABBR_TMPDIR}global-user-abbreviations
           fi
-
-          if ! (( ${+ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]} )); then
-            _abbr:util_check_command $abbreviation || return
-
-            if ! (( dry_run )); then
-              ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}
-              _abbr:util_sync_user
-            fi
-
-            success=1
-          fi
         else
-          typed_scope=$(_abbr:util_set_to_typed_scope ABBR_REGULAR_USER_ABBREVIATIONS)
+          abbreviations_set=ABBR_REGULAR_USER_ABBREVIATIONS
 
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
             source ${ABBR_TMPDIR}regular-user-abbreviations
           fi
-
-          if ! (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]} )); then
-            _abbr:util_check_command $abbreviation || return
-            typed_scope=$(_abbr:util_set_to_typed_scope ABBR_REGULAR_USER_ABBREVIATIONS)
-
-            if ! (( dry_run )); then
-              ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}
-              _abbr:util_sync_user
-            fi
-
-            success=1
-          fi
         fi
+      fi
+
+      typed_scope=$(_abbr:util_set_to_typed_scope $abbreviations_set)
+
+      if [[ -z ${${(P)abbreviations_set}[${(qqq)${(Q)abbreviation}}]} ]]; then
+        _abbr:util_check_command $abbreviation || return
+
+        if ! (( dry_run )); then
+          eval $abbreviations_set'[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}'
+        fi
+
+        success=1
+      fi
+
+      if [[ $scope != 'session' ]]; then
+        _abbr:util_sync_user
       fi
 
       if (( success )); then
@@ -594,9 +570,6 @@ _abbr() {
 
         _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color the $typed_scope \`${(Q)abbreviation}\`"
       else
-        verb_phrase="Did not"
-        (( dry_run )) && verb_phrase="Would not"
-
         _abbr:util_error "$verb_phrase add the $typed_scope \`${(Q)abbreviation}\` because it already exists"
       fi
     }
