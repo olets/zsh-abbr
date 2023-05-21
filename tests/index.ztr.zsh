@@ -27,6 +27,7 @@ main() {
 	local test_abbr_abbreviation_multiword="zsh_abbr_test second_word"
 	local test_abbr_abbreviation_multiword_2="zsh_abbr_test other_second_word"
 	local test_abbr_expansion="zsh abbr test"
+	local test_abbr_expansion_2="zsh abbr test 2"
 
 	. $abbr_dir/zsh-abbr.zsh
 	. $ZTR_PATH

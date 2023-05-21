@@ -509,6 +509,7 @@ _abbr() {
       local abbreviation
       local cmd
       local expansion
+      local existing_expansion
       local job_group
       local -a success
       local typed_scope
@@ -518,8 +519,8 @@ _abbr() {
       expansion=$2
       success=0
 
-      verb_phrase="Did not"
-      (( dry_run )) && verb_phrase="Would not"
+      verb_phrase="Added"
+      (( dry_run )) && verb_phrase="Would add"
 
       if [[ ${abbreviation%=*} != $abbreviation ]]; then
         _abbr:util_error "abbr add: ABBREVIATION (\`${(Q)abbreviation}\`) may not contain an equals sign"
@@ -550,28 +551,32 @@ _abbr() {
 
       typed_scope=$(_abbr:util_set_to_typed_scope $abbreviations_set)
 
-      if [[ -z ${${(P)abbreviations_set}[${(qqq)${(Q)abbreviation}}]} ]]; then
-        _abbr:util_check_command $abbreviation || return
+      existing_expansion=${${(P)abbreviations_set}[${(qqq)${(Q)abbreviation}}]}
 
-        if ! (( dry_run )); then
-          eval $abbreviations_set'[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}'
+      if [[ -n $existing_expansion ]]; then
+        if (( ! force )); then
+          verb_phrase="Did not add"
+          (( dry_run )) && verb_phrase="Would not add"
+
+          _abbr:util_error "$verb_phrase the $typed_scope \`${(Q)abbreviation}\`. It already has an expansion"
+          return
         fi
 
-        success=1
+        verb_phrase="Redefined"
+        (( dry_run )) && verb_phrase="Would redefine"
+      fi
+
+      _abbr:util_check_command $abbreviation || return
+
+      if ! (( dry_run )); then
+        eval $abbreviations_set'[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}'
       fi
 
       if [[ $scope != 'session' ]]; then
         _abbr:util_sync_user
       fi
 
-      if (( success )); then
-        verb_phrase="Added"
-        (( dry_run )) && verb_phrase="Would add"
-
-        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color the $typed_scope \`${(Q)abbreviation}\`"
-      else
-        _abbr:util_error "$verb_phrase add the $typed_scope \`${(Q)abbreviation}\` because it already exists"
-      fi
+      _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color the $typed_scope \`${(Q)abbreviation}\`"
     }
 
     _abbr:util_alias() {

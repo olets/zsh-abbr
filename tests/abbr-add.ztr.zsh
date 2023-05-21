@@ -126,3 +126,26 @@ ztr test '[[ $(abbr expand $abbreviation) == $expansion ]]' \
 	"Double-quoted single quotes in the expansion are preserved" \
 	"Dependencies: erase, expand"
 abbr erase $abbreviation
+
+# Force
+
+abbr add $test_abbr_abbreviation=$test_abbr_expansion
+abbr add $test_abbr_abbreviation=$test_abbr_expansion_2
+ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $test_abbr_expansion ]]' \
+	"Cannot change an abbreviation's expansion" \
+	"Dependencies: erase, expand"
+abbr erase $test_abbr_abbreviation
+
+abbr add $test_abbr_abbreviation=$test_abbr_expansion
+abbr add --force $test_abbr_abbreviation=$test_abbr_expansion_2
+ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $test_abbr_expansion_2 ]]' \
+	"Cannot change an abbreviation's expansion with --force" \
+	"Dependencies: erase, expand"
+abbr erase $test_abbr_abbreviation
+
+abbr add $test_abbr_abbreviation=$test_abbr_expansion
+abbr add -f $test_abbr_abbreviation=$test_abbr_expansion_2
+ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $test_abbr_expansion_2 ]]' \
+	"Cannot change an abbreviation's expansion with -f" \
+	"Dependencies: erase, expand"
+abbr erase $test_abbr_abbreviation
