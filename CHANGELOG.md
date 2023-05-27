@@ -1,3 +1,13 @@
+# [5.1.0](https://github.com/olets/zsh-abbr/compare/v5.0.1...v5.1.0) (2023-05-26)
+
+
+### Features
+
+* **add:** support force [[#90](https://github.com/olets/zsh-abbr/issues/90)] ([7a3b6a4](https://github.com/olets/zsh-abbr/commit/7a3b6a4284502f8460294423243693cfd13fc78d))
+* **rename:** support force ([9be7b46](https://github.com/olets/zsh-abbr/commit/9be7b46fa1274e2ff16efe8e2e43ab74bfb01484))
+
+
+
 # [5.0.1](https://github.com/olets/zsh-abbr/compare/v5.0.0...v5.0.1) (2023-03-19)
 
 
