@@ -26,6 +26,12 @@ abbr erase $test_abbr_abbreviation
 
 abbr $test_abbr_abbreviation_multiword=$test_abbr_expansion
 ztr test '[[ $(abbr expand $test_abbr_abbreviation_multiword) == $test_abbr_expansion ]]' \
-	"Can expand a multi-word abbreviation in a script" \
+	"Can expand a two-word abbreviation in a script" \
+	"Dependencies: erase"
+abbr erase $test_abbr_abbreviation_multiword
+
+abbr "a b c"=$test_abbr_expansion
+ztr test '[[ $(abbr expand "a b c") == $test_abbr_expansion ]]' \
+	"Can expand a three-word abbreviation in a script" \
 	"Dependencies: erase"
 abbr erase $test_abbr_abbreviation_multiword
