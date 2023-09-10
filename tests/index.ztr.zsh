@@ -44,7 +44,8 @@ main() {
 	fi
 
 	# Remove artifacts
-	rm -f $ABBR_USER_ABBREVIATIONS_FILE
+	# TODO buggy
+	'builtin' 'command' rm -f $ABBR_USER_ABBREVIATIONS_FILE
 
 	if $('builtin' 'command' -v abbr); then
 		abbr load
