@@ -65,12 +65,11 @@ main() {
 	fi
 
 	# Remove artifacts
-	# TODO not deleting
-	'builtin' 'command' rm -f $ABBR_USER_ABBREVIATIONS_FILE
 
 	if $('builtin' 'command' -v abbr); then
 		abbr load
 	fi
+	rm -f $ABBR_USER_ABBREVIATIONS_FILE
 
 	# Reset
 	ABBR_QUIET=$abbr_quiet_saved
