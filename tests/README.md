@@ -11,5 +11,5 @@ To run the test suite in the current shell,
 To run the test suite in a subshell,
 
 ```shell
-ztr_path=$ZTR_PATH zsh ./index.ztr.zsh
+ztr_path=$ZTR_PATH zsh ./index.ztr.zsh && abbr load
 ```
