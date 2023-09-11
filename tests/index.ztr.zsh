@@ -2,12 +2,33 @@
 
 # Tests require ztr
 # https://github.com/olets/zsh-test-runner
-# Run the suite by sourcing it or by passing it to `zsh`
+
+# Run the test suite by
+# sourcing this file
+#
+# ```
+# . <path to this file>
+# ```
+#
+# or by running it in a subshell with ZTR_PATH passed in as ztr_path
+#
+# ```
+# ztr_path=$ZTR_PATH zsh <path to this file>
+# ```
 
 main() {
 	local cmd
 
 	cmd=$1
+	
+	ztr_path=${ztr_path:-$ZTR_PATH}
+
+	if [[ -z $ztr_path ]]; then
+		printf "You must provide \$ztr_path\n"
+		return 1
+	fi
+	
+	. $ztr_path
 
 	# Save user configuration
 	local abbr_quiet_saved=$ABBR_QUIET
@@ -44,7 +65,7 @@ main() {
 	fi
 
 	# Remove artifacts
-	# TODO buggy
+	# TODO not deleting
 	'builtin' 'command' rm -f $ABBR_USER_ABBREVIATIONS_FILE
 
 	if $('builtin' 'command' -v abbr); then
