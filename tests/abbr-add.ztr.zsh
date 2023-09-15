@@ -79,53 +79,47 @@ abbr erase $test_abbr_abbreviation_multiword
 
 # Quotes
 
-abbreviation=a
 expansion='b'cd
-abbr $abbreviation=$expansion
-ztr test '[[ $(abbr expand $abbreviation) == $expansion ]]' \
+abbr $test_abbr_abbreviation=$expansion
+ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $expansion ]]' \
 	"Bare single quotes at the start of the expansion are swallowed" \
 	"Dependencies: erase, expand"
-abbr erase $abbreviation
+abbr erase $test_abbr_abbreviation
 
-abbreviation=a
 expansion=b'c'd
-abbr $abbreviation=$expansion
-ztr test '[[ $(abbr expand $abbreviation) == $expansion ]]' \
+abbr $test_abbr_abbreviation=$expansion
+ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $expansion ]]' \
 	"Bare single quotes in the middle of the expansion are swallowed" \
 	"Dependencies: erase, expand"
-abbr erase $abbreviation
+abbr erase $test_abbr_abbreviation
 
-abbreviation=a
 expansion='b"c"d'
-abbr $abbreviation=$expansion
-ztr test '[[ $(abbr expand $abbreviation) == $expansion ]]' \
+abbr $test_abbr_abbreviation=$expansion
+ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $expansion ]]' \
 	"Single-quoted double quotes in the expansion are preserved" \
 	"Dependencies: erase, expand"
-abbr erase $abbreviation
+abbr erase $test_abbr_abbreviation
 
-abbreviation=a
 expansion="b"cd
-abbr $abbreviation=$expansion
-ztr test '[[ $(abbr expand $abbreviation) == $expansion ]]' \
+abbr $test_abbr_abbreviation=$expansion
+ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $expansion ]]' \
 	"Bare double quotes at the start of the expansion are swallowed" \
 	"Dependencies: erase, expand"
-abbr erase $abbreviation
+abbr erase $test_abbr_abbreviation
 
-abbreviation=a
 expansion=b"c"d
-abbr $abbreviation=$expansion
-ztr test '[[ $(abbr expand $abbreviation) == $expansion ]]' \
+abbr $test_abbr_abbreviation=$expansion
+ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $expansion ]]' \
 	"Bare double quotes in the middle of the expansion are swallowed" \
 	"Dependencies: erase, expand"
-abbr erase $abbreviation
+abbr erase $test_abbr_abbreviation
 
-abbreviation=a
 expansion="b'c'd"
-abbr $abbreviation=$expansion
-ztr test '[[ $(abbr expand $abbreviation) == $expansion ]]' \
+abbr $test_abbr_abbreviation=$expansion
+ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $expansion ]]' \
 	"Double-quoted single quotes in the expansion are preserved" \
 	"Dependencies: erase, expand"
-abbr erase $abbreviation
+abbr erase $test_abbr_abbreviation
 
 # Force
 
