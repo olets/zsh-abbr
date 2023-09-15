@@ -1123,13 +1123,11 @@ _abbr_init() {
   typeset -g ABBR_PRECMD_MESSAGE
   typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
   typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
-  typeset -g ABBR_SOURCE_PATH
 
   ABBR_INITIALIZING=1
   ABBR_PRECMD_MESSAGE=
   ABBR_REGULAR_SESSION_ABBREVIATIONS=()
   ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
-  ABBR_SOURCE_PATH=${0:A:h}
 
   job_name=$(_abbr_job_name)
 
@@ -1475,4 +1473,6 @@ _abbr_warn_deprecation() {
 # INITIALIZATION
 # --------------
 
+typeset -g ABBR_SOURCE_PATH
+ABBR_SOURCE_PATH=${0:A:h}
 _abbr_init
