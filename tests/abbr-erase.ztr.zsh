@@ -1,6 +1,8 @@
 #!/usr/bin/env zsh
 
 main() {
+	emulate -LR zsh
+	
 	abbr add $test_abbr_abbreviation=$test_abbr_expansion
 	abbr erase $test_abbr_abbreviation
 	ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \

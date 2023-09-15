@@ -1,6 +1,8 @@
 #!/usr/bin/env zsh
 
 main() {
+	emulate -LR zsh
+	
 	abbr import-git-aliases --file $test_dir/test-gitconfig
 
 	ztr test '[[ $(abbr expand test-subcommand) == "git status" ]]' \

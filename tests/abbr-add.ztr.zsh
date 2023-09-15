@@ -1,6 +1,8 @@
 #!/usr/bin/env zsh
 
 main() {
+	emulate -LR zsh
+
 	abbr add $test_abbr_abbreviation=$test_abbr_expansion
 	ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $test_abbr_expansion ]]' \
 		"Can add an abbreviation with the add subcommand" \

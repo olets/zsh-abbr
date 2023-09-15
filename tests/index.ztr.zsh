@@ -17,6 +17,8 @@
 # ```
 
 main() {
+	emulate -LR zsh
+	
 	local \
 		abbr_dir \
 		abbr_quiet_saved \

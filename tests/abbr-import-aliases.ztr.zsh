@@ -1,6 +1,8 @@
 #!/usr/bin/env zsh
 
 main() {
+	emulate -LR zsh
+
 	{
 		_reset() {
 			local abbreviation
