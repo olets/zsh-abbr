@@ -36,7 +36,7 @@ typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
 typeset -gi ABBR_QUIETER=${ABBR_QUIETER:-0}
 
 # Temp files are stored in
-typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr/}
+typeset -g ABBR_TMPDIR=${${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr}%/}/
 
 # The file abbreviations are stored in
 typeset -g ABBR_USER_ABBREVIATIONS_FILE=$ABBR_USER_ABBREVIATIONS_FILE
@@ -101,7 +101,7 @@ _abbr() {
         abbreviation=${(q)abbreviation}
         expansion=${(q)expansion}
       fi
-      
+
       if [[ -z $abbreviation || -z $expansion || $abbreviation == $1 ]]; then
         _abbr:util_error "abbr add: Requires abbreviation and expansion"
         return
@@ -497,7 +497,7 @@ _abbr() {
 
       if [[ -n $expansion ]]; then
         _abbr:util_add $new_abbreviation $expansion
-        
+
         if (( $? )); then
           _abbr:util_error "abbr rename: ${type:+$type }${scope:+$scope }abbreviation \`${(Q)current_abbreviation}\` left untouched"
           return 1
@@ -1003,7 +1003,7 @@ _abbr_add_widgets() {
   emulate -LR zsh
 
   _abbr_debugger
-  
+
   zle -N abbr-expand
   zle -N abbr-expand-and-accept
   zle -N abbr-expand-and-space
@@ -1033,7 +1033,7 @@ _abbr_integrations() {
   emulate -LR zsh
 
   _abbr_debugger
-  
+
   # Support zsh-users/zsh-autosuggestions
   typeset -ga ZSH_AUTOSUGGEST_CLEAR_WIDGETS
   ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=( abbr-expand-and-accept )
@@ -1059,7 +1059,7 @@ _abbr_regular_expansion() {
   local expansion
 
   abbreviation=$1
-  
+
   expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]
 
   if [[ ! $expansion ]]; then
@@ -1323,7 +1323,7 @@ _abbr_precmd() {
 
   if [[ -n $ABBR_PRECMD_MESSAGE ]]; then
     'builtin' 'print' -P $ABBR_PRECMD_MESSAGE
-    ABBR_PRECMD_MESSAGE=git 
+    ABBR_PRECMD_MESSAGE=git
   fi
 }
 
@@ -1348,7 +1348,7 @@ abbr-expand() {
   fi
 
   words=(${(z)LBUFFER})
-  
+
   while (( i < ${#words} )); do
     abbreviation=${words:$i}
     expansion=$(_abbr_global_expansion "$abbreviation")
@@ -1375,7 +1375,7 @@ abbr-expand-and-accept() {
   if [[ -z $trailing_space ]]; then
     zle abbr-expand
   fi
-  
+
   zle accept-line
 }
 
