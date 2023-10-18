@@ -156,7 +156,7 @@ case $state in
         # [<SCOPE>] [<TYPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)] [--file <config-file>] [--prefix <ABBREVIATION prefix>]
         _arguments \
           "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
-          "(--file)--file[path to a Git config file]" \
+          "(--file)--file[path to a Git config file]:file:_files -/" \
           "(-f)-f[ignore warnings]" \
           "(--force)--force[ignore warnings]" \
           "(-g)-g[expand everywhere]" \
