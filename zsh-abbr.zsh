@@ -153,6 +153,7 @@ abbr() {
       _abbr_debugger
 
       local abbreviation
+      local abbreviations_set
       local -a abbreviations_sets
       local message
       local verb_phrase
@@ -515,6 +516,7 @@ abbr() {
       _abbr_debugger
 
       local abbreviation
+      local abbreviations_set
       local cmd
       local expansion
       local existing_expansion
