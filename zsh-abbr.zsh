@@ -1144,14 +1144,6 @@ _abbr_init() {
         #   _abbr_warn_deprecation deprecated_fn fn
         #   fn
         # }
-        _abbr() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation _abbr
-          
-          abbr
-        }
-        
         _abbr:util_deprecated() {
           _abbr_warn_deprecation _abbr:util_deprecated
           _abbr:util_deprecated_deprecated
