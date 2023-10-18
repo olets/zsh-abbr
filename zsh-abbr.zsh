@@ -1461,7 +1461,7 @@ _abbr_warn_deprecation() {
   replacement=$2
   callstack=$3
 
-  message="$deprecated is deprecated. Please use $replacement instead."
+  message="$deprecated is deprecated.${replacement:+ Please use $replacement instead.}"
 
   if [[ -n $callstack ]]; then
     message+="\\n${warn_color}Called by \`$callstack\`$reset_color"
