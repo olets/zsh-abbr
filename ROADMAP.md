@@ -9,6 +9,14 @@ Key:
 
 _Currently considered feature complete._
 
+## Next breaking release
+
+- [ ] remove `_abbr_add_widgets`
+- [ ] remove `_abbr_bind_widgets`
+- [ ] remove `_abbr_deprecations`
+- [ ] remove `_abbr_init`
+- [ ] remove `_abbr_integrations`
+
 ## Maybe?
 
 - [ ] Tests for list commands
