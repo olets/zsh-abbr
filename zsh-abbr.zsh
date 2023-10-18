@@ -1323,7 +1323,7 @@ _abbr_precmd() {
 
   if [[ -n $ABBR_PRECMD_MESSAGE ]]; then
     'builtin' 'print' -P $ABBR_PRECMD_MESSAGE
-    ABBR_PRECMD_MESSAGE=git 
+    ABBR_PRECMD_MESSAGE=
   fi
 }
 
