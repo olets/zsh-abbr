@@ -1465,12 +1465,6 @@ _abbr_init() {
           _abbr_warn_deprecation abbr-expand-and-space abbr-expand-and-insert
           abbr-expand-and-insert
         }
-
-        _abbr_integrations() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation _abbr_integrations
-        }
         # END Deprecation notices for functions
 
         # Deprecation notices for zle widgets
