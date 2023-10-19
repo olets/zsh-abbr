@@ -1,6 +1,6 @@
 # Tests
 
-Requires [zsh-test-runner](https://github.com/olets/zsh-test-runner).
+Requires [zsh-test-runner](https://github.com/olets/zsh-test-runner) v2.x.
 
 To run the test suite in the current shell,
 

@@ -36,7 +36,7 @@ Check the [Issues](https://github.com/olets/zsh-abbr/issues) to see if your topi
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
 
-The test suite uses [zsh-test-runner](https://github.com/olets/zsh-test-runner). See [tests/README.md](tests/README.md) for instructions on running the test suite.
+The test suite uses [zsh-test-runner](https://github.com/olets/zsh-test-runner) v2.x. See [tests/README.md](tests/README.md) for instructions on running the test suite.
 
 ### Sponsoring
 
