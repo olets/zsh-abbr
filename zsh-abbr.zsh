@@ -1599,23 +1599,6 @@ _abbr_init() {
           abbr-expand-and-insert
         }
 
-        _abbr_bind_widgets() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation_INTERNAL _abbr_bind_widgets
-
-          # spacebar expands abbreviations
-          bindkey " " abbr-expand-and-insert
-
-          # control-spacebar is a normal space
-          bindkey "^ " magic-space
-
-          # when running an incremental search,
-          # spacebar behaves normally and control-space expands abbreviations
-          bindkey -M isearch "^ " abbr-expand-and-insert
-          bindkey -M isearch " " magic-space
-        }
-
         _abbr_deprecations() {
           _abbr_warn_deprecation_INTERNAL _abbr_deprecations
         }
