@@ -1120,26 +1120,6 @@ _abbr_init() {
         #   fn
         # }
 
-        _abbr_bind_widgets() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation _abbr_bind_widgets
-          
-          # spacebar expands abbreviations
-          bindkey " " abbr-expand-and-space
-
-          # control-spacebar is a normal space
-          bindkey "^ " magic-space
-
-          # when running an incremental search,
-          # spacebar behaves normally and control-space expands abbreviations
-          bindkey -M isearch "^ " abbr-expand-and-space
-          bindkey -M isearch " " magic-space
-
-          # enter key expands and accepts abbreviations
-          bindkey "^M" abbr-expand-and-accept
-        }
-
         _abbr_deprecations() {
           _abbr_warn_deprecation _abbr_deprecations
         }
