@@ -1599,10 +1599,6 @@ _abbr_init() {
           abbr-expand-and-insert
         }
 
-        _abbr_deprecations() {
-          _abbr_warn_deprecation_INTERNAL _abbr_deprecations
-        }
-
         _abbr_integrations() {
           emulate -LR zsh
 
