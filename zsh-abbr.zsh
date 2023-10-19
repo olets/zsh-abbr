@@ -1120,16 +1120,6 @@ _abbr_init() {
         #   fn
         # }
 
-        _abbr_add_widgets() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation _abbr_add_widgets
-          
-          zle -N abbr-expand
-          zle -N abbr-expand-and-accept
-          zle -N abbr-expand-and-space
-        }
-
         _abbr_bind_widgets() {
           emulate -LR zsh
 
