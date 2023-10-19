@@ -66,7 +66,7 @@ main() {
 	. $ztr_path
 
 	# Clear zsh-test-runner summary
-	ztr clear
+	ztr clear-summary
 
 	# Run tests
 	if [[ -n $cmd ]]; then
