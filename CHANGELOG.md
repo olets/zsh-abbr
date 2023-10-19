@@ -1,3 +1,32 @@
+# [5.2.0](https://github.com/olets/zsh-abbr/compare/v5.1.0...v5.2.0) (2023-10-19)
+
+Adds command completion and deprecates access to some internal functions.
+
+### Bug Fixes
+
+* **precmd:** no noise output ([eaec694](https://github.com/olets/zsh-abbr/commit/eaec6948ab8a57705743e3e83fac7c9fe73c52be))
+
+
+### Features
+
+#### Completions
+
+* **completions:** add for abbr commands [[#104](https://github.com/olets/zsh-abbr/issues/104)] ([e67b3e1](https://github.com/olets/zsh-abbr/commit/e67b3e10e41d6a3ef72c975855fddb7504116417))
+* **completions:** import-git-aliases suggests files [[#104](https://github.com/olets/zsh-abbr/issues/104)] ([74dfcc6](https://github.com/olets/zsh-abbr/commit/74dfcc67f030d4a572a3c047f3e469a4aac1ea04))
+
+#### Deprecations
+
+* **_abbr:util_deprecated:** deprecate ([431ea27](https://github.com/olets/zsh-abbr/commit/431ea27a5c1029879c30576cd885dd44cc9eb685))
+* **add, erase:** do not export abbreviations_set variable ([c25eb0b](https://github.com/olets/zsh-abbr/commit/c25eb0b25229cae64633fa7ea2df0af7b7530b64))
+* **initialization:** deprecate exported fns, use local instead... ([d941318](https://github.com/olets/zsh-abbr/commit/d941318d5cb197205d320dc723676fa9e5c5d1ab))
+* **precmd:** deprecate ([e341f87](https://github.com/olets/zsh-abbr/commit/e341f870591055cad302a3a953ddf7604c894277))
+
+#### Other
+
+* **warn deprecation:** replacement is optional ([f2a33e6](https://github.com/olets/zsh-abbr/commit/f2a33e65608a8c24d3fd8b8c3f09f7c89b4af581))
+
+
+
 # [5.1.0](https://github.com/olets/zsh-abbr/compare/v5.0.1...v5.1.0) (2023-05-26)
 
 
