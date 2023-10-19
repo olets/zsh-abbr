@@ -644,26 +644,6 @@ abbr() {
       _abbr:util_error "abbr: Illegal combination of options"
     }
 
-    # deprecated
-    _abbr:util_deprecated_deprecated() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
-
-      local message
-      local new
-      local old
-
-      old=$1
-      new=$2
-
-      message="$1 is deprecated and will be dropped in a future version."
-
-      if [[ $new ]]; then
-        message+=" Please use $new instead."
-      fi
-
-      _abbr:util_warn $message
-    }
-
     _abbr:util_error() {
       _abbr_debugger
 
@@ -1472,7 +1452,7 @@ _abbr_init() {
         # Example form:
         # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
         # VAL=$DEPRECATED_VAL
-        
+
         # END Deprecation notices for values that could not be meaningfully set after initialization
 
         # START Deprecation notices for functions
@@ -1481,11 +1461,6 @@ _abbr_init() {
         #   _abbr_warn_deprecation deprecated_fn fn
         #   fn
         # }
-        _abbr:util_deprecated() {
-          _abbr_warn_deprecation _abbr:util_deprecated
-          _abbr:util_deprecated_deprecated
-        }
-
         abbr-expand-and-space() {
           _abbr_warn_deprecation abbr-expand-and-space abbr-expand-and-insert
           abbr-expand-and-insert
