@@ -1119,11 +1119,6 @@ _abbr_init() {
         #   _abbr_warn_deprecation deprecated_fn fn
         #   fn
         # }
-
-        _abbr_deprecations() {
-          _abbr_warn_deprecation _abbr_deprecations
-        }
-
         _abbr_init() {
           _abbr_warn_deprecation _abbr_init
         }
