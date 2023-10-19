@@ -32,10 +32,6 @@ typeset -g ABBR_EXPANSION_CURSOR_MARKER=${ABBR_EXPANSION_CURSOR_MARKER:-$ABBR_LI
 # Behave as if `--force` was passed? (default false)
 typeset -gi ABBR_FORCE=${ABBR_FORCE:-0}
 
-# Enable logging after commands, for example to warn that a deprecated widget was used?
-# deprecated
-typeset -gi ABBR_PRECMD_LOGS=${ABBR_PRECMD_LOGS:-1}
-
 # Behave as if `--quiet` was passed? (default false)
 typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
 
@@ -648,26 +644,6 @@ abbr() {
       _abbr:util_error_INTERNAL "abbr: Illegal combination of options"
     }
 
-    # deprecated
-    _abbr:util_deprecated_deprecated() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
-
-      local message
-      local new
-      local old
-
-      old=$1
-      new=$2
-
-      message="$1 is deprecated and will be dropped in a future version."
-
-      if [[ $new ]]; then
-        message+=" Please use $new instead."
-      fi
-
-      _abbr:util_warn_INTERNAL $message
-    }
-
     _abbr:util_error_INTERNAL() {
       _abbr_debugger
 
@@ -1274,20 +1250,6 @@ _abbr_load_user_abbreviations() {
   }
 }
 
-# deprecated
-_abbr_precmd() {
-  emulate -LR zsh
-
-  # do not support debug message
-
-  (( ABBR_PRECMD_LOGS )) || return
-
-  if [[ -n $ABBR_PRECMD_MESSAGE ]]; then
-    'builtin' 'print' -P $ABBR_PRECMD_MESSAGE
-    ABBR_PRECMD_MESSAGE=
-  fi
-}
-
 # WIDGETS
 # -------
 
@@ -1421,12 +1383,10 @@ _abbr_init() {
     typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
     typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
     typeset -gi ABBR_INITIALIZING
-    typeset -g ABBR_PRECMD_MESSAGE # deprecated
     typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
     typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
 
     ABBR_INITIALIZING=1
-    ABBR_PRECMD_MESSAGE= # deprecated
     ABBR_REGULAR_SESSION_ABBREVIATIONS=( )
     ABBR_GLOBAL_SESSION_ABBREVIATIONS=( )
 
@@ -1492,8 +1452,7 @@ _abbr_init() {
         # Example form:
         # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation_INTERNAL DEPRECATED_VAL VAL
         # VAL=$DEPRECATED_VAL
-        (( ABBR_PRECMD_LOGS != 1 )) && _abbr_warn_deprecation ABBR_PRECMD_LOGS
-        [[ -n $ABBR_PRECMD_MESSAGE ]] && _abbr_warn_deprecation ABBR_PRECMD_MESSAGE
+
         # END Deprecation notices for values that could not be meaningfully set after initialization
 
         # START Deprecation notices for functions
@@ -1502,10 +1461,6 @@ _abbr_init() {
         #   _abbr_warn_deprecation_INTERNAL deprecated_fn fn
         #   fn
         # }
-        _abbr:util_deprecated() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_deprecated
-          _abbr:util_deprecated_deprecated
-        }
         _abbr_warn_deprecation() {
           _abbr_warn_deprecation_INTERNAL _abbr_warn_deprecation
           _abbr_warn_deprecation_INTERNAL
@@ -1643,44 +1598,6 @@ _abbr_init() {
           _abbr_warn_deprecation_INTERNAL abbr-expand-and-space abbr-expand-and-insert
           abbr-expand-and-insert
         }
-
-        _abbr_add_widgets() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation_INTERNAL _abbr_add_widgets
-
-          zle -N abbr-expand
-          zle -N accept-line abbr-expand-and-accept
-          zle -N abbr-expand-and-insert
-          zle -N abbr-expand-and-space # deprecated
-        }
-
-        _abbr_bind_widgets() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation_INTERNAL _abbr_bind_widgets
-
-          # spacebar expands abbreviations
-          bindkey " " abbr-expand-and-insert
-
-          # control-spacebar is a normal space
-          bindkey "^ " magic-space
-
-          # when running an incremental search,
-          # spacebar behaves normally and control-space expands abbreviations
-          bindkey -M isearch "^ " abbr-expand-and-insert
-          bindkey -M isearch " " magic-space
-        }
-
-        _abbr_deprecations() {
-          _abbr_warn_deprecation_INTERNAL _abbr_deprecations
-        }
-
-        _abbr_integrations() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation_INTERNAL _abbr_integrations
-        }
         # END Deprecation notices for functions
 
         # Deprecation notices for zle widgets
@@ -1719,9 +1636,6 @@ _abbr_init() {
 
     _abbr_job_push $job_name initialization
     _abbr_debugger
-
-    'builtin' 'autoload' -Uz add-zsh-hook
-    add-zsh-hook precmd _abbr_precmd # deprecated
 
     _abbr_load_user_abbreviations
     _abbr_init:add_widgets
