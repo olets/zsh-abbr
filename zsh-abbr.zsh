@@ -32,10 +32,6 @@ typeset -g ABBR_EXPANSION_CURSOR_MARKER=${ABBR_EXPANSION_CURSOR_MARKER:-$ABBR_LI
 # Behave as if `--force` was passed? (default false)
 typeset -gi ABBR_FORCE=${ABBR_FORCE:-0}
 
-# Enable logging after commands, for example to warn that a deprecated widget was used?
-# deprecated
-typeset -gi ABBR_PRECMD_LOGS=${ABBR_PRECMD_LOGS:-1}
-
 # Behave as if `--quiet` was passed? (default false)
 typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
 
@@ -1274,20 +1270,6 @@ _abbr_load_user_abbreviations() {
   }
 }
 
-# deprecated
-_abbr_precmd() {
-  emulate -LR zsh
-
-  # do not support debug message
-
-  (( ABBR_PRECMD_LOGS )) || return
-
-  if [[ -n $ABBR_PRECMD_MESSAGE ]]; then
-    'builtin' 'print' -P $ABBR_PRECMD_MESSAGE
-    ABBR_PRECMD_MESSAGE=
-  fi
-}
-
 # WIDGETS
 # -------
 
@@ -1421,12 +1403,10 @@ _abbr_init() {
     typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
     typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
     typeset -gi ABBR_INITIALIZING
-    typeset -g ABBR_PRECMD_MESSAGE # deprecated
     typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
     typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
 
     ABBR_INITIALIZING=1
-    ABBR_PRECMD_MESSAGE= # deprecated
     ABBR_REGULAR_SESSION_ABBREVIATIONS=( )
     ABBR_GLOBAL_SESSION_ABBREVIATIONS=( )
 
@@ -1492,8 +1472,7 @@ _abbr_init() {
         # Example form:
         # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation_INTERNAL DEPRECATED_VAL VAL
         # VAL=$DEPRECATED_VAL
-        (( ABBR_PRECMD_LOGS != 1 )) && _abbr_warn_deprecation ABBR_PRECMD_LOGS
-        [[ -n $ABBR_PRECMD_MESSAGE ]] && _abbr_warn_deprecation ABBR_PRECMD_MESSAGE
+        
         # END Deprecation notices for values that could not be meaningfully set after initialization
 
         # START Deprecation notices for functions
@@ -1719,9 +1698,6 @@ _abbr_init() {
 
     _abbr_job_push $job_name initialization
     _abbr_debugger
-
-    'builtin' 'autoload' -Uz add-zsh-hook
-    add-zsh-hook precmd _abbr_precmd # deprecated
 
     _abbr_load_user_abbreviations
     _abbr_init:add_widgets
