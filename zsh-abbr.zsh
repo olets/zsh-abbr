@@ -617,7 +617,7 @@ abbr() {
       _abbr:util_error "abbr: Illegal combination of options"
     }
 
-    _abbr:util_deprecated() {
+    _abbr:util_deprecated_deprecated() {
       (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
       local message
@@ -1150,6 +1150,11 @@ _abbr_init() {
           _abbr_warn_deprecation _abbr
           
           abbr
+        }
+        
+        _abbr:util_deprecated() {
+          _abbr_warn_deprecation _abbr:util_deprecated
+          _abbr:util_deprecated_deprecated
         }
 
         _abbr_add_widgets() {
