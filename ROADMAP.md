@@ -17,7 +17,7 @@ _Currently considered feature complete._
 - [x] remove `_abbr_bind_widgets`
 - [x] remove `_abbr_deprecations`
 - [x] remove `_abbr_init` after initialization
-- [ ] remove `_abbr_integrations`
+- [x] remove `_abbr_integrations`
 - [ ] make "internal only" functions in fact internal only
 
 ## Maybe?
