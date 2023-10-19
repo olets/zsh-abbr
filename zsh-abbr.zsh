@@ -1136,6 +1136,7 @@ _abbr_init() {
         # Example form:
         # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
         # VAL=$DEPRECATED_VAL
+        (( ABBR_PRECMD_LOGS != 1 )) && _abbr_warn_deprecation ABBR_PRECMD_LOGS
 
         # Deprecation notices for functions
         # Example form:
