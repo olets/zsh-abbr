@@ -1119,15 +1119,6 @@ _abbr_init() {
         #   _abbr_warn_deprecation deprecated_fn fn
         #   fn
         # }
-        _abbr_integrations() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation _abbr_integrations
-          
-          # Support zsh-users/zsh-autosuggestions
-          typeset -ga ZSH_AUTOSUGGEST_CLEAR_WIDGETS
-          ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=( abbr-expand-and-accept )
-        }
 
         # Deprecation notices for zle widgets
         _abbr_init:deprecations:widgets() {
