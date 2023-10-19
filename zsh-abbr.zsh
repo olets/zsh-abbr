@@ -1599,17 +1599,6 @@ _abbr_init() {
           abbr-expand-and-insert
         }
 
-        _abbr_add_widgets() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation_INTERNAL _abbr_add_widgets
-
-          zle -N abbr-expand
-          zle -N accept-line abbr-expand-and-accept
-          zle -N abbr-expand-and-insert
-          zle -N abbr-expand-and-space # deprecated
-        }
-
         _abbr_bind_widgets() {
           emulate -LR zsh
 

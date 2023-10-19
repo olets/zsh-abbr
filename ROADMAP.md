@@ -13,7 +13,7 @@ _Currently considered feature complete._
 
 - [x] remove `_abbr_precmd`, `ABBR_PRECMD_MESSAGE`, and `ABBR_PRECMD_LOGS`
 - [x] remove `_abbr:util_deprecated`
-- [ ] remove `_abbr_add_widgets`
+- [x] remove `_abbr_add_widgets`
 - [ ] remove `_abbr_bind_widgets`
 - [ ] remove `_abbr_deprecations`
 - [ ] remove `_abbr_init`
