@@ -1093,6 +1093,8 @@ _abbr_init() {
     ABBR_PRECMD_MESSAGE=
     ABBR_REGULAR_SESSION_ABBREVIATIONS=()
     ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
+    
+    zmodload zsh/datetime
 
     job_name=$(_abbr_job_name)
 
@@ -1314,7 +1316,7 @@ _abbr_job_push() {
 
       next_job_path=${ABBR_TMPDIR}jobs/$next_job_name
 
-      'builtin' 'echo' "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job_name%.*}) has timed out."
+      'builtin' 'echo' "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job_name%%.*}) has timed out."
       'builtin' 'echo' "The job was related to $(cat $next_job_path)."
       'builtin' 'echo' "This could be the result of manually terminating an abbr activity, for example during session startup."
       'builtin' 'echo' "If you believe it reflects an abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
@@ -1324,12 +1326,12 @@ _abbr_job_push() {
     }
 
     function _abbr_job_push:wait_turn() {
-        next_job_name=$(_abbr_job_push:next_job_name)
+      next_job_name=$(_abbr_job_push:next_job_name)
 
       while [[ $next_job_name != $job_name ]]; do
         next_job_name=$(_abbr_job_push:next_job_name)
         
-        next_job_age=$(( $(date +%s) - ${next_job_name%.*} ))
+        next_job_age=$(( $EPOCHREALTIME - ${next_job_name%-*} ))
 
         if ((  $next_job_age > $timeout_age )); then
           _abbr_job_push:handle_timeout
@@ -1353,8 +1355,8 @@ _abbr_job_name() {
   emulate -LR zsh
 
   # cannot support debug message
-
-  'builtin' 'echo' "$(date +%s).$RANDOM"
+  
+  'builtin' 'echo' $EPOCHREALTIME
 }
 
 _abbr_load_user_abbreviations() {
