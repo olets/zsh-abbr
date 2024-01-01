@@ -1244,8 +1244,11 @@ _abbr_job_push() {
     }
 
     function _abbr_job_push:wait_turn() {
-      while [[ $(_abbr_job_push:next_job_name) != $job_name ]]; do
         next_job_name=$(_abbr_job_push:next_job_name)
+
+      while [[ $next_job_name != $job_name ]]; do
+        next_job_name=$(_abbr_job_push:next_job_name)
+        
         next_job_age=$(( $(date +%s) - ${next_job_name%.*} ))
 
         if ((  $next_job_age > $timeout_age )); then
