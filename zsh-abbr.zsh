@@ -241,11 +241,26 @@ abbr() {
     _abbr:expand() {
       _abbr_debugger
 
-      local abbreviation
       local expansion
 
       if ! (( $# )); then
         _abbr:util_error "abbr expand: requires an argument"
+        return
+      fi
+
+      expansion=$(_abbr:expansion $*)
+
+      _abbr:util_print $expansion
+    }
+
+    _abbr:expansion() {
+      _abbr_debugger
+
+      local abbreviation
+      local expansion
+
+      if ! (( $# )); then
+        _abbr:util_error "_abbr:expansion requires an argument"
         return
       fi
 
@@ -256,7 +271,8 @@ abbr() {
       if [[ ! "$expansion" ]]; then
         expansion=$(_abbr_global_expansion "$abbreviation")
       fi
-      _abbr:util_print $expansion
+
+      'builtin' 'echo' - $expansion
     }
 
     _abbr:export_aliases() {
@@ -496,7 +512,7 @@ abbr() {
       new_abbreviation=$2
       job_group='_abbr:rename'
 
-      expansion=$(abbr expand $current_abbreviation)
+      expansion=$(_abbr:expansion $current_abbreviation)
 
       if [[ -n $expansion ]]; then
         _abbr:util_add $new_abbreviation $expansion
