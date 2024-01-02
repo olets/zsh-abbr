@@ -241,11 +241,26 @@ abbr() {
     _abbr:expand() {
       _abbr_debugger
 
-      local abbreviation
       local expansion
 
       if ! (( $# )); then
         _abbr:util_error "abbr expand: requires an argument"
+        return
+      fi
+
+      expansion=$(_abbr:expansion $*)
+
+      _abbr:util_print $expansion
+    }
+
+    _abbr:expansion() {
+      _abbr_debugger
+
+      local abbreviation
+      local expansion
+
+      if ! (( $# )); then
+        _abbr:util_error "_abbr:expansion requires an argument"
         return
       fi
 
@@ -256,7 +271,8 @@ abbr() {
       if [[ ! "$expansion" ]]; then
         expansion=$(_abbr_global_expansion "$abbreviation")
       fi
-      _abbr:util_print $expansion
+
+      'builtin' 'echo' - $expansion
     }
 
     _abbr:export_aliases() {
@@ -496,7 +512,7 @@ abbr() {
       new_abbreviation=$2
       job_group='_abbr:rename'
 
-      expansion=$(abbr expand $current_abbreviation)
+      expansion=$(_abbr:expansion $current_abbreviation)
 
       if [[ -n $expansion ]]; then
         _abbr:util_add $new_abbreviation $expansion
@@ -1093,6 +1109,8 @@ _abbr_init() {
     ABBR_PRECMD_MESSAGE=
     ABBR_REGULAR_SESSION_ABBREVIATIONS=()
     ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
+    
+    zmodload zsh/datetime
 
     job_name=$(_abbr_job_name)
 
@@ -1281,8 +1299,8 @@ _abbr_job_push() {
   {
     _abbr_debugger
 
-    local next_job
     local next_job_age
+    local next_job_name
     local next_job_path
     local job_description
     local job_name
@@ -1312,9 +1330,9 @@ _abbr_job_push() {
     function _abbr_job_push:handle_timeout() {
       _abbr_debugger
 
-      next_job_path=${ABBR_TMPDIR}jobs/$next_job
+      next_job_path=${ABBR_TMPDIR}jobs/$next_job_name
 
-      'builtin' 'echo' "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job%.*}) has timed out."
+      'builtin' 'echo' "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job_name%%.*}) has timed out."
       'builtin' 'echo' "The job was related to $(cat $next_job_path)."
       'builtin' 'echo' "This could be the result of manually terminating an abbr activity, for example during session startup."
       'builtin' 'echo' "If you believe it reflects an abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
@@ -1324,9 +1342,12 @@ _abbr_job_push() {
     }
 
     function _abbr_job_push:wait_turn() {
-      while [[ $(_abbr_job_push:next_job_name) != $job_name ]]; do
-        next_job=$(_abbr_job_push:next_job_name)
-        next_job_age=$(( $(date +%s) - ${next_job%.*} ))
+      next_job_name=$(_abbr_job_push:next_job_name)
+
+      while [[ $next_job_name != $job_name ]]; do
+        next_job_name=$(_abbr_job_push:next_job_name)
+        
+        next_job_age=$(( $EPOCHREALTIME - ${next_job_name%-*} ))
 
         if ((  $next_job_age > $timeout_age )); then
           _abbr_job_push:handle_timeout
@@ -1350,8 +1371,8 @@ _abbr_job_name() {
   emulate -LR zsh
 
   # cannot support debug message
-
-  'builtin' 'echo' "$(date +%s).$RANDOM"
+  
+  'builtin' 'echo' $EPOCHREALTIME
 }
 
 _abbr_load_user_abbreviations() {
