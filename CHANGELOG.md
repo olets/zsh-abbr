@@ -1,3 +1,15 @@
+# [5.3.0](https://github.com/olets/zsh-abbr/compare/v5.2.0...v5.3.0) (2024-01-02)
+
+### Features
+
+With this release, running tests requires zsh-test-runner v2.x
+
+* **jobs:** use zsh epoch time instead of date command [[#106](https://github.com/olets/zsh-abbr/issues/106)] ([f3dcaf5](https://github.com/olets/zsh-abbr/commit/f3dcaf5e73306a6b201100962400e04667a4033d))
+* **tests:** support current shell and subshell ([070e903](https://github.com/olets/zsh-abbr/commit/070e90360af65fe092eccecb1f91e4dcb60cc182))
+* **tests:** temp file is deleted ([7c02ea5](https://github.com/olets/zsh-abbr/commit/7c02ea51f8f66cdb5b4756e04d30f8c8376a34ea))
+* **tests:** temp file is deleted ([7c02ea5](https://github.com/olets/zsh-abbr/commit/7c02ea51f8f66cdb5b4756e04d30f8c8376a34ea))
+
+
 # [5.2.0](https://github.com/olets/zsh-abbr/compare/v5.1.0...v5.2.0) (2023-10-19)
 
 Adds command completion and deprecates access to some internal functions.
