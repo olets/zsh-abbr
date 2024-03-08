@@ -12,6 +12,9 @@
 # Should `abbr-load` run before every `abbr` command? (default true)
 typeset -gi ABBR_AUTOLOAD=${ABBR_AUTOLOAD:-1}
 
+# See ABBR_SET_CURSOR
+typeset -g ABBR_CURSOR_MARKER=${ABBR_CURSOR_MARKER:-%}
+
 # Log debugging messages?
 typeset -gi ABBR_DEBUG=${ABBR_DEBUG:-0}
 
@@ -35,6 +38,9 @@ typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
 # Behave as if `--quieter` was passed? (default false)
 typeset -gi ABBR_QUIETER=${ABBR_QUIETER:-0}
 
+# In expansions, replace the first instance of ABBR_CURSOR_MARKER with the cursor
+typeset -gi ABBR_SET_CURSOR=${ABBR_SET_CURSOR:-0}
+
 # Temp files are stored in
 typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr/}
 
@@ -48,9 +54,6 @@ if [[ -z $ABBR_USER_ABBREVIATIONS_FILE ]]; then
     ABBR_USER_ABBREVIATIONS_FILE=${XDG_CONFIG_HOME:-$HOME/.config}/zsh-abbr/user-abbreviations
   fi
 fi
-
-# Cursor position marker after expansion
-typeset -g ABBR_CURSOR_MARKER=${ABBR_CURSOR_MARKER:-__ABBR_CURSOR__}
 
 # FUNCTIONS
 # ---------
@@ -1107,13 +1110,11 @@ _abbr_init() {
     typeset -g ABBR_PRECMD_MESSAGE
     typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
     typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
-    typeset -gi ABBR_SUPPRESS_SPACE
 
     ABBR_INITIALIZING=1
     ABBR_PRECMD_MESSAGE=
     ABBR_REGULAR_SESSION_ABBREVIATIONS=()
     ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
-    ABBR_SUPPRESS_SPACE=0
     
     zmodload zsh/datetime
 
@@ -1472,38 +1473,33 @@ _abbr_precmd() {
   fi
 }
 
-_abbr_set_cursor_position() {
-  emulate -LR zsh
-
-  if [[ "${BUFFER}" =~ "${ABBR_CURSOR_MARKER}" ]]; then
-    local buffer="${BUFFER}"
-    LBUFFER="${buffer%%"$ABBR_CURSOR_MARKER"*}"
-    RBUFFER="${buffer#*"$ABBR_CURSOR_MARKER"}"
-    ABBR_SUPPRESS_SPACE=1
-  else
-    ABBR_SUPPRESS_SPACE=0
-  fi
-}
-
-
 # WIDGETS
 # -------
 
 abbr-expand() {
   emulate -LR zsh
 
+  # returns 1 if the cursor was placed, otherwise 0
+
   local expansion
   local abbreviation
   local -i i
-  local preceding_lbuffer
+  local -i cursor_was_placed
   local -a words
 
   expansion=$(_abbr_regular_expansion "$LBUFFER")
 
   if [[ -n $expansion ]]; then
-    LBUFFER=$expansion
-    _abbr_set_cursor_position
-    return
+    # DUPE abbr-expand 2x with small LBUFFER distinction
+    if (( ABBR_SET_CURSOR )) && [[ $expansion =~ $ABBR_CURSOR_MARKER ]]; then
+      LBUFFER=${expansion%%$ABBR_CURSOR_MARKER*}
+      RBUFFER=${expansion#*$ABBR_CURSOR_MARKER}$RBUFFER
+      cursor_was_placed=1
+    else
+      LBUFFER=$expansion
+    fi
+
+    return $cursor_was_placed
   fi
 
   words=(${(z)LBUFFER})
@@ -1513,16 +1509,22 @@ abbr-expand() {
     expansion=$(_abbr_global_expansion "$abbreviation")
 
     if [[ -n $expansion ]]; then
-      preceding_lbuffer=${LBUFFER%%$abbreviation}
+      # DUPE abbr-expand 2x with small LBUFFER distinction
+      if (( ABBR_SET_CURSOR )) && [[ $expansion =~ $ABBR_CURSOR_MARKER ]]; then
+        LBUFFER=${LBUFFER%%$abbreviation}${expansion%%$ABBR_CURSOR_MARKER*}
+        RBUFFER=${expansion#*$ABBR_CURSOR_MARKER}$RBUFFER
+        cursor_was_placed=1
+      else
+        LBUFFER=${LBUFFER%%$abbreviation}$expansion
+      fi
 
-      LBUFFER=$preceding_lbuffer$expansion
       break
     fi
 
     (( i++ ))
   done
 
-  _abbr_set_cursor_position
+  return $cursor_was_placed
 }
 
 abbr-expand-and-accept() {
@@ -1543,15 +1545,16 @@ abbr-expand-and-accept() {
 abbr-expand-and-insert() {
   emulate -LR zsh
 
+  local -i cursor_was_placed
+
   abbr-expand
 
-  if [[ $ABBR_SUPPRESS_SPACE == 0 ]]; then
+  cursor_was_placed=$?
+  
+  if (( ! cursor_was_placed )); then
     zle self-insert
   fi
-
-  ABBR_SUPPRESS_SPACE=0
 }
-
 
 # DEPRECATION
 # -----------
