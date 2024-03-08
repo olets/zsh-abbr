@@ -49,6 +49,9 @@ if [[ -z $ABBR_USER_ABBREVIATIONS_FILE ]]; then
   fi
 fi
 
+# Cursor position marker after expansion
+typeset -g ABBR_CURSOR_MARKER=${ABBR_CURSOR_MARKER:-__ABBR_CURSOR__}
+
 # FUNCTIONS
 # ---------
 
@@ -1104,11 +1107,13 @@ _abbr_init() {
     typeset -g ABBR_PRECMD_MESSAGE
     typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
     typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
+    typeset -gi ABBR_SUPPRESS_SPACE
 
     ABBR_INITIALIZING=1
     ABBR_PRECMD_MESSAGE=
     ABBR_REGULAR_SESSION_ABBREVIATIONS=()
     ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
+    ABBR_SUPPRESS_SPACE=0
     
     zmodload zsh/datetime
 
@@ -1460,6 +1465,19 @@ _abbr_precmd() {
   fi
 }
 
+_abbr_set_cursor_position() {
+  emulate -LR zsh
+
+  if [[ "${BUFFER}" =~ "${ABBR_CURSOR_MARKER}" ]]; then
+    local buffer="${BUFFER}"
+    LBUFFER="${buffer%%"$ABBR_CURSOR_MARKER"*}"
+    RBUFFER="${buffer#*"$ABBR_CURSOR_MARKER"}"
+    ABBR_SUPPRESS_SPACE=1
+  else
+    ABBR_SUPPRESS_SPACE=0
+  fi
+}
+
 
 # WIDGETS
 # -------
@@ -1477,6 +1495,7 @@ abbr-expand() {
 
   if [[ -n $expansion ]]; then
     LBUFFER=$expansion
+    _abbr_set_cursor_position
     return
   fi
 
@@ -1495,6 +1514,8 @@ abbr-expand() {
 
     (( i++ ))
   done
+
+  _abbr_set_cursor_position
 }
 
 abbr-expand-and-accept() {
@@ -1516,7 +1537,12 @@ abbr-expand-and-space() {
   emulate -LR zsh
 
   abbr-expand
-  zle self-insert
+
+  if [[ $ABBR_SUPPRESS_SPACE == 0 ]]; then
+    zle self-insert
+  fi
+
+  ABBR_SUPPRESS_SPACE=0
 }
 
 
