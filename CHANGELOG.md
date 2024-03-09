@@ -1,3 +1,12 @@
+# [5.4.1](https://github.com/olets/zsh-abbr/compare/v5.4.0...v5.4.1) (2024-03-08)
+
+
+### Bug Fixes
+
+* **abbr-expand-and-space:** available to zle while deprecated ([bb4ac60](https://github.com/olets/zsh-abbr/commit/bb4ac6011e73579b6f1e10bb08d7e291d6746be8))
+
+
+
 # [5.4.0](https://github.com/olets/zsh-abbr/compare/v5.3.0...v5.4.0) (2024-03-08)
 
 ### Features
