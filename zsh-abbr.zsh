@@ -12,6 +12,12 @@
 # Should `abbr-load` run before every `abbr` command? (default true)
 typeset -gi ABBR_AUTOLOAD=${ABBR_AUTOLOAD:-1}
 
+# See ABBR_SET_LINE_CURSOR
+typeset -g ABBR_LINE_CURSOR_MARKER=${ABBR_LINE_CURSOR_MARKER:-%}
+
+# See ABBR_SET_EXPANSION_CURSOR
+typeset -g ABBR_EXPANSION_CURSOR_MARKER=${ABBR_EXPANSION_CURSOR_MARKER:-$ABBR_LINE_CURSOR_MARKER}
+
 # Log debugging messages?
 typeset -gi ABBR_DEBUG=${ABBR_DEBUG:-0}
 
@@ -34,6 +40,12 @@ typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
 
 # Behave as if `--quieter` was passed? (default false)
 typeset -gi ABBR_QUIETER=${ABBR_QUIETER:-0}
+
+# In expansions, replace the first instance of ABBR_LINE_CURSOR_MARKER with the cursor
+typeset -gi ABBR_SET_LINE_CURSOR=${ABBR_SET_LINE_CURSOR:-0}
+
+# In expansions, replace the first instance of ABBR_EXPANSION_CURSOR_MARKER with the cursor
+typeset -gi ABBR_SET_EXPANSION_CURSOR=${ABBR_SET_EXPANSION_CURSOR:-0}
 
 # Temp files are stored in
 typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr/}
@@ -1121,7 +1133,7 @@ _abbr_init() {
       
       zle -N abbr-expand
       zle -N abbr-expand-and-accept
-      zle -N abbr-expand-and-space
+      zle -N abbr-expand-and-insert
     }
 
     _abbr_init:bind_widgets() {
@@ -1130,14 +1142,14 @@ _abbr_init() {
       _abbr_debugger
 
       # spacebar expands abbreviations
-      bindkey " " abbr-expand-and-space
+      bindkey " " abbr-expand-and-insert
 
       # control-spacebar is a normal space
       bindkey "^ " magic-space
 
       # when running an incremental search,
       # spacebar behaves normally and control-space expands abbreviations
-      bindkey -M isearch "^ " abbr-expand-and-space
+      bindkey -M isearch "^ " abbr-expand-and-insert
       bindkey -M isearch " " magic-space
 
       # enter key expands and accepts abbreviations
@@ -1150,13 +1162,14 @@ _abbr_init() {
 
         _abbr_debugger
 
-        # Deprecation notices for values that could not be meaningfully set after initialization
+        # START Deprecation notices for values that could not be meaningfully set after initialization
         # Example form:
         # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
         # VAL=$DEPRECATED_VAL
         (( ABBR_PRECMD_LOGS != 1 )) && _abbr_warn_deprecation ABBR_PRECMD_LOGS
+        # END Deprecation notices for values that could not be meaningfully set after initialization
 
-        # Deprecation notices for functions
+        # START Deprecation notices for functions
         # Example form:
         # deprecated_fn() {
         #   _abbr_warn_deprecation deprecated_fn fn
@@ -1167,6 +1180,12 @@ _abbr_init() {
           _abbr:util_deprecated_deprecated
         }
 
+        abbr-expand-and-space() {
+          _abbr_warn_deprecation abbr-expand-and-space
+          abbr-expand-and-insert
+        }
+        # END Deprecation notices for functions
+
         _abbr_add_widgets() {
           emulate -LR zsh
 
@@ -1174,7 +1193,7 @@ _abbr_init() {
           
           zle -N abbr-expand
           zle -N abbr-expand-and-accept
-          zle -N abbr-expand-and-space
+          zle -N abbr-expand-and-insert
         }
 
         _abbr_bind_widgets() {
@@ -1183,14 +1202,14 @@ _abbr_init() {
           _abbr_warn_deprecation _abbr_bind_widgets
           
           # spacebar expands abbreviations
-          bindkey " " abbr-expand-and-space
+          bindkey " " abbr-expand-and-insert
 
           # control-spacebar is a normal space
           bindkey "^ " magic-space
 
           # when running an incremental search,
           # spacebar behaves normally and control-space expands abbreviations
-          bindkey -M isearch "^ " abbr-expand-and-space
+          bindkey -M isearch "^ " abbr-expand-and-insert
           bindkey -M isearch " " magic-space
 
           # enter key expands and accepts abbreviations
@@ -1460,24 +1479,33 @@ _abbr_precmd() {
   fi
 }
 
-
 # WIDGETS
 # -------
 
 abbr-expand() {
   emulate -LR zsh
 
+  # returns 1 if the cursor was placed, otherwise 0
+
   local expansion
   local abbreviation
   local -i i
-  local preceding_lbuffer
+  local -i cursor_was_placed
   local -a words
 
   expansion=$(_abbr_regular_expansion "$LBUFFER")
 
   if [[ -n $expansion ]]; then
-    LBUFFER=$expansion
-    return
+    # DUPE abbr-expand 2x with small LBUFFER distinction
+    if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion =~ $ABBR_EXPANSION_CURSOR_MARKER ]]; then
+      LBUFFER=${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
+      RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
+      cursor_was_placed=1
+    else
+      LBUFFER=$expansion
+    fi
+
+    return $cursor_was_placed
   fi
 
   words=(${(z)LBUFFER})
@@ -1487,14 +1515,22 @@ abbr-expand() {
     expansion=$(_abbr_global_expansion "$abbreviation")
 
     if [[ -n $expansion ]]; then
-      preceding_lbuffer=${LBUFFER%%$abbreviation}
+      # DUPE abbr-expand 2x with small LBUFFER distinction
+      if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion =~ $ABBR_EXPANSION_CURSOR_MARKER ]]; then
+        LBUFFER=${LBUFFER%%$abbreviation}${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
+        RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
+        cursor_was_placed=1
+      else
+        LBUFFER=${LBUFFER%%$abbreviation}$expansion
+      fi
 
-      LBUFFER=$preceding_lbuffer$expansion
       break
     fi
 
     (( i++ ))
   done
+
+  return $cursor_was_placed
 }
 
 abbr-expand-and-accept() {
@@ -1512,13 +1548,31 @@ abbr-expand-and-accept() {
   zle accept-line
 }
 
-abbr-expand-and-space() {
+abbr-expand-and-insert() {
   emulate -LR zsh
 
+  local buffer
+  local -i cursor_was_placed
+
   abbr-expand
+
+  cursor_was_placed=$?
+  
+  if (( cursor_was_placed )); then
+    return
+  fi
+
+  if (( ABBR_SET_LINE_CURSOR )) && [[ $BUFFER =~ $ABBR_LINE_CURSOR_MARKER ]]; then
+    buffer=$BUFFER
+    
+    LBUFFER=${buffer%%$ABBR_LINE_CURSOR_MARKER*}
+    RBUFFER=${buffer#*$ABBR_LINE_CURSOR_MARKER}
+
+    return
+  fi
+
   zle self-insert
 }
-
 
 # DEPRECATION
 # -----------
