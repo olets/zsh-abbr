@@ -1194,6 +1194,7 @@ _abbr_init() {
           zle -N abbr-expand
           zle -N abbr-expand-and-accept
           zle -N abbr-expand-and-insert
+          zle -N abbr-expand-and-space
         }
 
         _abbr_bind_widgets() {
