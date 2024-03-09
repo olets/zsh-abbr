@@ -12,8 +12,11 @@
 # Should `abbr-load` run before every `abbr` command? (default true)
 typeset -gi ABBR_AUTOLOAD=${ABBR_AUTOLOAD:-1}
 
-# See ABBR_SET_CURSOR
-typeset -g ABBR_CURSOR_MARKER=${ABBR_CURSOR_MARKER:-%}
+# See ABBR_SET_LINE_CURSOR
+typeset -g ABBR_LINE_CURSOR_MARKER=${ABBR_LINE_CURSOR_MARKER:-%}
+
+# See ABBR_SET_EXPANSION_CURSOR
+typeset -g ABBR_EXPANSION_CURSOR_MARKER=${ABBR_EXPANSION_CURSOR_MARKER:-$ABBR_LINE_CURSOR_MARKER}
 
 # Log debugging messages?
 typeset -gi ABBR_DEBUG=${ABBR_DEBUG:-0}
@@ -38,8 +41,11 @@ typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
 # Behave as if `--quieter` was passed? (default false)
 typeset -gi ABBR_QUIETER=${ABBR_QUIETER:-0}
 
-# In expansions, replace the first instance of ABBR_CURSOR_MARKER with the cursor
-typeset -gi ABBR_SET_CURSOR=${ABBR_SET_CURSOR:-0}
+# In expansions, replace the first instance of ABBR_LINE_CURSOR_MARKER with the cursor
+typeset -gi ABBR_SET_LINE_CURSOR=${ABBR_SET_LINE_CURSOR:-0}
+
+# In expansions, replace the first instance of ABBR_EXPANSION_CURSOR_MARKER with the cursor
+typeset -gi ABBR_SET_EXPANSION_CURSOR=${ABBR_SET_EXPANSION_CURSOR:-0}
 
 # Temp files are stored in
 typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr/}
@@ -1491,9 +1497,9 @@ abbr-expand() {
 
   if [[ -n $expansion ]]; then
     # DUPE abbr-expand 2x with small LBUFFER distinction
-    if (( ABBR_SET_CURSOR )) && [[ $expansion =~ $ABBR_CURSOR_MARKER ]]; then
-      LBUFFER=${expansion%%$ABBR_CURSOR_MARKER*}
-      RBUFFER=${expansion#*$ABBR_CURSOR_MARKER}$RBUFFER
+    if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion =~ $ABBR_EXPANSION_CURSOR_MARKER ]]; then
+      LBUFFER=${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
+      RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
       cursor_was_placed=1
     else
       LBUFFER=$expansion
@@ -1510,9 +1516,9 @@ abbr-expand() {
 
     if [[ -n $expansion ]]; then
       # DUPE abbr-expand 2x with small LBUFFER distinction
-      if (( ABBR_SET_CURSOR )) && [[ $expansion =~ $ABBR_CURSOR_MARKER ]]; then
-        LBUFFER=${LBUFFER%%$abbreviation}${expansion%%$ABBR_CURSOR_MARKER*}
-        RBUFFER=${expansion#*$ABBR_CURSOR_MARKER}$RBUFFER
+      if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion =~ $ABBR_EXPANSION_CURSOR_MARKER ]]; then
+        LBUFFER=${LBUFFER%%$abbreviation}${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
+        RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
         cursor_was_placed=1
       else
         LBUFFER=${LBUFFER%%$abbreviation}$expansion
@@ -1545,15 +1551,27 @@ abbr-expand-and-accept() {
 abbr-expand-and-insert() {
   emulate -LR zsh
 
+  local buffer
   local -i cursor_was_placed
 
   abbr-expand
 
   cursor_was_placed=$?
   
-  if (( ! cursor_was_placed )); then
-    zle self-insert
+  if (( cursor_was_placed )); then
+    return
   fi
+
+  if (( ABBR_SET_LINE_CURSOR )) && [[ $BUFFER =~ $ABBR_LINE_CURSOR_MARKER ]]; then
+    buffer=$BUFFER
+    
+    LBUFFER=${buffer%%$ABBR_LINE_CURSOR_MARKER*}
+    RBUFFER=${buffer#*$ABBR_LINE_CURSOR_MARKER}
+
+    return
+  fi
+
+  zle self-insert
 }
 
 # DEPRECATION
