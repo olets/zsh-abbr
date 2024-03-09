@@ -1,3 +1,18 @@
+# [5.4.0](https://github.com/olets/zsh-abbr/compare/v5.3.0...v5.4.0) (2024-03-08)
+
+### Features
+
+Cursor placement! With thanks to [@burneyy](https://github.com/burneyy) (see [#63](https://github.com/olets/zsh-abbr/pull/63))
+
+* **abbr-expand widget:** support placing cursor [[#110](https://github.com/olets/zsh-abbr/issues/110)] ([6c688e0](https://github.com/olets/zsh-abbr/commit/6c688e019852df16b70c928bbd87c1b5d3f0382b))
+  - If `ABBR_SET_EXPANSION_CURSOR` (default `0`) is non-zero, the expansion's first instance of `ABBR_EXPANSION_CURSOR_MARKER` (default `$ABBR_CURSOR_MARKER` (see below)) will be replaced with the cursor
+* **abbr-expand-and-insert:**
+  - replaces deprecated `abbr-expand-and-space` ([36667ce](https://github.com/olets/zsh-abbr/commit/36667cecd26a50ad082f6b83df6c5913e52d6e59))
+  - support checking buffer for cursor stops ([52c9d3a](https://github.com/olets/zsh-abbr/commit/52c9d3a1e029dc17214716dbc63bd658e861682f))
+    - If `ABBR_SET_LINE_CURSOR` (default `0`) is non-zero and the cursor wasn't placed during expansion, the buffer's first instance of `ABBR_LINE_CURSOR_MARKER` (default `%`) will be replaced with the cursor
+
+
+
 # [5.3.0](https://github.com/olets/zsh-abbr/compare/v5.2.0...v5.3.0) (2024-01-02)
 
 ### Features
