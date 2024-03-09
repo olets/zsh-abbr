@@ -1126,7 +1126,7 @@ _abbr_init() {
       
       zle -N abbr-expand
       zle -N abbr-expand-and-accept
-      zle -N abbr-expand-and-space
+      zle -N abbr-expand-and-insert
     }
 
     _abbr_init:bind_widgets() {
@@ -1135,14 +1135,14 @@ _abbr_init() {
       _abbr_debugger
 
       # spacebar expands abbreviations
-      bindkey " " abbr-expand-and-space
+      bindkey " " abbr-expand-and-insert
 
       # control-spacebar is a normal space
       bindkey "^ " magic-space
 
       # when running an incremental search,
       # spacebar behaves normally and control-space expands abbreviations
-      bindkey -M isearch "^ " abbr-expand-and-space
+      bindkey -M isearch "^ " abbr-expand-and-insert
       bindkey -M isearch " " magic-space
 
       # enter key expands and accepts abbreviations
@@ -1155,13 +1155,14 @@ _abbr_init() {
 
         _abbr_debugger
 
-        # Deprecation notices for values that could not be meaningfully set after initialization
+        # START Deprecation notices for values that could not be meaningfully set after initialization
         # Example form:
         # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
         # VAL=$DEPRECATED_VAL
         (( ABBR_PRECMD_LOGS != 1 )) && _abbr_warn_deprecation ABBR_PRECMD_LOGS
+        # END Deprecation notices for values that could not be meaningfully set after initialization
 
-        # Deprecation notices for functions
+        # START Deprecation notices for functions
         # Example form:
         # deprecated_fn() {
         #   _abbr_warn_deprecation deprecated_fn fn
@@ -1172,6 +1173,12 @@ _abbr_init() {
           _abbr:util_deprecated_deprecated
         }
 
+        abbr-expand-and-space() {
+          _abbr_warn_deprecation abbr-expand-and-space
+          abbr-expand-and-insert
+        }
+        # END Deprecation notices for functions
+
         _abbr_add_widgets() {
           emulate -LR zsh
 
@@ -1179,7 +1186,7 @@ _abbr_init() {
           
           zle -N abbr-expand
           zle -N abbr-expand-and-accept
-          zle -N abbr-expand-and-space
+          zle -N abbr-expand-and-insert
         }
 
         _abbr_bind_widgets() {
@@ -1188,14 +1195,14 @@ _abbr_init() {
           _abbr_warn_deprecation _abbr_bind_widgets
           
           # spacebar expands abbreviations
-          bindkey " " abbr-expand-and-space
+          bindkey " " abbr-expand-and-insert
 
           # control-spacebar is a normal space
           bindkey "^ " magic-space
 
           # when running an incremental search,
           # spacebar behaves normally and control-space expands abbreviations
-          bindkey -M isearch "^ " abbr-expand-and-space
+          bindkey -M isearch "^ " abbr-expand-and-insert
           bindkey -M isearch " " magic-space
 
           # enter key expands and accepts abbreviations
@@ -1533,7 +1540,7 @@ abbr-expand-and-accept() {
   zle accept-line
 }
 
-abbr-expand-and-space() {
+abbr-expand-and-insert() {
   emulate -LR zsh
 
   abbr-expand
