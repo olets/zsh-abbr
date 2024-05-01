@@ -67,6 +67,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "burneyy",
+      "name": "Daniel Berninghoff",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7356251?v=4",
+      "profile": "https://berninghoff.eu",
+      "contributions": [
+        "code"
+      ]
     }
-  ]
+  ],
+  "commitType": "docs"
 }
