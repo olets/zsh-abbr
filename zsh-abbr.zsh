@@ -61,6 +61,11 @@ if [[ -z $ABBR_USER_ABBREVIATIONS_FILE ]]; then
   fi
 fi
 
+if ! [[ -n ${(t)ABBR_IGNORED_ABBREVIATION_PREFIXES} ]]; then
+  ABBR_IGNORED_ABBREVIATION_PREFIXES=( sudo )
+fi
+typeset -ga ABBR_IGNORED_ABBREVIATION_PREFIXES
+
 # FUNCTIONS
 # ---------
 
@@ -1051,13 +1056,49 @@ _abbr_regular_expansion() {
   local expansion
 
   abbreviation=$1
-  
+
   expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]
 
+  local -a ignored_abbreviation_prefixes
+  local ignored_abbreviation_prefix
+  local abbreviation_sans_prefix
+  ignored_abbreviation_prefixes=( $ABBR_IGNORED_ABBREVIATION_PREFIXES )
+
+  while [[ ! $expansion ]] && (( #ignored_abbreviation_prefixes )); do
+    ignored_abbreviation_prefix=$ignored_abbreviation_prefixes[1]
+    shift ignored_abbreviation_prefixes
+    abbreviation_sans_prefix="${abbreviation#$ignored_abbreviation_prefix }"
+    expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
+
+    if [[ ! $expansion ]]; then
+      continue
+    fi
+
+    if [[ $abbreviation_sans_prefix != $abbreviation ]]; then
+      expansion="$ignored_abbreviation_prefix $expansion"
+    fi
+  done
+
   if [[ ! $expansion ]]; then
+    ignored_abbreviation_prefixes=( $ABBR_IGNORED_ABBREVIATION_PREFIXES )
+
     _abbr_create_files
     source ${ABBR_TMPDIR}regular-user-abbreviations
-    expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]
+
+    while [[ ! $expansion ]] && (( #ignored_abbreviation_prefixes )); do
+      ignored_abbreviation_prefix=$ignored_abbreviation_prefixes[1]
+      shift ignored_abbreviation_prefixes
+      abbreviation_sans_prefix="${abbreviation#$ignored_abbreviation_prefix }"
+      expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
+
+      if [[ ! $expansion ]]; then
+        continue
+      fi
+
+      if [[ $abbreviation_sans_prefix != $abbreviation ]]; then
+        expansion="$ignored_abbreviation_prefix $expansion"
+      fi
+    done
   fi
 
   'builtin' 'echo' - ${(Q)expansion}
