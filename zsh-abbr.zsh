@@ -1052,60 +1052,72 @@ _abbr_no_color() {
 }
 
 _abbr_regular_expansion() {
-  emulate -LR zsh
+  {
+    emulate -LR zsh
 
-  # cannot support debug message
+    # cannot support debug message
 
-  local abbreviation
-  local expansion
+    local abbreviation
+    local expansion
 
-  abbreviation=$1
+    _abbr_regular_expansion:get_expansion() {
+      # cannot support debug message
 
-  expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]
+      local -a ignored_abbreviation_prefixes
+      local abbreviation
+      local abbreviation_sans_prefix
+      local expansion
+      local ignored_abbreviation_prefix
+      local -i session
 
-  local -a ignored_abbreviation_prefixes
-  local ignored_abbreviation_prefix
-  local abbreviation_sans_prefix
-  ignored_abbreviation_prefixes=( $ABBR_IGNORED_ABBREVIATION_PREFIXES )
+      abbreviation=$1
+      session=$2
 
-  while [[ ! $expansion ]] && (( #ignored_abbreviation_prefixes )); do
-    ignored_abbreviation_prefix=$ignored_abbreviation_prefixes[1]
-    shift ignored_abbreviation_prefixes
-    abbreviation_sans_prefix="${abbreviation#$ignored_abbreviation_prefix }"
-    expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
+      ignored_abbreviation_prefixes=( $ABBR_IGNORED_ABBREVIATION_PREFIXES )
+
+      if (( session )); then
+        expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]
+      else
+        expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]
+      fi
+
+      while [[ ! $expansion ]] && (( #ignored_abbreviation_prefixes )); do
+        ignored_abbreviation_prefix=$ignored_abbreviation_prefixes[1]
+        shift ignored_abbreviation_prefixes
+
+        abbreviation_sans_prefix="${abbreviation#$ignored_abbreviation_prefix }"
+
+        if (( session )); then
+          expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
+        else
+          expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
+        fi
+
+        if [[ ! $expansion ]]; then
+          continue
+        fi
+
+        if [[ $abbreviation_sans_prefix != $abbreviation ]]; then
+          expansion="$ignored_abbreviation_prefix $expansion"
+        fi
+      done
+
+      'builtin' 'echo' - $expansion
+    }
+
+    abbreviation=$1
+    expansion=$(_abbr_regular_expansion:get_expansion $abbreviation 1)
 
     if [[ ! $expansion ]]; then
-      continue
+      _abbr_create_files
+      source ${_abbr_tmpdir}regular-user-abbreviations
+      expansion=$(_abbr_regular_expansion:get_expansion $abbreviation 0)
     fi
 
-    if [[ $abbreviation_sans_prefix != $abbreviation ]]; then
-      expansion="$ignored_abbreviation_prefix $expansion"
-    fi
-  done
-
-  if [[ ! $expansion ]]; then
-    ignored_abbreviation_prefixes=( $ABBR_IGNORED_ABBREVIATION_PREFIXES )
-
-    _abbr_create_files
-    source ${_abbr_tmpdir}regular-user-abbreviations
-
-    while [[ ! $expansion ]] && (( #ignored_abbreviation_prefixes )); do
-      ignored_abbreviation_prefix=$ignored_abbreviation_prefixes[1]
-      shift ignored_abbreviation_prefixes
-      abbreviation_sans_prefix="${abbreviation#$ignored_abbreviation_prefix }"
-      expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
-
-      if [[ ! $expansion ]]; then
-        continue
-      fi
-
-      if [[ $abbreviation_sans_prefix != $abbreviation ]]; then
-        expansion="$ignored_abbreviation_prefix $expansion"
-      fi
-    done
-  fi
-
-  'builtin' 'echo' - ${(Q)expansion}
+    'builtin' 'echo' - ${(Q)expansion}
+  } always {
+    unfunction -m _abbr_regular_expansion:get_expansion
+  }
 }
 
 _abbr_create_files() {
