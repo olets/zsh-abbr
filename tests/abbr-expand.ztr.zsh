@@ -40,7 +40,7 @@ main() {
 		ztr test '[[ $(abbr expand "a b c") == $test_abbr_expansion ]]' \
 			"Can expand a three-word abbreviation in a script" \
 			"Dependencies: erase"
-		abbr erase $test_abbr_abbreviation_multiword
+		abbr erase "a b c"
 	} always {
 		unfunction -m ZTR_TEARDOWN_FN
 	}
