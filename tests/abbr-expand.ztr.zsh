@@ -50,6 +50,26 @@ main() {
 			"Can expand a session abbreviation, prefixed with multiple words, in a script" \
 			"Dependencies: erase"
 
+		abbr add $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ $(abbr expand "$ABBR_IGNORED_ABBREVIATION_PREFIXES[3] $test_abbr_abbreviation") == "$ABBR_IGNORED_ABBREVIATION_PREFIXES[3] $test_abbr_expansion" ]]' \
+			"Can expand an abbreviation, prefixed with a prefix containing single-quoted double quotes, in a script" \
+			"Dependencies: erase"
+
+		abbr add -S $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ $(abbr expand "$ABBR_IGNORED_ABBREVIATION_PREFIXES[3] $test_abbr_abbreviation") == "$ABBR_IGNORED_ABBREVIATION_PREFIXES[3] $test_abbr_expansion" ]]' \
+			"Can expand a session abbreviation, prefixed with a prefix containing single-quoted double quotes, in a script" \
+			"Dependencies: erase"
+
+		abbr add $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ $(abbr expand "$ABBR_IGNORED_ABBREVIATION_PREFIXES[4] $test_abbr_abbreviation") == "$ABBR_IGNORED_ABBREVIATION_PREFIXES[4] $test_abbr_expansion" ]]' \
+			"Can expand an abbreviation, prefixed with a prefix containing double-quoted single quotes, in a script" \
+			"Dependencies: erase"
+
+		abbr add -S $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ $(abbr expand "$ABBR_IGNORED_ABBREVIATION_PREFIXES[4] $test_abbr_abbreviation") == "$ABBR_IGNORED_ABBREVIATION_PREFIXES[4] $test_abbr_expansion" ]]' \
+			"Can expand a session abbreviation, prefixed with a prefix containing double-quoted single quotes, in a script" \
+			"Dependencies: erase"
+
 		abbr $test_abbr_abbreviation_multiword=$test_abbr_expansion
 		ztr test '[[ $(abbr expand $test_abbr_abbreviation_multiword) == $test_abbr_expansion ]]' \
 			"Can expand a two-word abbreviation in a script" \
