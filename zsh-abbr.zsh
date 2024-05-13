@@ -61,10 +61,10 @@ if [[ -z $ABBR_USER_ABBREVIATIONS_FILE ]]; then
   fi
 fi
 
-if ! [[ -n ${(t)ABBR_IGNORED_ABBREVIATION_PREFIXES} ]]; then
-  ABBR_IGNORED_ABBREVIATION_PREFIXES=( sudo )
+if ! [[ -n ${(t)ABBR_REGULAR_ABBREVIATION_PREFIXES} ]]; then
+  ABBR_REGULAR_ABBREVIATION_PREFIXES=( sudo )
 fi
-typeset -ga ABBR_IGNORED_ABBREVIATION_PREFIXES
+typeset -ga ABBR_REGULAR_ABBREVIATION_PREFIXES
 
 # FUNCTIONS
 # ---------
@@ -1039,17 +1039,17 @@ _abbr_regular_expansion() {
     _abbr_regular_expansion:get_expansion() {
       # cannot support debug message
 
-      local -a ignored_abbreviation_prefixes
       local abbreviation
       local abbreviation_sans_prefix
       local expansion
-      local ignored_abbreviation_prefix
+      local prefix
+      local -a prefixes
       local -i session
 
       abbreviation=$1
       session=$2
 
-      ignored_abbreviation_prefixes=( $ABBR_IGNORED_ABBREVIATION_PREFIXES )
+      prefixes=( $ABBR_REGULAR_ABBREVIATION_PREFIXES )
 
       if (( session )); then
         expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]
@@ -1057,11 +1057,11 @@ _abbr_regular_expansion() {
         expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]
       fi
 
-      while [[ ! $expansion ]] && (( #ignored_abbreviation_prefixes )); do
-        ignored_abbreviation_prefix=$ignored_abbreviation_prefixes[1]
-        shift ignored_abbreviation_prefixes
+      while [[ ! $expansion ]] && (( #prefixes )); do
+        prefix=$prefixes[1]
+        shift prefixes
 
-        abbreviation_sans_prefix="${abbreviation#$ignored_abbreviation_prefix }"
+        abbreviation_sans_prefix="${abbreviation#$prefix }"
 
         if (( session )); then
           expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
@@ -1074,7 +1074,7 @@ _abbr_regular_expansion() {
         fi
 
         if [[ $abbreviation_sans_prefix != $abbreviation ]]; then
-          expansion="${(qqq)ignored_abbreviation_prefix} $expansion"
+          expansion="${(qqq)prefix} $expansion"
         fi
       done
 
