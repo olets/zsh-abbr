@@ -76,7 +76,7 @@ main() {
 	# Configure
 	unset ABBR_EXPANSION_CURSOR_MARKER
 	unset ABBR_LINE_CURSOR_MARKER
-	ABBR_IGNORED_ABBREVIATION_PREFIXES=( test_ignored_abbreviation_prefix )
+	ABBR_IGNORED_ABBREVIATION_PREFIXES=( one_word_prefix "multi-word prefix" )
 	ABBR_QUIET=1
 	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
 	ABBR_TMPDIR=$test_tmpdir
