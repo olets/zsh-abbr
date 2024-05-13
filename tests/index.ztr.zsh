@@ -42,6 +42,10 @@ main() {
 	cmd=$1
 
 	abbr_dir=${0:A:h}
+	if [[ $abbr_dir =~ "/tests" ]]; then
+		abbr_dir+=/..
+	fi
+
 	test_dir=$abbr_dir/tests
 
 	# Save user configuration
