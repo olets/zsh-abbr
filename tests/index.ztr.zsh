@@ -58,7 +58,7 @@ main() {
 	abbr_user_abbreviations_file_saved=$ABBR_USER_ABBREVIATIONS_FILE
 
 	# Configure
-	ABBR_IGNORED_ABBREVIATION_PREFIXES=( one_word_prefix "multi-word prefix" )
+	ABBR_IGNORED_ABBREVIATION_PREFIXES=( one_word_prefix "multi-word prefix" 'prefix with "double quotes"' "prefix with 'single quotes'" )
 	ABBR_QUIET=1
 	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
 

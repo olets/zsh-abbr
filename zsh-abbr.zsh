@@ -1094,7 +1094,7 @@ _abbr_regular_expansion() {
         fi
 
         if [[ $abbreviation_sans_prefix != $abbreviation ]]; then
-          expansion="$ignored_abbreviation_prefix $expansion"
+          expansion="${(qqq)ignored_abbreviation_prefix} $expansion"
         fi
       done
 
