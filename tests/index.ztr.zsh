@@ -21,7 +21,6 @@ main() {
 	
 	local \
 		abbr_dir \
-		abbr_quiet_saved \
 		abbr_user_abbreviations_file_saved \
 		cmd \
 		test_abbr_abbreviation \
@@ -30,7 +29,12 @@ main() {
 		test_abbr_abbreviation_multiword_2 \
 		test_abbr_expansion \
 		test_abbr_expansion_2 \
-		test_dir
+		test_dir \
+		test_prefix
+
+	local -a abbr_prefixes_saved
+	
+	local -i abbr_quiet_saved
 
 	ztr_path=${ztr_path:-$ZTR_PATH}
 
@@ -42,6 +46,10 @@ main() {
 	cmd=$1
 
 	abbr_dir=${0:A:h}
+	if [[ $abbr_dir =~ "/tests" ]]; then
+		abbr_dir+=/..
+	fi
+
 	test_dir=$abbr_dir/tests
 
 	# Save user configuration
