@@ -62,7 +62,7 @@ if [[ -z $ABBR_USER_ABBREVIATIONS_FILE ]]; then
 fi
 
 if ! [[ -n ${(t)ABBR_REGULAR_ABBREVIATION_PREFIXES} ]]; then
-  ABBR_REGULAR_ABBREVIATION_PREFIXES=( sudo )
+  ABBR_REGULAR_ABBREVIATION_PREFIXES=( 'sudo ' )
 fi
 typeset -ga ABBR_REGULAR_ABBREVIATION_PREFIXES
 
@@ -1061,7 +1061,7 @@ _abbr_regular_expansion() {
         prefix=$prefixes[1]
         shift prefixes
 
-        abbreviation_sans_prefix="${abbreviation#$prefix }"
+        abbreviation_sans_prefix="${abbreviation#$prefix}"
 
         if (( session )); then
           expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
@@ -1074,7 +1074,7 @@ _abbr_regular_expansion() {
         fi
 
         if [[ $abbreviation_sans_prefix != $abbreviation ]]; then
-          expansion="${(qqq)prefix} $expansion"
+          expansion="${(qqq)prefix}$expansion"
         fi
       done
 
