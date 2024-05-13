@@ -53,12 +53,12 @@ main() {
 	test_dir=$abbr_dir/tests
 
 	# Save user configuration
-	abbr_prefixes_saved=( $ABBR_IGNORED_ABBREVIATION_PREFIXES )
+	abbr_prefixes_saved=( $ABBR_REGULAR_ABBREVIATION_PREFIXES )
 	abbr_quiet_saved=$ABBR_QUIET
 	abbr_user_abbreviations_file_saved=$ABBR_USER_ABBREVIATIONS_FILE
 
 	# Configure
-	ABBR_IGNORED_ABBREVIATION_PREFIXES=( one_word_prefix "multi-word prefix" 'prefix with "double quotes"' "prefix with 'single quotes'" )
+	ABBR_REGULAR_ABBREVIATION_PREFIXES=( one_word_prefix "multi-word prefix" 'prefix with "double quotes"' "prefix with 'single quotes'" )
 	ABBR_QUIET=1
 	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
 
@@ -92,7 +92,7 @@ main() {
 	rm -f $ABBR_USER_ABBREVIATIONS_FILE
 
 	# Reset
-	ABBR_IGNORED_ABBREVIATION_PREFIXES=( $abbr_prefixes_saved )
+	ABBR_REGULAR_ABBREVIATION_PREFIXES=( $abbr_prefixes_saved )
 	ABBR_QUIET=$abbr_quiet_saved
 	ABBR_USER_ABBREVIATIONS_FILE=$abbr_user_abbreviations_file_saved
 	if $(command -v _abbr_load_user_abbreviations); then
