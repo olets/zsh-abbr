@@ -1594,10 +1594,6 @@ _abbr_init() {
           _abbr:util_warn_INTERNAL
         }
 
-        abbr-expand-and-space() {
-          _abbr_warn_deprecation_INTERNAL abbr-expand-and-space abbr-expand-and-insert
-          abbr-expand-and-insert
-        }
         # END Deprecation notices for functions
 
         # Deprecation notices for zle widgets
