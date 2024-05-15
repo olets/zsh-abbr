@@ -8,6 +8,18 @@ main() {
 	ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 		"Can erase an abbreviation" \
 		"Dependencies: add, erase"
+	
+	abbr add ${test_abbr_abbreviation}^=$test_abbr_expansion
+	abbr erase ${test_abbr_abbreviation}^
+	ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+		"Can erase an abbreviation" \
+		"Dependencies: add, erase"
+	
+	abbr add ^$test_abbr_abbreviation=$test_abbr_expansion
+	abbr erase ^$test_abbr_abbreviation
+	ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+		"Can erase an abbreviation" \
+		"Dependencies: add, erase"
 
 	# Manual
 
