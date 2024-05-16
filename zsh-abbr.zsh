@@ -47,8 +47,12 @@ typeset -gi ABBR_SET_LINE_CURSOR=${ABBR_SET_LINE_CURSOR:-0}
 # In expansions, replace the first instance of ABBR_EXPANSION_CURSOR_MARKER with the cursor
 typeset -gi ABBR_SET_EXPANSION_CURSOR=${ABBR_SET_EXPANSION_CURSOR:-0}
 
-# Temp files are stored in
-typeset -g ABBR_TMPDIR=${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr/}
+# The directory temp files are stored in
+if [[ ${(%):-%#} == '#' ]]; then
+  typeset -g ABBR_TMPDIR=${${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr-privileged-users}%/}/
+else
+  typeset -g ABBR_TMPDIR=${${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr}%/}/
+fi
 
 # The file abbreviations are stored in
 typeset -g ABBR_USER_ABBREVIATIONS_FILE=$ABBR_USER_ABBREVIATIONS_FILE
