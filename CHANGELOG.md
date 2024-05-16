@@ -1,4 +1,21 @@
-# [5.5.0](https://github.com/olets/zsh-abbr/compare/v5.4.1...v5.5.0) (2024-05-16)
+# [5.6.0](https://github.com/olets/zsh-abbr/compare/v5.5.0...v5.6.0) (2024-05-16)
+
+
+### Bug Fixes
+
+* missing quotation mark ([a19f0b2](https://github.com/olets/zsh-abbr/commit/a19f0b2e155c3eece602d8c24a26eb22c0bbc4fa))
+
+
+### Features
+
+* **ABBR_TMPDIR:** distinct paths for un/privileged users [[#54](https://github.com/olets/zsh-abbr/issues/54)] ([b740b01](https://github.com/olets/zsh-abbr/commit/b740b0166d50f339e19dcde6c240cd8761e5df8d))
+* **ABBR_TMPDIR:** support configurations without trailing slash. Thanks to @ealap ([7103519](https://github.com/olets/zsh-abbr/commit/71035198f805e947eb0434faeed772bc6d6d15ac))
+
+
+
+# ⚠️ [5.5.0](https://github.com/olets/zsh-abbr/compare/v5.4.1...v5.5.0) (2024-05-16)
+
+**⚠️ Yanked ⚠️**
 
 
 ### Features
