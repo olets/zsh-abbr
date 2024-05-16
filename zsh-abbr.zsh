@@ -115,7 +115,7 @@ abbr() {
         abbreviation=${(q)abbreviation}
         expansion=${(q)expansion}
       fi
-      
+
       if [[ -z $abbreviation || -z $expansion || $abbreviation == $1 ]]; then
         _abbr:util_error "abbr add: Requires abbreviation and expansion"
         return
@@ -528,7 +528,7 @@ abbr() {
 
       if [[ -n $expansion ]]; then
         _abbr:util_add $new_abbreviation $expansion
-        
+
         if (( $? )); then
           _abbr:util_error "abbr rename: ${type:+$type }${scope:+$scope }abbreviation \`${(Q)current_abbreviation}\` left untouched"
           return 1
@@ -1051,7 +1051,7 @@ _abbr_regular_expansion() {
   local expansion
 
   abbreviation=$1
-  
+
   expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]
 
   if [[ ! $expansion ]]; then
@@ -1121,7 +1121,7 @@ _abbr_init() {
     ABBR_PRECMD_MESSAGE=
     ABBR_REGULAR_SESSION_ABBREVIATIONS=()
     ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
-    
+
     zmodload zsh/datetime
 
     job_name=$(_abbr_job_name)
@@ -1130,7 +1130,7 @@ _abbr_init() {
       emulate -LR zsh
 
       _abbr_debugger
-      
+
       zle -N abbr-expand
       zle -N abbr-expand-and-accept
       zle -N abbr-expand-and-insert
@@ -1190,7 +1190,7 @@ _abbr_init() {
           emulate -LR zsh
 
           _abbr_warn_deprecation _abbr_add_widgets
-          
+
           zle -N abbr-expand
           zle -N abbr-expand-and-accept
           zle -N abbr-expand-and-insert
@@ -1201,7 +1201,7 @@ _abbr_init() {
           emulate -LR zsh
 
           _abbr_warn_deprecation _abbr_bind_widgets
-          
+
           # spacebar expands abbreviations
           bindkey " " abbr-expand-and-insert
 
@@ -1229,7 +1229,7 @@ _abbr_init() {
           emulate -LR zsh
 
           _abbr_warn_deprecation _abbr_integrations
-          
+
           # Support zsh-users/zsh-autosuggestions
           typeset -ga ZSH_AUTOSUGGEST_CLEAR_WIDGETS
           ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=( abbr-expand-and-accept )
@@ -1237,7 +1237,7 @@ _abbr_init() {
 
         # Deprecation notices for zle widgets
         _abbr_init:deprecations:widgets() {
-          
+
           # cannot support debug message
 
           local bindkey_declaration
@@ -1269,7 +1269,7 @@ _abbr_init() {
       emulate -LR zsh
 
       _abbr_debugger
-      
+
       # Support zsh-users/zsh-autosuggestions
       typeset -ga ZSH_AUTOSUGGEST_CLEAR_WIDGETS
       ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=( abbr-expand-and-accept )
@@ -1366,7 +1366,7 @@ _abbr_job_push() {
 
       while [[ $next_job_name != $job_name ]]; do
         next_job_name=$(_abbr_job_push:next_job_name)
-        
+
         next_job_age=$(( $EPOCHREALTIME - ${next_job_name%-*} ))
 
         if ((  $next_job_age > $timeout_age )); then
@@ -1391,7 +1391,7 @@ _abbr_job_name() {
   emulate -LR zsh
 
   # cannot support debug message
-  
+
   'builtin' 'echo' $EPOCHREALTIME
 }
 
@@ -1510,7 +1510,7 @@ abbr-expand() {
   fi
 
   words=(${(z)LBUFFER})
-  
+
   while (( i < ${#words} )); do
     abbreviation=${words:$i}
     expansion=$(_abbr_global_expansion "$abbreviation")
@@ -1545,7 +1545,7 @@ abbr-expand-and-accept() {
   if [[ -z $trailing_space ]]; then
     zle abbr-expand
   fi
-  
+
   zle accept-line
 }
 
@@ -1558,14 +1558,14 @@ abbr-expand-and-insert() {
   abbr-expand
 
   cursor_was_placed=$?
-  
+
   if (( cursor_was_placed )); then
     return
   fi
 
   if (( ABBR_SET_LINE_CURSOR )) && [[ $BUFFER =~ $ABBR_LINE_CURSOR_MARKER ]]; then
     buffer=$BUFFER
-    
+
     LBUFFER=${buffer%%$ABBR_LINE_CURSOR_MARKER*}
     RBUFFER=${buffer#*$ABBR_LINE_CURSOR_MARKER}
 
