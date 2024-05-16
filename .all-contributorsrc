@@ -82,6 +82,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "z0rc",
+      "name": "Ihor Urazov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/787519?v=4",
+      "profile": "https://github.com/z0rc",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "commitType": "docs"
