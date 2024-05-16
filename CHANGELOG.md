@@ -1,3 +1,12 @@
+# [5.5.0](https://github.com/olets/zsh-abbr/compare/v5.4.1...v5.5.0) (2024-05-16)
+
+
+### Features
+
+* **ABBR_TMPDIR:** distinct paths for un/privileged users [[#54](https://github.com/olets/zsh-abbr/issues/54)] ([08d852a](https://github.com/olets/zsh-abbr/commit/08d852ae34832c8540262f824468c2ce3df8777a))
+
+
+
 # [5.4.1](https://github.com/olets/zsh-abbr/compare/v5.4.0...v5.4.1) (2024-03-08)
 
 
