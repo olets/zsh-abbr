@@ -8,6 +8,8 @@ main() {
 	ztr test '[[ $ABBR_TMPDIR != $ABBR_TEST_TMPDIR ]] \
 			&& [[ ${ABBR_TMPDIR%/} == $ABBR_TEST_TMPDIR ]]' \
 		"Tmpdir does not have to end in a slash"
+
+	ztr skip '@TODO' 'Distinct tmpdirs for privileged and unprivileged users'
 }
 
 main
