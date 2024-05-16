@@ -18,7 +18,13 @@
         "doc",
         "design",
         "question",
-        "tool"
+        "tool",
+        "example",
+        "ideas",
+        "infra",
+        "test",
+        "maintenance",
+        "review"
       ]
     },
     {
