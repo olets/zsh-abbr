@@ -43,6 +43,36 @@ main() {
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation with an embedded caret" \
 			"Dependencies: add, erase. Issues: 118"
+		
+		# TODO
+		# See
+		# - https://github.com/olets/zsh-abbr/issues/84
+		# - https://github.com/olets/zsh-abbr/issues/118
+		abbr add ${test_abbr_abbreviation}\!=$test_abbr_expansion
+		abbr erase $test_abbr_abbreviation'!'
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+			"Can erase an abbreviation ending in an escaped exclamation point" \
+			"Dependencies: add, erase. Issues: 84, 118"
+		
+		# @TODO
+		# See
+		# - https://github.com/olets/zsh-abbr/issues/84
+		# - https://github.com/olets/zsh-abbr/issues/118
+		abbr add \!$test_abbr_abbreviation=$test_abbr_expansion
+		abbr erase \!$test_abbr_abbreviation
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+			"Can erase an abbreviation starting with an escaped exclamation point" \
+			"Dependencies: add, erase. Issues: 84, 118"
+		
+		# @TODO
+		# See
+		# - https://github.com/olets/zsh-abbr/issues/84
+		# - https://github.com/olets/zsh-abbr/issues/118
+		abbr add '!'$test_abbr_abbreviation=$test_abbr_expansion
+		abbr erase '!'$test_abbr_abbreviation
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+			"Can erase an abbreviation starting with a single-quoted exclamation point" \
+			"Dependencies: add, erase. Issues: 84, 118"
 
 		# Manual
 
