@@ -18,13 +18,14 @@
 
 main() {
 	emulate -LR zsh
+
+	typeset -g ABBR_USER_ABBREVIATIONS_FILE_SAVED
 	
 	local \
 		abbr_dir \
 		abbr_expansion_cursor_marker_saved \
 		abbr_line_cursor_marker_saved \
 		abbr_tmpdir_saved \
-		abbr_user_abbreviations_file_saved \
 		cmd \
 		test_abbr_abbreviation \
 		test_abbr_abbreviation_2 \
@@ -67,7 +68,7 @@ main() {
 	abbr_line_cursor_marker_saved=$ABBR_LINE_CURSOR_MARKER
 	abbr_quiet_saved=$ABBR_QUIET
 	abbr_tmpdir_saved=$ABBR_TMPDIR
-	abbr_user_abbreviations_file_saved=$ABBR_USER_ABBREVIATIONS_FILE
+	ABBR_USER_ABBREVIATIONS_FILE_SAVED=$ABBR_USER_ABBREVIATIONS_FILE
 
 	# Configure
 	unset ABBR_EXPANSION_CURSOR_MARKER
@@ -110,7 +111,9 @@ main() {
 	ABBR_LINE_CURSOR_MARKER=$abbr_line_cursor_marker_saved
 	ABBR_QUIET=$abbr_quiet_saved
 	ABBR_TMPDIR=$abbr_tmpdir_saved
-	ABBR_USER_ABBREVIATIONS_FILE=$abbr_user_abbreviations_file_saved
+	ABBR_USER_ABBREVIATIONS_FILE=$ABBR_USER_ABBREVIATIONS_FILE_SAVED
+	unset ABBR_USER_ABBREVIATIONS_FILE_SAVED
+
 	if $(command -v _abbr_load_user_abbreviations); then
 		_abbr_load_user_abbreviations
 	fi
