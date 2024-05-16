@@ -28,6 +28,22 @@ main() {
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation starting with a caret" \
 			"Dependencies: add, erase"
+		
+		abbr add ${test_abbr_abbreviation}!=$test_abbr_expansion
+		# TODO escaping could change if there's movement on https://github.com/olets/zsh-abbr/issues/84
+		abbr erase '${test_abbr_abbreviation}!'
+		abbr erase "${test_abbr_abbreviation}\\!"
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+			"Can erase an abbreviation ending in an exclamation point" \
+			"Dependencies: add, erase"
+		
+		abbr add !$test_abbr_abbreviation=$test_abbr_expansion
+		# TODO escaping could change if there's movement on https://github.com/olets/zsh-abbr/issues/84
+		abbr erase '!$test_abbr_abbreviation'
+		abbr erase "\\!$test_abbr_abbreviation"
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+			"Can erase an abbreviation starting with an exclamation point" \
+			"Dependencies: add, erase"
 
 		# Manual
 
