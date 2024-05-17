@@ -1,3 +1,13 @@
+# [5.7.0](https://github.com/olets/zsh-abbr/compare/v5.6.0...v5.7.0) (2024-05-17)
+
+
+### Features
+
+* **changelog:** script ([e3235c9](https://github.com/olets/zsh-abbr/commit/e3235c96289fc6a6a8f52f313e196f66ae8975f4))
+* **tmpdir:** new internal var instead of mutating user config var ([d42a692](https://github.com/olets/zsh-abbr/commit/d42a69256296ddca39706e15993a60578d05ba5f))
+
+
+
 # [5.6.0](https://github.com/olets/zsh-abbr/compare/v5.5.0...v5.6.0) (2024-05-16)
 
 
@@ -13,14 +23,9 @@
 
 
 
-# ⚠️ [5.5.0](https://github.com/olets/zsh-abbr/compare/v5.4.1...v5.5.0) (2024-05-16)
+# [5.5.0](https://github.com/olets/zsh-abbr/compare/v5.4.1...v5.5.0) (2024-05-16)
 
 **⚠️ Yanked ⚠️**
-
-
-### Features
-
-* **ABBR_TMPDIR:** distinct paths for un/privileged users [[#54](https://github.com/olets/zsh-abbr/issues/54)] ([08d852a](https://github.com/olets/zsh-abbr/commit/08d852ae34832c8540262f824468c2ce3df8777a))
 
 
 
