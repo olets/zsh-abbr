@@ -53,7 +53,9 @@
       "contributions": [
         "code",
         "ideas",
-        "financial"
+        "financial",
+        "doc",
+        "bug"
       ]
     },
     {
