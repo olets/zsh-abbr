@@ -33,8 +33,7 @@ To cut a new release:
     ```shell
     git tag -s v1.0.0 -m v1.0.0`
     ```
-1. Push `main` and the tag:
-    ```shell
-    git push && git push --tags
-    ```
+1. If possible to fast-forward `next` to `main`, do so. If it isn't, rebase/merge/etc as needed to have `next` fork off the tip of `main`.
+1. Fast-forward the major-version branch (e.g. branch `v5`) to `main`.
+1. Push `main`, the tag, `next`, the major version branch, and any branches rewritten in the process of bringing `next` up to `main`.
 1. In GitHub, publish a new release. https://github.com/olets/zsh-abbr/releases/new. A GitHub Actions workflow will automatically update the Homebrew formula.
