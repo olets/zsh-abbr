@@ -70,6 +70,21 @@ main() {
 			"Can expand a session abbreviation, prefixed with a prefix containing double-quoted single quotes, in a script" \
 			"Dependencies: erase"
 
+		abbr add $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ $(abbr expand "$prefix_glob_match_1$test_abbr_abbreviation") == "$prefix_glob_match_1$test_abbr_expansion" ]]' \
+			"Can expand an abbreviation, prefixed with a glob, in a script — 1/n" \
+			"Dependencies: erase"
+
+		abbr add $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ $(abbr expand "$prefix_glob_match_2$test_abbr_abbreviation") == "$prefix_glob_match_2$test_abbr_expansion" ]]' \
+			"Can expand an abbreviation, prefixed with a glob, in a script — 2/n" \
+			"Dependencies: erase"
+
+		abbr add $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ -z $(abbr expand "$prefix_glob_mismatch$test_abbr_abbreviation") ]]' \
+			"Can expand an abbreviation, prefixed with a glob, in a script — 3/n" \
+			"Dependencies: erase"
+
 		abbr $test_abbr_abbreviation_multiword=$test_abbr_expansion
 		ztr test '[[ $(abbr expand $test_abbr_abbreviation_multiword) == $test_abbr_expansion ]]' \
 			"Can expand a two-word abbreviation in a script" \
