@@ -82,6 +82,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "shimajiteppei",
+      "name": "Teppei Shimaji",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42309359?v=4",
+      "profile": "https://shimajiteppei.github.io/",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "commitType": "docs"
