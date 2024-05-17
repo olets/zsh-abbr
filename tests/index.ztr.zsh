@@ -18,12 +18,6 @@
 
 main() {
 	emulate -LR zsh
-
-	if [[ ${(%):-%#} == '#' ]]; then
-		typeset -g ABBR_TEST_TMPDIR=${${TMPDIR:-/tmp}%/}/zsh-abbr-privileged-users-tests
-	else
-		typeset -g ABBR_TEST_TMPDIR=${${TMPDIR:-/tmp}%/}/zsh-abbr-tests
-	fi
 	
 	local \
 		abbr_dir \
@@ -37,7 +31,8 @@ main() {
 		test_abbr_expansion \
 		test_abbr_expansion_2 \
 		test_dir \
-		test_prefix
+		test_prefix \
+		test_tmpdir
 
 	local -a abbr_prefixes_saved
 	
@@ -59,6 +54,12 @@ main() {
 
 	test_dir=$abbr_dir/tests
 
+	if [[ ${(%):-%#} == '#' ]]; then
+		test_tmpdir=${${TMPDIR:-/tmp}%/}/zsh-abbr-privileged-users-tests
+	else
+		test_tmpdir=${${TMPDIR:-/tmp}%/}/zsh-abbr-tests
+	fi
+
 	# Save user configuration
 	abbr_quiet_saved=$ABBR_QUIET
 	abbr_tmpdir_saved=$ABBR_TMPDIR
@@ -67,7 +68,7 @@ main() {
 	# Configure
 	ABBR_QUIET=1
 	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
-	ABBR_TMPDIR=$ABBR_TEST_TMPDIR
+	ABBR_TMPDIR=$test_tmpdir
 
 	# Set up data
 	touch $ABBR_USER_ABBREVIATIONS_FILE
