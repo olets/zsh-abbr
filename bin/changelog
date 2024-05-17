@@ -1,0 +1,12 @@
+#!/usr/bin/env zsh
+
+main() {
+  [[ -n $('builtin' 'command' -v conventional-changelog) ]] || {
+    printf "Requires conventional-changelog\nhttps://github.com/conventional-changelog/conventional-changelog\n"
+    return 1
+  }
+
+  'builtin' 'command' conventional-changelog -i CHANGELOG.md -s -p angular
+}
+
+main
