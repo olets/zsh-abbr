@@ -70,6 +70,8 @@ if ! [[ -n ${(t)ABBR_REGULAR_ABBREVIATION_PREFIXES} ]]; then
 fi
 typeset -ga ABBR_REGULAR_ABBREVIATION_PREFIXES
 
+typeset -g ABBR_REGULAR_ABBREVIATION_PREFIXES_GLOB_MARKER=${ABBR_REGULAR_ABBREVIATION_PREFIXES_GLOB_MARKER:-%ABBR_PREFIX_GLOB%}
+
 # FUNCTIONS
 # ---------
 
@@ -1085,7 +1087,17 @@ _abbr_regular_expansion() {
         prefix=$prefixes[1]
         shift prefixes
 
-        abbreviation_sans_prefix="${abbreviation#$prefix}"
+        # If $prefix starts with the value of $ABBR_REGULAR_ABBREVIATION_PREFIXES_GLOB_MARKER
+        if [[ $prefix =~ ^$ABBR_REGULAR_ABBREVIATION_PREFIXES_GLOB_MARKER ]]; then
+          # Trim $ABBR_REGULAR_ABBREVIATION_PREFIXES_GLOB_MARKER from the front of $prefix
+          # and then trim the remainder of $prefix, _as a glob_ (`$~globparam` vs `$stringparam`)_, from $abbreviation
+          abbreviation_sans_prefix=${abbreviation#${~${prefix#$ABBR_REGULAR_ABBREVIATION_PREFIXES_GLOB_MARKER}}}
+        else
+          abbreviation_sans_prefix="${abbreviation#$prefix}"
+        fi
+
+        # $abbreviation_sans_prefix is now the full $abbreviation if $abbreviation doesn't start with a prefix,
+        # or a $abbreviation with the prefix trimmed if $abbreviation does start with a prefix
 
         if (( session )); then
           expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
@@ -1097,9 +1109,8 @@ _abbr_regular_expansion() {
           continue
         fi
 
-        if [[ $abbreviation_sans_prefix != $abbreviation ]]; then
-          expansion="${(qqq)prefix}$expansion"
-        fi
+        # Re-prepend anything trimmed off during the prefix check
+        expansion="${(qqq)${abbreviation%$abbreviation_sans_prefix}}$expansion"
       done
 
       'builtin' 'echo' - $expansion

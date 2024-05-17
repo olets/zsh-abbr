@@ -25,6 +25,10 @@ main() {
 		abbr_user_abbreviations_file_saved \
 		cmd \
 		prefix_double_quotes \
+		prefix_glob \
+		prefix_glob_match_1 \
+		prefix_glob_match_2 \
+		prefix_glob_mismatch \
 		prefix_multi_word \
 		prefix_one_word \
 		prefix_single_quotes \
@@ -57,9 +61,14 @@ main() {
 	fi
 
 	prefix_double_quotes='prefix with "double quotes"'
+	prefix_glob="%ABBR_PREFIX_GLOB%?*globprefix"
 	prefix_multi_word="multi-word prefix"
 	prefix_one_word=one_word_prefix
 	prefix_single_quotes="prefix with 'single quotes'"
+
+	prefix_glob_match_1='.globprefix'
+	prefix_glob_match_2='..globprefix'
+	prefix_glob_mismatch='globprefix'
 
 	test_dir=$abbr_dir/tests
 
@@ -78,6 +87,7 @@ main() {
 	# Configure
 	typeset -a ABBR_REGULAR_ABBREVIATION_PREFIXES
 	ABBR_REGULAR_ABBREVIATION_PREFIXES+=$prefix_double_quotes
+	ABBR_REGULAR_ABBREVIATION_PREFIXES+=$prefix_glob
 	ABBR_REGULAR_ABBREVIATION_PREFIXES+=$prefix_multi_word
 	ABBR_REGULAR_ABBREVIATION_PREFIXES+=$prefix_one_word
 	ABBR_REGULAR_ABBREVIATION_PREFIXES+=$prefix_single_quotes
