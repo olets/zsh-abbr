@@ -28,6 +28,10 @@ main() {
 		abbr_tmpdir_saved \
 		aliases_saved \
 		cmd \
+		prefix_double_quotes \
+		prefix_multi_word \
+		prefix_one_word \
+		prefix_single_quotes \
 		test_abbr_abbreviation \
 		test_abbr_abbreviation_2 \
 		test_abbr_abbreviation_multiword \
@@ -56,6 +60,11 @@ main() {
 		abbr_dir+=/..
 	fi
 
+	prefix_double_quotes='prefix with "double quotes"'
+	prefix_multi_word="multi-word prefix"
+	prefix_one_word=one_word_prefix
+	prefix_single_quotes="prefix with 'single quotes'"
+
 	test_dir=$abbr_dir/tests
 
 	if [[ ${(%):-%#} == '#' ]]; then
@@ -74,9 +83,13 @@ main() {
 	aliases_saved=$(alias -L)
 
 	# Configure
+	typeset -a ABBR_REGULAR_ABBREVIATION_PREFIXES
 	unset ABBR_EXPANSION_CURSOR_MARKER
 	unset ABBR_LINE_CURSOR_MARKER
-	ABBR_REGULAR_ABBREVIATION_PREFIXES=( one_word_prefix "multi-word prefix" 'prefix with "double quotes"' "prefix with 'single quotes'" )
+	ABBR_REGULAR_ABBREVIATION_PREFIXES+=$prefix_double_quotes
+	ABBR_REGULAR_ABBREVIATION_PREFIXES+=$prefix_multi_word
+	ABBR_REGULAR_ABBREVIATION_PREFIXES+=$prefix_one_word
+	ABBR_REGULAR_ABBREVIATION_PREFIXES+=$prefix_single_quotes
 	ABBR_QUIET=1
 	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
 	ABBR_TMPDIR=$test_tmpdir
