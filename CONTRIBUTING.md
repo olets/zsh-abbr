@@ -13,3 +13,28 @@ The test suite uses [zsh-test-runner](https://github.com/olets/zsh-test-runner).
 ```shell
 . ./tests/abbr.ztr
 ```
+
+## Maintainers
+
+To cut a new release:
+
+1. Check out the `main` branch.
+1. Update all instances of the version number in `zsh-abbr.zsh`.
+1. Update all instances of the release date in `zsh-abbr.zsh`.
+1. Update all instances of the version number in `man/man1/abbr.1`.
+1. Update all instances of the release date in `man/man1/abbr.1`.
+1. Run `bin/changelog`.
+1. Update the first line of `CHANGELOG.md`: add the new version number twice:
+    ```
+    # [<HERE>](…vPrevious...v<AND HERE>) (…)
+    ```
+1. Commit `CHANGELOG.md`, `zsh-abbr.zsh`, `man/man1/abbr.1`.
+1. Create a signed commit with the version number, prefixed with `v`. For example
+    ```shell
+    git tag -s v1.0.0 -m v1.0.0`
+    ```
+1. Push `main` and the tag:
+    ```shell
+    git push && git push --tags
+    ```
+1. In GitHub, publish a new release. https://github.com/olets/zsh-abbr/releases/new. A GitHub Actions workflow will automatically update the Homebrew formula.
