@@ -42,7 +42,8 @@ main() {
 		test_prefix \
 		test_tmpdir
 
-	local -a abbr_prefixes_saved
+	local -a abbr_scalar_prefixes_saved
+	local -a abbr_glob_prefixes_saved
 	
 	local -i abbr_quiet_saved
 
@@ -61,7 +62,7 @@ main() {
 	fi
 
 	prefix_double_quotes='prefix with "double quotes"'
-	prefix_glob="%ABBR_PREFIX_GLOB%?*globprefix"
+	prefix_glob="?*globprefix"
 	prefix_multi_word="multi-word prefix"
 	prefix_one_word=one_word_prefix
 	prefix_single_quotes="prefix with 'single quotes'"
@@ -79,18 +80,22 @@ main() {
 	fi
 
 	# Save user configuration
-	abbr_prefixes_saved=( $ABBR_REGULAR_ABBREVIATION_PREFIXES )
+	abbr_glob_prefixes_saved=( $ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES )
+	abbr_scalar_prefixes_saved=( $ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES )
 	abbr_quiet_saved=$ABBR_QUIET
 	abbr_tmpdir_saved=$ABBR_TMPDIR
 	abbr_user_abbreviations_file_saved=$ABBR_USER_ABBREVIATIONS_FILE
 
 	# Configure
-	typeset -a ABBR_REGULAR_ABBREVIATION_PREFIXES
-	ABBR_REGULAR_ABBREVIATION_PREFIXES+=( $prefix_double_quotes )
-	ABBR_REGULAR_ABBREVIATION_PREFIXES+=( $prefix_glob )
-	ABBR_REGULAR_ABBREVIATION_PREFIXES+=( $prefix_multi_word )
-	ABBR_REGULAR_ABBREVIATION_PREFIXES+=( $prefix_one_word )
-	ABBR_REGULAR_ABBREVIATION_PREFIXES+=( $prefix_single_quotes )
+	typeset -a ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES=( )
+	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES+=( $prefix_double_quotes )
+	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES+=( $prefix_multi_word )
+	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES+=( $prefix_one_word )
+	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES+=( $prefix_single_quotes )
+
+	typeset -a ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES=( )
+	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES+=( $prefix_glob )
+
 	ABBR_QUIET=1
 	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
 	ABBR_TMPDIR=$test_tmpdir
@@ -125,7 +130,8 @@ main() {
 	rm -f $ABBR_USER_ABBREVIATIONS_FILE
 
 	# Reset
-	ABBR_REGULAR_ABBREVIATION_PREFIXES=( $abbr_prefixes_saved )
+	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES=( $abbr_glob_prefixes_saved )
+	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES=( $abbr_scalar_prefixes_saved )
 	ABBR_QUIET=$abbr_quiet_saved
 	ABBR_TMPDIR=$abbr_tmpdir_saved
 	ABBR_USER_ABBREVIATIONS_FILE=$abbr_user_abbreviations_file_saved
