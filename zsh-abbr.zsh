@@ -61,11 +61,13 @@ if [[ -z $ABBR_USER_ABBREVIATIONS_FILE ]]; then
   fi
 fi
 
-if [[ ${(t)ABBR_REGULAR_ABBREVIATION_PREFIXES} == ${${(t)ABBR_REGULAR_ABBREVIATION_PREFIXES}#array} ]]; then
-  typeset -ga ABBR_REGULAR_ABBREVIATION_PREFIXES=( 'sudo ' )
+if [[ ${(t)ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES} == ${${(t)ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES}#array} ]]; then
+  typeset -ga ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES=( 'sudo ' )
 fi
 
-typeset -g ABBR_REGULAR_ABBREVIATION_PREFIXES_GLOB_MARKER=${ABBR_REGULAR_ABBREVIATION_PREFIXES_GLOB_MARKER:-%ABBR_PREFIX_GLOB%}
+if [[ ${(t)ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES} == ${${(t)ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES}#array} ]]; then
+  typeset -ga ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES=( )
+fi
 
 # FUNCTIONS
 # ---------
@@ -1044,13 +1046,15 @@ _abbr_regular_expansion() {
       local abbreviation_sans_prefix
       local expansion
       local prefix
-      local -a prefixes
+      local -a glob_prefixes
+      local -a scalar_prefixes
       local -i session
 
       abbreviation=$1
       session=$2
 
-      prefixes=( $ABBR_REGULAR_ABBREVIATION_PREFIXES )
+      glob_prefixes=( $ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES )
+      scalar_prefixes=( $ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES )
 
       if (( session )); then
         expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]
@@ -1058,18 +1062,35 @@ _abbr_regular_expansion() {
         expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]
       fi
 
-      while [[ ! $expansion ]] && (( #prefixes )); do
-        prefix=$prefixes[1]
-        shift prefixes
+      while [[ ! $expansion ]] && (( #glob_prefixes )); do
+        prefix=$glob_prefixes[1]
+        shift glob_prefixes
 
-        # If $prefix starts with the value of $ABBR_REGULAR_ABBREVIATION_PREFIXES_GLOB_MARKER
-        if [[ $prefix =~ ^$ABBR_REGULAR_ABBREVIATION_PREFIXES_GLOB_MARKER ]]; then
-          # Trim $ABBR_REGULAR_ABBREVIATION_PREFIXES_GLOB_MARKER from the front of $prefix
-          # and then trim the remainder of $prefix, _as a glob_ (`$~globparam` vs `$stringparam`)_, from $abbreviation
-          abbreviation_sans_prefix=${abbreviation#${~${prefix#$ABBR_REGULAR_ABBREVIATION_PREFIXES_GLOB_MARKER}}}
+        # Trim the remainder of $prefix, _as a glob_ (`$~globparam` vs `$stringparam`)_, from $abbreviation
+        abbreviation_sans_prefix=${abbreviation#$~prefix}
+
+        # $abbreviation_sans_prefix is now the full $abbreviation if $abbreviation doesn't start with a prefix,
+        # or a $abbreviation with the prefix trimmed if $abbreviation does start with a prefix
+
+        if (( session )); then
+          expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
         else
-          abbreviation_sans_prefix="${abbreviation#$prefix}"
+          expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
         fi
+
+        if [[ ! $expansion ]]; then
+          continue
+        fi
+
+        # Re-prepend anything trimmed off during the prefix check
+        expansion="${(qqq)${abbreviation%$abbreviation_sans_prefix}}$expansion"
+      done
+
+      while [[ ! $expansion ]] && (( #scalar_prefixes )); do
+        prefix=$scalar_prefixes[1]
+        shift scalar_prefixes
+
+        abbreviation_sans_prefix="${abbreviation#$prefix}"
 
         # $abbreviation_sans_prefix is now the full $abbreviation if $abbreviation doesn't start with a prefix,
         # or a $abbreviation with the prefix trimmed if $abbreviation does start with a prefix
