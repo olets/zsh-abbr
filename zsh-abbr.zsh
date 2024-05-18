@@ -1040,76 +1040,79 @@ _abbr_regular_expansion() {
     local expansion
 
     _abbr_regular_expansion:get_expansion() {
-      # cannot support debug message
+      {
+        # cannot support debug message
 
-      local abbreviation
-      local abbreviation_sans_prefix
-      local expansion
-      local prefix
-      local -a glob_prefixes
-      local -a scalar_prefixes
-      local -i session
+        _abbr_regular_expansion:get_expansion:get_prefixed_expansion() {
+          # cannot support debug message
+          
+          local abbreviation_sans_prefix
+          local prefix
+          local -a prefixes
+          local -i use_globbing
+          
+          use_globbing=$1
 
-      abbreviation=$1
-      session=$2
+          prefixes=( $ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES )
 
-      glob_prefixes=( $ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES )
-      scalar_prefixes=( $ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES )
+          (( use_globbing )) && prefixes=( $ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES )
 
-      if (( session )); then
-        expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]
-      else
-        expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]
-      fi
+          while [[ ! $expansion ]] && (( #prefixes )); do
+            prefix=$prefixes[1]
+            shift prefixes
 
-      while [[ ! $expansion ]] && (( #glob_prefixes )); do
-        prefix=$glob_prefixes[1]
-        shift glob_prefixes
+            abbreviation_sans_prefix="${abbreviation#$prefix}"
 
-        # Trim the remainder of $prefix, _as a glob_ (`$~globparam` vs `$stringparam`)_, from $abbreviation
-        abbreviation_sans_prefix=${abbreviation#$~prefix}
+            if (( use_globbing )); then
+              # Trim the remainder of $prefix, _as a glob_ (`$~globparam` vs `$stringparam`)_, from $abbreviation
+              abbreviation_sans_prefix=${abbreviation#$~prefix}
+            fi
 
-        # $abbreviation_sans_prefix is now the full $abbreviation if $abbreviation doesn't start with a prefix,
-        # or a $abbreviation with the prefix trimmed if $abbreviation does start with a prefix
+            # $abbreviation_sans_prefix is now the full $abbreviation if $abbreviation doesn't start with a prefix,
+            # or a $abbreviation with the prefix trimmed if $abbreviation does start with a prefix
+
+            if (( session )); then
+              expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
+            else
+              expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
+            fi
+
+            if [[ ! $expansion ]]; then
+              continue
+            fi
+
+            # Re-prepend anything trimmed off during the prefix check
+            expansion="${(qqq)${abbreviation%$abbreviation_sans_prefix}}$expansion"
+          done
+
+          'builtin' 'echo' - $expansion
+        }
+
+        local abbreviation
+        local expansion
+        local -i session
+
+        abbreviation=$1
+        session=$2
 
         if (( session )); then
-          expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
+          expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]
         else
-          expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
+          expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]
         fi
 
         if [[ ! $expansion ]]; then
-          continue
-        fi
-
-        # Re-prepend anything trimmed off during the prefix check
-        expansion="${(qqq)${abbreviation%$abbreviation_sans_prefix}}$expansion"
-      done
-
-      while [[ ! $expansion ]] && (( #scalar_prefixes )); do
-        prefix=$scalar_prefixes[1]
-        shift scalar_prefixes
-
-        abbreviation_sans_prefix="${abbreviation#$prefix}"
-
-        # $abbreviation_sans_prefix is now the full $abbreviation if $abbreviation doesn't start with a prefix,
-        # or a $abbreviation with the prefix trimmed if $abbreviation does start with a prefix
-
-        if (( session )); then
-          expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
-        else
-          expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
+          expansion=$(_abbr_regular_expansion:get_expansion:get_prefixed_expansion 1)
         fi
 
         if [[ ! $expansion ]]; then
-          continue
+          expansion=$(_abbr_regular_expansion:get_expansion:get_prefixed_expansion 0)
         fi
 
-        # Re-prepend anything trimmed off during the prefix check
-        expansion="${(qqq)${abbreviation%$abbreviation_sans_prefix}}$expansion"
-      done
-
-      'builtin' 'echo' - $expansion
+        'builtin' 'echo' - $expansion
+      } always {
+        unfunction -m _abbr_regular_expansion:get_expansion:get_prefixed_expansion
+      }
     }
 
     abbreviation=$1
