@@ -23,15 +23,19 @@ To cut a new release:
 1. Update all instances of the release date in `zsh-abbr.zsh`.
 1. Update all instances of the version number in `man/man1/abbr.1`.
 1. Update all instances of the release date in `man/man1/abbr.1`.
+1. Update all instances of the version number in `completions/_abbr`.
 1. Run `bin/changelog`.
 1. Update the first line of `CHANGELOG.md`: add the new version number twice:
     ```
     # [<HERE>](…vPrevious...v<AND HERE>) (…)
     ```
-1. Commit `CHANGELOG.md`, `zsh-abbr.zsh`, `man/man1/abbr.1`.
-1. Create a signed commit with the version number, prefixed with `v`. For example
+1. Commit `CHANGELOG.md`, `zsh-abbr.zsh`, `man/man1/abbr.1`, and `completions/_abbr`.
     ```shell
-    git tag -s v1.0.0 -m v1.0.0`
+    git commit -i CHANGELOG.md completions/_abbr man/man1/abbr.1 zsh-abbr.zsh -m "feat(release): bump to %ABBR_CURSOR%, update changelog"
+    ```
+1. Create a signed commit with the version number, prefixed with `v`.
+    ```shell
+    git tag -s %ABBR_CURSOR% -m %ABBR_CURSOR%
     ```
 1. If possible to fast-forward `next` to `main`, do so. If it isn't, rebase/merge/etc as needed to have `next` fork off the tip of `main`.
 1. Fast-forward the major-version branch (e.g. branch `v5`) to `main`.
