@@ -1,3 +1,9 @@
+# [5.7.1](https://github.com/olets/zsh-abbr/compare/v5.7.0...v5.7.1) (2024-05-18)
+
+* **completions:** correct version number ([fa4ca0e](https://github.com/olets/zsh-abbr/commit/fa4ca0e1436e60548ee0c1b637e1fc250c168a7b))
+
+
+
 # [5.7.0](https://github.com/olets/zsh-abbr/compare/v5.6.0...v5.7.0) (2024-05-17)
 
 
