@@ -71,18 +71,43 @@ main() {
 			"Dependencies: erase"
 
 		abbr add $test_abbr_abbreviation=$test_abbr_expansion
-		ztr test '[[ $(abbr expand "$prefix_glob_match_1$test_abbr_abbreviation") == "$prefix_glob_match_1$test_abbr_expansion" ]]' \
+		ztr test '[[ $(abbr expand "$prefix_glob_1_match_1$test_abbr_abbreviation") == "$prefix_glob_1_match_1$test_abbr_expansion" ]]' \
 			"Can expand an abbreviation, prefixed with a glob, in a script — 1/n" \
 			"Dependencies: erase"
 
 		abbr add $test_abbr_abbreviation=$test_abbr_expansion
-		ztr test '[[ $(abbr expand "$prefix_glob_match_2$test_abbr_abbreviation") == "$prefix_glob_match_2$test_abbr_expansion" ]]' \
+		ztr test '[[ $(abbr expand "$prefix_glob_1_match_2$test_abbr_abbreviation") == "$prefix_glob_1_match_2$test_abbr_expansion" ]]' \
 			"Can expand an abbreviation, prefixed with a glob, in a script — 2/n" \
 			"Dependencies: erase"
 
 		abbr add $test_abbr_abbreviation=$test_abbr_expansion
-		ztr test '[[ -z $(abbr expand "$prefix_glob_mismatch$test_abbr_abbreviation") ]]' \
+		ztr test '[[ -z $(abbr expand "$prefix_glob_1_mismatch$test_abbr_abbreviation") ]]' \
 			"Can expand an abbreviation, prefixed with a glob, in a script — 3/n" \
+			"Dependencies: erase"
+
+		abbr add $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ $(abbr expand "$prefix_multi_word$prefix_double_quotes$test_abbr_abbreviation") == "$prefix_multi_word$prefix_double_quotes$test_abbr_expansion" ]]' \
+			"Can expand an abbreviation, prefixed with a linear combination of scalar prefixes, in a script" \
+			"Dependencies: erase"
+
+		abbr add -S $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ $(abbr expand "$prefix_glob_1_match_1$prefix_glob_2_match$test_abbr_abbreviation") == "$prefix_glob_1_match_1$prefix_glob_2_match$test_abbr_expansion" ]]' \
+			"Can expand a session abbreviation, prefixed with a linear combination of glob prefixes, in a script" \
+			"Dependencies: erase"
+
+		abbr add -S $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ $(abbr expand "$prefix_double_quotes$prefix_glob_2_match$test_abbr_abbreviation") == "$prefix_double_quotes$prefix_glob_2_match$test_abbr_expansion" ]]' \
+			"Can expand a session abbreviation, prefixed with a scalar prefix followed by a glob prefix, in a script" \
+			"Dependencies: erase"
+
+		abbr add -S $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ $(abbr expand "$prefix_glob_2_match$prefix_double_quotes$test_abbr_abbreviation") == "$prefix_glob_2_match$prefix_double_quotes$test_abbr_expansion" ]]' \
+			"Can expand a session abbreviation, prefixed with a glob prefix followed by a scalar prefix, in a script" \
+			"Dependencies: erase"
+
+		abbr add -S $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ $(abbr expand "$prefix_glob_1_match_1$prefix_glob_2_match$prefix_double_quotes$prefix_multi_word$test_abbr_abbreviation") == "$prefix_glob_1_match_1$prefix_glob_2_match$prefix_double_quotes$prefix_multi_word$test_abbr_expansion" ]]' \
+			"Can expand a session abbreviation, prefixed with mixed glob and scalar prefixes, in a script" \
 			"Dependencies: erase"
 
 		abbr $test_abbr_abbreviation_multiword=$test_abbr_expansion
