@@ -1070,27 +1070,32 @@ _abbr_regular_expansion() {
         _abbr_regular_expansion:get_expansion:get_prefixed_expansion() {
           # cannot support debug message
           
+          local abbreviation
           local abbreviation_sans_prefix
           local prefix
+          local prefix_pattern
           local -a prefixes
           local -i use_globbing
           
-          use_globbing=$1
+          abbreviation=$1
+          use_globbing=$2
 
           prefixes=( $ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES )
 
           (( use_globbing )) && prefixes=( $ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES )
 
           while [[ ! $expansion ]] && (( #prefixes )); do
-            prefix=$prefixes[1]
+            prefix_pattern=$prefixes[1]
             shift prefixes
 
-            abbreviation_sans_prefix="${abbreviation#$prefix}"
+            abbreviation_sans_prefix="${abbreviation#$prefix_pattern}"
 
             if (( use_globbing )); then
               # Trim the remainder of $prefix, _as a glob_ (`$~globparam` vs `$stringparam`)_, from $abbreviation
-              abbreviation_sans_prefix=${abbreviation#$~prefix}
+              abbreviation_sans_prefix=${abbreviation#$~prefix_pattern}
             fi
+
+            prefix=${abbreviation%$abbreviation_sans_prefix}
 
             # $abbreviation_sans_prefix is now the full $abbreviation if $abbreviation doesn't start with a prefix,
             # or a $abbreviation with the prefix trimmed if $abbreviation does start with a prefix
@@ -1101,12 +1106,22 @@ _abbr_regular_expansion() {
               expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
             fi
 
+            if [[ -n $prefix ]]; then
+              if [[ ! $expansion ]]; then
+                expansion=$(_abbr_regular_expansion:get_expansion:get_prefixed_expansion $abbreviation_sans_prefix 1)
+              fi
+
+              if [[ ! $expansion ]]; then
+                expansion=$(_abbr_regular_expansion:get_expansion:get_prefixed_expansion $abbreviation_sans_prefix 0)
+              fi
+            fi
+
             if [[ ! $expansion ]]; then
               continue
             fi
 
             # Re-prepend anything trimmed off during the prefix check
-            expansion="${(qqq)${abbreviation%$abbreviation_sans_prefix}}$expansion"
+            expansion="${(qqq)prefix}$expansion"
           done
 
           'builtin' 'echo' - $expansion
@@ -1126,11 +1141,11 @@ _abbr_regular_expansion() {
         fi
 
         if [[ ! $expansion ]]; then
-          expansion=$(_abbr_regular_expansion:get_expansion:get_prefixed_expansion 1)
+          expansion=$(_abbr_regular_expansion:get_expansion:get_prefixed_expansion $abbreviation 1)
         fi
 
         if [[ ! $expansion ]]; then
-          expansion=$(_abbr_regular_expansion:get_expansion:get_prefixed_expansion 0)
+          expansion=$(_abbr_regular_expansion:get_expansion:get_prefixed_expansion $abbreviation 0)
         fi
 
         'builtin' 'echo' - $expansion
