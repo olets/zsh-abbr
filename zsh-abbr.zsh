@@ -1352,7 +1352,7 @@ abbr-expand-and-accept() {
     zle abbr-expand
   fi
 
-  zle .accept-line
+  _abbr_accept-line
 }
 
 abbr-expand-and-insert() {
@@ -1438,6 +1438,25 @@ _abbr_init() {
       emulate -LR zsh
 
       _abbr_debugger
+
+      # _abbr_accept-line is by abbr-expand-and-accept
+      # h/t https://github.com/ohmyzsh/ohmyzsh/pull/9466/commits/11c1f96155055719e42c3bac7d10c6ef4168a04f
+      case "$widgets[accept-line]" in
+        # If the accept-line widget was already redefined before zsh-abbr's initialization,
+        # use the user-defined accept-line widget
+        user:*)
+          zle -N _abbr_accept-line_user_defined "${widgets[accept-line]#user:}"
+          _abbr_accept-line() {
+            zle _abbr_accept-line_user_defined -- "$@"
+          }
+          ;;
+        # Otherwise use the standard widget
+        builtin)
+          _abbr_accept-line() {
+            zle .accept-line
+          }
+          ;;
+      esac
 
       zle -N abbr-expand
       zle -N accept-line abbr-expand-and-accept
