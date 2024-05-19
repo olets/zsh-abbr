@@ -1352,7 +1352,7 @@ abbr-expand-and-accept() {
     zle abbr-expand
   fi
 
-  zle accept-line
+  zle .accept-line
 }
 
 abbr-expand-and-insert() {
@@ -1440,7 +1440,7 @@ _abbr_init() {
       _abbr_debugger
 
       zle -N abbr-expand
-      zle -N abbr-expand-and-accept
+      zle -N accept-line abbr-expand-and-accept
       zle -N abbr-expand-and-insert
     }
 
@@ -1459,9 +1459,6 @@ _abbr_init() {
       # spacebar behaves normally and control-space expands abbreviations
       bindkey -M isearch "^ " abbr-expand-and-insert
       bindkey -M isearch " " magic-space
-
-      # enter key expands and accepts abbreviations
-      bindkey "^M" abbr-expand-and-accept
     }
 
     _abbr_init:deprecations() {
@@ -1500,7 +1497,7 @@ _abbr_init() {
           _abbr_warn_deprecation _abbr_add_widgets
 
           zle -N abbr-expand
-          zle -N abbr-expand-and-accept
+          zle -N accept-line abbr-expand-and-accept
           zle -N abbr-expand-and-insert
           zle -N abbr-expand-and-space
         }
@@ -1520,9 +1517,6 @@ _abbr_init() {
           # spacebar behaves normally and control-space expands abbreviations
           bindkey -M isearch "^ " abbr-expand-and-insert
           bindkey -M isearch " " magic-space
-
-          # enter key expands and accepts abbreviations
-          bindkey "^M" abbr-expand-and-accept
         }
 
         _abbr_deprecations() {
@@ -1537,10 +1531,6 @@ _abbr_init() {
           emulate -LR zsh
 
           _abbr_warn_deprecation _abbr_integrations
-
-          # Support zsh-users/zsh-autosuggestions
-          # typeset -ga ZSH_AUTOSUGGEST_CLEAR_WIDGETS
-          # ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=( abbr-expand-and-accept )
         }
 
         # Deprecation notices for zle widgets
@@ -1573,16 +1563,6 @@ _abbr_init() {
       }
     }
 
-    _abbr_init:integrations() {
-      emulate -LR zsh
-
-      _abbr_debugger
-
-      # Support zsh-users/zsh-autosuggestions
-      typeset -ga ZSH_AUTOSUGGEST_CLEAR_WIDGETS
-      ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=( abbr-expand-and-accept )
-    }
-
     if ! _abbr_no_color; then
       'builtin' 'autoload' -U colors && colors
     fi
@@ -1597,7 +1577,6 @@ _abbr_init() {
     _abbr_init:add_widgets
     _abbr_init:deprecations
     (( ABBR_DEFAULT_BINDINGS )) &&  _abbr_init:bind_widgets
-    _abbr_init:integrations
 
     _abbr_job_pop $job_name
     unset ABBR_INITIALIZING
@@ -1605,7 +1584,6 @@ _abbr_init() {
     unfunction -m _abbr_init:add_widgets
     unfunction -m _abbr_init:bind_widgets
     unfunction -m _abbr_init:deprecations
-    unfunction -m _abbr_init:integrations
   }
 }
 
