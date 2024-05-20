@@ -169,9 +169,20 @@ _abbr (){
 (( $+functions[__abbr_extract_abbreviations] )) ||
 __abbr_extract_abbreviations() {
   local -a tmp_abbr tmp_expd
+  local scope type
 
-  tmp_abbr=(${${(f)"$(_call_program abbreviations abbr list-abbreviations 2>/dev/null)"}//\"/})
-  tmp_expd=(${${${${(f)"$(_call_program abbreviations abbr list 2>/dev/null)"}#*=}#\"}%\"})
+  if (( $words[(Ie)-U] || $words[(Ie)--user] )); then
+    scope='-U'
+  elif (( $words[(Ie)-S] || $words[(I)--session] )); then
+    scope='-S'
+  elif (( $words[(Ie)-r] || $words[(Ie)--regular] )); then
+    type='-r'
+  elif (( $words[(Ie)-g] || $words[(Ie)--global] )); then
+    type='-g'
+  fi
+
+  tmp_abbr=(${${(f)"$(_call_program abbreviations abbr list-abbreviations $scope $type 2>/dev/null)"}//\"/})
+  tmp_expd=(${${${${(f)"$(_call_program abbreviations abbr list $scope $type 2>/dev/null)"}#*=}#\"}%\"})
 
   if (( ${#ABBR_REGULAR_USER_ABBREVIATIONS} )); then
     local len=${#tmp_abbr}
