@@ -90,7 +90,8 @@ _abbr (){
             '(-S)-S[available in this session]' \
             '(--session)--session[available in this session]' \
             '(-U)-U[available in all sessions]' \
-            '(--user)--user[available in all sessions]'
+            '(--user)--user[available in all sessions]' \
+            '1: :__abbr_abbreviations'
           ret=0
           ;;
         export-aliases|\
@@ -197,7 +198,8 @@ _abbr (){
             '(-S)-S[available in this session]' \
             '(--session)--session[available in this session]' \
             '(-U)-U[available in all sessions]' \
-            '(--user)--user[available in all sessions]'
+            '(--user)--user[available in all sessions]' \
+            '1: :__abbr_abbreviations'
           ret=0
           ;;
       esac
@@ -205,6 +207,26 @@ _abbr (){
   esac
 
   return ret
+}
+
+(( $+functions[__abbr_extract_abbreviations] )) ||
+__abbr_extract_abbreviations() {
+  local -a tmp
+
+  tmp=(${${(f)"$(_call_program abbreviations abbr list 2>/dev/null)"}//\"/})
+  if (( ${#tmp} > 0 )); then
+    abbreviations=(${^tmp/=/:})
+  else
+    abbreviations=()
+  fi
+}
+
+(( $+functions[__abbr_abbreviations] )) ||
+__abbr_abbreviations() {
+  local -a abbreviations
+  __abbr_extract_abbreviations
+
+  _describe -t abbreviations 'abbr abbreviations' abbreviations
 }
 
 # vim: ft=zsh
