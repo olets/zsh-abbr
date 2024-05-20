@@ -211,11 +211,16 @@ _abbr (){
 
 (( $+functions[__abbr_extract_abbreviations] )) ||
 __abbr_extract_abbreviations() {
-  local -a tmp
+  local -a tmp_abbr tmp_expd
 
-  tmp=(${${(f)"$(_call_program abbreviations abbr list 2>/dev/null)"}//\"/})
-  if (( ${#tmp} > 0 )); then
-    abbreviations=(${^tmp/=/:})
+  tmp_abbr=(${${(f)"$(_call_program abbreviations abbr list-abbreviations 2>/dev/null)"}//\"/})
+  tmp_expd=(${${${${(f)"$(_call_program abbreviations abbr list 2>/dev/null)"}#*=}#\"}%\"})
+
+  if (( ${#ABBR_REGULAR_USER_ABBREVIATIONS} )); then
+    local len=${#tmp_abbr}
+    for (( i = 1; i <= len; i++ )); do
+      abbreviations+=(${tmp_abbr[$i]}:${tmp_expd[$i]})
+    done
   else
     abbreviations=()
   fi
