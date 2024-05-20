@@ -190,3 +190,5 @@ __abbr_abbreviations() {
 
   _describe -t abbreviations 'abbr abbreviations' abbreviations
 }
+
+_abbr
