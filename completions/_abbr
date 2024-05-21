@@ -18,39 +18,38 @@ _abbr (){
   ret=1
 
   _arguments -C \
-    "--help[Show the manpage.]" \
-    "(-v --version)"{-v,--version}"[Show the current version.]" \
     "1: :->cmds" \
     "*:: :->args" && ret=0
 
   case $state in
     cmds)
-      local commands; commands=(
-        "a:Add a new abbreviation."
-        "add:Add a new abbreviation."
-        "c:Erase all session abbreviations."
-        "clear-session:Erase all session abbreviations."
-        "e:Erase an abbreviation."
-        "erase:Erase an abbreviation."
-        "x:Output the ABBREVIATION's EXPANSION."
-        "expand:Output the ABBREVIATION's EXPANSION."
-        "export-aliases:Export abbreviations as alias commands."
-        "g:Add a regular abbreviation, the expansion of which is prefixed with git; and add a global abbreviation, the abbreviation and expansion of which are prefixed with git."
-        "git:Add a regular abbreviation, the expansion of which is prefixed with git; and add a global abbreviation, the abbreviation and expansion of which are prefixed with git."
-        "help:Show the manpage."
-        "import-aliases:Add regular abbreviations for every regular alias in the session, and global abbreviations for every global alias in the session."
-        "import-fish:Import fish abbr-syntax abbreviations."
-        "import-git-aliases:Add regular abbreviations for every Git alias in the current session. The EXPANSION is prefixed with git[Space]."
-        "list:List the abbreviations with their expansions."
-        "l:List the abbreviations only."
-        "list-abbreviations:List the abbreviations only."
-        "list-commands:List as commands suitable for export."
-        "profile:Log profile information for debugging."
-        "R:Rename an abbreviation."
-        "rename:Rename an abbreviation."
-        "version:Show the current version."
-      )
-      _describe "abbr commands" commands
+      _values "abbr command" \
+        "a[Add a new abbreviation.]" \
+        "add[Add a new abbreviation.]" \
+        "c[Erase all session abbreviations.]" \
+        "clear-session[Erase all session abbreviations.]" \
+        "e[Erase an abbreviation.]" \
+        "erase[Erase an abbreviation.]" \
+        "x[Output the ABBREVIATION's EXPANSION.]" \
+        "expand[Output the ABBREVIATION's EXPANSION.]" \
+        "export-aliases[Export abbreviations as alias commands.]" \
+        "g[Add a regular abbreviation, the expansion of which is prefixed with git; and add a global abbreviation, the abbreviation and expansion of which are prefixed with git.]" \
+        "git[Add a regular abbreviation, the expansion of which is prefixed with git; and add a global abbreviation, the abbreviation and expansion of which are prefixed with git.]" \
+        "help[Show the manpage.]" \
+        "--help[Show the manpage.]" \
+        "import-aliases[Add regular abbreviations for every regular alias in the session, and global abbreviations for every global alias in the session.]" \
+        "import-fish[Import fish abbr-syntax abbreviations.]" \
+        "import-git-aliases[Add regular abbreviations for every Git alias in the current session. The EXPANSION is prefixed with git\[Space\].]" \
+        "list[List the abbreviations with their expansions.]" \
+        "l[List the abbreviations only.]" \
+        "list-abbreviations[List the abbreviations only.]" \
+        "list-commands[List as commands suitable for export.]" \
+        "profile[Log profile information for debugging.]" \
+        "R[Rename an abbreviation.]" \
+        "rename[Rename an abbreviation.]" \
+        "version[Show the current version.]" \
+        "-v[Show the current version.]" \
+        "--version[Show the current version.]"
       ret=0
       ;;
     args)
