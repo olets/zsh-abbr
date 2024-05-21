@@ -95,7 +95,7 @@ _abbr (){
             "(-S --session -U --user)"{-S,--session}"[available in this session]" \
             "(-U --user -S --session)"{-U,--user}"[available in all sessions]"
           ret=0
-            ;;
+          ;;
         git)
           # [<SCOPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)] ABBREVIATION=EXPANSION
           _arguments \
@@ -117,7 +117,7 @@ _abbr (){
             "(-qq --quieter -q --quiet)"{-qq,--quieter}"[silence success output and warnings]" \
             "(-r --regular -g --global)"{-r,--regular}"[expand at the start of the line]"
           ret=0
-            ;;
+          ;;
         import-fish)
           # [<SCOPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)] FILE
           _arguments \
