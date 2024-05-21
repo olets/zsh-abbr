@@ -165,9 +165,9 @@ _abbr (){
   return ret
 }
 
-(( $+functions[__abbr_extract_abbreviations] )) ||
-__abbr_extract_abbreviations() {
-  local -a tmp_abbr tmp_expd
+(( $+functions[__abbr_abbreviations] )) || # <- This could be removed, it doesn't seems to affect anything, reducing boilerplate
+__abbr_abbreviations() {
+  local -a abbreviations tmp_abbr tmp_expd
   local scope type
 
   if (( $words[(Ie)-U] || $words[(Ie)--user] )); then
@@ -191,14 +191,9 @@ __abbr_extract_abbreviations() {
   else
     abbreviations=()
   fi
-}
 
-(( $+functions[__abbr_abbreviations] )) ||
-__abbr_abbreviations() {
-  local -a abbreviations
-  __abbr_extract_abbreviations
-
-  _describe -t abbreviations "abbr abbreviations" abbreviations
+  # I don't think the `-t` option for tags is necessary, and completions works just fine.
+  _describe "abbr abbreviations" abbreviations
 }
 
 _abbr
