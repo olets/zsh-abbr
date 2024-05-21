@@ -18,39 +18,39 @@ _abbr (){
   ret=1
 
   _arguments -C \
-    '--help[Show the manpage.]' \
-    '(-v --version)'{-v,--version}'[Show the current version.]' \
-    '1: :->cmds' \
-    '*:: :->args' && ret=0
+    "--help[Show the manpage.]" \
+    "(-v --version)"{-v,--version}"[Show the current version.]" \
+    "1: :->cmds" \
+    "*:: :->args" && ret=0
 
   case $state in
     cmds)
       local commands; commands=(
-        'a:Add a new abbreviation.'
-        'add:Add a new abbreviation.'
-        'c:Erase all session abbreviations.'
-        'clear-session:Erase all session abbreviations.'
-        'e:Erase an abbreviation.'
-        'erase:Erase an abbreviation.'
+        "a:Add a new abbreviation."
+        "add:Add a new abbreviation."
+        "c:Erase all session abbreviations."
+        "clear-session:Erase all session abbreviations."
+        "e:Erase an abbreviation."
+        "erase:Erase an abbreviation."
         "x:Output the ABBREVIATION's EXPANSION."
         "expand:Output the ABBREVIATION's EXPANSION."
-        'export-aliases:Export abbreviations as alias commands.'
-        'g:Add a regular abbreviation, the expansion of which is prefixed with git; and add a global abbreviation, the abbreviation and expansion of which are prefixed with git.'
-        'git:Add a regular abbreviation, the expansion of which is prefixed with git; and add a global abbreviation, the abbreviation and expansion of which are prefixed with git.'
-        'help:Show the manpage.'
-        'import-aliases:Add regular abbreviations for every regular alias in the session, and global abbreviations for every global alias in the session.'
-        'import-fish:Import fish abbr-syntax abbreviations.'
-        'import-git-aliases:Add regular abbreviations for every Git alias in the current session. The EXPANSION is prefixed with git[Space].'
-        'list:List the abbreviations with their expansions.'
-        'l:List the abbreviations only.'
-        'list-abbreviations:List the abbreviations only.'
-        'list-commands:List as commands suitable for export.'
-        'profile:Log profile information for debugging.'
-        'R:Rename an abbreviation.'
-        'rename:Rename an abbreviation.'
-        'version:Show the current version.'
+        "export-aliases:Export abbreviations as alias commands."
+        "g:Add a regular abbreviation, the expansion of which is prefixed with git; and add a global abbreviation, the abbreviation and expansion of which are prefixed with git."
+        "git:Add a regular abbreviation, the expansion of which is prefixed with git; and add a global abbreviation, the abbreviation and expansion of which are prefixed with git."
+        "help:Show the manpage."
+        "import-aliases:Add regular abbreviations for every regular alias in the session, and global abbreviations for every global alias in the session."
+        "import-fish:Import fish abbr-syntax abbreviations."
+        "import-git-aliases:Add regular abbreviations for every Git alias in the current session. The EXPANSION is prefixed with git[Space]."
+        "list:List the abbreviations with their expansions."
+        "l:List the abbreviations only."
+        "list-abbreviations:List the abbreviations only."
+        "list-commands:List as commands suitable for export."
+        "profile:Log profile information for debugging."
+        "R:Rename an abbreviation."
+        "rename:Rename an abbreviation."
+        "version:Show the current version."
       )
-      _describe 'abbr commands' commands
+      _describe "abbr commands" commands
       ret=0
       ;;
     args)
@@ -59,27 +59,27 @@ _abbr (){
         add)
           # [<SCOPE>] [<TYPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)] ABBREVIATION=EXPANSION
           _arguments \
-            '(-S --session -U --user)'{-S,--session}'[available in this session]' \
-            '(-U --user -S --session)'{-U,--user}'[available in all sessions]' \
-            '(-r --regular -g --global)'{-r,--regular}'[expand at the start of the line]' \
-            '(-g --global -r --regular)'{-g,--global}'[expand everywhere]' \
-            '(--dry-run)--dry-run[see what would result, without making any actual changes]' \
-            '(-q --quiet -qq --quieter)'{-q,--quiet}'[silence success output]' \
-            '(-qq --quieter -q --quiet)'{-qq,--quieter}'[silence success output and warnings]' \
-            '(-f --force)'{-f,--force}'[ignore warnings]'
+            "(-S --session -U --user)"{-S,--session}"[available in this session]" \
+            "(-U --user -S --session)"{-U,--user}"[available in all sessions]" \
+            "(-r --regular -g --global)"{-r,--regular}"[expand at the start of the line]" \
+            "(-g --global -r --regular)"{-g,--global}"[expand everywhere]" \
+            "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
+            "(-q --quiet -qq --quieter)"{-q,--quiet}"[silence success output]" \
+            "(-qq --quieter -q --quiet)"{-qq,--quieter}"[silence success output and warnings]" \
+            "(-f --force)"{-f,--force}"[ignore warnings]"
           ret=0
           ;;
         e|\
         erase)
           # [<SCOPE>] [<TYPE>] [--dry-run] [--quiet] ABBREVIATION
           _arguments \
-            '(-S --session -U --user)'{-S,--session}'[available in this session]' \
-            '(-U --user -S --session)'{-U,--user}'[available in all sessions]' \
-            '(-r --regular -g --global)'{-r,--regular}'[expand at the start of the line]' \
-            '(-g --global -r --regular)'{-g,--global}'[expand everywhere]' \
-            '(--dry-run)--dry-run[see what would result, without making any actual changes]' \
-            '(-q --quiet)'{-q,--quiet}'[silence success output]' \
-            '1: :__abbr_abbreviations'
+            "(-S --session -U --user)"{-S,--session}"[available in this session]" \
+            "(-U --user -S --session)"{-U,--user}"[available in all sessions]" \
+            "(-r --regular -g --global)"{-r,--regular}"[expand at the start of the line]" \
+            "(-g --global -r --regular)"{-g,--global}"[expand everywhere]" \
+            "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
+            "(-q --quiet)"{-q,--quiet}"[silence success output]" \
+            "1: :__abbr_abbreviations"
           ret=0
           ;;
         export-aliases|\
@@ -90,73 +90,73 @@ _abbr (){
         list-commands)
           # [<SCOPE>] [<TYPE>]
           _arguments \
-            '(-S --session -U --user)'{-S,--session}'[available in this session]' \
-            '(-U --user -S --session)'{-U,--user}'[available in all sessions]' \
-            '(-r --regular -g --global)'{-r,--regular}'[expand at the start of the line]' \
-            '(-g --global -r --regular)'{-g,--global}'[expand everywhere]'
+            "(-S --session -U --user)"{-S,--session}"[available in this session]" \
+            "(-U --user -S --session)"{-U,--user}"[available in all sessions]" \
+            "(-r --regular -g --global)"{-r,--regular}"[expand at the start of the line]" \
+            "(-g --global -r --regular)"{-g,--global}"[expand everywhere]"
           ret=0
             ;;
         git)
           # [<SCOPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)] ABBREVIATION=EXPANSION
           _arguments \
-            '(-S --session -U --user)'{-S,--session}'[available in this session]' \
-            '(-U --user -S --session)'{-U,--user}'[available in all sessions]' \
-            '(--dry-run)--dry-run[see what would result, without making any actual changes]' \
-            '(-q --quiet -qq --quieter)'{-q,--quiet}'[silence success output]' \
-            '(-qq --quieter -q --quiet)'{-qq,--quieter}'[silence success output and warnings]' \
-            '(-f --force)'{-f,--force}'[ignore warnings]'
+            "(-S --session -U --user)"{-S,--session}"[available in this session]" \
+            "(-U --user -S --session)"{-U,--user}"[available in all sessions]" \
+            "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
+            "(-q --quiet -qq --quieter)"{-q,--quiet}"[silence success output]" \
+            "(-qq --quieter -q --quiet)"{-qq,--quieter}"[silence success output and warnings]" \
+            "(-f --force)"{-f,--force}"[ignore warnings]"
           ret=0
           ;;
         import-aliases)
           # [<TYPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)]
           _arguments \
-            '(-r --regular -g --global)'{-r,--regular}'[expand at the start of the line]' \
-            '(-g --global -r --regular)'{-g,--global}'[expand everywhere]' \
-            '(--dry-run)--dry-run[see what would result, without making any actual changes]' \
-            '(-q --quiet -qq --quieter)'{-q,--quiet}'[silence success output]' \
-            '(-qq --quieter -q --quiet)'{-qq,--quieter}'[silence success output and warnings]' \
-            '(-f --force)'{-f,--force}'[ignore warnings]'
+            "(-r --regular -g --global)"{-r,--regular}"[expand at the start of the line]" \
+            "(-g --global -r --regular)"{-g,--global}"[expand everywhere]" \
+            "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
+            "(-q --quiet -qq --quieter)"{-q,--quiet}"[silence success output]" \
+            "(-qq --quieter -q --quiet)"{-qq,--quieter}"[silence success output and warnings]" \
+            "(-f --force)"{-f,--force}"[ignore warnings]"
           ret=0
             ;;
         import-fish)
           # [<SCOPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)] FILE
           _arguments \
-            '(-S --session -U --user)'{-S,--session}'[available in this session]' \
-            '(-U --user -S --session)'{-U,--user}'[available in all sessions]' \
-            '(--dry-run)--dry-run[see what would result, without making any actual changes]' \
-            '(-q --quiet -qq --quieter)'{-q,--quiet}'[silence success output]' \
-            '(-qq --quieter -q --quiet)'{-qq,--quieter}'[silence success output and warnings]' \
-            '(-f --force)'{-f,--force}'[ignore warnings]'
+            "(-S --session -U --user)"{-S,--session}"[available in this session]" \
+            "(-U --user -S --session)"{-U,--user}"[available in all sessions]" \
+            "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
+            "(-q --quiet -qq --quieter)"{-q,--quiet}"[silence success output]" \
+            "(-qq --quieter -q --quiet)"{-qq,--quieter}"[silence success output and warnings]" \
+            "(-f --force)"{-f,--force}"[ignore warnings]"
           ret=0
           ;;
         import-git-aliases)
           # [<SCOPE>] [<TYPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)] [--file <config-file>] [--prefix <ABBREVIATION prefix>]
           _arguments \
-            '(-S --session -U --user)'{-S,--session}'[available in this session]' \
-            '(-U --user -S --session)'{-U,--user}'[available in all sessions]' \
-            '(-r --regular -g --global)'{-r,--regular}'[expand at the start of the line]' \
-            '(-g --global -r --regular)'{-g,--global}'[expand everywhere]' \
-            '(--dry-run)--dry-run[see what would result, without making any actual changes]' \
-            '(-q --quiet -qq --quieter)'{-q,--quiet}'[silence success output]' \
-            '(-qq --quieter -q --quiet)'{-qq,--quieter}'[silence success output and warnings]' \
-            '(-f --force)'{-f,--force}'[ignore warnings]' \
-            '(--file)--file[path to a Git config file]:filename:_files -/' \
-            '(--prefix)--prefix[prefix added to the ABBREVIATIONs]'
+            "(-S --session -U --user)"{-S,--session}"[available in this session]" \
+            "(-U --user -S --session)"{-U,--user}"[available in all sessions]" \
+            "(-r --regular -g --global)"{-r,--regular}"[expand at the start of the line]" \
+            "(-g --global -r --regular)"{-g,--global}"[expand everywhere]" \
+            "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
+            "(-q --quiet -qq --quieter)"{-q,--quiet}"[silence success output]" \
+            "(-qq --quieter -q --quiet)"{-qq,--quieter}"[silence success output and warnings]" \
+            "(-f --force)"{-f,--force}"[ignore warnings]" \
+            "(--file)--file[path to a Git config file]:filename:_files -/" \
+            "(--prefix)--prefix[prefix added to the ABBREVIATIONs]"
           ret=0
           ;;
         R|\
         rename)
           # [<SCOPE>] [<TYPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)] OLD NEW
           _arguments \
-            '(-S --session -U --user)'{-S,--session}'[available in this session]' \
-            '(-U --user -S --session)'{-U,--user}'[available in all sessions]' \
-            '(-r --regular -g --global)'{-r,--regular}'[expand at the start of the line]' \
-            '(-g --global -r --regular)'{-g,--global}'[expand everywhere]' \
-            '(--dry-run)--dry-run[see what would result, without making any actual changes]' \
-            '(-q --quiet -qq --quieter)'{-q,--quiet}'[silence success output]' \
-            '(-qq --quieter -q --quiet)'{-qq,--quieter}'[silence success output and warnings]' \
-            '(-f --force)'{-f,--force}'[ignore warnings]' \
-            '1: :__abbr_abbreviations'
+            "(-S --session -U --user)"{-S,--session}"[available in this session]" \
+            "(-U --user -S --session)"{-U,--user}"[available in all sessions]" \
+            "(-r --regular -g --global)"{-r,--regular}"[expand at the start of the line]" \
+            "(-g --global -r --regular)"{-g,--global}"[expand everywhere]" \
+            "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
+            "(-q --quiet -qq --quieter)"{-q,--quiet}"[silence success output]" \
+            "(-qq --quieter -q --quiet)"{-qq,--quieter}"[silence success output and warnings]" \
+            "(-f --force)"{-f,--force}"[ignore warnings]" \
+            "1: :__abbr_abbreviations"
           ret=0
           ;;
       esac
@@ -172,13 +172,13 @@ __abbr_extract_abbreviations() {
   local scope type
 
   if (( $words[(Ie)-U] || $words[(Ie)--user] )); then
-    scope='-U'
+    scope="-U"
   elif (( $words[(Ie)-S] || $words[(I)--session] )); then
-    scope='-S'
+    scope="-S"
   elif (( $words[(Ie)-r] || $words[(Ie)--regular] )); then
-    type='-r'
+    type="-r"
   elif (( $words[(Ie)-g] || $words[(Ie)--global] )); then
-    type='-g'
+    type="-g"
   fi
 
   tmp_abbr=(${${(f)"$(_call_program abbreviations abbr list-abbreviations $scope $type 2>/dev/null)"}//\"/})
@@ -199,7 +199,7 @@ __abbr_abbreviations() {
   local -a abbreviations
   __abbr_extract_abbreviations
 
-  _describe -t abbreviations 'abbr abbreviations' abbreviations
+  _describe -t abbreviations "abbr abbreviations" abbreviations
 }
 
 _abbr
