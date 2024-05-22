@@ -103,6 +103,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "Icy-Thought",
+      "name": "Icy-Thought",
+      "avatar_url": "https://avatars.githubusercontent.com/u/53710398?v=4",
+      "profile": "https://github.com/Icy-Thought",
+      "contributions": [
+        "platform"
+      ]
     }
   ],
   "commitType": "docs"
