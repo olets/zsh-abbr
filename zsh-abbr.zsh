@@ -1107,203 +1107,6 @@ _abbr_global_expansion() {
   'builtin' 'echo' - ${(Q)expansion}
 }
 
-_abbr_init() {
-  emulate -LR zsh
-
-  local job_name
-
-  {
-    typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
-    typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
-    typeset -gi ABBR_INITIALIZING
-    typeset -g ABBR_PRECMD_MESSAGE
-    typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
-    typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
-
-    ABBR_INITIALIZING=1
-    ABBR_PRECMD_MESSAGE=
-    ABBR_REGULAR_SESSION_ABBREVIATIONS=()
-    ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
-
-    zmodload zsh/datetime
-
-    job_name=$(_abbr_job_name)
-
-    _abbr_init:add_widgets() {
-      emulate -LR zsh
-
-      _abbr_debugger
-
-      zle -N abbr-expand
-      zle -N abbr-expand-and-accept
-      zle -N abbr-expand-and-insert
-    }
-
-    _abbr_init:bind_widgets() {
-      emulate -LR zsh
-
-      _abbr_debugger
-
-      # spacebar expands abbreviations
-      bindkey " " abbr-expand-and-insert
-
-      # control-spacebar is a normal space
-      bindkey "^ " magic-space
-
-      # when running an incremental search,
-      # spacebar behaves normally and control-space expands abbreviations
-      bindkey -M isearch "^ " abbr-expand-and-insert
-      bindkey -M isearch " " magic-space
-
-      # enter key expands and accepts abbreviations
-      bindkey "^M" abbr-expand-and-accept
-    }
-
-    _abbr_init:deprecations() {
-      {
-        emulate -LR zsh
-
-        _abbr_debugger
-
-        # START Deprecation notices for values that could not be meaningfully set after initialization
-        # Example form:
-        # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
-        # VAL=$DEPRECATED_VAL
-        (( ABBR_PRECMD_LOGS != 1 )) && _abbr_warn_deprecation ABBR_PRECMD_LOGS
-        # END Deprecation notices for values that could not be meaningfully set after initialization
-
-        # START Deprecation notices for functions
-        # Example form:
-        # deprecated_fn() {
-        #   _abbr_warn_deprecation deprecated_fn fn
-        #   fn
-        # }
-        _abbr:util_deprecated() {
-          _abbr_warn_deprecation _abbr:util_deprecated
-          _abbr:util_deprecated_deprecated
-        }
-
-        abbr-expand-and-space() {
-          _abbr_warn_deprecation abbr-expand-and-space
-          abbr-expand-and-insert
-        }
-        # END Deprecation notices for functions
-
-        _abbr_add_widgets() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation _abbr_add_widgets
-
-          zle -N abbr-expand
-          zle -N abbr-expand-and-accept
-          zle -N abbr-expand-and-insert
-          zle -N abbr-expand-and-space
-        }
-
-        _abbr_bind_widgets() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation _abbr_bind_widgets
-
-          # spacebar expands abbreviations
-          bindkey " " abbr-expand-and-insert
-
-          # control-spacebar is a normal space
-          bindkey "^ " magic-space
-
-          # when running an incremental search,
-          # spacebar behaves normally and control-space expands abbreviations
-          bindkey -M isearch "^ " abbr-expand-and-insert
-          bindkey -M isearch " " magic-space
-
-          # enter key expands and accepts abbreviations
-          bindkey "^M" abbr-expand-and-accept
-        }
-
-        _abbr_deprecations() {
-          _abbr_warn_deprecation _abbr_deprecations
-        }
-
-        _abbr_init() {
-          _abbr_warn_deprecation _abbr_init
-        }
-
-        _abbr_integrations() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation _abbr_integrations
-
-          # Support zsh-users/zsh-autosuggestions
-          typeset -ga ZSH_AUTOSUGGEST_CLEAR_WIDGETS
-          ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=( abbr-expand-and-accept )
-        }
-
-        # Deprecation notices for zle widgets
-        _abbr_init:deprecations:widgets() {
-
-          # cannot support debug message
-
-          local bindkey_declaration
-          local bindkey_declarations
-          local replacement
-          local deprecated
-          local -A deprecated_widgets
-
-          bindkey_declarations=$(bindkey)
-
-          for deprecated replacement in ${(kv)deprecated_widgets}; do
-            bindkey_declaration=$('builtin' 'echo' $bindkey_declarations | grep $deprecated)
-
-            zle -N $deprecated
-
-            if [[ -n $bindkey_declaration ]]; then
-              _abbr_warn_deprecation $deprecated $replacement "bindkey $bindkey_declaration"
-            fi
-          done
-        }
-
-        _abbr_init:deprecations:widgets
-      } always {
-        unfunction -m _abbr_init:deprecations:widgets
-      }
-    }
-
-    _abbr_init:integrations() {
-      emulate -LR zsh
-
-      _abbr_debugger
-
-      # Support zsh-users/zsh-autosuggestions
-      typeset -ga ZSH_AUTOSUGGEST_CLEAR_WIDGETS
-      ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=( abbr-expand-and-accept )
-    }
-
-    if ! _abbr_no_color; then
-      'builtin' 'autoload' -U colors && colors
-    fi
-
-    _abbr_job_push $job_name initialization
-    _abbr_debugger
-
-    'builtin' 'autoload' -Uz add-zsh-hook
-    add-zsh-hook precmd _abbr_precmd
-
-    _abbr_load_user_abbreviations
-    _abbr_init:add_widgets
-    _abbr_init:deprecations
-    (( ABBR_DEFAULT_BINDINGS )) &&  _abbr_init:bind_widgets
-    _abbr_init:integrations
-
-    _abbr_job_pop $job_name
-    unset ABBR_INITIALIZING
-  } always {
-    unfunction -m _abbr_init:add_widgets
-    unfunction -m _abbr_init:bind_widgets
-    unfunction -m _abbr_init:deprecations
-    unfunction -m _abbr_init:integrations
-  }
-}
-
 _abbr_job_pop() {
   emulate -LR zsh
 
@@ -1549,7 +1352,7 @@ abbr-expand-and-accept() {
     zle abbr-expand
   fi
 
-  zle accept-line
+  _abbr_accept-line
 }
 
 abbr-expand-and-insert() {
@@ -1606,6 +1409,204 @@ _abbr_warn_deprecation() {
 
 # INITIALIZATION
 # --------------
+
+
+
+_abbr_init() {
+  emulate -LR zsh
+
+  local job_name
+
+  {
+    typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
+    typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
+    typeset -gi ABBR_INITIALIZING
+    typeset -g ABBR_PRECMD_MESSAGE
+    typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
+    typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
+
+    ABBR_INITIALIZING=1
+    ABBR_PRECMD_MESSAGE=
+    ABBR_REGULAR_SESSION_ABBREVIATIONS=()
+    ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
+
+    zmodload zsh/datetime
+
+    job_name=$(_abbr_job_name)
+
+    _abbr_init:add_widgets() {
+      emulate -LR zsh
+
+      _abbr_debugger
+
+      # _abbr_accept-line is by abbr-expand-and-accept
+      # h/t https://github.com/ohmyzsh/ohmyzsh/pull/9466/commits/11c1f96155055719e42c3bac7d10c6ef4168a04f
+      if (( ! ${+functions[_abbr_accept-line]} )); then
+        case "$widgets[accept-line]" in
+          # If the accept-line widget was already redefined before zsh-abbr's initialization,
+          # use the user-defined accept-line widget
+          user:*)
+            zle -N _abbr_accept-line_user_defined "${widgets[accept-line]#user:}"
+            _abbr_accept-line() {
+              zle _abbr_accept-line_user_defined -- "$@"
+            }
+            ;;
+          # Otherwise use the standard widget
+          builtin)
+            _abbr_accept-line() {
+              zle .accept-line
+            }
+            ;;
+        esac
+      fi
+
+      zle -N abbr-expand
+      zle -N accept-line abbr-expand-and-accept
+      zle -N abbr-expand-and-insert
+    }
+
+    _abbr_init:bind_widgets() {
+      emulate -LR zsh
+
+      _abbr_debugger
+
+      # spacebar expands abbreviations
+      bindkey " " abbr-expand-and-insert
+
+      # control-spacebar is a normal space
+      bindkey "^ " magic-space
+
+      # when running an incremental search,
+      # spacebar behaves normally and control-space expands abbreviations
+      bindkey -M isearch "^ " abbr-expand-and-insert
+      bindkey -M isearch " " magic-space
+    }
+
+    _abbr_init:deprecations() {
+      {
+        emulate -LR zsh
+
+        _abbr_debugger
+
+        # START Deprecation notices for values that could not be meaningfully set after initialization
+        # Example form:
+        # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
+        # VAL=$DEPRECATED_VAL
+        (( ABBR_PRECMD_LOGS != 1 )) && _abbr_warn_deprecation ABBR_PRECMD_LOGS
+        # END Deprecation notices for values that could not be meaningfully set after initialization
+
+        # START Deprecation notices for functions
+        # Example form:
+        # deprecated_fn() {
+        #   _abbr_warn_deprecation deprecated_fn fn
+        #   fn
+        # }
+        _abbr:util_deprecated() {
+          _abbr_warn_deprecation _abbr:util_deprecated
+          _abbr:util_deprecated_deprecated
+        }
+
+        abbr-expand-and-space() {
+          _abbr_warn_deprecation abbr-expand-and-space
+          abbr-expand-and-insert
+        }
+        # END Deprecation notices for functions
+
+        _abbr_add_widgets() {
+          emulate -LR zsh
+
+          _abbr_warn_deprecation _abbr_add_widgets
+
+          zle -N abbr-expand
+          zle -N accept-line abbr-expand-and-accept
+          zle -N abbr-expand-and-insert
+          zle -N abbr-expand-and-space
+        }
+
+        _abbr_bind_widgets() {
+          emulate -LR zsh
+
+          _abbr_warn_deprecation _abbr_bind_widgets
+
+          # spacebar expands abbreviations
+          bindkey " " abbr-expand-and-insert
+
+          # control-spacebar is a normal space
+          bindkey "^ " magic-space
+
+          # when running an incremental search,
+          # spacebar behaves normally and control-space expands abbreviations
+          bindkey -M isearch "^ " abbr-expand-and-insert
+          bindkey -M isearch " " magic-space
+        }
+
+        _abbr_deprecations() {
+          _abbr_warn_deprecation _abbr_deprecations
+        }
+
+        _abbr_init() {
+          _abbr_warn_deprecation _abbr_init
+        }
+
+        _abbr_integrations() {
+          emulate -LR zsh
+
+          _abbr_warn_deprecation _abbr_integrations
+        }
+
+        # Deprecation notices for zle widgets
+        _abbr_init:deprecations:widgets() {
+
+          # cannot support debug message
+
+          local bindkey_declaration
+          local bindkey_declarations
+          local replacement
+          local deprecated
+          local -A deprecated_widgets
+
+          bindkey_declarations=$(bindkey)
+
+          for deprecated replacement in ${(kv)deprecated_widgets}; do
+            bindkey_declaration=$('builtin' 'echo' $bindkey_declarations | grep $deprecated)
+
+            zle -N $deprecated
+
+            if [[ -n $bindkey_declaration ]]; then
+              _abbr_warn_deprecation $deprecated $replacement "bindkey $bindkey_declaration"
+            fi
+          done
+        }
+
+        _abbr_init:deprecations:widgets
+      } always {
+        unfunction -m _abbr_init:deprecations:widgets
+      }
+    }
+
+    if ! _abbr_no_color; then
+      'builtin' 'autoload' -U colors && colors
+    fi
+
+    _abbr_job_push $job_name initialization
+    _abbr_debugger
+
+    'builtin' 'autoload' -Uz add-zsh-hook
+    add-zsh-hook precmd _abbr_precmd
+
+    _abbr_load_user_abbreviations
+    _abbr_init:add_widgets
+    _abbr_init:deprecations
+    (( ABBR_DEFAULT_BINDINGS )) &&  _abbr_init:bind_widgets
+
+    _abbr_job_pop $job_name
+    unset ABBR_INITIALIZING
+  } always {
+    unfunction -m _abbr_init:add_widgets
+    unfunction -m _abbr_init:bind_widgets
+    unfunction -m _abbr_init:deprecations
+  }
+}
 
 typeset -g ABBR_SOURCE_PATH
 ABBR_SOURCE_PATH=${0:A:h}
