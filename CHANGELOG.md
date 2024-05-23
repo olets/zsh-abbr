@@ -1,3 +1,17 @@
+# [5.8.0](https://github.com/olets/zsh-abbr/compare/v5.7.1...v5.8.0) (2024-05-23)
+
+
+### Bug Fixes
+
+* **abbr-expand-and-accept:** redefine accept-line, for auto zsh-autosuggestions support [[#91](https://github.com/olets/zsh-abbr/issues/91)] ([04b9b83](https://github.com/olets/zsh-abbr/commit/04b9b83fdf453e465cb1fd43ee829bfb608a5cbc))
+
+### Features
+
+* **abbr-expand-and-accept:** respect user-defined accept-line widget ([3bac1fc](https://github.com/olets/zsh-abbr/commit/3bac1fc57e2b7a73a9bb1e47364becbe2715d150))
+* **init:** do not choke if user sources zshrc in interactive shell ([f59b7aa](https://github.com/olets/zsh-abbr/commit/f59b7aadefda4947a22407cdf666b8e2a7194bf5))
+
+
+
 # [5.7.1](https://github.com/olets/zsh-abbr/compare/v5.7.0...v5.7.1) (2024-05-18)
 
 * **completions:** correct version number ([fa4ca0e](https://github.com/olets/zsh-abbr/commit/fa4ca0e1436e60548ee0c1b637e1fc250c168a7b))
