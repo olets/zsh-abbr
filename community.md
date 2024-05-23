@@ -34,6 +34,7 @@ The following are some of the people who have contributed. All zsh-abbr repo com
       <td align="center" valign="top" width="14.28%"><a href="https://lucaslarson.net"><img src="https://avatars.githubusercontent.com/u/91468?v=4?s=100" width="100px;" alt="Lucas Larson"/><br /><sub><b>Lucas Larson</b></sub></a><br /><a href="#bug-LucasLarson" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.stefanhojer.de/"><img src="https://avatars.githubusercontent.com/u/436889?v=4?s=100" width="100px;" alt="Stefan Hojer"/><br /><sub><b>Stefan Hojer</b></sub></a><br /><a href="#code-hojerst" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://shimajiteppei.github.io/"><img src="https://avatars.githubusercontent.com/u/42309359?v=4?s=100" width="100px;" alt="Teppei Shimaji"/><br /><sub><b>Teppei Shimaji</b></sub></a><br /><a href="#code-shimajiteppei" title="Code">💻</a> <a href="#doc-shimajiteppei" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/model"><img src="https://avatars.githubusercontent.com/u/73501637?v=4?s=100" width="100px;" alt="model"/><br /><sub><b>model</b></sub></a><br /><a href="#test-model" title="Tests">⚠️</a> <a href="#bug-model" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
