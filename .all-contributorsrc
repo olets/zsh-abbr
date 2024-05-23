@@ -112,6 +112,16 @@
       "contributions": [
         "platform"
       ]
+    },
+    {
+      "login": "model",
+      "name": "model",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73501637?v=4",
+      "profile": "https://github.com/model",
+      "contributions": [
+        "test",
+        "bug"
+      ]
     }
   ],
   "commitType": "docs"
