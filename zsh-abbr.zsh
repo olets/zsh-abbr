@@ -33,6 +33,7 @@ typeset -gi ABBR_DRY_RUN=${ABBR_DRY_RUN:-0}
 typeset -gi ABBR_FORCE=${ABBR_FORCE:-0}
 
 # Enable logging after commands, for example to warn that a deprecated widget was used?
+# deprecated
 typeset -gi ABBR_PRECMD_LOGS=${ABBR_PRECMD_LOGS:-1}
 
 # Behave as if `--quiet` was passed? (default false)
@@ -648,6 +649,7 @@ abbr() {
       _abbr:util_error "abbr: Illegal combination of options"
     }
 
+    # deprecated
     _abbr:util_deprecated_deprecated() {
       (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
 
@@ -1273,6 +1275,7 @@ _abbr_load_user_abbreviations() {
   }
 }
 
+# deprecated
 _abbr_precmd() {
   emulate -LR zsh
 
@@ -1421,12 +1424,12 @@ _abbr_init() {
     typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
     typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
     typeset -gi ABBR_INITIALIZING
-    typeset -g ABBR_PRECMD_MESSAGE
+    typeset -g ABBR_PRECMD_MESSAGE # deprecated
     typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
     typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
 
     ABBR_INITIALIZING=1
-    ABBR_PRECMD_MESSAGE=
+    ABBR_PRECMD_MESSAGE= # deprecated
     ABBR_REGULAR_SESSION_ABBREVIATIONS=()
     ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
 
@@ -1493,6 +1496,7 @@ _abbr_init() {
         # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
         # VAL=$DEPRECATED_VAL
         (( ABBR_PRECMD_LOGS != 1 )) && _abbr_warn_deprecation ABBR_PRECMD_LOGS
+        [[ -n $ABBR_PRECMD_MESSAGE ]] && _abbr_warn_deprecation ABBR_PRECMD_MESSAGE
         # END Deprecation notices for values that could not be meaningfully set after initialization
 
         # START Deprecation notices for functions
@@ -1510,7 +1514,6 @@ _abbr_init() {
           _abbr_warn_deprecation abbr-expand-and-space abbr-expand-and-insert
           abbr-expand-and-insert
         }
-        # END Deprecation notices for functions
 
         _abbr_add_widgets() {
           emulate -LR zsh
@@ -1520,7 +1523,7 @@ _abbr_init() {
           zle -N abbr-expand
           zle -N accept-line abbr-expand-and-accept
           zle -N abbr-expand-and-insert
-          zle -N abbr-expand-and-space
+          zle -N abbr-expand-and-space # deprecated
         }
 
         _abbr_bind_widgets() {
@@ -1544,15 +1547,12 @@ _abbr_init() {
           _abbr_warn_deprecation _abbr_deprecations
         }
 
-        _abbr_init() {
-          _abbr_warn_deprecation _abbr_init
-        }
-
         _abbr_integrations() {
           emulate -LR zsh
 
           _abbr_warn_deprecation _abbr_integrations
         }
+        # END Deprecation notices for functions
 
         # Deprecation notices for zle widgets
         _abbr_init:deprecations:widgets() {
@@ -1592,7 +1592,7 @@ _abbr_init() {
     _abbr_debugger
 
     'builtin' 'autoload' -Uz add-zsh-hook
-    add-zsh-hook precmd _abbr_precmd
+    add-zsh-hook precmd _abbr_precmd # deprecated
 
     _abbr_load_user_abbreviations
     _abbr_init:add_widgets
