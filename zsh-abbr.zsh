@@ -1412,8 +1412,6 @@ _abbr_warn_deprecation_INTERNAL() {
 # INITIALIZATION
 # --------------
 
-
-
 _abbr_init() {
   emulate -LR zsh
 
@@ -1738,6 +1736,8 @@ _abbr_init() {
     unfunction -m _abbr_init:deprecations
   }
 }
+
+# _abbr_init should remain the last function defined in this file
 
 typeset -g ABBR_SOURCE_PATH
 ABBR_SOURCE_PATH=${0:A:h}
