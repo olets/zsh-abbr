@@ -1355,6 +1355,7 @@ _abbr_load_user_abbreviations() {
 # WIDGETS
 # -------
 
+# must always return $cursor_was_placed so that abbr-expand-and-insert works
 abbr-expand() {
   emulate -LR zsh
 
@@ -1363,10 +1364,12 @@ abbr-expand() {
   local expansion
   local abbreviation
   local -i i
+  local -i j
   local -i cursor_was_placed
   local -a words
 
   expansion=$(_abbr_regular_expansion "$LBUFFER")
+  i=1
 
   if [[ -n $expansion ]]; then
     # DUPE abbr-expand 2x with small LBUFFER distinction
@@ -1381,27 +1384,43 @@ abbr-expand() {
     return $cursor_was_placed
   fi
 
-  words=( ${(z)LBUFFER} )
+  # look for global session abbreviation
+  # if none found, look for global user abbreviation
+  while (( i > -1 )); do
+    words=( ${(z)LBUFFER} )
+    
+    # first check the full LBUFFER, then trim words off the front
+    while (( j < ${#words} )); do
+      abbreviation=${words:$j}
+      expansion=$(_abbr_global_expansion "$abbreviation" $i)
 
-  while (( i < ${#words} )); do
-    abbreviation=${words:$i}
-    expansion=$(_abbr_global_expansion "$abbreviation")
-
-    if [[ -n $expansion ]]; then
-      # DUPE abbr-expand 2x with small LBUFFER distinction
-      if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion =~ $ABBR_EXPANSION_CURSOR_MARKER ]]; then
-        LBUFFER=${LBUFFER%%$abbreviation}${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
-        RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
-        cursor_was_placed=1
-      else
-        LBUFFER=${LBUFFER%%$abbreviation}$expansion
+      if [[ -n $expansion ]]; then
+        break
       fi
 
+      (( j++ ))
+    done
+
+    if [[ -n $expansion ]]; then
       break
     fi
 
-    (( i++ ))
+    (( i-- ))
   done
+
+  if [[ -z $expansion ]]; then
+    _abbr_get_available_abbreviation
+    return $cursor_was_placed
+  fi
+
+  # DUPE (nearly) abbr-expand 2x
+  if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion =~ $ABBR_EXPANSION_CURSOR_MARKER ]]; then
+    LBUFFER=${LBUFFER%%$abbreviation}${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
+    RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
+    cursor_was_placed=1
+  else
+    LBUFFER=${LBUFFER%%$abbreviation}$expansion
+  fi
 
   return $cursor_was_placed
 }
@@ -1429,8 +1448,8 @@ abbr-expand-and-insert() {
 
   abbr-expand
 
+  # If changing this, abbr-expand may need to change
   cursor_was_placed=$?
-
   if (( cursor_was_placed )); then
     return
   fi
