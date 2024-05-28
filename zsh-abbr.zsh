@@ -161,8 +161,8 @@ abbr() {
         return
       fi
 
-      ABBR_REGULAR_SESSION_ABBREVIATIONS=()
-      ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
+      ABBR_REGULAR_SESSION_ABBREVIATIONS=( )
+      ABBR_GLOBAL_SESSION_ABBREVIATIONS=( )
     }
 
     _abbr:erase_INTERNAL() {
@@ -183,7 +183,6 @@ abbr() {
       fi
 
       abbreviation=$1
-      abbreviations_sets=()
 
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
@@ -1212,8 +1211,8 @@ _abbr_load_user_abbreviations() {
     function _abbr_load_user_abbreviations:setup() {
       _abbr_debugger
 
-      ABBR_REGULAR_USER_ABBREVIATIONS=()
-      ABBR_GLOBAL_USER_ABBREVIATIONS=()
+      ABBR_REGULAR_USER_ABBREVIATIONS=( )
+      ABBR_GLOBAL_USER_ABBREVIATIONS=( )
 
       _abbr_create_files
     }
@@ -1318,7 +1317,7 @@ abbr-expand() {
     return $cursor_was_placed
   fi
 
-  words=(${(z)LBUFFER})
+  words=( ${(z)LBUFFER} )
 
   while (( i < ${#words} )); do
     abbreviation=${words:$i}
@@ -1430,8 +1429,8 @@ _abbr_init() {
 
     ABBR_INITIALIZING=1
     ABBR_PRECMD_MESSAGE= # deprecated
-    ABBR_REGULAR_SESSION_ABBREVIATIONS=()
-    ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
+    ABBR_REGULAR_SESSION_ABBREVIATIONS=( )
+    ABBR_GLOBAL_SESSION_ABBREVIATIONS=( )
 
     zmodload zsh/datetime
 
