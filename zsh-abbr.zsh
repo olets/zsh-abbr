@@ -288,7 +288,13 @@ abbr() {
       expansion=$(_abbr_regular_expansion "$abbreviation")
 
       if [[ ! "$expansion" ]]; then
-        expansion=$(_abbr_global_expansion "$abbreviation")
+        expansion=$(_abbr_global_expansion "$abbreviation" 1)
+      fi
+
+      if [[ ! "$expansion" ]]; then
+        _abbr_create_files
+        source ${_abbr_tmpdir}global-user-abbreviations
+        expansion=$(_abbr_global_expansion "$abbreviation" 0)
       fi
 
       'builtin' 'echo' - $expansion
@@ -1171,15 +1177,19 @@ _abbr_global_expansion() {
 
   # cannot support debug message
 
+  # `_abbr_global_expansion … 0` must always be preceded by creating and sourcing files
+  # search this file for examples
+
   local abbreviation
   local expansion
+  local -i session
 
   abbreviation=$1
-  expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]}
+  session=$2
 
-  if [[ ! $expansion ]]; then
-    _abbr_create_files
-    source ${_abbr_tmpdir}global-user-abbreviations
+  if (( session )); then
+    expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]}
+  else
     expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)abbreviation}]}
   fi
 
@@ -1404,6 +1414,9 @@ abbr-expand() {
     if [[ -n $expansion ]]; then
       break
     fi
+
+    _abbr_create_files
+    source ${_abbr_tmpdir}global-user-abbreviations
 
     (( i-- ))
   done
