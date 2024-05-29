@@ -113,6 +113,7 @@ abbr() {
     elif ! _abbr_no_color; then
       error_color="$fg[red]"
       success_color="$fg[green]"
+      # @DUPE (nearly) abbr, _abbr_log_available_abbreviation
       warn_color="$fg[yellow]"
     fi
 
@@ -1378,13 +1379,29 @@ _abbr_get_available_abbreviation() {
   local -a words
   local -i i
 
-  ABBR_AVAIALABLE_ABBREVIATION_EXPANSION=
+  ABBR_AVAILABLE_ABBREVIATION_EXPANSION=
+  ABBR_AVAILABLE_ABBREVIATION_SCOPE=
+  ABBR_AVAILABLE_ABBREVIATION_TYPE=
+
   expansion_needle=$LBUFFER
 
   ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_SESSION_ABBREVIATIONS[(r)${(qqq)expansion_needle}]}}
 
-  [[ -z $ABBR_AVAILABLE_ABBREVIATION ]] && \
-    ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_USER_ABBREVIATIONS[(r)${(qqq)expansion_needle}]}}
+  if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
+    ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion_needle
+    ABBR_AVAILABLE_ABBREVIATION_SCOPE=session
+    ABBR_AVAILABLE_ABBREVIATION_TYPE=regular
+    return
+  fi
+  
+  ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_USER_ABBREVIATIONS[(r)${(qqq)expansion_needle}]}}
+
+  if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
+    ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion_needle
+    ABBR_AVAILABLE_ABBREVIATION_SCOPE=user
+    ABBR_AVAILABLE_ABBREVIATION_TYPE=regular
+    return
+  fi
 
   words=( ${(z)LBUFFER} )
   while [[ -z $ABBR_AVAILABLE_ABBREVIATION ]] && (( i < ${#words} )); do
@@ -1392,6 +1409,13 @@ _abbr_get_available_abbreviation() {
     ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_SESSION_ABBREVIATIONS[(r)${(qqq)expansion_needle}]}}
     (( i++ ))
   done
+
+  if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
+    ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion_needle
+    ABBR_AVAILABLE_ABBREVIATION_SCOPE=session
+    ABBR_AVAILABLE_ABBREVIATION_TYPE=global
+    return
+  fi
 
   i=0
   words=( ${(z)LBUFFER} )
@@ -1401,21 +1425,29 @@ _abbr_get_available_abbreviation() {
     (( i++ ))
   done
 
-  [[ -z $ABBR_AVAILABLE_ABBREVIATION ]] && return
-
-  ABBR_AVAIALABLE_ABBREVIATION_EXPANSION=$expansion_needle
+  if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
+    ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion_needle
+    ABBR_AVAILABLE_ABBREVIATION_SCOPE=user
+    ABBR_AVAILABLE_ABBREVIATION_TYPE=global
+  fi
 }
 
 _abbr_log_available_abbreviation() {
-  [[ -z $ABBR_AVAILABLE_ABBREVIATION || -z $ABBR_AVAIALABLE_ABBREVIATION_EXPANSION ]] && \
+  [[ -z $ABBR_AVAILABLE_ABBREVIATION || -z $ABBR_AVAILABLE_ABBREVIATION_EXPANSION ]] && \
     return
 
   local message
-
-  message="abbr: You could have used your abbreviation \`$ABBR_AVAILABLE_ABBREVIATION\` in place of \`$ABBR_AVAIALABLE_ABBREVIATION_EXPANSION\`"
+  local style
 
   if ! _abbr_no_color; then
-    message="%F{yellow}$message%f"
+    # @DUPE (nearly) abbr, _abbr_log_available_abbreviation
+    style="%F{yellow}"
+  fi
+
+  message="abbr: \`$ABBR_AVAILABLE_ABBREVIATION\` is your $ABBR_AVAILABLE_ABBREVIATION_TYPE $ABBR_AVAILABLE_ABBREVIATION_SCOPE abbreviation for \`$ABBR_AVAILABLE_ABBREVIATION_EXPANSION\`"
+
+  if ! _abbr_no_color; then
+    message="$style$message%f"
   fi
 
   'builtin' 'print' -P '$message\n'
@@ -1571,7 +1603,9 @@ _abbr_init() {
 
   {
     typeset -g ABBR_AVAILABLE_ABBREVIATION
-    typeset -g ABBR_AVAIALABLE_ABBREVIATION_EXPANSION
+    typeset -g ABBR_AVAILABLE_ABBREVIATION_EXPANSION
+    typeset -g ABBR_AVAILABLE_ABBREVIATION_SCOPE
+    typeset -g ABBR_AVAILABLE_ABBREVIATION_TYPE
     typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
     typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
     typeset -gi ABBR_INITIALIZING
