@@ -1069,7 +1069,7 @@ _abbr_regular_expansion() {
           
           local abbreviation
           local abbreviation_sans_prefix
-          local prefix
+          local prefix_match
           local prefix_pattern
           local -a prefixes
           local -i use_globbing
@@ -1088,11 +1088,11 @@ _abbr_regular_expansion() {
             abbreviation_sans_prefix="${abbreviation#$prefix_pattern}"
 
             if (( use_globbing )); then
-              # Trim the remainder of $prefix, _as a glob_ (`$~globparam` vs `$stringparam`)_, from $abbreviation
+              # Trim $prefix_pattern, _as a glob_ (`$~globparam` vs `$stringparam`)_, from $abbreviation
               abbreviation_sans_prefix=${abbreviation#$~prefix_pattern}
             fi
 
-            prefix=${abbreviation%$abbreviation_sans_prefix}
+            prefix_match=${abbreviation%$abbreviation_sans_prefix}
 
             # $abbreviation_sans_prefix is now the full $abbreviation if $abbreviation doesn't start with a prefix,
             # or a $abbreviation with the prefix trimmed if $abbreviation does start with a prefix
@@ -1103,7 +1103,7 @@ _abbr_regular_expansion() {
               expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
             fi
 
-            if [[ -n $prefix ]]; then
+            if [[ -n $prefix_match ]]; then
               if [[ ! $expansion ]]; then
                 expansion=$(_abbr_regular_expansion:get_expansion:get_prefixed_expansion $abbreviation_sans_prefix 1)
               fi
@@ -1118,7 +1118,7 @@ _abbr_regular_expansion() {
             fi
 
             # Re-prepend anything trimmed off during the prefix check
-            expansion="${(qqq)prefix}$expansion"
+            expansion="${(qqq)prefix_match}$expansion"
           done
 
           'builtin' 'echo' - $expansion
@@ -1378,57 +1378,158 @@ _abbr_load_user_abbreviations() {
 }
 
 _abbr_get_available_abbreviation() {
-  local expansion_needle
-  local -a words
-  local -i i
+  {
+    _abbr_get_available_abbreviation:regular() {
+      {
+        # cannot support debug message
 
-  expansion_needle=$LBUFFER
+        _abbr_get_available_abbreviation:regular:prefixed() {
+          # cannot support debug message
+          
+          local expansion
+          local expansion_sans_prefix
+          local prefix_match
+          local prefix_pattern
+          local -a prefixes
+          local -i use_globbing
+          
+          expansion=$1
+          use_globbing=$2
 
-  ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_SESSION_ABBREVIATIONS[(r)${(qqq)expansion_needle}]}}
+          prefixes=( $ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES )
 
-  if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
-    ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion_needle
-    ABBR_AVAILABLE_ABBREVIATION_SCOPE=session
-    ABBR_AVAILABLE_ABBREVIATION_TYPE=regular
-    return
-  fi
-  
-  ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_USER_ABBREVIATIONS[(r)${(qqq)expansion_needle}]}}
+          (( use_globbing )) && prefixes=( $ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES )
 
-  if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
-    ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion_needle
-    ABBR_AVAILABLE_ABBREVIATION_SCOPE=user
-    ABBR_AVAILABLE_ABBREVIATION_TYPE=regular
-    return
-  fi
+          while [[ ! $ABBR_AVAILABLE_ABBREVIATION ]] && (( #prefixes )); do
+            prefix_pattern=$prefixes[1]
+            shift prefixes
 
-  words=( ${(z)LBUFFER} )
-  while [[ -z $ABBR_AVAILABLE_ABBREVIATION ]] && (( i < ${#words} )); do
-    expansion_needle=${words:$i}
-    ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_SESSION_ABBREVIATIONS[(r)${(qqq)expansion_needle}]}}
-    (( i++ ))
-  done
+            expansion_sans_prefix="${expansion#$prefix_pattern}"
 
-  if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
-    ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion_needle
-    ABBR_AVAILABLE_ABBREVIATION_SCOPE=session
-    ABBR_AVAILABLE_ABBREVIATION_TYPE=global
-    return
-  fi
+            if (( use_globbing )); then
+              # Trim $prefix_pattern, _as a glob_ (`$~globparam` vs `$stringparam`)_, from $expansion
+              expansion_sans_prefix=${expansion#$~prefix_pattern}
+            fi
 
-  i=0
-  words=( ${(z)LBUFFER} )
-  while [[ -z $ABBR_AVAILABLE_ABBREVIATION ]] && (( i < ${#words} )); do
-    expansion_needle=${words:$i}
-    ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS[(r)${(qqq)expansion_needle}]}}
-    (( i++ ))
-  done
+            prefix_match=${expansion%$expansion_sans_prefix}
 
-  if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
-    ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion_needle
-    ABBR_AVAILABLE_ABBREVIATION_SCOPE=user
-    ABBR_AVAILABLE_ABBREVIATION_TYPE=global
-  fi
+            # $expansion_sans_prefix is now the full $expansion if $expansion doesn't start with a prefix,
+            # or a $expansion with the prefix trimmed if $expansion does start with a prefix
+
+            if (( session )); then
+              ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_SESSION_ABBREVIATIONS[(r)${(qqq)expansion_sans_prefix}]}}
+            else
+              ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_USER_ABBREVIATIONS[(r)${(qqq)expansion_sans_prefix}]}}
+            fi
+
+            if [[ -n $prefix_match ]]; then
+              ABBR_AVAILABLE_ABBREVIATION_PREFIX+=$prefix_match
+
+              if [[ ! $ABBR_AVAILABLE_ABBREVIATION ]]; then
+                _abbr_get_available_abbreviation:regular:prefixed $expansion_sans_prefix 1
+              fi
+
+              if [[ ! $ABBR_AVAILABLE_ABBREVIATION ]]; then
+                _abbr_get_available_abbreviation:regular:prefixed $expansion_sans_prefix 0
+              fi
+            fi
+          done
+        }
+
+        local expansion
+        local -i session
+
+        expansion=$1
+        session=$2
+
+        if (( session )); then
+          # abbreviation=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)expansion}]
+          ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_SESSION_ABBREVIATIONS[(r)${(qqq)expansion}]}}
+        else
+          # abbreviation=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)expansion}]
+          ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_USER_ABBREVIATIONS[(r)${(qqq)expansion}]}}
+        fi
+
+        if [[ ! $ABBR_AVAILABLE_ABBREVIATION ]]; then
+          _abbr_get_available_abbreviation:regular:prefixed $expansion 1
+        fi
+
+        if [[ ! $ABBR_AVAILABLE_ABBREVIATION ]]; then
+          ABBR_AVAILABLE_ABBREVIATION_PREFIX=
+          _abbr_get_available_abbreviation:regular:prefixed $expansion 0
+        fi
+
+        if [[ ! $ABBR_AVAILABLE_ABBREVIATION ]]; then
+          ABBR_AVAILABLE_ABBREVIATION_PREFIX=
+          _abbr_get_available_abbreviation:regular:prefixed $expansion 0
+        fi
+
+        if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
+          return
+        fi
+
+        ABBR_AVAILABLE_ABBREVIATION_PREFIX=
+      } always {
+        unfunction -m _abbr_get_available_abbreviation:regular:prefixed
+      }
+    }
+
+    local expansion
+    local -i i
+    local -a words
+
+    expansion=$LBUFFER
+
+    # Look for regular session abbreviation
+    _abbr_get_available_abbreviation:regular $expansion 1
+
+    if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
+      ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion
+      ABBR_AVAILABLE_ABBREVIATION_SCOPE=session
+      ABBR_AVAILABLE_ABBREVIATION_TYPE=regular
+      return
+    fi
+
+    # Look for regular user abbreviation
+    _abbr_get_available_abbreviation:regular $expansion 0
+
+    if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
+      ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion
+      ABBR_AVAILABLE_ABBREVIATION_SCOPE=user
+      ABBR_AVAILABLE_ABBREVIATION_TYPE=regular
+      return
+    fi
+
+    words=( ${(z)LBUFFER} )
+    while [[ -z $ABBR_AVAILABLE_ABBREVIATION ]] && (( i < ${#words} )); do
+      expansion=${words:$i}
+      ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_SESSION_ABBREVIATIONS[(r)${(qqq)expansion}]}}
+      (( i++ ))
+    done
+
+    if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
+      ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion
+      ABBR_AVAILABLE_ABBREVIATION_SCOPE=session
+      ABBR_AVAILABLE_ABBREVIATION_TYPE=global
+      return
+    fi
+
+    i=0
+    words=( ${(z)LBUFFER} )
+    while [[ -z $ABBR_AVAILABLE_ABBREVIATION ]] && (( i < ${#words} )); do
+      expansion=${words:$i}
+      ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS[(r)${(qqq)expansion}]}}
+      (( i++ ))
+    done
+
+    if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
+      ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion
+      ABBR_AVAILABLE_ABBREVIATION_SCOPE=user
+      ABBR_AVAILABLE_ABBREVIATION_TYPE=global
+    fi
+  } always {
+    unfunction -m _abbr_get_available_abbreviation:regular
+  }
 }
 
 _abbr_log_available_abbreviation() {
@@ -1443,7 +1544,7 @@ _abbr_log_available_abbreviation() {
     style="%F{yellow}"
   fi
 
-  message="abbr: \`$ABBR_AVAILABLE_ABBREVIATION\` is your $ABBR_AVAILABLE_ABBREVIATION_TYPE $ABBR_AVAILABLE_ABBREVIATION_SCOPE abbreviation for \`$ABBR_AVAILABLE_ABBREVIATION_EXPANSION\`"
+  message="abbr: \`$ABBR_AVAILABLE_ABBREVIATION_PREFIX$ABBR_AVAILABLE_ABBREVIATION\` is your $ABBR_AVAILABLE_ABBREVIATION_TYPE $ABBR_AVAILABLE_ABBREVIATION_SCOPE abbreviation for \`$ABBR_AVAILABLE_ABBREVIATION_EXPANSION\`"
 
   if ! _abbr_no_color; then
     message="$style$message%f"
@@ -1470,6 +1571,7 @@ abbr-expand() {
 
   ABBR_AVAILABLE_ABBREVIATION=
   ABBR_AVAILABLE_ABBREVIATION_EXPANSION=
+  ABBR_AVAILABLE_ABBREVIATION_PREFIX=
   ABBR_AVAILABLE_ABBREVIATION_SCOPE=
   ABBR_AVAILABLE_ABBREVIATION_TYPE=
 
@@ -1613,6 +1715,7 @@ _abbr_init() {
     
     typeset -g ABBR_AVAILABLE_ABBREVIATION
     typeset -g ABBR_AVAILABLE_ABBREVIATION_EXPANSION
+    typeset -g ABBR_AVAILABLE_ABBREVIATION_PREFIX
     typeset -g ABBR_AVAILABLE_ABBREVIATION_SCOPE
     typeset -g ABBR_AVAILABLE_ABBREVIATION_TYPE
     typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
