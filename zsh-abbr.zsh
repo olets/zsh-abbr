@@ -32,6 +32,17 @@ typeset -g ABBR_EXPANSION_CURSOR_MARKER=${ABBR_EXPANSION_CURSOR_MARKER:-$ABBR_LI
 # Behave as if `--force` was passed? (default false)
 typeset -gi ABBR_FORCE=${ABBR_FORCE:-0}
 
+# Check whether you could have used an abbreviation? (default false)
+# See also ABBR_LOG_AVAILABLE_ABBREVIATION
+typeset -gi ABBR_GET_AVAILABLE_ABBREVIATION=${ABBR_GET_AVAILABLE_ABBREVIATION:-0}
+
+# Log anything found by ABBR_GET_AVAILABLE_ABBREVIATION? (default false)
+typeset -gi ABBR_LOG_AVAILABLE_ABBREVIATION=${ABBR_LOG_AVAILABLE_ABBREVIATION:-0}
+
+# Enable logging after commands, for example to warn that a deprecated widget was used?
+# deprecated
+typeset -gi ABBR_PRECMD_LOGS=${ABBR_PRECMD_LOGS:-1}
+
 # Behave as if `--quiet` was passed? (default false)
 typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
 
@@ -1362,6 +1373,54 @@ _abbr_load_user_abbreviations() {
   }
 }
 
+_abbr_get_available_abbreviation() {
+  local expansion_needle
+  local -a words
+  local -i i
+
+  ABBR_AVAIALABLE_ABBREVIATION_EXPANSION=
+  expansion_needle=$LBUFFER
+
+  ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_SESSION_ABBREVIATIONS[(r)${(qqq)expansion_needle}]}}
+
+  [[ -z $ABBR_AVAILABLE_ABBREVIATION ]] && \
+    ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_USER_ABBREVIATIONS[(r)${(qqq)expansion_needle}]}}
+
+  words=( ${(z)LBUFFER} )
+  while [[ -z $ABBR_AVAILABLE_ABBREVIATION ]] && (( i < ${#words} )); do
+    expansion_needle=${words:$i}
+    ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_SESSION_ABBREVIATIONS[(r)${(qqq)expansion_needle}]}}
+    (( i++ ))
+  done
+
+  i=0
+  words=( ${(z)LBUFFER} )
+  while [[ -z $ABBR_AVAILABLE_ABBREVIATION ]] && (( i < ${#words} )); do
+    expansion_needle=${words:$i}
+    ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS[(r)${(qqq)expansion_needle}]}}
+    (( i++ ))
+  done
+
+  [[ -z $ABBR_AVAILABLE_ABBREVIATION ]] && return
+
+  ABBR_AVAIALABLE_ABBREVIATION_EXPANSION=$expansion_needle
+}
+
+_abbr_log_available_abbreviation() {
+  [[ -z $ABBR_AVAILABLE_ABBREVIATION || -z $ABBR_AVAIALABLE_ABBREVIATION_EXPANSION ]] && \
+    return
+
+  local message
+
+  message="abbr: You could have used your abbreviation \`$ABBR_AVAILABLE_ABBREVIATION\` in place of \`$ABBR_AVAIALABLE_ABBREVIATION_EXPANSION\`"
+
+  if ! _abbr_no_color; then
+    message="%F{yellow}$message%f"
+  fi
+
+  'builtin' 'print' -P '$message\n'
+}
+
 # WIDGETS
 # -------
 
@@ -1394,35 +1453,32 @@ abbr-expand() {
     return $cursor_was_placed
   fi
 
-  # look for global session abbreviation
-  # if none found, look for global user abbreviation
-  while (( i > -1 )); do
+  words=( ${(z)LBUFFER} )
+  # first check the full LBUFFER, then trim words off the front
+  while [[ -z $expansion ]] && (( i < ${#words} )); do
+    abbreviation=${words:$i}
+    expansion=$(_abbr_global_expansion "$abbreviation" 1)
+    (( i++ ))
+  done
+
+  if [[ -z $expansion ]]; then
+    i=0
     words=( ${(z)LBUFFER} )
-    
-    # first check the full LBUFFER, then trim words off the front
-    while (( j < ${#words} )); do
-      abbreviation=${words:$j}
-      expansion=$(_abbr_global_expansion "$abbreviation" $i)
-
-      if [[ -n $expansion ]]; then
-        break
-      fi
-
-      (( j++ ))
-    done
-
-    if [[ -n $expansion ]]; then
-      break
-    fi
 
     _abbr_create_files
     source ${_abbr_tmpdir}global-user-abbreviations
 
-    (( i-- ))
-  done
+    # first check the full LBUFFER, then trim words off the front
+    while [[ -z $expansion ]] && (( i < ${#words} )); do
+      abbreviation=${words:$i}
+      expansion=$(_abbr_global_expansion "$abbreviation" 0)
+      (( i++ ))
+    done
+  fi
 
   if [[ -z $expansion ]]; then
-    _abbr_get_available_abbreviation
+    (( ABBR_GET_AVAILABLE_ABBREVIATION )) && _abbr_get_available_abbreviation
+
     return $cursor_was_placed
   fi
 
@@ -1514,6 +1570,8 @@ _abbr_init() {
   local job_name
 
   {
+    typeset -g ABBR_AVAILABLE_ABBREVIATION
+    typeset -g ABBR_AVAIALABLE_ABBREVIATION_EXPANSION
     typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
     typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
     typeset -gi ABBR_INITIALIZING
@@ -1640,6 +1698,11 @@ _abbr_init() {
 
     _abbr_job_push $job_name initialization
     _abbr_debugger
+
+    # @TODO refactor: after dropping _abbr_precmd
+    # move the `autoload add-zsh-hook` line into the ABBR_LOG_AVAILABLE_ABBREVIATION condition
+    (( ABBR_LOG_AVAILABLE_ABBREVIATION && ABBR_GET_AVAILABLE_ABBREVIATION )) && \
+      add-zsh-hook preexec _abbr_log_available_abbreviation
 
     _abbr_load_user_abbreviations
     _abbr_init:add_widgets
