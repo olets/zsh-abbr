@@ -1379,10 +1379,6 @@ _abbr_get_available_abbreviation() {
   local -a words
   local -i i
 
-  ABBR_AVAILABLE_ABBREVIATION_EXPANSION=
-  ABBR_AVAILABLE_ABBREVIATION_SCOPE=
-  ABBR_AVAILABLE_ABBREVIATION_TYPE=
-
   expansion_needle=$LBUFFER
 
   ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_SESSION_ABBREVIATIONS[(r)${(qqq)expansion_needle}]}}
@@ -1468,6 +1464,11 @@ abbr-expand() {
   local -i j
   local -i cursor_was_placed
   local -a words
+
+  ABBR_AVAILABLE_ABBREVIATION=
+  ABBR_AVAILABLE_ABBREVIATION_EXPANSION=
+  ABBR_AVAILABLE_ABBREVIATION_SCOPE=
+  ABBR_AVAILABLE_ABBREVIATION_TYPE=
 
   expansion=$(_abbr_regular_expansion "$LBUFFER")
   i=1
