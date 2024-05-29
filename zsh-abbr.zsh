@@ -12,12 +12,6 @@
 # Should `abbr-load` run before every `abbr` command? (default true)
 typeset -gi ABBR_AUTOLOAD=${ABBR_AUTOLOAD:-1}
 
-# See ABBR_SET_LINE_CURSOR
-typeset -g ABBR_LINE_CURSOR_MARKER=${ABBR_LINE_CURSOR_MARKER:-%}
-
-# See ABBR_SET_EXPANSION_CURSOR
-typeset -g ABBR_EXPANSION_CURSOR_MARKER=${ABBR_EXPANSION_CURSOR_MARKER:-$ABBR_LINE_CURSOR_MARKER}
-
 # Log debugging messages?
 typeset -gi ABBR_DEBUG=${ABBR_DEBUG:-0}
 
@@ -29,9 +23,15 @@ typeset -gi ABBR_DEFAULT_BINDINGS=${ABBR_DEFAULT_BINDINGS:-1}
 # Behave as if `--dry-run` was passed? (default false)
 typeset -gi ABBR_DRY_RUN=${ABBR_DRY_RUN:-0}
 
+# See ABBR_SET_EXPANSION_CURSOR
+typeset -g ABBR_EXPANSION_CURSOR_MARKER=${ABBR_EXPANSION_CURSOR_MARKER:-$ABBR_LINE_CURSOR_MARKER}
+
 # Behave as if `--force` was passed? (default false)
 typeset -gi ABBR_FORCE=${ABBR_FORCE:-0}
 
+
+# See ABBR_SET_LINE_CURSOR
+typeset -g ABBR_LINE_CURSOR_MARKER=${ABBR_LINE_CURSOR_MARKER:-%}
 # Enable logging after commands, for example to warn that a deprecated widget was used?
 # deprecated
 typeset -gi ABBR_PRECMD_LOGS=${ABBR_PRECMD_LOGS:-1}
