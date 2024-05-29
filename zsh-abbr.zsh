@@ -39,6 +39,9 @@ typeset -gi ABBR_GET_AVAILABLE_ABBREVIATION=${ABBR_GET_AVAILABLE_ABBREVIATION:-0
 # Log anything found by ABBR_GET_AVAILABLE_ABBREVIATION? (default false)
 typeset -gi ABBR_LOG_AVAILABLE_ABBREVIATION=${ABBR_LOG_AVAILABLE_ABBREVIATION:-0}
 
+# Log anything found by ABBR_GET_AVAILABLE_ABBREVIATION? (default false)
+typeset -gi ABBR_LOG_AVAILABLE_ABBREVIATION_AFTER=${ABBR_LOG_AVAILABLE_ABBREVIATION_AFTER:-0}
+
 # Enable logging after commands, for example to warn that a deprecated widget was used?
 # deprecated
 typeset -gi ABBR_PRECMD_LOGS=${ABBR_PRECMD_LOGS:-1}
@@ -1446,7 +1449,7 @@ _abbr_log_available_abbreviation() {
     message="$style$message%f"
   fi
 
-  'builtin' 'print' -P '$message\n'
+  'builtin' 'print' -P '$message'
 }
 
 # WIDGETS
@@ -1603,6 +1606,11 @@ _abbr_init() {
   local job_name
 
   {
+    local log_available_abbreviation_hook
+
+    log_available_abbreviation_hook=preexec
+    (( ABBR_LOG_AVAILABLE_ABBREVIATION_AFTER )) && log_available_abbreviation_hook=precmd
+    
     typeset -g ABBR_AVAILABLE_ABBREVIATION
     typeset -g ABBR_AVAILABLE_ABBREVIATION_EXPANSION
     typeset -g ABBR_AVAILABLE_ABBREVIATION_SCOPE
@@ -1736,7 +1744,7 @@ _abbr_init() {
 
     (( ABBR_LOG_AVAILABLE_ABBREVIATION && ABBR_GET_AVAILABLE_ABBREVIATION )) && {
       'builtin' 'autoload' -Uz add-zsh-hook
-      add-zsh-hook preexec _abbr_log_available_abbreviation
+      'add-zsh-hook' $log_available_abbreviation_hook _abbr_log_available_abbreviation
     }
 
     _abbr_load_user_abbreviations
