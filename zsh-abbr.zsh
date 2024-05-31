@@ -1400,7 +1400,7 @@ _abbr_get_available_abbreviation() {
 
           (( use_globbing )) && prefixes=( $ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES )
 
-          while [[ ! $ABBR_AVAILABLE_ABBREVIATION ]] && (( #prefixes )); do
+          while [[ ! $ABBR_UNUSED_ABBREVIATION ]] && (( #prefixes )); do
             prefix_pattern=$prefixes[1]
             shift prefixes
 
@@ -1417,19 +1417,19 @@ _abbr_get_available_abbreviation() {
             # or a $expansion with the prefix trimmed if $expansion does start with a prefix
 
             if (( session )); then
-              ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_SESSION_ABBREVIATIONS[(r)${(qqq)expansion_sans_prefix}]}}
+              ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_SESSION_ABBREVIATIONS[(r)${(qqq)expansion_sans_prefix}]}}
             else
-              ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_USER_ABBREVIATIONS[(r)${(qqq)expansion_sans_prefix}]}}
+              ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_USER_ABBREVIATIONS[(r)${(qqq)expansion_sans_prefix}]}}
             fi
 
             if [[ -n $prefix_match ]]; then
-              ABBR_AVAILABLE_ABBREVIATION_PREFIX+=$prefix_match
+              ABBR_UNUSED_ABBREVIATION_PREFIX+=$prefix_match
 
-              if [[ ! $ABBR_AVAILABLE_ABBREVIATION ]]; then
+              if [[ ! $ABBR_UNUSED_ABBREVIATION ]]; then
                 _abbr_get_available_abbreviation:regular:prefixed $expansion_sans_prefix 1
               fi
 
-              if [[ ! $ABBR_AVAILABLE_ABBREVIATION ]]; then
+              if [[ ! $ABBR_UNUSED_ABBREVIATION ]]; then
                 _abbr_get_available_abbreviation:regular:prefixed $expansion_sans_prefix 0
               fi
             fi
@@ -1444,31 +1444,31 @@ _abbr_get_available_abbreviation() {
 
         if (( session )); then
           # abbreviation=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)expansion}]
-          ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_SESSION_ABBREVIATIONS[(r)${(qqq)expansion}]}}
+          ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_SESSION_ABBREVIATIONS[(r)${(qqq)expansion}]}}
         else
           # abbreviation=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)expansion}]
-          ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_USER_ABBREVIATIONS[(r)${(qqq)expansion}]}}
+          ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_USER_ABBREVIATIONS[(r)${(qqq)expansion}]}}
         fi
 
-        if [[ ! $ABBR_AVAILABLE_ABBREVIATION ]]; then
+        if [[ ! $ABBR_UNUSED_ABBREVIATION ]]; then
           _abbr_get_available_abbreviation:regular:prefixed $expansion 1
         fi
 
-        if [[ ! $ABBR_AVAILABLE_ABBREVIATION ]]; then
-          ABBR_AVAILABLE_ABBREVIATION_PREFIX=
+        if [[ ! $ABBR_UNUSED_ABBREVIATION ]]; then
+          ABBR_UNUSED_ABBREVIATION_PREFIX=
           _abbr_get_available_abbreviation:regular:prefixed $expansion 0
         fi
 
-        if [[ ! $ABBR_AVAILABLE_ABBREVIATION ]]; then
-          ABBR_AVAILABLE_ABBREVIATION_PREFIX=
+        if [[ ! $ABBR_UNUSED_ABBREVIATION ]]; then
+          ABBR_UNUSED_ABBREVIATION_PREFIX=
           _abbr_get_available_abbreviation:regular:prefixed $expansion 0
         fi
 
-        if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
+        if [[ -n $ABBR_UNUSED_ABBREVIATION ]]; then
           return
         fi
 
-        ABBR_AVAILABLE_ABBREVIATION_PREFIX=
+        ABBR_UNUSED_ABBREVIATION_PREFIX=
       } always {
         unfunction -m _abbr_get_available_abbreviation:regular:prefixed
       }
@@ -1483,49 +1483,49 @@ _abbr_get_available_abbreviation() {
     # Look for regular session abbreviation
     _abbr_get_available_abbreviation:regular $expansion 1
 
-    if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
-      ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion
-      ABBR_AVAILABLE_ABBREVIATION_SCOPE=session
-      ABBR_AVAILABLE_ABBREVIATION_TYPE=regular
+    if [[ -n $ABBR_UNUSED_ABBREVIATION ]]; then
+      ABBR_UNUSED_ABBREVIATION_EXPANSION=$expansion
+      ABBR_UNUSED_ABBREVIATION_SCOPE=session
+      ABBR_UNUSED_ABBREVIATION_TYPE=regular
       return
     fi
 
     # Look for regular user abbreviation
     _abbr_get_available_abbreviation:regular $expansion 0
 
-    if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
-      ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion
-      ABBR_AVAILABLE_ABBREVIATION_SCOPE=user
-      ABBR_AVAILABLE_ABBREVIATION_TYPE=regular
+    if [[ -n $ABBR_UNUSED_ABBREVIATION ]]; then
+      ABBR_UNUSED_ABBREVIATION_EXPANSION=$expansion
+      ABBR_UNUSED_ABBREVIATION_SCOPE=user
+      ABBR_UNUSED_ABBREVIATION_TYPE=regular
       return
     fi
 
     words=( ${(z)LBUFFER} )
-    while [[ -z $ABBR_AVAILABLE_ABBREVIATION ]] && (( i < ${#words} )); do
+    while [[ -z $ABBR_UNUSED_ABBREVIATION ]] && (( i < ${#words} )); do
       expansion=${words:$i}
-      ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_SESSION_ABBREVIATIONS[(r)${(qqq)expansion}]}}
+      ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_SESSION_ABBREVIATIONS[(r)${(qqq)expansion}]}}
       (( i++ ))
     done
 
-    if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
-      ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion
-      ABBR_AVAILABLE_ABBREVIATION_SCOPE=session
-      ABBR_AVAILABLE_ABBREVIATION_TYPE=global
+    if [[ -n $ABBR_UNUSED_ABBREVIATION ]]; then
+      ABBR_UNUSED_ABBREVIATION_EXPANSION=$expansion
+      ABBR_UNUSED_ABBREVIATION_SCOPE=session
+      ABBR_UNUSED_ABBREVIATION_TYPE=global
       return
     fi
 
     i=0
     words=( ${(z)LBUFFER} )
-    while [[ -z $ABBR_AVAILABLE_ABBREVIATION ]] && (( i < ${#words} )); do
+    while [[ -z $ABBR_UNUSED_ABBREVIATION ]] && (( i < ${#words} )); do
       expansion=${words:$i}
-      ABBR_AVAILABLE_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS[(r)${(qqq)expansion}]}}
+      ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS[(r)${(qqq)expansion}]}}
       (( i++ ))
     done
 
-    if [[ -n $ABBR_AVAILABLE_ABBREVIATION ]]; then
-      ABBR_AVAILABLE_ABBREVIATION_EXPANSION=$expansion
-      ABBR_AVAILABLE_ABBREVIATION_SCOPE=user
-      ABBR_AVAILABLE_ABBREVIATION_TYPE=global
+    if [[ -n $ABBR_UNUSED_ABBREVIATION ]]; then
+      ABBR_UNUSED_ABBREVIATION_EXPANSION=$expansion
+      ABBR_UNUSED_ABBREVIATION_SCOPE=user
+      ABBR_UNUSED_ABBREVIATION_TYPE=global
     fi
   } always {
     unfunction -m _abbr_get_available_abbreviation:regular
@@ -1533,7 +1533,7 @@ _abbr_get_available_abbreviation() {
 }
 
 _abbr_log_available_abbreviation() {
-  [[ -z $ABBR_AVAILABLE_ABBREVIATION || -z $ABBR_AVAILABLE_ABBREVIATION_EXPANSION ]] && \
+  [[ -z $ABBR_UNUSED_ABBREVIATION || -z $ABBR_UNUSED_ABBREVIATION_EXPANSION ]] && \
     return
 
   local message
@@ -1544,7 +1544,7 @@ _abbr_log_available_abbreviation() {
     style="%F{yellow}"
   fi
 
-  message="abbr: \`$ABBR_AVAILABLE_ABBREVIATION_PREFIX$ABBR_AVAILABLE_ABBREVIATION\` is your $ABBR_AVAILABLE_ABBREVIATION_TYPE $ABBR_AVAILABLE_ABBREVIATION_SCOPE abbreviation for \`$ABBR_AVAILABLE_ABBREVIATION_EXPANSION\`"
+  message="abbr: \`$ABBR_UNUSED_ABBREVIATION_PREFIX$ABBR_UNUSED_ABBREVIATION\` is your $ABBR_UNUSED_ABBREVIATION_TYPE $ABBR_UNUSED_ABBREVIATION_SCOPE abbreviation for \`$ABBR_UNUSED_ABBREVIATION_EXPANSION\`"
 
   if ! _abbr_no_color; then
     message="$style$message%f"
@@ -1569,11 +1569,11 @@ abbr-expand() {
   local -i cursor_was_placed
   local -a words
 
-  ABBR_AVAILABLE_ABBREVIATION=
-  ABBR_AVAILABLE_ABBREVIATION_EXPANSION=
-  ABBR_AVAILABLE_ABBREVIATION_PREFIX=
-  ABBR_AVAILABLE_ABBREVIATION_SCOPE=
-  ABBR_AVAILABLE_ABBREVIATION_TYPE=
+  ABBR_UNUSED_ABBREVIATION=
+  ABBR_UNUSED_ABBREVIATION_EXPANSION=
+  ABBR_UNUSED_ABBREVIATION_PREFIX=
+  ABBR_UNUSED_ABBREVIATION_SCOPE=
+  ABBR_UNUSED_ABBREVIATION_TYPE=
 
   expansion=$(_abbr_regular_expansion "$LBUFFER")
   i=1
@@ -1713,11 +1713,11 @@ _abbr_init() {
     log_available_abbreviation_hook=preexec
     (( ABBR_LOG_AVAILABLE_ABBREVIATION_AFTER )) && log_available_abbreviation_hook=precmd
     
-    typeset -g ABBR_AVAILABLE_ABBREVIATION
-    typeset -g ABBR_AVAILABLE_ABBREVIATION_EXPANSION
-    typeset -g ABBR_AVAILABLE_ABBREVIATION_PREFIX
-    typeset -g ABBR_AVAILABLE_ABBREVIATION_SCOPE
-    typeset -g ABBR_AVAILABLE_ABBREVIATION_TYPE
+    typeset -g ABBR_UNUSED_ABBREVIATION
+    typeset -g ABBR_UNUSED_ABBREVIATION_EXPANSION
+    typeset -g ABBR_UNUSED_ABBREVIATION_PREFIX
+    typeset -g ABBR_UNUSED_ABBREVIATION_SCOPE
+    typeset -g ABBR_UNUSED_ABBREVIATION_TYPE
     typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
     typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
     typeset -gi ABBR_INITIALIZING
