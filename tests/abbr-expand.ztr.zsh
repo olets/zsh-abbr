@@ -31,43 +31,58 @@ main() {
 			"Dependencies: erase"
 
 		abbr add $test_abbr_abbreviation=$test_abbr_expansion
-		ztr test '[[ $(abbr expand "$ABBR_REGULAR_ABBREVIATION_PREFIXES[1]$test_abbr_abbreviation") == "$ABBR_REGULAR_ABBREVIATION_PREFIXES[1]$test_abbr_expansion" ]]' \
+		ztr test '[[ $(abbr expand "$prefix_one_word$test_abbr_abbreviation") == "$prefix_one_word$test_abbr_expansion" ]]' \
 			"Can expand an abbreviation, prefixed with one word, in a script" \
 			"Dependencies: erase"
 
 		abbr add -S $test_abbr_abbreviation=$test_abbr_expansion
-		ztr test '[[ $(abbr expand "$ABBR_REGULAR_ABBREVIATION_PREFIXES[1]$test_abbr_abbreviation") == "$ABBR_REGULAR_ABBREVIATION_PREFIXES[1]$test_abbr_expansion" ]]' \
+		ztr test '[[ $(abbr expand "$prefix_one_word$test_abbr_abbreviation") == "$prefix_one_word$test_abbr_expansion" ]]' \
 			"Can expand a session abbreviation, prefixed with one word, in a script" \
 			"Dependencies: erase"
 
 		abbr add $test_abbr_abbreviation=$test_abbr_expansion
-		ztr test '[[ $(abbr expand "$ABBR_REGULAR_ABBREVIATION_PREFIXES[2]$test_abbr_abbreviation") == "$ABBR_REGULAR_ABBREVIATION_PREFIXES[2]$test_abbr_expansion" ]]' \
+		ztr test '[[ $(abbr expand "$prefix_multi_word$test_abbr_abbreviation") == "$prefix_multi_word$test_abbr_expansion" ]]' \
 			"Can expand an abbreviation, prefixed with multiple words, in a script" \
 			"Dependencies: erase"
 
 		abbr add -S $test_abbr_abbreviation=$test_abbr_expansion
-		ztr test '[[ $(abbr expand "$ABBR_REGULAR_ABBREVIATION_PREFIXES[2]$test_abbr_abbreviation") == "$ABBR_REGULAR_ABBREVIATION_PREFIXES[2]$test_abbr_expansion" ]]' \
+		ztr test '[[ $(abbr expand "$prefix_multi_word$test_abbr_abbreviation") == "$prefix_multi_word$test_abbr_expansion" ]]' \
 			"Can expand a session abbreviation, prefixed with multiple words, in a script" \
 			"Dependencies: erase"
 
 		abbr add $test_abbr_abbreviation=$test_abbr_expansion
-		ztr test '[[ $(abbr expand "$ABBR_REGULAR_ABBREVIATION_PREFIXES[3]$test_abbr_abbreviation") == "$ABBR_REGULAR_ABBREVIATION_PREFIXES[3]$test_abbr_expansion" ]]' \
+		ztr test '[[ $(abbr expand "$prefix_double_quotes$test_abbr_abbreviation") == "$prefix_double_quotes$test_abbr_expansion" ]]' \
 			"Can expand an abbreviation, prefixed with a prefix containing single-quoted double quotes, in a script" \
 			"Dependencies: erase"
 
 		abbr add -S $test_abbr_abbreviation=$test_abbr_expansion
-		ztr test '[[ $(abbr expand "$ABBR_REGULAR_ABBREVIATION_PREFIXES[3]$test_abbr_abbreviation") == "$ABBR_REGULAR_ABBREVIATION_PREFIXES[3]$test_abbr_expansion" ]]' \
+		ztr test '[[ $(abbr expand "$prefix_double_quotes$test_abbr_abbreviation") == "$prefix_double_quotes$test_abbr_expansion" ]]' \
 			"Can expand a session abbreviation, prefixed with a prefix containing single-quoted double quotes, in a script" \
 			"Dependencies: erase"
 
 		abbr add $test_abbr_abbreviation=$test_abbr_expansion
-		ztr test '[[ $(abbr expand "$ABBR_REGULAR_ABBREVIATION_PREFIXES[4]$test_abbr_abbreviation") == "$ABBR_REGULAR_ABBREVIATION_PREFIXES[4]$test_abbr_expansion" ]]' \
+		ztr test '[[ $(abbr expand "$prefix_single_quotes$test_abbr_abbreviation") == "$prefix_single_quotes$test_abbr_expansion" ]]' \
 			"Can expand an abbreviation, prefixed with a prefix containing double-quoted single quotes, in a script" \
 			"Dependencies: erase"
 
 		abbr add -S $test_abbr_abbreviation=$test_abbr_expansion
-		ztr test '[[ $(abbr expand "$ABBR_REGULAR_ABBREVIATION_PREFIXES[4]$test_abbr_abbreviation") == "$ABBR_REGULAR_ABBREVIATION_PREFIXES[4]$test_abbr_expansion" ]]' \
+		ztr test '[[ $(abbr expand "$prefix_single_quotes$test_abbr_abbreviation") == "$prefix_single_quotes$test_abbr_expansion" ]]' \
 			"Can expand a session abbreviation, prefixed with a prefix containing double-quoted single quotes, in a script" \
+			"Dependencies: erase"
+
+		abbr add $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ $(abbr expand "$prefix_glob_match_1$test_abbr_abbreviation") == "$prefix_glob_match_1$test_abbr_expansion" ]]' \
+			"Can expand an abbreviation, prefixed with a glob, in a script — 1/n" \
+			"Dependencies: erase"
+
+		abbr add $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ $(abbr expand "$prefix_glob_match_2$test_abbr_abbreviation") == "$prefix_glob_match_2$test_abbr_expansion" ]]' \
+			"Can expand an abbreviation, prefixed with a glob, in a script — 2/n" \
+			"Dependencies: erase"
+
+		abbr add $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ -z $(abbr expand "$prefix_glob_mismatch$test_abbr_abbreviation") ]]' \
+			"Can expand an abbreviation, prefixed with a glob, in a script — 3/n" \
 			"Dependencies: erase"
 
 		abbr $test_abbr_abbreviation_multiword=$test_abbr_expansion
