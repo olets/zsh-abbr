@@ -67,6 +67,7 @@ main() {
 	# Save user configuration
 	abbr_expansion_cursor_marker_saved=$ABBR_EXPANSION_CURSOR_MARKER
 	abbr_line_cursor_marker_saved=$ABBR_LINE_CURSOR_MARKER
+	abbr_prefixes_saved=( $ABBR_REGULAR_ABBREVIATION_PREFIXES )
 	abbr_quiet_saved=$ABBR_QUIET
 	abbr_tmpdir_saved=$ABBR_TMPDIR
 	ABBR_USER_ABBREVIATIONS_FILE_SAVED=$ABBR_USER_ABBREVIATIONS_FILE
@@ -75,6 +76,7 @@ main() {
 	# Configure
 	unset ABBR_EXPANSION_CURSOR_MARKER
 	unset ABBR_LINE_CURSOR_MARKER
+	ABBR_REGULAR_ABBREVIATION_PREFIXES=( one_word_prefix "multi-word prefix" 'prefix with "double quotes"' "prefix with 'single quotes'" )
 	ABBR_QUIET=1
 	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
 	ABBR_TMPDIR=$test_tmpdir
@@ -113,6 +115,7 @@ main() {
 
 	# Reset
 	ABBR_EXPANSION_CURSOR_MARKER=$abbr_expansion_cursor_marker_saved
+	ABBR_REGULAR_ABBREVIATION_PREFIXES=( $abbr_prefixes_saved )
 	ABBR_LINE_CURSOR_MARKER=$abbr_line_cursor_marker_saved
 	ABBR_QUIET=$abbr_quiet_saved
 	ABBR_TMPDIR=$abbr_tmpdir_saved

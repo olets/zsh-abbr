@@ -61,6 +61,11 @@ if [[ -z $ABBR_USER_ABBREVIATIONS_FILE ]]; then
   fi
 fi
 
+if ! [[ -n ${(t)ABBR_REGULAR_ABBREVIATION_PREFIXES} ]]; then
+  ABBR_REGULAR_ABBREVIATION_PREFIXES=( 'sudo ' )
+fi
+typeset -ga ABBR_REGULAR_ABBREVIATION_PREFIXES
+
 # FUNCTIONS
 # ---------
 
@@ -1023,24 +1028,72 @@ _abbr_no_color() {
 }
 
 _abbr_regular_expansion() {
-  emulate -LR zsh
+  {
+    emulate -LR zsh
 
-  # cannot support debug message
+    # cannot support debug message
 
-  local abbreviation
-  local expansion
+    local abbreviation
+    local expansion
 
-  abbreviation=$1
+    _abbr_regular_expansion:get_expansion() {
+      # cannot support debug message
 
-  expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]
+      local abbreviation
+      local abbreviation_sans_prefix
+      local expansion
+      local prefix
+      local -a prefixes
+      local -i session
 
-  if [[ ! $expansion ]]; then
-    _abbr_create_files
-    source ${_abbr_tmpdir}regular-user-abbreviations
-    expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]
-  fi
+      abbreviation=$1
+      session=$2
 
-  'builtin' 'echo' - ${(Q)expansion}
+      prefixes=( $ABBR_REGULAR_ABBREVIATION_PREFIXES )
+
+      if (( session )); then
+        expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]
+      else
+        expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]
+      fi
+
+      while [[ ! $expansion ]] && (( #prefixes )); do
+        prefix=$prefixes[1]
+        shift prefixes
+
+        abbreviation_sans_prefix="${abbreviation#$prefix}"
+
+        if (( session )); then
+          expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
+        else
+          expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation_sans_prefix}]
+        fi
+
+        if [[ ! $expansion ]]; then
+          continue
+        fi
+
+        if [[ $abbreviation_sans_prefix != $abbreviation ]]; then
+          expansion="${(qqq)prefix}$expansion"
+        fi
+      done
+
+      'builtin' 'echo' - $expansion
+    }
+
+    abbreviation=$1
+    expansion=$(_abbr_regular_expansion:get_expansion $abbreviation 1)
+
+    if [[ ! $expansion ]]; then
+      _abbr_create_files
+      source ${_abbr_tmpdir}regular-user-abbreviations
+      expansion=$(_abbr_regular_expansion:get_expansion $abbreviation 0)
+    fi
+
+    'builtin' 'echo' - ${(Q)expansion}
+  } always {
+    unfunction -m _abbr_regular_expansion:get_expansion
+  }
 }
 
 _abbr_create_files() {
