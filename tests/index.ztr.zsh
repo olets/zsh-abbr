@@ -66,14 +66,16 @@ main() {
 	fi
 
 	prefix_double_quotes='prefix with "double quotes"'
-	prefix_glob="?*globprefix"
+	prefix_glob_1="?*globprefix1"
+	prefix_glob_2="?*globprefix2"
 	prefix_multi_word="multi-word prefix"
 	prefix_one_word=one_word_prefix
 	prefix_single_quotes="prefix with 'single quotes'"
 
-	prefix_glob_match_1='.globprefix'
-	prefix_glob_match_2='..globprefix'
-	prefix_glob_mismatch='globprefix'
+	prefix_glob_1_match_1='.globprefix1'
+	prefix_glob_1_match_2='..globprefix1'
+	prefix_glob_1_mismatch='globprefix1'
+	prefix_glob_2_match='.globprefix2'
 
 	test_dir=$abbr_dir/tests
 
@@ -104,7 +106,8 @@ main() {
 	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES+=( $prefix_single_quotes )
 
 	typeset -a ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES=( )
-	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES+=( $prefix_glob )
+	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES+=( $prefix_glob_1 )
+	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES+=( $prefix_glob_2 )
 
 	ABBR_QUIET=1
 	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
