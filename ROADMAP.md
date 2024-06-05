@@ -28,4 +28,3 @@ _Currently considered feature complete._
 ## Maybe maybe?
 
 - [ ] command completion
-- [ ] command highlighting
