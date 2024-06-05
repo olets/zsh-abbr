@@ -39,7 +39,8 @@ typeset -gi ABBR_GET_AVAILABLE_ABBREVIATION=${ABBR_GET_AVAILABLE_ABBREVIATION:-0
 # Log anything found by ABBR_GET_AVAILABLE_ABBREVIATION? (default false)
 typeset -gi ABBR_LOG_AVAILABLE_ABBREVIATION=${ABBR_LOG_AVAILABLE_ABBREVIATION:-0}
 
-# Log anything found by ABBR_GET_AVAILABLE_ABBREVIATION? (default false)
+# If ABBR_LOG_AVAILABLE_ABBREVIATION is non-zero, should
+# it log come _after_ the command output? (default false)
 typeset -gi ABBR_LOG_AVAILABLE_ABBREVIATION_AFTER=${ABBR_LOG_AVAILABLE_ABBREVIATION_AFTER:-0}
 
 # Enable logging after commands, for example to warn that a deprecated widget was used?
