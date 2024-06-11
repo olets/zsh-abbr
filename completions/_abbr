@@ -172,7 +172,7 @@ __abbr_abbreviations() {
 
   if (( $words[(Ie)-U] || $words[(Ie)--user] )); then
     scope="-U"
-  elif (( $words[(Ie)-S] || $words[(I)--session] )); then
+  elif (( $words[(Ie)-S] || $words[(Ie)--session] )); then
     scope="-S"
   elif (( $words[(Ie)-r] || $words[(Ie)--regular] )); then
     type="-r"
@@ -180,7 +180,7 @@ __abbr_abbreviations() {
     type="-g"
   fi
 
-  tmp_abbr=(${${(f)"$(_call_program abbreviations abbr list-abbreviations $scope $type 2>/dev/null)"}//\"/})
+  tmp_abbr=(${${${(f)"$(_call_program abbreviations abbr list-abbreviations $scope $type 2>/dev/null)"}#\"}%\"})
   tmp_abbr=(${tmp_abbr//:/\\:})
   tmp_expd=(${${${${(f)"$(_call_program abbreviations abbr list $scope $type 2>/dev/null)"}#*=}#\"}%\"})
   tmp_expd=(${tmp_expd//:/\\:})
