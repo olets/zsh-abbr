@@ -26,6 +26,7 @@ main() {
 		abbr_expansion_cursor_marker_saved \
 		abbr_line_cursor_marker_saved \
 		abbr_tmpdir_saved \
+		aliases_saved \
 		cmd \
 		test_abbr_abbreviation \
 		test_abbr_abbreviation_2 \
@@ -69,6 +70,7 @@ main() {
 	abbr_quiet_saved=$ABBR_QUIET
 	abbr_tmpdir_saved=$ABBR_TMPDIR
 	ABBR_USER_ABBREVIATIONS_FILE_SAVED=$ABBR_USER_ABBREVIATIONS_FILE
+	aliases_saved=$(alias -L)
 
 	# Configure
 	unset ABBR_EXPANSION_CURSOR_MARKER
@@ -76,6 +78,7 @@ main() {
 	ABBR_QUIET=1
 	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
 	ABBR_TMPDIR=$test_tmpdir
+	unalias -m '*'
 
 	# Set up data
 	touch $ABBR_USER_ABBREVIATIONS_FILE
@@ -105,6 +108,7 @@ main() {
 
 	# Remove artifacts
 	rm -f $ABBR_USER_ABBREVIATIONS_FILE
+	unalias -m '*'
 
 	# Reset
 	ABBR_EXPANSION_CURSOR_MARKER=$abbr_expansion_cursor_marker_saved
@@ -113,6 +117,7 @@ main() {
 	ABBR_TMPDIR=$abbr_tmpdir_saved
 	ABBR_USER_ABBREVIATIONS_FILE=$ABBR_USER_ABBREVIATIONS_FILE_SAVED
 	unset ABBR_USER_ABBREVIATIONS_FILE_SAVED
+	eval $aliases_saved
 
 	if $(command -v _abbr_load_user_abbreviations); then
 		_abbr_load_user_abbreviations
