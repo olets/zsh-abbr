@@ -1507,7 +1507,7 @@ _abbr_init() {
         }
 
         abbr-expand-and-space() {
-          _abbr_warn_deprecation abbr-expand-and-space
+          _abbr_warn_deprecation abbr-expand-and-space abbr-expand-and-insert
           abbr-expand-and-insert
         }
         # END Deprecation notices for functions
