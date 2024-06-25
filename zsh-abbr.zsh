@@ -1448,6 +1448,10 @@ _abbr_init() {
 
         _abbr_debugger
 
+        local -A deprecated_widgets
+
+        deprecated_widgets=( )
+
         # START Deprecation notices for values that could not be meaningfully set after initialization
         # Example form:
         # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation_INTERNAL DEPRECATED_VAL VAL
@@ -1605,10 +1609,10 @@ _abbr_init() {
           local bindkey_declarations
           local replacement
           local deprecated
-          local -A deprecated_widgets
 
           bindkey_declarations=$(bindkey)
 
+          # deprecated_widgets is defined in _abbr_init:deprecations
           for deprecated replacement in ${(kv)deprecated_widgets}; do
             bindkey_declaration=$('builtin' 'echo' $bindkey_declarations | grep $deprecated)
 
@@ -1620,7 +1624,9 @@ _abbr_init() {
           done
         }
 
-        _abbr_init:deprecations:widgets
+        (( ${#deprecated_widgets} )) && {
+          _abbr_init:deprecations:widgets
+        }
       } always {
         unfunction -m _abbr_init:deprecations:widgets
       }
