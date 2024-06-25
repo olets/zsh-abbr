@@ -12,12 +12,6 @@
 # Should `abbr-load` run before every `abbr` command? (default true)
 typeset -gi ABBR_AUTOLOAD=${ABBR_AUTOLOAD:-1}
 
-# See ABBR_SET_LINE_CURSOR
-typeset -g ABBR_LINE_CURSOR_MARKER=${ABBR_LINE_CURSOR_MARKER:-%}
-
-# See ABBR_SET_EXPANSION_CURSOR
-typeset -g ABBR_EXPANSION_CURSOR_MARKER=${ABBR_EXPANSION_CURSOR_MARKER:-$ABBR_LINE_CURSOR_MARKER}
-
 # Log debugging messages?
 typeset -gi ABBR_DEBUG=${ABBR_DEBUG:-0}
 
@@ -29,11 +23,14 @@ typeset -gi ABBR_DEFAULT_BINDINGS=${ABBR_DEFAULT_BINDINGS:-1}
 # Behave as if `--dry-run` was passed? (default false)
 typeset -gi ABBR_DRY_RUN=${ABBR_DRY_RUN:-0}
 
+# See ABBR_SET_EXPANSION_CURSOR
+typeset -g ABBR_EXPANSION_CURSOR_MARKER=${ABBR_EXPANSION_CURSOR_MARKER:-$ABBR_LINE_CURSOR_MARKER}
+
 # Behave as if `--force` was passed? (default false)
 typeset -gi ABBR_FORCE=${ABBR_FORCE:-0}
 
-# Enable logging after commands, for example to warn that a deprecated widget was used?
-typeset -gi ABBR_PRECMD_LOGS=${ABBR_PRECMD_LOGS:-1}
+# See ABBR_SET_LINE_CURSOR
+typeset -g ABBR_LINE_CURSOR_MARKER=${ABBR_LINE_CURSOR_MARKER:-%}
 
 # Behave as if `--quiet` was passed? (default false)
 typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
@@ -160,8 +157,8 @@ abbr() {
         return
       fi
 
-      ABBR_REGULAR_SESSION_ABBREVIATIONS=()
-      ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
+      ABBR_REGULAR_SESSION_ABBREVIATIONS=( )
+      ABBR_GLOBAL_SESSION_ABBREVIATIONS=( )
     }
 
     _abbr:erase() {
@@ -182,7 +179,6 @@ abbr() {
       fi
 
       abbreviation=$1
-      abbreviations_sets=()
 
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
@@ -646,25 +642,6 @@ abbr() {
       _abbr_debugger
 
       _abbr:util_error "abbr: Illegal combination of options"
-    }
-
-    _abbr:util_deprecated_deprecated() {
-      (( ABBR_DEBUG )) && _abbr_print $funcstack[1]
-
-      local message
-      local new
-      local old
-
-      old=$1
-      new=$2
-
-      message="$1 is deprecated and will be dropped in a future version."
-
-      if [[ $new ]]; then
-        message+=" Please use $new instead."
-      fi
-
-      _abbr:util_warn $message
     }
 
     _abbr:util_error() {
@@ -1210,8 +1187,8 @@ _abbr_load_user_abbreviations() {
     function _abbr_load_user_abbreviations:setup() {
       _abbr_debugger
 
-      ABBR_REGULAR_USER_ABBREVIATIONS=()
-      ABBR_GLOBAL_USER_ABBREVIATIONS=()
+      ABBR_REGULAR_USER_ABBREVIATIONS=( )
+      ABBR_GLOBAL_USER_ABBREVIATIONS=( )
 
       _abbr_create_files
     }
@@ -1273,19 +1250,6 @@ _abbr_load_user_abbreviations() {
   }
 }
 
-_abbr_precmd() {
-  emulate -LR zsh
-
-  # do not support debug message
-
-  (( ABBR_PRECMD_LOGS )) || return
-
-  if [[ -n $ABBR_PRECMD_MESSAGE ]]; then
-    'builtin' 'print' -P $ABBR_PRECMD_MESSAGE
-    ABBR_PRECMD_MESSAGE=
-  fi
-}
-
 # WIDGETS
 # -------
 
@@ -1315,7 +1279,7 @@ abbr-expand() {
     return $cursor_was_placed
   fi
 
-  words=(${(z)LBUFFER})
+  words=( ${(z)LBUFFER} )
 
   while (( i < ${#words} )); do
     abbreviation=${words:$i}
@@ -1410,8 +1374,6 @@ _abbr_warn_deprecation() {
 # INITIALIZATION
 # --------------
 
-
-
 _abbr_init() {
   emulate -LR zsh
 
@@ -1421,14 +1383,12 @@ _abbr_init() {
     typeset -gA ABBR_GLOBAL_SESSION_ABBREVIATIONS
     typeset -gA ABBR_GLOBAL_USER_ABBREVIATIONS
     typeset -gi ABBR_INITIALIZING
-    typeset -g ABBR_PRECMD_MESSAGE
     typeset -gA ABBR_REGULAR_SESSION_ABBREVIATIONS
     typeset -gA ABBR_REGULAR_USER_ABBREVIATIONS
 
     ABBR_INITIALIZING=1
-    ABBR_PRECMD_MESSAGE=
-    ABBR_REGULAR_SESSION_ABBREVIATIONS=()
-    ABBR_GLOBAL_SESSION_ABBREVIATIONS=()
+    ABBR_REGULAR_SESSION_ABBREVIATIONS=( )
+    ABBR_GLOBAL_SESSION_ABBREVIATIONS=( )
 
     zmodload zsh/datetime
 
@@ -1488,11 +1448,15 @@ _abbr_init() {
 
         _abbr_debugger
 
+        local -A deprecated_widgets
+
+        deprecated_widgets=( )
+
         # START Deprecation notices for values that could not be meaningfully set after initialization
         # Example form:
         # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
         # VAL=$DEPRECATED_VAL
-        (( ABBR_PRECMD_LOGS != 1 )) && _abbr_warn_deprecation ABBR_PRECMD_LOGS
+
         # END Deprecation notices for values that could not be meaningfully set after initialization
 
         # START Deprecation notices for functions
@@ -1501,58 +1465,8 @@ _abbr_init() {
         #   _abbr_warn_deprecation deprecated_fn fn
         #   fn
         # }
-        _abbr:util_deprecated() {
-          _abbr_warn_deprecation _abbr:util_deprecated
-          _abbr:util_deprecated_deprecated
-        }
-
-        abbr-expand-and-space() {
-          _abbr_warn_deprecation abbr-expand-and-space abbr-expand-and-insert
-          abbr-expand-and-insert
-        }
+        
         # END Deprecation notices for functions
-
-        _abbr_add_widgets() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation _abbr_add_widgets
-
-          zle -N abbr-expand
-          zle -N accept-line abbr-expand-and-accept
-          zle -N abbr-expand-and-insert
-          zle -N abbr-expand-and-space
-        }
-
-        _abbr_bind_widgets() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation _abbr_bind_widgets
-
-          # spacebar expands abbreviations
-          bindkey " " abbr-expand-and-insert
-
-          # control-spacebar is a normal space
-          bindkey "^ " magic-space
-
-          # when running an incremental search,
-          # spacebar behaves normally and control-space expands abbreviations
-          bindkey -M isearch "^ " abbr-expand-and-insert
-          bindkey -M isearch " " magic-space
-        }
-
-        _abbr_deprecations() {
-          _abbr_warn_deprecation _abbr_deprecations
-        }
-
-        _abbr_init() {
-          _abbr_warn_deprecation _abbr_init
-        }
-
-        _abbr_integrations() {
-          emulate -LR zsh
-
-          _abbr_warn_deprecation _abbr_integrations
-        }
 
         # Deprecation notices for zle widgets
         _abbr_init:deprecations:widgets() {
@@ -1563,10 +1477,10 @@ _abbr_init() {
           local bindkey_declarations
           local replacement
           local deprecated
-          local -A deprecated_widgets
 
           bindkey_declarations=$(bindkey)
 
+          # deprecated_widgets is defined in _abbr_init:deprecations
           for deprecated replacement in ${(kv)deprecated_widgets}; do
             bindkey_declaration=$('builtin' 'echo' $bindkey_declarations | grep $deprecated)
 
@@ -1578,7 +1492,9 @@ _abbr_init() {
           done
         }
 
-        _abbr_init:deprecations:widgets
+        (( ${#deprecated_widgets} )) && {
+          _abbr_init:deprecations:widgets
+        }
       } always {
         unfunction -m _abbr_init:deprecations:widgets
       }
@@ -1590,9 +1506,6 @@ _abbr_init() {
 
     _abbr_job_push $job_name initialization
     _abbr_debugger
-
-    'builtin' 'autoload' -Uz add-zsh-hook
-    add-zsh-hook precmd _abbr_precmd
 
     _abbr_load_user_abbreviations
     _abbr_init:add_widgets
@@ -1607,6 +1520,8 @@ _abbr_init() {
     unfunction -m _abbr_init:deprecations
   }
 }
+
+# _abbr_init should remain the last function defined in this file
 
 typeset -g ABBR_SOURCE_PATH
 ABBR_SOURCE_PATH=${0:A:h}
