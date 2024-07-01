@@ -23,12 +23,14 @@ typeset -gi ABBR_DEFAULT_BINDINGS=${ABBR_DEFAULT_BINDINGS:-1}
 # Behave as if `--dry-run` was passed? (default false)
 typeset -gi ABBR_DRY_RUN=${ABBR_DRY_RUN:-0}
 
+# See ABBR_SET_LINE_CURSOR
+typeset -g ABBR_LINE_CURSOR_MARKER=${ABBR_LINE_CURSOR_MARKER:-%}
+
 # See ABBR_SET_EXPANSION_CURSOR
 typeset -g ABBR_EXPANSION_CURSOR_MARKER=${ABBR_EXPANSION_CURSOR_MARKER:-$ABBR_LINE_CURSOR_MARKER}
 
 # Behave as if `--force` was passed? (default false)
 typeset -gi ABBR_FORCE=${ABBR_FORCE:-0}
-
 
 # See ABBR_SET_LINE_CURSOR
 typeset -g ABBR_LINE_CURSOR_MARKER=${ABBR_LINE_CURSOR_MARKER:-%}
