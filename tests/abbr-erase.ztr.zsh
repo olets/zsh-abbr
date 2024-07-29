@@ -73,6 +73,30 @@ main() {
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation starting with a single-quoted exclamation point" \
 			"Dependencies: add, erase. Issues: 84, 118"
+		
+		# @TODO
+		# See
+		# - https://github.com/olets/zsh-abbr/issues/118
+		local single_quoted_abbreviation="'"
+		single_quoted_abbreviation+=$test_abbr_abbreviation
+		single_quoted_abbreviation+="'"
+		abbr add $single_quoted_abbreviation=$test_abbr_expansion
+		abbr erase $single_quoted_abbreviation
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+			"Can erase an abbreviation with single quotation marks" \
+			"Dependencies: add, erase. Issues: 118"
+		
+		# @TODO
+		# See
+		# - https://github.com/olets/zsh-abbr/issues/118
+		local double_quoted_abbreviation='"'
+		double_quoted_abbreviation+=$test_abbr_abbreviation
+		double_quoted_abbreviation+='"'
+		abbr add $double_quoted_abbreviation=$test_abbr_expansion
+		abbr erase $double_quoted_abbreviation
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+			"Can erase an abbreviation starting with double quotation marks" \
+			"Dependencies: add, erase. Issues: 118"
 
 		# Manual
 
