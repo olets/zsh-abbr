@@ -21,6 +21,8 @@ main() {
 	
 	local \
 		abbr_dir \
+		abbr_expansion_cursor_marker_saved \
+		abbr_line_cursor_marker_saved \
 		abbr_tmpdir_saved \
 		abbr_user_abbreviations_file_saved \
 		cmd \
@@ -61,11 +63,15 @@ main() {
 	fi
 
 	# Save user configuration
+	abbr_expansion_cursor_marker_saved=$ABBR_EXPANSION_CURSOR_MARKER
+	abbr_line_cursor_marker_saved=$ABBR_LINE_CURSOR_MARKER
 	abbr_quiet_saved=$ABBR_QUIET
 	abbr_tmpdir_saved=$ABBR_TMPDIR
 	abbr_user_abbreviations_file_saved=$ABBR_USER_ABBREVIATIONS_FILE
 
 	# Configure
+	unset ABBR_EXPANSION_CURSOR_MARKER
+	unset ABBR_LINE_CURSOR_MARKER
 	ABBR_QUIET=1
 	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
 	ABBR_TMPDIR=$test_tmpdir
@@ -100,6 +106,8 @@ main() {
 	rm -f $ABBR_USER_ABBREVIATIONS_FILE
 
 	# Reset
+	ABBR_EXPANSION_CURSOR_MARKER=$abbr_expansion_cursor_marker_saved
+	ABBR_LINE_CURSOR_MARKER=$abbr_line_cursor_marker_saved
 	ABBR_QUIET=$abbr_quiet_saved
 	ABBR_TMPDIR=$abbr_tmpdir_saved
 	ABBR_USER_ABBREVIATIONS_FILE=$abbr_user_abbreviations_file_saved
