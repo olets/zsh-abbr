@@ -18,7 +18,7 @@ _Currently considered feature complete._
 - [x] remove `_abbr_deprecations`
 - [x] remove `_abbr_init` after initialization
 - [x] remove `_abbr_integrations`
-- [ ] make "internal only" functions in fact internal only
+- [x] make "internal only" functions in fact internal only
 
 ## Maybe?
 
