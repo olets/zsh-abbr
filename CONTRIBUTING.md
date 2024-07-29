@@ -19,13 +19,13 @@ The test suite uses [zsh-test-runner](https://github.com/olets/zsh-test-runner).
 To cut a new release:
 
 1. Check out the `main` branch.
-1. Update all instances of the version number in `zsh-abbr.zsh`.
-1. Update all instances of the release date in `zsh-abbr.zsh`.
-1. Update all instances of the version number in `man/man1/abbr.1`.
-1. Update all instances of the release date in `man/man1/abbr.1`.
-1. Update all instances of the version number in `completions/_abbr`.
+1. Update all instances of the version number in [`zsh-abbr.zsh`](zsh-abbr.zsh).
+1. Update all instances of the release date in [`zsh-abbr.zsh`](zsh-abbr.zsh).
+1. Update all instances of the version number in [`man/man1/abbr.1`](man/man1/abbr.1).
+1. Update all instances of the release date in [`man/man1/abbr.1`](man/man1/abbr.1).
+1. Update all instances of the version number in [`completions/_abbr`](completions/_abbr).
 1. Run `bin/changelog`.
-1. Update the first line of `CHANGELOG.md`: add the new version number twice:
+1. Update the first line of [`CHANGELOG.md`](CHANGELOG.md): add the new version number twice:
     ```
     # [<HERE>](…vPrevious...v<AND HERE>) (…)
     ```
