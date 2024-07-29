@@ -1,8 +1,14 @@
 > This is a legacy version. For the latest CHANGELOG see <https://github.com/olets/zsh-abbr/blob/main/CHANGELOG.md>.
 
+&nbsp;
 
 
+# [4.9.6](https://github.com/olets/zsh-abbr/compare/v4.9.5...v4.9.6) (2024-07-29)
 
+
+### Bug Fixes
+
+* **abbrevations file path:** expected logic ([8e9e394](https://github.com/olets/zsh-abbr/commit/8e9e394c5cc2ed5c108837725f45a00949b6d330))
 
 
 # [4.9.5](https://github.com/olets/zsh-abbr/compare/v4.9.3...v4.9.5) (2023-02-24)
