@@ -1,3 +1,7 @@
+# [5.8.2](https://github.com/olets/zsh-abbr/compare/v5.8.1...v5.8.2) (2024-07-29)
+
+Cleans up a Git conflict resolution mistake.
+
 # [5.8.1](https://github.com/olets/zsh-abbr/compare/v5.8.0...v5.8.1) (2024-07-29)
 
 
