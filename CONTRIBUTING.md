@@ -31,11 +31,11 @@ To cut a new release:
     ```
 1. Commit `CHANGELOG.md`, `zsh-abbr.zsh`, `man/man1/abbr.1`, and `completions/_abbr`.
     ```shell
-    git commit -i CHANGELOG.md completions/_abbr man/man1/abbr.1 zsh-abbr.zsh -m "feat(release): bump to %ABBR_CURSOR%, update changelog"
+    git commit -i CHANGELOG.md completions/_abbr man/man1/abbr.1 zsh-abbr.zsh -m "feat(release): bump to v%ABBR_CURSOR%, update changelog"
     ```
 1. Create a signed commit with the version number, prefixed with `v`.
     ```shell
-    git tag -s %ABBR_CURSOR% -m %ABBR_CURSOR%
+    git tag -s v%ABBR_CURSOR% -m v%ABBR_CURSOR%
     ```
 1. If possible to fast-forward `next` to `main`, do so. If it isn't, rebase/merge/etc as needed to have `next` fork off the tip of `main`.
 1. Fast-forward the major-version branch (e.g. branch `v5`) to `main`.
