@@ -1,3 +1,13 @@
+# [5.8.1](https://github.com/olets/zsh-abbr/compare/v5.8.0...v5.8.1) (2024-07-29)
+
+
+### Features
+
+* **abbr-expand-and-space:** deprecation warning points to abbr-expand-and-insert ([752e9fc](https://github.com/olets/zsh-abbr/commit/752e9fcc4daff680545c30f8f857913d66f6f5e6))
+* **internal fns:** prep for making internal only ([805a236](https://github.com/olets/zsh-abbr/commit/805a2367cd6bc5cdc63a3786833651485c46396d))
+
+
+
 # [5.8.0](https://github.com/olets/zsh-abbr/compare/v5.7.1...v5.8.0) (2024-05-23)
 
 
