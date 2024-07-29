@@ -85,7 +85,7 @@ abbr() {
 
     # Deprecation notices for values that could be meaningfully set after initialization
     # Example form:
-    # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation_INTERNAL DEPRECATED_VAL VAL
+    # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
     # VAL=$DEPRECATED_VAL
 
     if (( ABBR_LOADING_USER_ABBREVIATIONS )); then
@@ -97,14 +97,14 @@ abbr() {
       warn_color="$fg[yellow]"
     fi
 
-    _abbr:add_INTERNAL() {
+    _abbr:add() {
       _abbr_debugger
 
       local abbreviation
       local expansion
 
       if [[ $# > 1 ]]; then
-        _abbr:util_error_INTERNAL "abbr add: Expected one argument, got $#: $*"
+        _abbr:util_error "abbr add: Expected one argument, got $#: $*"
         return
       fi
 
@@ -117,14 +117,14 @@ abbr() {
       fi
 
       if [[ -z $abbreviation || -z $expansion || $abbreviation == $1 ]]; then
-        _abbr:util_error_INTERNAL "abbr add: Requires abbreviation and expansion"
+        _abbr:util_error "abbr add: Requires abbreviation and expansion"
         return
       fi
 
-      _abbr:util_add_INTERNAL $abbreviation $expansion
+      _abbr:util_add $abbreviation $expansion
     }
 
-    _abbr:git_INTERNAL() {
+    _abbr:git() {
       _abbr_debugger
 
       local abbreviation
@@ -132,7 +132,7 @@ abbr() {
       local type_saved
 
       if [[ $# > 1 ]]; then
-        _abbr:util_error_INTERNAL "abbr add: Expected one argument, got $#: $*"
+        _abbr:util_error "abbr add: Expected one argument, got $#: $*"
         return
       fi
 
@@ -141,19 +141,19 @@ abbr() {
       type_saved=$type
 
       type='regular'
-      _abbr:add_INTERNAL ${abbreviation}="git $expansion"
+      _abbr:add ${abbreviation}="git $expansion"
 
       type='global'
-      _abbr:add_INTERNAL "git ${abbreviation}"="git $expansion"
+      _abbr:add "git ${abbreviation}"="git $expansion"
 
       type=$type_saved
     }
 
-    _abbr:clear_session_INTERNAL() {
+    _abbr:clear_session() {
       _abbr_debugger
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error_INTERNAL "abbr clear-session: Unexpected argument"
+        _abbr:util_error "abbr clear-session: Unexpected argument"
         return
       fi
 
@@ -161,7 +161,7 @@ abbr() {
       ABBR_GLOBAL_SESSION_ABBREVIATIONS=( )
     }
 
-    _abbr:erase_INTERNAL() {
+    _abbr:erase() {
       _abbr_debugger
 
       local abbreviation
@@ -171,10 +171,10 @@ abbr() {
       local verb_phrase
 
       if [[ $# > 1 ]]; then
-        _abbr:util_error_INTERNAL "abbr erase: Expected one argument"
+        _abbr:util_error "abbr erase: Expected one argument"
         return
       elif [[ $# < 1 ]]; then
-        _abbr:util_error_INTERNAL "abbr erase: Erase needs a variable name"
+        _abbr:util_error "abbr erase: Erase needs a variable name"
         return
       fi
 
@@ -221,7 +221,7 @@ abbr() {
       fi
 
       if ! (( ${#abbreviations_sets} )); then
-        _abbr:util_error_INTERNAL "abbr erase: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)abbreviation}\` found"
+        _abbr:util_error "abbr erase: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)abbreviation}\` found"
       elif (( ${#abbreviations_sets} == 1 )); then
         verb_phrase="Would erase"
 
@@ -230,11 +230,11 @@ abbr() {
           unset "${abbreviations_sets}[${(b)${(qqq)${(Q)abbreviation}}}]" # quotation marks required
 
           if [[ $abbreviations_sets =~ USER ]]; then
-            _abbr:util_sync_user_INTERNAL
+            _abbr:util_sync_user
           fi
         fi
 
-        _abbr:util_log_unless_quiet_INTERNAL "$success_color$verb_phrase$reset_color $(_abbr:util_set_to_typed_scope_INTERNAL $abbreviations_sets) \`${(Q)abbreviation}\`"
+        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color $(_abbr:util_set_to_typed_scope $abbreviations_sets) \`${(Q)abbreviation}\`"
       else
         verb_phrase="Did not erase"
         (( dry_run )) && verb_phrase="Would not erase"
@@ -242,36 +242,36 @@ abbr() {
         message="$error_color$verb_phrase$reset_color abbreviation \`${(Q)abbreviation}\`. Please specify one of\\n"
 
         for abbreviations_set in $abbreviations_sets; do
-          message+="  $(_abbr:util_set_to_typed_scope_INTERNAL $abbreviations_set)\\n"
+          message+="  $(_abbr:util_set_to_typed_scope $abbreviations_set)\\n"
         done
 
-        _abbr:util_error_INTERNAL $message
+        _abbr:util_error $message
       fi
     }
 
-    _abbr:expand_INTERNAL() {
+    _abbr:expand() {
       _abbr_debugger
 
       local expansion
 
       if ! (( $# )); then
-        _abbr:util_error_INTERNAL "abbr expand: requires an argument"
+        _abbr:util_error "abbr expand: requires an argument"
         return
       fi
 
-      expansion=$(_abbr:expansion_INTERNAL $*)
+      expansion=$(_abbr:expansion $*)
 
-      _abbr:util_print_INTERNAL $expansion
+      _abbr:util_print $expansion
     }
 
-    _abbr:expansion_INTERNAL() {
+    _abbr:expansion() {
       _abbr_debugger
 
       local abbreviation
       local expansion
 
       if ! (( $# )); then
-        _abbr:util_error_INTERNAL "_abbr:expansion_INTERNAL requires an argument"
+        _abbr:util_error "_abbr:expansion requires an argument"
         return
       fi
 
@@ -286,7 +286,7 @@ abbr() {
       'builtin' 'echo' - $expansion
     }
 
-    _abbr:export_aliases_INTERNAL() {
+    _abbr:export_aliases() {
       _abbr_debugger
 
       local type_saved
@@ -294,7 +294,7 @@ abbr() {
       type_saved=$type
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error_INTERNAL "abbr export-aliases: Unexpected argument"
+        _abbr:util_error "abbr export-aliases: Unexpected argument"
         return
       fi
 
@@ -302,10 +302,10 @@ abbr() {
       session_prefix="alias"
       user_prefix="alias"
 
-      _abbr:util_list_INTERNAL $include_expansion $session_prefix $user_prefix
+      _abbr:util_list $include_expansion $session_prefix $user_prefix
     }
 
-    _abbr:import_aliases_INTERNAL() {
+    _abbr:import_aliases() {
       _abbr_debugger
 
       local alias_to_import
@@ -318,14 +318,14 @@ abbr() {
       saved_type=$type
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error_INTERNAL "abbr import-aliases: Unexpected argument"
+        _abbr:util_error "abbr import-aliases: Unexpected argument"
         return
       fi
 
       if [[ $saved_type != 'global' ]]; then
         aliases_to_import=( ${(f)"$('builtin' 'alias' -r)"} )
         for alias_to_import in $aliases_to_import; do
-          _abbr:util_import_alias_INTERNAL $alias_to_import
+          _abbr:util_import_alias $alias_to_import
         done
       fi
 
@@ -334,14 +334,14 @@ abbr() {
 
         aliases_to_import=( ${(f)"$('builtin' 'alias' -g)"} )
         for alias_to_import in $aliases_to_import; do
-          _abbr:util_import_alias_INTERNAL $alias_to_import
+          _abbr:util_import_alias $alias_to_import
         done
       fi
 
       type=$saved_type
     }
 
-    _abbr:import_fish_INTERNAL() {
+    _abbr:import_fish() {
       _abbr_debugger
 
       local abbreviation
@@ -350,7 +350,7 @@ abbr() {
       local input_file
 
       if [[ $# != 1 ]]; then
-        _abbr:util_error_INTERNAL "abbr import-fish: requires exactly one argument"
+        _abbr:util_error "abbr import-fish: requires exactly one argument"
         return
       fi
 
@@ -362,11 +362,11 @@ abbr() {
         abbreviation=${def%% *}
         expansion=${def#* }
 
-        _abbr:util_add_INTERNAL $abbreviation $expansion
+        _abbr:util_add $abbreviation $expansion
       done
     }
 
-    _abbr:import_git_aliases_INTERNAL() {
+    _abbr:import_git_aliases() {
       _abbr_debugger
 
       local config_file
@@ -378,7 +378,7 @@ abbr() {
         case $1 in
           "--file")
             if [[ -z $2 ]]; then
-              _abbr:util_error_INTERNAL "abbr import-git-aliases: --file requires a file path"
+              _abbr:util_error "abbr import-git-aliases: --file requires a file path"
               return
             fi
 
@@ -388,7 +388,7 @@ abbr() {
             ;;
           "--prefix")
             if [[ -z $2 ]]; then
-              _abbr:util_error_INTERNAL "abbr import-git-aliases: --prefix requires a prefix string"
+              _abbr:util_error "abbr import-git-aliases: --prefix requires a prefix string"
               return
             fi
 
@@ -397,14 +397,14 @@ abbr() {
             shift 2
             ;;
           *)
-            _abbr:util_error_INTERNAL "abbr import-git-aliases: Unexpected argument"
+            _abbr:util_error "abbr import-git-aliases: Unexpected argument"
             return
         esac
       done
 
       if [[ -n $config_file ]]; then
         if [[ ! -f $config_file ]]; then
-          _abbr:util_error_INTERNAL "abbr import-git-aliases: Config file not found"
+          _abbr:util_error "abbr import-git-aliases: Config file not found"
           return
         fi
 
@@ -421,45 +421,45 @@ abbr() {
           verb_phrase="Did not"
           ((dry_run)) && verb_phrase="Would not"
 
-          _abbr:util_warn_INTERNAL "$verb_phrase import the Git alias \`$key\` because its expansion is a function"
+          _abbr:util_warn "$verb_phrase import the Git alias \`$key\` because its expansion is a function"
         else
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
             key=${(q)key}
             value=${(q)value}
           fi
 
-          _abbr:util_add_INTERNAL "$prefix$key" "git $value"
+          _abbr:util_add "$prefix$key" "git $value"
         fi
       done
     }
 
-    _abbr:list_INTERNAL() {
+    _abbr:list() {
       _abbr_debugger
 
       local -i include_expansion
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error_INTERNAL "abbr list definitions: Unexpected argument"
+        _abbr:util_error "abbr list definitions: Unexpected argument"
         return
       fi
 
       include_expansion=1
 
-      _abbr:util_list_INTERNAL $include_expansion
+      _abbr:util_list $include_expansion
     }
 
-    _abbr:list_abbreviations_INTERNAL() {
+    _abbr:list_abbreviations() {
       _abbr_debugger
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error_INTERNAL "abbr list: Unexpected argument"
+        _abbr:util_error "abbr list: Unexpected argument"
         return
       fi
 
-      _abbr:util_list_INTERNAL
+      _abbr:util_list
     }
 
-    _abbr:list_commands_INTERNAL() {
+    _abbr:list_commands() {
       _abbr_debugger
 
       local -i include_expansion
@@ -467,7 +467,7 @@ abbr() {
       local user_prefix
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error_INTERNAL "abbr list commands: Unexpected argument"
+        _abbr:util_error "abbr list commands: Unexpected argument"
         return
       fi
 
@@ -475,38 +475,38 @@ abbr() {
       session_prefix="abbr -S"
       user_prefix=abbr
 
-      _abbr:util_list_INTERNAL $include_expansion $session_prefix $user_prefix
+      _abbr:util_list $include_expansion $session_prefix $user_prefix
     }
 
-    _abbr:print_version_INTERNAL() {
+    _abbr:print_version() {
       _abbr_debugger
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error_INTERNAL "abbr version: Unexpected argument"
+        _abbr:util_error "abbr version: Unexpected argument"
         return
       fi
 
-      _abbr:util_print_INTERNAL $version
+      _abbr:util_print $version
     }
 
-    _abbr:profile_INTERNAL() {
+    _abbr:profile() {
       _abbr_debugger
 
       local zsh_version
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error_INTERNAL "abbr version: Unexpected argument"
+        _abbr:util_error "abbr version: Unexpected argument"
         return
       fi
 
       zsh_version=$(zsh --version)
 
-      _abbr:util_print_INTERNAL $version
-      _abbr:util_print_INTERNAL $zsh_version
-      _abbr:util_print_INTERNAL "OSTYPE $OSTYPE"
+      _abbr:util_print $version
+      _abbr:util_print $zsh_version
+      _abbr:util_print "OSTYPE $OSTYPE"
     }
 
-    _abbr:rename_INTERNAL() {
+    _abbr:rename() {
       _abbr_debugger
 
       local err
@@ -515,31 +515,31 @@ abbr() {
       local old
 
       if [[ $# != 2 ]]; then
-        _abbr:util_error_INTERNAL "abbr rename: Requires exactly two arguments"
+        _abbr:util_error "abbr rename: Requires exactly two arguments"
         return
       fi
 
       current_abbreviation=$1
       new_abbreviation=$2
-      job_group='_abbr:rename_INTERNAL'
+      job_group='_abbr:rename'
 
-      expansion=$(_abbr:expansion_INTERNAL $current_abbreviation)
+      expansion=$(_abbr:expansion $current_abbreviation)
 
       if [[ -n $expansion ]]; then
-        _abbr:util_add_INTERNAL $new_abbreviation $expansion
+        _abbr:util_add $new_abbreviation $expansion
 
         if (( $? )); then
-          _abbr:util_error_INTERNAL "abbr rename: ${type:+$type }${scope:+$scope }abbreviation \`${(Q)current_abbreviation}\` left untouched"
+          _abbr:util_error "abbr rename: ${type:+$type }${scope:+$scope }abbreviation \`${(Q)current_abbreviation}\` left untouched"
           return 1
         fi
 
-        _abbr:erase_INTERNAL $current_abbreviation
+        _abbr:erase $current_abbreviation
       else
-        _abbr:util_error_INTERNAL "abbr rename: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)current_abbreviation}\` exists"
+        _abbr:util_error "abbr rename: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)current_abbreviation}\` exists"
       fi
     }
 
-    _abbr:util_add_INTERNAL() {
+    _abbr:util_add() {
       _abbr_debugger
 
       local abbreviation
@@ -560,7 +560,7 @@ abbr() {
       (( dry_run )) && verb_phrase="Would add"
 
       if [[ ${abbreviation%=*} != $abbreviation ]]; then
-        _abbr:util_error_INTERNAL "abbr add: ABBREVIATION (\`${(Q)abbreviation}\`) may not contain an equals sign"
+        _abbr:util_error "abbr add: ABBREVIATION (\`${(Q)abbreviation}\`) may not contain an equals sign"
         return 1
       fi
 
@@ -586,7 +586,7 @@ abbr() {
         fi
       fi
 
-      typed_scope=$(_abbr:util_set_to_typed_scope_INTERNAL $abbreviations_set)
+      typed_scope=$(_abbr:util_set_to_typed_scope $abbreviations_set)
 
       existing_expansion=${${(P)abbreviations_set}[${(qqq)${(Q)abbreviation}}]}
 
@@ -595,7 +595,7 @@ abbr() {
           verb_phrase="Did not add"
           (( dry_run )) && verb_phrase="Would not add"
 
-          _abbr:util_error_INTERNAL "$verb_phrase the $typed_scope \`${(Q)abbreviation}\`. It already has an expansion"
+          _abbr:util_error "$verb_phrase the $typed_scope \`${(Q)abbreviation}\`. It already has an expansion"
           return 2
         fi
 
@@ -603,20 +603,20 @@ abbr() {
         (( dry_run )) && verb_phrase="Would redefine"
       fi
 
-      _abbr:util_check_command_INTERNAL $abbreviation || return 3
+      _abbr:util_check_command $abbreviation || return 3
 
       if ! (( dry_run )); then
         eval $abbreviations_set'[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}'
       fi
 
       if [[ $scope != 'session' ]]; then
-        _abbr:util_sync_user_INTERNAL
+        _abbr:util_sync_user
       fi
 
-      _abbr:util_log_unless_quiet_INTERNAL "$success_color$verb_phrase$reset_color the $typed_scope \`${(Q)abbreviation}\`"
+      _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color the $typed_scope \`${(Q)abbreviation}\`"
     }
 
-    _abbr:util_alias_INTERNAL() {
+    _abbr:util_alias() {
       _abbr_debugger
 
       local abbreviation
@@ -638,13 +638,13 @@ abbr() {
       done
     }
 
-    _abbr:util_bad_options_INTERNAL() {
+    _abbr:util_bad_options() {
       _abbr_debugger
 
-      _abbr:util_error_INTERNAL "abbr: Illegal combination of options"
+      _abbr:util_error "abbr: Illegal combination of options"
     }
 
-    _abbr:util_error_INTERNAL() {
+    _abbr:util_error() {
       _abbr_debugger
 
       has_error=1
@@ -652,17 +652,17 @@ abbr() {
       should_exit=1
     }
 
-    _abbr:util_import_alias_INTERNAL() {
+    _abbr:util_import_alias() {
       local abbreviation
       local expansion
 
       abbreviation=${1%%=*}
       expansion=${1#*=}
 
-      _abbr:util_add_INTERNAL $abbreviation "$('builtin' 'echo' $expansion)"
+      _abbr:util_add $abbreviation "$('builtin' 'echo' $expansion)"
     }
 
-    _abbr:util_check_command_INTERNAL() {
+    _abbr:util_check_command() {
       _abbr_debugger
 
       local abbreviation
@@ -686,13 +686,13 @@ abbr() {
           verb_phrase="Did not"
           (( dry_run )) && verb_phrase="Would not"
 
-          _abbr:util_warn_INTERNAL "$verb_phrase add the abbreviation \`${(Q)abbreviation}\` because a command with the same name exists"
+          _abbr:util_warn "$verb_phrase add the abbreviation \`${(Q)abbreviation}\` because a command with the same name exists"
           return 1
         fi
       fi
     }
 
-    _abbr:util_list_INTERNAL() {
+    _abbr:util_list() {
       _abbr_debugger
 
       local abbreviation
@@ -709,14 +709,14 @@ abbr() {
         if [[ $type != 'regular' ]]; then
           for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
             (( include_expansion )) && expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
-            _abbr:util_list_item_INTERNAL $abbreviation $expansion ${user_prefix:+$user_prefix -g}
+            _abbr:util_list_item $abbreviation $expansion ${user_prefix:+$user_prefix -g}
           done
         fi
 
         if [[ $type != 'global' ]]; then
           for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
             (( include_expansion )) && expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
-            _abbr:util_list_item_INTERNAL $abbreviation $expansion $user_prefix
+            _abbr:util_list_item $abbreviation $expansion $user_prefix
           done
         fi
       fi
@@ -725,20 +725,20 @@ abbr() {
         if [[ $type != 'regular' ]]; then
           for abbreviation in ${(iko)ABBR_GLOBAL_SESSION_ABBREVIATIONS}; do
             (( include_expansion )) && expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
-            _abbr:util_list_item_INTERNAL $abbreviation $expansion ${session_prefix:+$session_prefix -g}
+            _abbr:util_list_item $abbreviation $expansion ${session_prefix:+$session_prefix -g}
           done
         fi
 
         if [[ $type != 'global' ]]; then
           for abbreviation in ${(iko)ABBR_REGULAR_SESSION_ABBREVIATIONS}; do
             (( include_expansion )) && expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
-            _abbr:util_list_item_INTERNAL $abbreviation $expansion $session_prefix
+            _abbr:util_list_item $abbreviation $expansion $session_prefix
           done
         fi
       fi
     }
 
-    _abbr:util_list_item_INTERNAL() {
+    _abbr:util_list_item() {
       _abbr_debugger
 
       local abbreviation
@@ -759,10 +759,10 @@ abbr() {
         result="$prefix $result"
       fi
 
-      _abbr:util_print_INTERNAL $result
+      _abbr:util_print $result
     }
 
-    _abbr:util_log_unless_quiet_INTERNAL() {
+    _abbr:util_log_unless_quiet() {
       _abbr_debugger
 
       logs_silent_when_quiet+="${logs_silent_when_quiet:+\\n}$1"
@@ -774,13 +774,13 @@ abbr() {
       logs_silent_when_quieter+="${logs_silent_when_quieter:+\\n}$1"
     }
 
-    _abbr:util_print_INTERNAL() {
+    _abbr:util_print() {
       _abbr_debugger
 
       output+="${output:+\\n}$1"
     }
 
-    _abbr:util_set_once_INTERNAL() {
+    _abbr:util_set_once() {
       _abbr_debugger
 
       local option value
@@ -796,7 +796,7 @@ abbr() {
       ((number_opts++))
     }
 
-    _abbr:util_sync_user_INTERNAL() {
+    _abbr:util_sync_user() {
       _abbr_debugger
 
       (( ABBR_LOADING_USER_ABBREVIATIONS )) && return
@@ -822,7 +822,7 @@ abbr() {
       'command' 'mv' $user_updated $ABBR_USER_ABBREVIATIONS_FILE
     }
 
-    _abbr:util_set_to_typed_scope_INTERNAL() {
+    _abbr:util_set_to_typed_scope() {
       _abbr_debugger
 
       local abbreviations_set
@@ -831,13 +831,13 @@ abbr() {
       'builtin' 'echo' ${${${${abbreviations_set:l}%s}#abbr_}//_/ }
     }
 
-    _abbr:util_usage_INTERNAL() {
+    _abbr:util_usage() {
       _abbr_debugger
 
       'command' 'man' abbr 2>/dev/null || 'command' 'man' ${ABBR_SOURCE_PATH}/man/man1/abbr.1
     }
 
-    _abbr:util_warn_INTERNAL() {
+    _abbr:util_warn() {
       _abbr_debugger
 
       logs_silent_when_quiet+="${logs_silent_when_quiet:+\\n}$warn_color$@$reset_color"
@@ -851,15 +851,15 @@ abbr() {
       case $opt in
         "add"|\
         "a")
-          _abbr:util_set_once_INTERNAL action add
+          _abbr:util_set_once action add
           ;;
         "git"|\
         "g")
-          _abbr:util_set_once_INTERNAL action git
+          _abbr:util_set_once action git
           ;;
         "clear-session"|\
         "c")
-          _abbr:util_set_once_INTERNAL action clear_session
+          _abbr:util_set_once action clear_session
           ;;
         "--dry-run")
           dry_run=1
@@ -867,14 +867,14 @@ abbr() {
           ;;
         "erase"|\
         "e")
-          _abbr:util_set_once_INTERNAL action erase
+          _abbr:util_set_once action erase
           ;;
         "expand"|\
         "x")
-          _abbr:util_set_once_INTERNAL action expand
+          _abbr:util_set_once action expand
           ;;
         "export-aliases")
-          _abbr:util_set_once_INTERNAL action export_aliases
+          _abbr:util_set_once action export_aliases
           ;;
         "--force"|\
         "-f")
@@ -883,41 +883,41 @@ abbr() {
           ;;
         "--global"|\
         "-g")
-          _abbr:util_set_once_INTERNAL type global
+          _abbr:util_set_once type global
           ;;
         "help"|\
         "--help")
-          _abbr:util_usage_INTERNAL
+          _abbr:util_usage
           should_exit=1
           ;;
         "import-aliases")
-          _abbr:util_set_once_INTERNAL action import_aliases
+          _abbr:util_set_once action import_aliases
           ;;
         "import-fish")
-          _abbr:util_set_once_INTERNAL action import_fish
+          _abbr:util_set_once action import_fish
           ;;
         "import-git-aliases")
-          _abbr:util_set_once_INTERNAL action import_git_aliases
+          _abbr:util_set_once action import_git_aliases
           ;;
         "list")
-          _abbr:util_set_once_INTERNAL action list
+          _abbr:util_set_once action list
           ;;
         "list-abbreviations"|\
         "l")
-          _abbr:util_set_once_INTERNAL action list_abbreviations
+          _abbr:util_set_once action list_abbreviations
           ;;
         "list-commands"|\
         "L"|\
         "-L")
           # -L option is to match the builtin alias's `-L`
-          _abbr:util_set_once_INTERNAL action list_commands
+          _abbr:util_set_once action list_commands
           ;;
         "load")
           _abbr_load_user_abbreviations
           should_exit=1
           ;;
         "profile")
-          _abbr:util_set_once_INTERNAL action profile
+          _abbr:util_set_once action profile
           ;;
         "--quiet"|\
         "-q")
@@ -932,24 +932,24 @@ abbr() {
           ;;
         "--regular"|\
         "-r")
-          _abbr:util_set_once_INTERNAL type regular
+          _abbr:util_set_once type regular
           ;;
         "rename"|\
         "R")
-          _abbr:util_set_once_INTERNAL action rename
+          _abbr:util_set_once action rename
           ;;
         "--session"|\
         "-S")
-          _abbr:util_set_once_INTERNAL scope session
+          _abbr:util_set_once scope session
           ;;
         "--user"|\
         "-U")
-          _abbr:util_set_once_INTERNAL scope user
+          _abbr:util_set_once scope user
           ;;
         "version"|\
         "--version"|\
         "-v")
-          _abbr:util_set_once_INTERNAL action print_version
+          _abbr:util_set_once action print_version
           ;;
         "--")
           ((number_opts++))
@@ -971,13 +971,13 @@ abbr() {
       fi
 
       if [[ $action ]]; then
-        _abbr:${action}_INTERNAL $@
+        _abbr:${action} $@
       elif [[ $# > 0 ]]; then
         # default if arguments are provided
-        _abbr:add_INTERNAL $@
+        _abbr:add $@
       else
         # default if no argument is provided
-        _abbr:list_INTERNAL $@
+        _abbr:list $@
       fi
     fi
 
@@ -1348,7 +1348,7 @@ abbr-expand-and-insert() {
 # DEPRECATION
 # -----------
 
-_abbr_warn_deprecation_INTERNAL() {
+_abbr_warn_deprecation() {
   emulate -LR zsh
 
   _abbr_debugger
@@ -1454,7 +1454,7 @@ _abbr_init() {
 
         # START Deprecation notices for values that could not be meaningfully set after initialization
         # Example form:
-        # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation_INTERNAL DEPRECATED_VAL VAL
+        # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
         # VAL=$DEPRECATED_VAL
 
         # END Deprecation notices for values that could not be meaningfully set after initialization
@@ -1462,141 +1462,9 @@ _abbr_init() {
         # START Deprecation notices for functions
         # Example form:
         # deprecated_fn() {
-        #   _abbr_warn_deprecation_INTERNAL deprecated_fn fn
+        #   _abbr_warn_deprecation deprecated_fn fn
         #   fn
         # }
-        _abbr_warn_deprecation() {
-          _abbr_warn_deprecation_INTERNAL _abbr_warn_deprecation
-          _abbr_warn_deprecation_INTERNAL
-        }
-        _abbr:add() {
-          _abbr_warn_deprecation_INTERNAL _abbr:add
-          _abbr:add_INTERNAL
-        }
-        _abbr:clear_session() {
-          _abbr_warn_deprecation_INTERNAL _abbr:clear_session
-          _abbr:clear_session_INTERNAL
-        }
-        _abbr:erase() {
-          _abbr_warn_deprecation_INTERNAL _abbr:erase
-          _abbr:erase_INTERNAL
-        }
-        _abbr:expand() {
-          _abbr_warn_deprecation_INTERNAL _abbr:expand
-          _abbr:expand_INTERNAL
-        }
-        _abbr:expansion() {
-          _abbr_warn_deprecation_INTERNAL _abbr:expansion
-          _abbr:expansion_INTERNAL
-        }
-        _abbr:export_aliases() {
-          _abbr_warn_deprecation_INTERNAL _abbr:export_aliases
-          _abbr:export_aliases_INTERNAL
-        }
-        _abbr:git() {
-          _abbr_warn_deprecation_INTERNAL _abbr:git
-          _abbr:git_INTERNAL
-        }
-        _abbr:import_aliases() {
-          _abbr_warn_deprecation_INTERNAL _abbr:import_aliases
-          _abbr:import_aliases_INTERNAL
-        }
-        _abbr:import_fish() {
-          _abbr_warn_deprecation_INTERNAL _abbr:import_fish
-          _abbr:import_fish_INTERNAL
-        }
-        _abbr:import_git_aliases() {
-          _abbr_warn_deprecation_INTERNAL _abbr:import_git_aliases
-          _abbr:import_git_aliases_INTERNAL
-        }
-        _abbr:list() {
-          _abbr_warn_deprecation_INTERNAL _abbr:list
-          _abbr:list_INTERNAL
-        }
-        _abbr:list_abbreviations() {
-          _abbr_warn_deprecation_INTERNAL _abbr:list_abbreviations
-          _abbr:list_abbreviations_INTERNAL
-        }
-        _abbr:list_commands() {
-          _abbr_warn_deprecation_INTERNAL _abbr:list_commands
-          _abbr:list_commands_INTERNAL
-        }
-        _abbr:print_version() {
-          _abbr_warn_deprecation_INTERNAL _abbr:print_version
-          _abbr:print_version_INTERNAL
-        }
-        _abbr:profile() {
-          _abbr_warn_deprecation_INTERNAL _abbr:profile
-          _abbr:profile_INTERNAL
-        }
-        _abbr:rename() {
-          _abbr_warn_deprecation_INTERNAL _abbr:rename
-          _abbr:rename_INTERNAL
-        }
-        _abbr:util_add() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_add
-          _abbr:util_add_INTERNAL
-        }
-        _abbr:util_alias() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_alias
-          _abbr:util_alias_INTERNAL
-        }
-        _abbr:util_bad_options() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_bad_options
-          _abbr:util_bad_options_INTERNAL
-        }
-        _abbr:util_check_command() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_check_command
-          _abbr:util_check_command_INTERNAL
-        }
-        _abbr:util_error() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_error
-          _abbr:util_error_INTERNAL
-        }
-        _abbr:util_import_alias() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_import_alias
-          _abbr:util_import_alias_INTERNAL
-        }
-        _abbr:util_list() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_list
-          _abbr:util_list_INTERNAL
-        }
-        _abbr:util_list_item() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_list_item
-          _abbr:util_list_item_INTERNAL
-        }
-        _abbr:util_log_unless_quiet() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_log_unless_quiet
-          _abbr:util_log_unless_quiet_INTERNAL
-        }
-        _abbr:util_log_unless_quieter() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_log_unless_quieter
-          _abbr:util_log_unless_quieter_INTERNAL
-        }
-        _abbr:util_print() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_print
-          _abbr:util_print_INTERNAL
-        }
-        _abbr:util_set_once() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_set_once
-          _abbr:util_set_once_INTERNAL
-        }
-        _abbr:util_set_to_typed_scope() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_set_to_typed_scope
-          _abbr:util_set_to_typed_scope_INTERNAL
-        }
-        _abbr:util_sync_user() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_sync_user
-          _abbr:util_sync_user_INTERNAL
-        }
-        _abbr:util_usage() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_usage
-          _abbr:util_usage_INTERNAL
-        }
-        _abbr:util_warn() {
-          _abbr_warn_deprecation_INTERNAL _abbr:util_warn
-          _abbr:util_warn_INTERNAL
-        }
 
         # END Deprecation notices for functions
 
@@ -1619,7 +1487,7 @@ _abbr_init() {
             zle -N $deprecated
 
             if [[ -n $bindkey_declaration ]]; then
-              _abbr_warn_deprecation_INTERNAL $deprecated $replacement "bindkey $bindkey_declaration"
+              _abbr_warn_deprecation $deprecated $replacement "bindkey $bindkey_declaration"
             fi
           done
         }
@@ -1658,4 +1526,39 @@ _abbr_init() {
 typeset -g ABBR_SOURCE_PATH
 ABBR_SOURCE_PATH=${0:A:h}
 _abbr_init
+
+# cleanup
 unfunction -m _abbr_init
+unfunction -m _abbr_warn_deprecation
+unfunction -m _abbr:add
+unfunction -m _abbr:clear_session
+unfunction -m _abbr:erase
+unfunction -m _abbr:expand
+unfunction -m _abbr:expansion
+unfunction -m _abbr:export_aliases
+unfunction -m _abbr:git
+unfunction -m _abbr:import_aliases
+unfunction -m _abbr:import_fish
+unfunction -m _abbr:import_git_aliases
+unfunction -m _abbr:list
+unfunction -m _abbr:list_abbreviations
+unfunction -m _abbr:list_commands
+unfunction -m _abbr:print_version
+unfunction -m _abbr:profile
+unfunction -m _abbr:rename
+unfunction -m _abbr:util_add
+unfunction -m _abbr:util_alias
+unfunction -m _abbr:util_bad_options
+unfunction -m _abbr:util_check_command
+unfunction -m _abbr:util_error
+unfunction -m _abbr:util_import_alias
+unfunction -m _abbr:util_list
+unfunction -m _abbr:util_list_item
+unfunction -m _abbr:util_log_unless_quiet
+unfunction -m _abbr:util_log_unless_quieter
+unfunction -m _abbr:util_print
+unfunction -m _abbr:util_set_once
+unfunction -m _abbr:util_set_to_typed_scope
+unfunction -m _abbr:util_sync_user
+unfunction -m _abbr:util_usage
+unfunction -m _abbr:util_warn
