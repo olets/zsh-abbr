@@ -32,8 +32,6 @@ typeset -g ABBR_EXPANSION_CURSOR_MARKER=${ABBR_EXPANSION_CURSOR_MARKER:-$ABBR_LI
 # Behave as if `--force` was passed? (default false)
 typeset -gi ABBR_FORCE=${ABBR_FORCE:-0}
 
-# See ABBR_SET_LINE_CURSOR
-typeset -g ABBR_LINE_CURSOR_MARKER=${ABBR_LINE_CURSOR_MARKER:-%}
 # Enable logging after commands, for example to warn that a deprecated widget was used?
 # deprecated
 typeset -gi ABBR_PRECMD_LOGS=${ABBR_PRECMD_LOGS:-1}
