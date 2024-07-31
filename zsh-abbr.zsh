@@ -272,7 +272,7 @@ abbr() {
         return
       fi
 
-      abbreviation=$1
+      abbreviation=${(Q)1}
 
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
@@ -307,7 +307,7 @@ abbr() {
             source ${_abbr_tmpdir}regular-user-abbreviations
           fi
 
-          if (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)${(Q)abbreviation}}]} )); then
+          if (( ${+ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)${(Q)${(q)abbreviation}}}]} )); then
             (( ABBR_DEBUG )) && 'builtin' 'echo' "  Found a regular user abbreviation"
             abbreviations_sets+=( ABBR_REGULAR_USER_ABBREVIATIONS )
           fi
@@ -315,13 +315,13 @@ abbr() {
       fi
 
       if ! (( ${#abbreviations_sets} )); then
-        _abbr:util_error "abbr erase: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)abbreviation}\` found"
+        _abbr:util_error "abbr erase: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)${(q)abbreviation}}\` found"
       elif (( ${#abbreviations_sets} == 1 )); then
         verb_phrase="Would erase"
 
         if ! (( dry_run )); then
           verb_phrase="Erased"
-          unset "${abbreviations_sets}[${(qqq)${(Q)abbreviation}}]" # quotation marks required
+          unset "${abbreviations_sets}[${(qqq)${(Q)${(q)abbreviation}}}]" # quotation marks required
 
           if [[ $abbreviations_sets =~ USER ]]; then
             _abbr:util_sync_user
@@ -334,7 +334,7 @@ abbr() {
         verb_phrase="Did not erase"
         (( dry_run )) && verb_phrase="Would not erase"
 
-        message="$error_color$verb_phrase$reset_color abbreviation \`${(Q)abbreviation}\`. Please specify one of\\n"
+        message="$error_color$verb_phrase$reset_color abbreviation \`${(Q)${(q)abbreviation}}\`. Please specify one of\\n"
 
         for abbreviations_set in $abbreviations_sets; do
           _abbr:util_set_to_typed_scope $abbreviations_set
