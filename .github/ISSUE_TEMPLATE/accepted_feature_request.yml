@@ -1,0 +1,19 @@
+name: Accepted feature request
+description: If a Discussions discussion led to the acceptance of a feature request, write it up here.
+title: "[Feature request] <description>"
+labels: [needs triage, enhancemet]
+body:
+  - type: checkboxes
+    id: update-title
+    attributes:
+      label: Update the issue title
+      description: Replace `<description> with a description of the bug
+      options:
+        - label: I have updated the title
+          required: true
+  - type: textarea
+    id: feature
+    attributes:
+      label: Feature
+    validations:
+      required: true
