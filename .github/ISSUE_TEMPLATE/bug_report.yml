@@ -15,7 +15,7 @@ body:
     id: update-title
     attributes:
       label: Update the issue title
-      description: Replace `<description> with a description of the bug`
+      description: Replace `<description> with a description of the bug
       options:
         - label: I have updated the title
           required: true
