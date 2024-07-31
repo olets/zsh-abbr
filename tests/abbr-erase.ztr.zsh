@@ -24,7 +24,7 @@ main() {
 		abbr erase ${test_abbr_abbreviation}^
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation ending in a caret" \
-			"Dependencies: add, erase. Issues: 118"
+			"Dependencies: add, erase. GitHub issues: #118"
 		
 		# TODO
 		# See
@@ -33,7 +33,7 @@ main() {
 		abbr erase ^$test_abbr_abbreviation
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation starting with a caret" \
-			"Dependencies: add, erase. Issues: 118"
+			"Dependencies: add, erase. GitHub issues: #118"
 		
 		# TODO
 		# See
@@ -42,7 +42,7 @@ main() {
 		abbr erase ${test_abbr_abbreviation}^${test_abbr_abbreviation}
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation with an embedded caret" \
-			"Dependencies: add, erase. Issues: 118"
+			"Dependencies: add, erase. GitHub issues: #118"
 		
 		# TODO
 		# See
@@ -52,7 +52,7 @@ main() {
 		abbr erase $test_abbr_abbreviation'!'
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation ending in an escaped exclamation point" \
-			"Dependencies: add, erase. Issues: 84, 118"
+			"Dependencies: add, erase. GitHub issues: #84, #118"
 		
 		# @TODO
 		# See
@@ -62,7 +62,7 @@ main() {
 		abbr erase \!$test_abbr_abbreviation
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation starting with an escaped exclamation point" \
-			"Dependencies: add, erase. Issues: 84, 118"
+			"Dependencies: add, erase. GitHub issues: #84, #118"
 		
 		# @TODO
 		# See
@@ -72,7 +72,7 @@ main() {
 		abbr erase '!'$test_abbr_abbreviation
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation starting with a single-quoted exclamation point" \
-			"Dependencies: add, erase. Issues: 84, 118"
+			"Dependencies: add, erase. GitHub issues: #84, #118"
 		
 		# @TODO
 		# See
@@ -84,7 +84,7 @@ main() {
 		abbr erase $single_quoted_abbreviation
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation with single quotation marks" \
-			"Dependencies: add, erase. Issues: 118"
+			"Dependencies: add, erase. GitHub issues: #118"
 		
 		# @TODO
 		# See
@@ -96,7 +96,7 @@ main() {
 		abbr erase $double_quoted_abbreviation
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation starting with double quotation marks" \
-			"Dependencies: add, erase. Issues: 118"
+			"Dependencies: add, erase. GitHub issues: #118"
 
 		# Manual
 
