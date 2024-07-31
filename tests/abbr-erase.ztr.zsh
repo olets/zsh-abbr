@@ -49,6 +49,10 @@ main() {
 		# - https://github.com/olets/zsh-abbr/issues/84
 		# - https://github.com/olets/zsh-abbr/issues/118
 		abbr add ${test_abbr_abbreviation}\!=$test_abbr_expansion
+		# these work…
+		# abbr erase $test_abbr_abbreviation'\!'
+		# abbr erase "${test_abbr_abbreviation}\\!"
+		# but this, the one we want working, doesn't
 		abbr erase $test_abbr_abbreviation'!'
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation ending in an escaped exclamation point" \
@@ -59,6 +63,10 @@ main() {
 		# - https://github.com/olets/zsh-abbr/issues/84
 		# - https://github.com/olets/zsh-abbr/issues/118
 		abbr add \!$test_abbr_abbreviation=$test_abbr_expansion
+		# these work…
+		# abbr erase '\!'$test_abbr_abbreviation
+		# abbr erase "\\!$test_abbr_abbreviation"
+		# but this, the one we want working, doesn't
 		abbr erase \!$test_abbr_abbreviation
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation starting with an escaped exclamation point" \
@@ -69,14 +77,15 @@ main() {
 		# - https://github.com/olets/zsh-abbr/issues/84
 		# - https://github.com/olets/zsh-abbr/issues/118
 		abbr add '!'$test_abbr_abbreviation=$test_abbr_expansion
+		# these work…
+		# abbr erase '\!'$test_abbr_abbreviation
+		# abbr erase "\\!$test_abbr_abbreviation"
+		# but this, the one we want working, doesn't
 		abbr erase '!'$test_abbr_abbreviation
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation starting with a single-quoted exclamation point" \
 			"Dependencies: add, erase. GitHub issues: #84, #118"
 		
-		# @TODO
-		# See
-		# - https://github.com/olets/zsh-abbr/issues/118
 		local single_quoted_abbreviation="'"
 		single_quoted_abbreviation+=$test_abbr_abbreviation
 		single_quoted_abbreviation+="'"
@@ -84,11 +93,8 @@ main() {
 		abbr erase $single_quoted_abbreviation
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation with single quotation marks" \
-			"Dependencies: add, erase. GitHub issues: #118"
+			"Dependencies: add, erase"
 		
-		# @TODO
-		# See
-		# - https://github.com/olets/zsh-abbr/issues/118
 		local double_quoted_abbreviation='"'
 		double_quoted_abbreviation+=$test_abbr_abbreviation
 		double_quoted_abbreviation+='"'
@@ -96,7 +102,7 @@ main() {
 		abbr erase $double_quoted_abbreviation
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation starting with double quotation marks" \
-			"Dependencies: add, erase. GitHub issues: #118"
+			"Dependencies: add, erase"
 
 		# Manual
 
