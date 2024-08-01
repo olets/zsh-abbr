@@ -166,35 +166,55 @@ _abbr (){
 }
 
 (( $+functions[__abbr_abbreviations] )) || __abbr_abbreviations() {
-  local -a abbreviations tmp_abbr tmp_expd
-  local scope type
+  local -a pairs
+  local abbreviation expansion scope type
 
   if (( $words[(Ie)-U] || $words[(Ie)--user] )); then
-    scope="-U"
+    scope="user"
   elif (( $words[(Ie)-S] || $words[(Ie)--session] )); then
-    scope="-S"
+    scope="session"
   elif (( $words[(Ie)-r] || $words[(Ie)--regular] )); then
-    type="-r"
+    type="regular"
   elif (( $words[(Ie)-g] || $words[(Ie)--global] )); then
-    type="-g"
+    type="global"
   fi
 
-  tmp_abbr=(${${${(f)"$(_call_program abbreviations abbr list-abbreviations $scope $type 2>/dev/null)"}#\"}%\"})
-  tmp_abbr=(${tmp_abbr//:/\\:})
-  tmp_expd=(${${${${(f)"$(_call_program abbreviations abbr list $scope $type 2>/dev/null)"}#*=}#\"}%\"})
-  tmp_expd=(${tmp_expd//:/\\:})
+  # DUPE (nearly) completions/_abbr's __abbr_abbreviations, zsh-abbr.zsh's _abbr:util_list
 
-  if (( ${#ABBR_REGULAR_USER_ABBREVIATIONS} )); then
-    local len=${#tmp_abbr}
-    for (( i = 1; i <= len; i++ )); do
-      abbreviations+=(${tmp_abbr[$i]}:${tmp_expd[$i]})
-    done
-  else
-    abbreviations=()
+  if [[ $scope != 'session' ]]; then
+    if [[ $type != 'regular' ]]; then
+      for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
+        expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
+        pairs+=( ${(Q)abbreviation}:${(Q)expansion} )
+      done
+    fi
+
+    if [[ $type != 'global' ]]; then
+      for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
+        expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
+        pairs+=( ${(Q)abbreviation}:${(Q)expansion} )
+      done
+    fi
+  fi
+
+  if [[ $scope != 'user' ]]; then
+    if [[ $type != 'regular' ]]; then
+      for abbreviation in ${(iko)ABBR_GLOBAL_SESSION_ABBREVIATIONS}; do
+        expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
+        pairs+=( ${(Q)abbreviation}:${(Q)expansion} )
+      done
+    fi
+
+    if [[ $type != 'global' ]]; then
+      for abbreviation in ${(iko)ABBR_REGULAR_SESSION_ABBREVIATIONS}; do
+        expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
+        pairs+=( ${(Q)abbreviation}:${(Q)expansion} )
+      done
+    fi
   fi
 
   # I don't think the `-t` option for tags is necessary, and completions works just fine.
-  _describe "abbr abbreviations" abbreviations
+  _describe "abbr abbreviations" pairs
 }
 
 _abbr
