@@ -11,7 +11,8 @@
 # ------------------------------------------------------------------------------
 
 _abbr (){
-  local state line
+  local line
+  local state
 
   local -i ret
 
@@ -166,8 +167,14 @@ _abbr (){
 }
 
 (( $+functions[__abbr_abbreviations] )) || __abbr_abbreviations() {
-  local -a abbreviations_sets pairs
-  local abbreviations_set abbreviation expansion pair scope type
+  local abbreviations_set
+  local -a abbreviations_sets
+  local abbreviation
+  local expansion
+  local pair
+  local -a pairs
+  local scope
+  local type
   
   if (( $words[(Ie)-U] || $words[(Ie)--user] )); then
     scope="user"
