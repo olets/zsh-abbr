@@ -165,8 +165,7 @@ _abbr (){
   return ret
 }
 
-(( $+functions[__abbr_abbreviations] )) || # <- This could be removed, it doesn't seems to affect anything, reducing boilerplate
-__abbr_abbreviations() {
+(( $+functions[__abbr_abbreviations] )) || __abbr_abbreviations() {
   local -a abbreviations tmp_abbr tmp_expd
   local scope type
 
