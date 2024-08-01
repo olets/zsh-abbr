@@ -211,7 +211,7 @@ _abbr (){
   for abbreviations_set in $abbreviations_sets; do
     for abbreviation in ${(iko)${(P)abbreviations_set}}; do
       expansion=${${(P)abbreviations_set}[$abbreviation]}
-      completion_and_description=${(Q)abbreviation}:${(Q)expansion}
+      completion_and_description=${(Q)abbreviation//:/\\:}:${(Q)expansion}
       completions_and_descriptions+=( $completion_and_description )
     done
   done
