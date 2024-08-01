@@ -752,6 +752,8 @@ abbr() {
       _abbr_debugger
 
       local abbreviation
+      local abbreviation_set
+      local -a abbreviations_sets
       local expansion
       local -i include_expansion
       local session_prefix
@@ -765,35 +767,30 @@ abbr() {
 
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
-          for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
-            (( include_expansion )) && expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
-            _abbr:util_list_item $abbreviation $expansion ${user_prefix:+$user_prefix -g}
-          done
+          abbreviations_sets+=( ABBR_GLOBAL_USER_ABBREVIATIONS )
         fi
 
         if [[ $type != 'global' ]]; then
-          for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
-            (( include_expansion )) && expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
-            _abbr:util_list_item $abbreviation $expansion $user_prefix
-          done
+          abbreviations_sets+=( ABBR_REGULAR_USER_ABBREVIATIONS )
         fi
       fi
 
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
-          for abbreviation in ${(iko)ABBR_GLOBAL_SESSION_ABBREVIATIONS}; do
-            (( include_expansion )) && expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
-            _abbr:util_list_item $abbreviation $expansion ${session_prefix:+$session_prefix -g}
-          done
+          abbreviations_sets+=( ABBR_GLOBAL_SESSION_ABBREVIATIONS )
         fi
 
         if [[ $type != 'global' ]]; then
-          for abbreviation in ${(iko)ABBR_REGULAR_SESSION_ABBREVIATIONS}; do
-            (( include_expansion )) && expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
-            _abbr:util_list_item $abbreviation $expansion $session_prefix
-          done
+          abbreviations_sets+=( ABBR_REGULAR_SESSION_ABBREVIATIONS )
         fi
       fi
+
+      for abbreviation_set in $abbreviations_sets; do
+        for abbreviation in ${(iko)${(P)abbreviation_set}}; do
+          (( include_expansion )) && expansion=${${(P)abbreviation_set}[$abbreviation]}
+          _abbr:util_list_item $abbreviation $expansion ${user_prefix:+$user_prefix -g}
+        done
+      done
     }
 
     _abbr:util_list_item() {

@@ -166,9 +166,9 @@ _abbr (){
 }
 
 (( $+functions[__abbr_abbreviations] )) || __abbr_abbreviations() {
-  local -a pairs
-  local abbreviation expansion scope type
-
+  local -a abbreviations_sets pairs
+  local abbreviations_set abbreviation expansion pair scope type
+  
   if (( $words[(Ie)-U] || $words[(Ie)--user] )); then
     scope="user"
   elif (( $words[(Ie)-S] || $words[(Ie)--session] )); then
@@ -183,35 +183,31 @@ _abbr (){
 
   if [[ $scope != 'session' ]]; then
     if [[ $type != 'regular' ]]; then
-      for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
-        expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
-        pairs+=( ${(Q)abbreviation}:${(Q)expansion} )
-      done
+      abbreviations_sets+=( ABBR_GLOBAL_USER_ABBREVIATIONS )
     fi
 
     if [[ $type != 'global' ]]; then
-      for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
-        expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
-        pairs+=( ${(Q)abbreviation}:${(Q)expansion} )
-      done
+      abbreviations_sets+=( ABBR_REGULAR_USER_ABBREVIATIONS )
     fi
   fi
 
   if [[ $scope != 'user' ]]; then
     if [[ $type != 'regular' ]]; then
-      for abbreviation in ${(iko)ABBR_GLOBAL_SESSION_ABBREVIATIONS}; do
-        expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
-        pairs+=( ${(Q)abbreviation}:${(Q)expansion} )
-      done
+      abbreviations_sets+=( ABBR_GLOBAL_SESSION_ABBREVIATIONS )
     fi
 
     if [[ $type != 'global' ]]; then
-      for abbreviation in ${(iko)ABBR_REGULAR_SESSION_ABBREVIATIONS}; do
-        expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
-        pairs+=( ${(Q)abbreviation}:${(Q)expansion} )
-      done
+      abbreviations_sets+=( ABBR_REGULAR_SESSION_ABBREVIATIONS )
     fi
   fi
+
+  for abbreviations_set in $abbreviations_sets; do
+    for abbreviation in ${(iko)${(P)abbreviations_set}}; do
+      expansion=${${(P)abbreviations_set}[$abbreviation]}
+      pair=${(Q)abbreviation}:${(Q)expansion}
+      pairs+=( $pair )
+    done
+  done
 
   # I don't think the `-t` option for tags is necessary, and completions works just fine.
   _describe "abbr abbreviations" pairs
