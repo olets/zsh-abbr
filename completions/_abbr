@@ -79,7 +79,7 @@ _abbr (){
             "(-r --regular -g --global)"{-r,--regular}"[expand at the start of the line]" \
             "(-S --session -U --user)"{-S,--session}"[available in this session]" \
             "(-U --user -S --session)"{-U,--user}"[available in all sessions]" \
-            "1: :__abbr_abbreviations"
+            "1: :__abbr_describe_abbreviations"
           ret=0
           ;;
         export-aliases|\
@@ -156,7 +156,7 @@ _abbr (){
             "(-r --regular -g --global)"{-r,--regular}"[expand at the start of the line]" \
             "(-S --session -U --user)"{-S,--session}"[available in this session]" \
             "(-U --user -S --session)"{-U,--user}"[available in all sessions]" \
-            "1: :__abbr_abbreviations"
+            "1: :__abbr_describe_abbreviations"
           ret=0
           ;;
       esac
@@ -166,13 +166,13 @@ _abbr (){
   return ret
 }
 
-(( $+functions[__abbr_abbreviations] )) || __abbr_abbreviations() {
+(( $+functions[__abbr_describe_abbreviations] )) || __abbr_describe_abbreviations() {
   local abbreviations_set
   local -a abbreviations_sets
   local abbreviation
   local expansion
-  local pair
-  local -a pairs
+  local completion_and_description
+  local -a completions_and_descriptions
   local scope
   local type
   
@@ -186,7 +186,7 @@ _abbr (){
     type="global"
   fi
 
-  # DUPE (nearly) completions/_abbr's __abbr_abbreviations, zsh-abbr.zsh's _abbr:util_list
+  # DUPE (nearly) completions/_abbr's __abbr_describe_abbreviations, zsh-abbr.zsh's _abbr:util_list
 
   if [[ $scope != 'session' ]]; then
     if [[ $type != 'regular' ]]; then
@@ -211,13 +211,16 @@ _abbr (){
   for abbreviations_set in $abbreviations_sets; do
     for abbreviation in ${(iko)${(P)abbreviations_set}}; do
       expansion=${${(P)abbreviations_set}[$abbreviation]}
-      pair=${(Q)abbreviation}:${(Q)expansion}
-      pairs+=( $pair )
+      completion_and_description=${(Q)abbreviation}:${(Q)expansion}
+      completions_and_descriptions+=( $completion_and_description )
     done
   done
 
-  # I don't think the `-t` option for tags is necessary, and completions works just fine.
-  _describe "abbr abbreviations" pairs
+  # "_describe [-12JVx] [ -oO | -t tag ] descr name1 [ name2 ] [ opt ... ]
+  # The descr is taken as a string to display above the matches if the format style for the descriptions tag is set. This is followed by one or two names of arrays followed by options to pass to compadd. The array name1 contains the possible completions with their descriptions in the form ‘completion:description’. Any literal colons in completion must be quoted with a backslash. If a name2 is given, it should have the same number of elements as name1; in this case the corresponding elements are added as possible completions instead of the completion strings from name1. The completion list will retain the descriptions from name1. Finally, a set of completion options can appear.
+  # https://zsh.sourceforge.io/Doc/Release/Completion-System.html#Completion-Functions
+  # Here, `_describe descr name1`
+  _describe "abbr completions and descriptions" completions_and_descriptions
 }
 
 _abbr

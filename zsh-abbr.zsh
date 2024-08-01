@@ -780,7 +780,7 @@ abbr() {
       session_prefix=$2
       user_prefix=$3
 
-      # DUPE (nearly) completions/_abbr's __abbr_abbreviations, zsh-abbr.zsh's _abbr:util_list
+      # DUPE (nearly) completions/_abbr's __abbr_describe_abbreviations, zsh-abbr.zsh's _abbr:util_list
 
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
