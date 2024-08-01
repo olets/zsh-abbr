@@ -180,7 +180,9 @@ _abbr (){
     scope="user"
   elif (( $words[(Ie)-S] || $words[(Ie)--session] )); then
     scope="session"
-  elif (( $words[(Ie)-r] || $words[(Ie)--regular] )); then
+  fi
+
+  if (( $words[(Ie)-r] || $words[(Ie)--regular] )); then
     type="regular"
   elif (( $words[(Ie)-g] || $words[(Ie)--global] )); then
     type="global"
