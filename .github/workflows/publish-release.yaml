@@ -8,12 +8,42 @@ jobs:
     name: Bump Homebrew formula
     runs-on: ubuntu-latest
     steps:
-      - name: Bump v5.x formula
+      - name: Bump primary formula
         uses: mislav/bump-homebrew-formula-action@v2.2
+        # @TODO when v6.0.0 is released, change to `contains(github.ref, 'v6')`
         if: "contains(github.ref, 'v5')"
         with:
           formula-name: zsh-abbr
           formula-path: zsh-abbr.rb
+          homebrew-tap: olets/homebrew-tap
+          commit-message: |
+            feat({{formulaName}}): publish {{version}}
+
+            Created by https://github.com/mislav/bump-homebrew-formula-action
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
+
+      # @TODO when there's a v6.x release, manually update the formula once and then uncomment
+      # - name: Bump v6.x formula
+      #   uses: mislav/bump-homebrew-formula-action@v2.2
+      #   if: "contains(github.ref, 'v6')"
+      #   with:
+      #     formula-name: zsh-abbr@6
+      #     formula-path: zsh-abbr@6.rb
+      #     homebrew-tap: olets/homebrew-tap
+      #     commit-message: |
+      #       feat({{formulaName}}): publish {{version}}
+
+      #       Created by https://github.com/mislav/bump-homebrew-formula-action
+      #   env:
+      #     COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
+
+      - name: Bump v5.x formula
+        uses: mislav/bump-homebrew-formula-action@v2.2
+        if: "contains(github.ref, 'v5')"
+        with:
+          formula-name: zsh-abbr@5
+          formula-path: zsh-abbr@5.rb
           homebrew-tap: olets/homebrew-tap
           commit-message: |
             feat({{formulaName}}): publish {{version}}
