@@ -1,11 +1,10 @@
 ---
 editLink: false
-permalink: /community
 ---
 <!--
   This file managed in olets/zsh-abbr
 
-  The above frontmatter is used by olets/zsh-abbr-v5-docs
+  The above frontmatter is used by olets/zsh-abbr-v6-docs
 -->
 
 
