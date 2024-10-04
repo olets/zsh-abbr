@@ -8,9 +8,9 @@ jobs:
     name: Bump Homebrew formula
     runs-on: ubuntu-latest
     steps:
-      - name: Bump v5.x formula
+      - name: Bump primary formula
         uses: mislav/bump-homebrew-formula-action@b3327118b2153c82da63fd9cbf58942146ee99f0 # v3.1
-        if: "contains(github.ref, 'v5')"
+        if: "contains(github.ref, 'v6')"
         with:
           formula-name: zsh-abbr
           formula-path: zsh-abbr.rb
