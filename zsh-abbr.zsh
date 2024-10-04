@@ -997,8 +997,8 @@ abbr() {
       shift $number_opts
 
       if ! (( ABBR_LOADING_USER_ABBREVIATIONS )) && [[ $scope != 'session' ]]; then
-        job_name=$(_abbr_job_name)
-        _abbr_job_push $job_name $action
+        job_name=$(job-queue get-name)
+        job-queue push zsh-abbr $job_name $action
 
         if (( ABBR_AUTOLOAD )); then
           _abbr_load_user_abbreviations
@@ -1017,7 +1017,7 @@ abbr() {
     fi
 
     if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-      _abbr_job_pop $job_name
+      job-queue pop zsh-abbr $job_name
     fi
 
     if ! (( quiet )); then
@@ -1215,100 +1215,6 @@ _abbr_global_expansion() {
   fi
 
   'builtin' 'echo' - ${(Q)expansion}
-}
-
-_abbr_job_pop() {
-  emulate -LR zsh
-
-  _abbr_debugger
-
-  local job_name
-
-  job_name=$1
-
-  'command' 'rm' ${_abbr_tmpdir}jobs/$job_name &>/dev/null
-}
-
-_abbr_job_push() {
-  emulate -LR zsh
-
-  {
-    _abbr_debugger
-
-    local next_job_age
-    local next_job_name
-    local next_job_path
-    local job_description
-    local job_name
-    local job_path
-    local timeout_age
-
-    job_name=$1
-    job_description=$2
-    timeout_age=30 # seconds
-
-    function _abbr_job_push:add_job() {
-      _abbr_debugger
-
-      if ! [[ -d ${_abbr_tmpdir}jobs ]]; then
-        mkdir -p ${_abbr_tmpdir}jobs
-      fi
-
-      'builtin' 'echo' $job_description > ${_abbr_tmpdir}jobs/$job_name
-    }
-
-    function _abbr_job_push:next_job_name() {
-      # cannot support debug message
-
-      'command' 'ls' -t ${_abbr_tmpdir}jobs | tail -1
-    }
-
-    function _abbr_job_push:handle_timeout() {
-      _abbr_debugger
-
-      next_job_path=${_abbr_tmpdir}jobs/$next_job_name
-
-      'builtin' 'echo' "abbr: A job added at $(strftime '%T %b %d %Y' ${next_job_name%%.*}) has timed out."
-      'builtin' 'echo' "The job was related to $(cat $next_job_path)."
-      'builtin' 'echo' "This could be the result of manually terminating an abbr activity, for example during session startup."
-      'builtin' 'echo' "If you believe it reflects an abbr bug, please report it at https://github.com/olets/zsh-abbr/issues/new"
-      'builtin' 'echo'
-
-      'command' 'rm' $next_job_path &>/dev/null
-    }
-
-    function _abbr_job_push:wait_turn() {
-      next_job_name=$(_abbr_job_push:next_job_name)
-
-      while [[ $next_job_name != $job_name ]]; do
-        next_job_name=$(_abbr_job_push:next_job_name)
-
-        next_job_age=$(( $EPOCHREALTIME - ${next_job_name%-*} ))
-
-        if ((  $next_job_age > $timeout_age )); then
-          _abbr_job_push:handle_timeout
-        fi
-
-        sleep 0.01
-      done
-    }
-
-    _abbr_job_push:add_job
-    _abbr_job_push:wait_turn
-  } always {
-    unfunction -m _abbr_job_push:add_job
-    unfunction -m _abbr_job_push:next_job_name
-    unfunction -m _abbr_job_push:handle_timeout
-    unfunction -m _abbr_job_push:wait_turn
-  }
-}
-
-_abbr_job_name() {
-  emulate -LR zsh
-
-  # cannot support debug message
-
-  'builtin' 'echo' $EPOCHREALTIME
 }
 
 _abbr_load_user_abbreviations() {
@@ -1742,7 +1648,24 @@ _abbr_init() {
 
     zmodload zsh/datetime
 
-    job_name=$(_abbr_job_name)
+    _abbr_init:dependencies() {
+      emulate -LR zsh
+
+      _abbr_debugger
+
+      # if installed with Homebrew, will not have .gitmodules
+      if [[ -f ${ABBR_SOURCE_PATH}/.gitmodules && ! -f ${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh ]]; then
+        'builtin' 'print' abbr: Finishing installing dependencies
+        'command' 'git' submodule update --init --recursive &>/dev/null
+      fi
+
+      if ! [[ -f ${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh ]]; then
+        'builtin' 'print' abbr: There was problem finishing installing dependencies
+        return
+      fi
+
+      'builtin' 'source' ${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh
+    }
 
     _abbr_init:add_widgets() {
       emulate -LR zsh
@@ -1854,8 +1777,12 @@ _abbr_init() {
       'builtin' 'autoload' -U colors && colors
     fi
 
-    _abbr_job_push $job_name initialization
     _abbr_debugger
+
+    _abbr_init:dependencies
+
+    job_name=$(job-queue get-name)
+    job-queue push zsh-abbr $job_name initialization
 
     (( ABBR_LOG_AVAILABLE_ABBREVIATION && ABBR_GET_AVAILABLE_ABBREVIATION )) && {
       'builtin' 'autoload' -Uz add-zsh-hook
@@ -1867,7 +1794,7 @@ _abbr_init() {
     _abbr_init:deprecations
     (( ABBR_DEFAULT_BINDINGS )) &&  _abbr_init:bind_widgets
 
-    _abbr_job_pop $job_name
+    job-queue pop zsh-abbr $job_name
     unset ABBR_INITIALIZING
   } always {
     unfunction -m _abbr_init:add_widgets
