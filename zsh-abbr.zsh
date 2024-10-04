@@ -843,7 +843,7 @@ abbr() {
         'builtin' 'echo' "abbr $abbreviation=$expansion" >> $user_updated
       done
 
-      mv $user_updated $ABBR_USER_ABBREVIATIONS_FILE
+      'command' 'mv' $user_updated $ABBR_USER_ABBREVIATIONS_FILE
     }
 
     _abbr:util_set_to_typed_scope_INTERNAL() {
