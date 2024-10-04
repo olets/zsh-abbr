@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Bump v5.x formula
-        uses: mislav/bump-homebrew-formula-action@v2.2
+        uses: mislav/bump-homebrew-formula-action@b3327118b2153c82da63fd9cbf58942146ee99f0 # v3.1
         if: "contains(github.ref, 'v5')"
         with:
           formula-name: zsh-abbr
@@ -23,7 +23,7 @@ jobs:
           COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
 
       - name: Bump v4.x formula
-        uses: mislav/bump-homebrew-formula-action@v2.2
+        uses: mislav/bump-homebrew-formula-action@b3327118b2153c82da63fd9cbf58942146ee99f0 # v3.1
         if: "contains(github.ref, 'v4')"
         with:
           formula-name: zsh-abbr@4
