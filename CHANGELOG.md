@@ -1,3 +1,22 @@
+# [5.8.3](https://github.com/olets/zsh-abbr/compare/v5.8.2...v5.8.3) (2024-10-08)
+
+
+### Bug Fixes
+
+* **sync user:** 'mv': do not follow aliases or custom functions [[#149](https://github.com/olets/zsh-abbr/issues/149)] ([58e0896](https://github.com/olets/zsh-abbr/commit/58e08966ced20c131e9b59b0cc14fb01e35a4881))
+
+
+### Features
+
+* **github:** 'accepted feature request' issue template ([4a5b1c9](https://github.com/olets/zsh-abbr/commit/4a5b1c99adf21fb80a087d7ddf78cbbd7acadb56))
+* **publish-release workflow:** pin mislav/bump-homebrew-formula-action at v3.1 ([07a02be](https://github.com/olets/zsh-abbr/commit/07a02be62468468124cd0baaeac025a511381f13))
+
+### Tests
+
+Increase coverage, including some breaking tests related to [#118](https://github.com/olets/zsh-abbr/issues/118).
+
+
+
 # [5.8.2](https://github.com/olets/zsh-abbr/compare/v5.8.1...v5.8.2) (2024-07-29)
 
 Cleans up a Git conflict resolution mistake.
