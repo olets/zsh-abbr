@@ -101,8 +101,9 @@ main() {
 		. $test_dir/abbr-$cmd.ztr.zsh
 	else
 		for f ($test_dir/abbr-*.ztr.zsh(N.)); do
-			printf "\nFile: %s\n\n" $f
+			printf "File: %s\n" $f
 			. $f
+			echo -
 		done
 	fi
 
@@ -124,7 +125,6 @@ main() {
 	fi
 
 	# Print test suite results
-	echo
 	ztr summary
 }
 
