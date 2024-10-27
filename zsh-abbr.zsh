@@ -1699,10 +1699,10 @@ _abbr_init() {
     _abbr_job_push $job_name initialization
     _abbr_debugger
 
-    # @TODO refactor: after dropping _abbr_precmd
-    # move the `autoload add-zsh-hook` line into the ABBR_LOG_AVAILABLE_ABBREVIATION condition
-    (( ABBR_LOG_AVAILABLE_ABBREVIATION && ABBR_GET_AVAILABLE_ABBREVIATION )) && \
+    (( ABBR_LOG_AVAILABLE_ABBREVIATION && ABBR_GET_AVAILABLE_ABBREVIATION )) && {
+      'builtin' 'autoload' -Uz add-zsh-hook
       add-zsh-hook preexec _abbr_log_available_abbreviation
+    }
 
     _abbr_load_user_abbreviations
     _abbr_init:add_widgets
