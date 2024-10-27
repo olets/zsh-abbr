@@ -28,6 +28,14 @@ main() {
 		abbr_tmpdir_saved \
 		aliases_saved \
 		cmd \
+		prefix_double_quotes \
+		prefix_glob \
+		prefix_glob_match_1 \
+		prefix_glob_match_2 \
+		prefix_glob_mismatch \
+		prefix_multi_word \
+		prefix_one_word \
+		prefix_single_quotes \
 		test_abbr_abbreviation \
 		test_abbr_abbreviation_2 \
 		test_abbr_abbreviation_multiword \
@@ -38,7 +46,8 @@ main() {
 		test_prefix \
 		test_tmpdir
 
-	local -a abbr_prefixes_saved
+	local -a abbr_scalar_prefixes_saved
+	local -a abbr_glob_prefixes_saved
 	
 	local -i abbr_quiet_saved
 
@@ -56,6 +65,18 @@ main() {
 		abbr_dir+=/..
 	fi
 
+	prefix_double_quotes='prefix with "double quotes"'
+	prefix_glob_1="?*globprefix1"
+	prefix_glob_2="?*globprefix2"
+	prefix_multi_word="multi-word prefix"
+	prefix_one_word=one_word_prefix
+	prefix_single_quotes="prefix with 'single quotes'"
+
+	prefix_glob_1_match_1='.globprefix1'
+	prefix_glob_1_match_2='..globprefix1'
+	prefix_glob_1_mismatch='globprefix1'
+	prefix_glob_2_match='.globprefix2'
+
 	test_dir=$abbr_dir/tests
 
 	if [[ ${(%):-%#} == '#' ]]; then
@@ -66,8 +87,10 @@ main() {
 
 	# Save user configuration
 	abbr_expansion_cursor_marker_saved=$ABBR_EXPANSION_CURSOR_MARKER
+	abbr_glob_prefixes_saved=( $ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES )
 	abbr_line_cursor_marker_saved=$ABBR_LINE_CURSOR_MARKER
 	abbr_quiet_saved=$ABBR_QUIET
+	abbr_scalar_prefixes_saved=( $ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES )
 	abbr_tmpdir_saved=$ABBR_TMPDIR
 	ABBR_USER_ABBREVIATIONS_FILE_SAVED=$ABBR_USER_ABBREVIATIONS_FILE
 	aliases_saved=$(alias -L)
@@ -75,6 +98,17 @@ main() {
 	# Configure
 	unset ABBR_EXPANSION_CURSOR_MARKER
 	unset ABBR_LINE_CURSOR_MARKER
+	
+	typeset -a ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES=( )
+	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES+=( $prefix_double_quotes )
+	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES+=( $prefix_multi_word )
+	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES+=( $prefix_one_word )
+	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES+=( $prefix_single_quotes )
+
+	typeset -a ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES=( )
+	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES+=( $prefix_glob_1 )
+	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES+=( $prefix_glob_2 )
+
 	ABBR_QUIET=1
 	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
 	ABBR_TMPDIR=$test_tmpdir
@@ -114,6 +148,8 @@ main() {
 	# Reset
 	ABBR_EXPANSION_CURSOR_MARKER=$abbr_expansion_cursor_marker_saved
 	ABBR_LINE_CURSOR_MARKER=$abbr_line_cursor_marker_saved
+	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES=( $abbr_glob_prefixes_saved )
+	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES=( $abbr_scalar_prefixes_saved )
 	ABBR_QUIET=$abbr_quiet_saved
 	ABBR_TMPDIR=$abbr_tmpdir_saved
 	ABBR_USER_ABBREVIATIONS_FILE=$ABBR_USER_ABBREVIATIONS_FILE_SAVED
