@@ -98,7 +98,7 @@ abbr() {
   _abbr_debugger
 
   {
-    local action error_color job_name logs_silent_when_quiet logs_silent_when_quieter \
+    local action error_color job_id logs_silent_when_quiet logs_silent_when_quieter \
       opt output release_date scope success_color type version warn_color
     local -i dry_run force has_error number_opts quiet quieter should_exit
 
@@ -997,8 +997,8 @@ abbr() {
       shift $number_opts
 
       if ! (( ABBR_LOADING_USER_ABBREVIATIONS )) && [[ $scope != 'session' ]]; then
-        job_name=$(job-queue get-name)
-        job-queue push zsh-abbr $job_name $action
+        job_id=$(job-queue generate-id)
+        job-queue push zsh-abbr $job_id $action
 
         if (( ABBR_AUTOLOAD )); then
           _abbr_load_user_abbreviations
@@ -1017,7 +1017,7 @@ abbr() {
     fi
 
     if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-      job-queue pop zsh-abbr $job_name
+      job-queue pop zsh-abbr $job_id
     fi
 
     if ! (( quiet )); then
@@ -1623,7 +1623,7 @@ _abbr_warn_deprecation() {
 _abbr_init() {
   emulate -LR zsh
 
-  local job_name
+  local job_id
 
   {
     local log_available_abbreviation_hook
@@ -1781,8 +1781,8 @@ _abbr_init() {
 
     _abbr_init:dependencies
 
-    job_name=$(job-queue get-name)
-    job-queue push zsh-abbr $job_name initialization
+    job_id=$(job-queue generate-id)
+    job-queue push zsh-abbr $job_id initialization
 
     (( ABBR_LOG_AVAILABLE_ABBREVIATION && ABBR_GET_AVAILABLE_ABBREVIATION )) && {
       'builtin' 'autoload' -Uz add-zsh-hook
@@ -1794,7 +1794,7 @@ _abbr_init() {
     _abbr_init:deprecations
     (( ABBR_DEFAULT_BINDINGS )) &&  _abbr_init:bind_widgets
 
-    job-queue pop zsh-abbr $job_name
+    job-queue pop zsh-abbr $job_id
     unset ABBR_INITIALIZING
   } always {
     unfunction -m _abbr_init:add_widgets
