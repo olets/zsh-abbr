@@ -11,15 +11,6 @@ _Currently considered feature complete._
 
 ## Next breaking release
 
-- [x] remove `_abbr_precmd`, `ABBR_PRECMD_MESSAGE`, and `ABBR_PRECMD_LOGS`
-- [x] remove `_abbr:util_deprecated`
-- [x] remove `_abbr_add_widgets`
-- [x] remove `_abbr_bind_widgets`
-- [x] remove `_abbr_deprecations`
-- [x] remove `_abbr_init` after initialization
-- [x] remove `_abbr_integrations`
-- [x] make "internal only" functions in fact internal only
-
 ## Maybe?
 
 - [ ] Tests for list commands
