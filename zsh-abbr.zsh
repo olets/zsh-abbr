@@ -43,10 +43,6 @@ typeset -gi ABBR_LOG_AVAILABLE_ABBREVIATION=${ABBR_LOG_AVAILABLE_ABBREVIATION:-0
 # it log come _after_ the command output? (default false)
 typeset -gi ABBR_LOG_AVAILABLE_ABBREVIATION_AFTER=${ABBR_LOG_AVAILABLE_ABBREVIATION_AFTER:-0}
 
-# Enable logging after commands, for example to warn that a deprecated widget was used?
-# deprecated
-typeset -gi ABBR_PRECMD_LOGS=${ABBR_PRECMD_LOGS:-1}
-
 # Should abbr-expand-and-accept push the unexpanded line to the shell history? (default false)
 # If true, if abbr-expand-and-accept expands an abbreviation there will be two history entries:
 # the first is what was typed (with the abbreviation), the second is what was run (with the expansion).
