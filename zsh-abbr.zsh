@@ -45,8 +45,25 @@ typeset -gi ABBR_LOG_AVAILABLE_ABBREVIATION_AFTER=${ABBR_LOG_AVAILABLE_ABBREVIAT
 
 # Should abbr-expand-and-accept push the unexpanded line to the shell history? (default false)
 # If true, if abbr-expand-and-accept expands an abbreviation there will be two history entries:
-# the first is what was typed (with the abbreviation), the second is what was run (with the expansion).
-typeset -gi ABBR_PUSH_HISTORY=${ABBR_PUSH_HISTORY:-0}
+# the first is line with the abbreviation, the second is what was run (with the expansion).
+# With this caveat: if ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY is true, abbr-expand-and-accept
+# will only push the line with the abbreviation to history if it's different from what abbr-expand
+# pushed to history. That is, if you
+# % abbr a=b
+# % a[Enter]
+# the history will be
+# abbr a=b
+# a
+# b
+# not
+# abbr a=b
+# a
+# a
+# b
+typeset -gi ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY=${ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY:-0}
+
+# Should abbr-expand push the abbreviation to the shell history? (default false)
+typeset -gi ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY=${ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY:-0}
 
 # Behave as if `--quiet` was passed? (default false)
 typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
@@ -1464,17 +1481,18 @@ _abbr_log_available_abbreviation() {
 # WIDGETS
 # -------
 
-# must always return $cursor_was_placed so that abbr-expand-and-insert works
+# returns 1 if the cursor wasn't placed and the entire buffer expanded,
+# 2 if the entire buffer expanded and the cursor was placed
+# 3 if only part of the buffer expanded and the cursor was placed
+# 0 otherwise
 abbr-expand() {
   emulate -LR zsh
-
-  # returns 1 if the cursor was placed, otherwise 0
 
   local expansion
   local abbreviation
   local -i i
   local -i j
-  local -i cursor_was_placed
+  local -i ret
   local -a words
 
   ABBR_UNUSED_ABBREVIATION=
@@ -1483,20 +1501,25 @@ abbr-expand() {
   ABBR_UNUSED_ABBREVIATION_SCOPE=
   ABBR_UNUSED_ABBREVIATION_TYPE=
 
-  expansion=$(_abbr_regular_expansion "$LBUFFER")
+  abbreviation=$LBUFFER
   i=1
 
+  expansion=$(_abbr_regular_expansion "$abbreviation")
+
   if [[ -n $expansion ]]; then
-    # DUPE abbr-expand 2x with small LBUFFER distinction
+    # BEGIN DUPE abbr-expand 2x with differences
+    # if it expanded and this widget can push to history
+    (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
     if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion =~ $ABBR_EXPANSION_CURSOR_MARKER ]]; then
-      LBUFFER=${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
+      LBUFFER=${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*} # DUPE difference
       RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
-      cursor_was_placed=1
+      ret=2 # DUPE difference
     else
       LBUFFER=$expansion
+      ret=1 # DUPE difference
     fi
-
-    return $cursor_was_placed
+    return $ret
+    # END DUPE abbr-expand 2x with differences
   fi
 
   words=( ${(z)LBUFFER} )
@@ -1525,19 +1548,21 @@ abbr-expand() {
   if [[ -z $expansion ]]; then
     (( ABBR_GET_AVAILABLE_ABBREVIATION )) && _abbr_get_available_abbreviation
 
-    return $cursor_was_placed
+    return $ret
   fi
 
-  # DUPE (nearly) abbr-expand 2x
+  # BEGIN DUPE abbr-expand 2x with differences
+  # if it expanded and this widget can push to history
+  (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
   if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion =~ $ABBR_EXPANSION_CURSOR_MARKER ]]; then
-    LBUFFER=${LBUFFER%%$abbreviation}${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
+    LBUFFER=${LBUFFER%%$abbreviation}${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*} # DUPE difference 
     RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
-    cursor_was_placed=1
+    ret=3
   else
     LBUFFER=${LBUFFER%%$abbreviation}$expansion
   fi
-
-  return $cursor_was_placed
+  return $ret
+  # END DUPE abbr-expand 2x with differences
 }
 
 abbr-expand-and-accept() {
@@ -1545,17 +1570,29 @@ abbr-expand-and-accept() {
 
   # do not support debug message
 
+  local -i entire_buffer_expanded
   local buffer
-
   local trailing_space
+
   trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
 
   if [[ -z $trailing_space ]]; then
     buffer=$BUFFER
 
-    zle abbr-expand
+    abbr-expand
 
-    (( ABBR_PUSH_HISTORY )) && [[ $buffer != $BUFFER ]] && print -s $buffer
+    # If changing this, abbr-expand may need to change
+    (( $? == 1 || $? == 2 )) && entire_buffer_expanded=1
+
+    # if it expanded and this widget can push to history
+    if [[ $BUFFER != $buffer ]] && (( ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY )); then
+      # if abbr-expand didn't already push the abbreviated line to history
+      if (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )); then
+        (( ! entire_buffer_expanded )) && print -s $buffer
+      else
+        print -s $buffer
+      fi
+    fi
   fi
 
   _abbr_accept-line
@@ -1570,10 +1607,8 @@ abbr-expand-and-insert() {
   abbr-expand
 
   # If changing this, abbr-expand may need to change
-  cursor_was_placed=$?
-  if (( cursor_was_placed )); then
-    return
-  fi
+  (( $? == 2 || $? == 3 )) && cursor_was_placed=1
+  (( cursor_was_placed )) && return
 
   if (( ABBR_SET_LINE_CURSOR )) && [[ $BUFFER =~ $ABBR_LINE_CURSOR_MARKER ]]; then
     buffer=$BUFFER
