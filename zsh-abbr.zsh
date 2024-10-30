@@ -1010,8 +1010,8 @@ abbr() {
       shift $number_opts
 
       if ! (( ABBR_LOADING_USER_ABBREVIATIONS )) && [[ $scope != 'session' ]]; then
-        job_id=$(job-queue generate-id)
-        job-queue push zsh-abbr $job_id $action
+        job_id=$(${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh generate-id)
+        ${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh push zsh-abbr $job_id $action
 
         if (( ABBR_AUTOLOAD )); then
           _abbr_load_user_abbreviations
@@ -1030,7 +1030,7 @@ abbr() {
     fi
 
     if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
-      job-queue pop zsh-abbr $job_id
+      ${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh pop zsh-abbr $job_id
     fi
 
     if ! (( quiet )); then
@@ -1694,8 +1694,6 @@ _abbr_init() {
         'builtin' 'print' abbr: There was a problem finishing installing dependencies
         return 1
       fi
-
-      'builtin' 'source' ${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh
     }
 
     _abbr_init:add_widgets() {
@@ -1812,8 +1810,8 @@ _abbr_init() {
 
     _abbr_init:dependencies || return
 
-    job_id=$(job-queue generate-id)
-    job-queue push zsh-abbr $job_id initialization
+    job_id=$(${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh generate-id)
+    ${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh push zsh-abbr $job_id initialization
 
     (( ABBR_LOG_AVAILABLE_ABBREVIATION && ABBR_GET_AVAILABLE_ABBREVIATION )) && {
       'builtin' 'autoload' -Uz add-zsh-hook
@@ -1825,7 +1823,7 @@ _abbr_init() {
     _abbr_init:deprecations
     (( ABBR_DEFAULT_BINDINGS )) &&  _abbr_init:bind_widgets
 
-    job-queue pop zsh-abbr $job_id
+    ${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh pop zsh-abbr $job_id
     unset ABBR_INITIALIZING
   } always {
     unfunction -m _abbr_init:add_widgets
