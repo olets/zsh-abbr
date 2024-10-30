@@ -1830,6 +1830,7 @@ _abbr_init() {
   } always {
     unfunction -m _abbr_init:add_widgets
     unfunction -m _abbr_init:bind_widgets
+    unfunction -m _abbr_init:dependencies
     unfunction -m _abbr_init:deprecations
   }
 }
