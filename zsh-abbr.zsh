@@ -1310,6 +1310,9 @@ _abbr_get_available_abbreviation() {
 
         _abbr_get_available_abbreviation:regular:prefixed() {
           # cannot support debug message
+
+          # inherits `scoped_expansions`
+          # so recommend only calling from `_abbr_get_available_abbreviation:regular`
           
           local expansion
           local expansion_sans_prefix
@@ -1342,9 +1345,16 @@ _abbr_get_available_abbreviation() {
             # or a $expansion with the prefix trimmed if $expansion does start with a prefix
 
             if (( session )); then
-              ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_SESSION_ABBREVIATIONS[(r)${(qqq)expansion_sans_prefix}]}}
+              # without this "do the expansions include `expansion`" condition,
+              # false positives are possible in the "look up abbreviation by `expansion`",
+              # for example if the expansion has an unmatched `(` or `)`
+              (( $scoped_expansions[(Ie)${(qqq)expansion_sans_prefix}] )) && ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_SESSION_ABBREVIATIONS[(r)${(qqq)expansion_sans_prefix}]}}
             else
-              ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_USER_ABBREVIATIONS[(r)${(qqq)expansion_sans_prefix}]}}
+
+              # without this "do the expansions include `expansion`" condition,
+              # false positives are possible in the "look up abbreviation by `expansion`",
+              # for example if the expansion has an unmatched `(` or `)`
+              (( $scoped_expansions[(Ie)${(qqq)expansion_sans_prefix}] )) && ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_USER_ABBREVIATIONS[(r)${(qqq)expansion_sans_prefix}]}}
             fi
 
             if [[ -n $prefix_match ]]; then
@@ -1363,33 +1373,43 @@ _abbr_get_available_abbreviation() {
 
         local expansion
         local -i session
+        local -a scoped_expansions
 
         expansion=$1
         session=$2
 
         if (( session )); then
-          # abbreviation=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)expansion}]
-          ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_SESSION_ABBREVIATIONS[(r)${(qqq)expansion}]}}
+          scoped_expansions=( ${(v)ABBR_REGULAR_SESSION_ABBREVIATIONS} )
+
+          # without this "do the expansions include `expansion`" condition,
+          # false positives are possible in the "look up abbreviation by `expansion`",
+          # for example if the expansion has an unmatched `(` or `)`
+          (( $scoped_expansions[(Ie)${(qqq)expansion}] )) && ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_SESSION_ABBREVIATIONS[(r)${(qqq)expansion}]}}
         else
-          # abbreviation=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)expansion}]
-          ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_USER_ABBREVIATIONS[(r)${(qqq)expansion}]}}
+          scoped_expansions=( ${(v)ABBR_REGULAR_USER_ABBREVIATIONS} )
+
+          # without this "do the expansions include `expansion`" condition,
+          # false positives are possible in the "look up abbreviation by `expansion`",
+          # for example if the expansion has an unmatched `(` or `)`
+          (( $scoped_expansions[(Ie)${(qqq)expansion}] )) && ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_REGULAR_USER_ABBREVIATIONS[(r)${(qqq)expansion}]}}
         fi
 
-        if [[ ! $ABBR_UNUSED_ABBREVIATION ]]; then
-          _abbr_get_available_abbreviation:regular:prefixed $expansion 1
-        fi
-
-        if [[ ! $ABBR_UNUSED_ABBREVIATION ]]; then
+        if [[ -z $ABBR_UNUSED_ABBREVIATION ]]; then
           ABBR_UNUSED_ABBREVIATION_PREFIX=
           _abbr_get_available_abbreviation:regular:prefixed $expansion 0
+        else
+          ABBR_UNUSED_ABBREVIATION+=--found-by
         fi
 
-        if [[ ! $ABBR_UNUSED_ABBREVIATION ]]; then
+        if [[ -z $ABBR_UNUSED_ABBREVIATION ]]; then
           ABBR_UNUSED_ABBREVIATION_PREFIX=
           _abbr_get_available_abbreviation:regular:prefixed $expansion 0
+        else
+          ABBR_UNUSED_ABBREVIATION+=--found-by-_abbr_get_available_abbreviation:regular:prefixed+1
         fi
 
         if [[ -n $ABBR_UNUSED_ABBREVIATION ]]; then
+          ABBR_UNUSED_ABBREVIATION+=--found-by-_abbr_get_available_abbreviation:regular:prefixed+0
           return
         fi
 
@@ -1401,6 +1421,7 @@ _abbr_get_available_abbreviation() {
 
     local expansion
     local -i i
+    local -a scoped_expansions
     local -a words
 
     expansion=$LBUFFER
@@ -1425,10 +1446,17 @@ _abbr_get_available_abbreviation() {
       return
     fi
 
+    scoped_expansions=( ${(v)ABBR_GLOBAL_SESSION_ABBREVIATIONS} )
+
     words=( ${(z)LBUFFER} )
     while [[ -z $ABBR_UNUSED_ABBREVIATION ]] && (( i < ${#words} )); do
-      expansion=${words:$i}
-      ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_SESSION_ABBREVIATIONS[(r)${(qqq)expansion}]}}
+      expansion="${words:$i}"
+
+      # without this "do the expansions include `expansion`" condition,
+      # false positives are possible in the "look up abbreviation by `expansion`",
+      # for example if the expansion has an unmatched `(` or `)`
+      (( $scoped_expansions[(Ie)${(qqq)expansion}] )) && ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_SESSION_ABBREVIATIONS[(r)${(qqq)expansion}]}}
+
       (( i++ ))
     done
 
@@ -1439,11 +1467,18 @@ _abbr_get_available_abbreviation() {
       return
     fi
 
+    scoped_expansions=( ${(v)ABBR_GLOBAL_USER_ABBREVIATIONS} )
+
     i=0
     words=( ${(z)LBUFFER} )
     while [[ -z $ABBR_UNUSED_ABBREVIATION ]] && (( i < ${#words} )); do
-      expansion=${words:$i}
-      ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS[(r)${(qqq)expansion}]}}
+      expansion="${words:$i}"
+
+      # without this "do the expansions include `expansion`" condition,
+      # false positives are possible in the "look up abbreviation by `expansion`",
+      # for example if the expansion has an unmatched `(` or `)`
+      (( $scoped_expansions[(Ie)${(qqq)expansion}] )) && ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS[(r)${(qqq)expansion}]}}
+
       (( i++ ))
     done
 
