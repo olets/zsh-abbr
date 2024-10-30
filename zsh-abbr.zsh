@@ -1735,7 +1735,7 @@ _abbr_init() {
 
       _abbr_debugger
 
-      # _abbr_accept-line is by abbr-expand-and-accept
+      # _abbr_accept-line is called by abbr-expand-and-accept
       # h/t https://github.com/ohmyzsh/ohmyzsh/pull/9466/commits/11c1f96155055719e42c3bac7d10c6ef4168a04f
       if (( ! ${+functions[_abbr_accept-line]} )); then
         case "$widgets[accept-line]" in
