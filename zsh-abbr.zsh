@@ -1691,8 +1691,8 @@ _abbr_init() {
       fi
 
       if ! [[ -f ${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh ]]; then
-        'builtin' 'print' abbr: There was problem finishing installing dependencies
-        return
+        'builtin' 'print' abbr: There was a problem finishing installing dependencies
+        return 1
       fi
 
       'builtin' 'source' ${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh
@@ -1810,7 +1810,7 @@ _abbr_init() {
 
     _abbr_debugger
 
-    _abbr_init:dependencies
+    _abbr_init:dependencies || return
 
     job_id=$(job-queue generate-id)
     job-queue push zsh-abbr $job_id initialization
