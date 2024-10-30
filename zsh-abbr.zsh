@@ -1469,7 +1469,7 @@ _abbr_log_available_abbreviation() {
     style="%F{yellow}"
   fi
 
-  message="abbr: \`$ABBR_UNUSED_ABBREVIATION_PREFIX$ABBR_UNUSED_ABBREVIATION\` is your $ABBR_UNUSED_ABBREVIATION_TYPE $ABBR_UNUSED_ABBREVIATION_SCOPE abbreviation for \`$ABBR_UNUSED_ABBREVIATION_EXPANSION\`"
+  message="abbr: \`$ABBR_UNUSED_ABBREVIATION\`${ABBR_UNUSED_ABBREVIATION_PREFIX:+, prefixed with \`$ABBR_UNUSED_ABBREVIATION_PREFIX\`,} is your $ABBR_UNUSED_ABBREVIATION_TYPE $ABBR_UNUSED_ABBREVIATION_SCOPE abbreviation for \`$ABBR_UNUSED_ABBREVIATION_EXPANSION\`"
 
   if ! _abbr_no_color; then
     message="$style$message%f"
