@@ -1375,7 +1375,7 @@ _abbr_get_available_abbreviation() {
 
         if [[ -z $ABBR_UNUSED_ABBREVIATION ]]; then
           ABBR_UNUSED_ABBREVIATION_PREFIX=
-          _abbr_get_available_abbreviation:regular:prefixed $expansion 0
+          _abbr_get_available_abbreviation:regular:prefixed $expansion 1
         fi
 
         if [[ -z $ABBR_UNUSED_ABBREVIATION ]]; then
@@ -1423,7 +1423,7 @@ _abbr_get_available_abbreviation() {
 
     words=( ${(z)LBUFFER} )
     while [[ -z $ABBR_UNUSED_ABBREVIATION ]] && (( i < ${#words} )); do
-      expansion="${words:$i}"
+      expansion=${words:$i}
       ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_SESSION_ABBREVIATIONS[(re)${(qqq)expansion}]}}
       (( i++ ))
     done
@@ -1440,7 +1440,7 @@ _abbr_get_available_abbreviation() {
     i=0
     words=( ${(z)LBUFFER} )
     while [[ -z $ABBR_UNUSED_ABBREVIATION ]] && (( i < ${#words} )); do
-      expansion="${words:$i}"
+      expansion=${words:$i}
       ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS[(re)${(qqq)expansion}]}}
       (( i++ ))
     done
