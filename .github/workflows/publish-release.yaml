@@ -15,6 +15,7 @@ jobs:
           formula-name: zsh-abbr
           formula-path: zsh-abbr.rb
           homebrew-tap: olets/homebrew-tap
+          download-url: https://github.com/olets/zsh-abbr.git
           commit-message: |
             feat({{formulaName}}): publish {{version}}
 
@@ -29,6 +30,7 @@ jobs:
           formula-name: zsh-abbr@6
           formula-path: zsh-abbr@6.rb
           homebrew-tap: olets/homebrew-tap
+          download-url: https://github.com/olets/zsh-abbr.git
           commit-message: |
             feat({{formulaName}}): publish {{version}}
 
