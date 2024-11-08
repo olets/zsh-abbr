@@ -1508,7 +1508,7 @@ abbr-expand() {
     # BEGIN DUPE abbr-expand 2x with differences
     # if it expanded and this widget can push to history
     (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
-    if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion =~ $ABBR_EXPANSION_CURSOR_MARKER ]]; then
+    if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion != ${expansion/$ABBR_EXPANSION_CURSOR_MARKER} ]]; then
       LBUFFER=${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*} # DUPE difference
       RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
       ret=2 # DUPE difference
@@ -1552,7 +1552,7 @@ abbr-expand() {
   # BEGIN DUPE abbr-expand 2x with differences
   # if it expanded and this widget can push to history
   (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
-  if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion =~ $ABBR_EXPANSION_CURSOR_MARKER ]]; then
+  if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion != ${expansion/$ABBR_EXPANSION_CURSOR_MARKER} ]]; then
     LBUFFER=${LBUFFER%%$abbreviation}${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*} # DUPE difference 
     RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
     ret=3
@@ -1608,7 +1608,7 @@ abbr-expand-and-insert() {
   (( $? == 2 || $? == 3 )) && cursor_was_placed=1
   (( cursor_was_placed )) && return
 
-  if (( ABBR_SET_LINE_CURSOR )) && [[ $BUFFER =~ $ABBR_LINE_CURSOR_MARKER ]]; then
+  if (( ABBR_SET_LINE_CURSOR )) && [[ $BUFFER != ${BUFFER/$ABBR_LINE_CURSOR_MARKER} ]]; then
     buffer=$BUFFER
 
     LBUFFER=${buffer%%$ABBR_LINE_CURSOR_MARKER*}
