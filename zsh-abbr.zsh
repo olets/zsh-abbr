@@ -65,6 +65,11 @@ typeset -gi ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY=${ABBR_EXPAN
 # Should abbr-expand push the abbreviation to the shell history? (default false)
 typeset -gi ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY=${ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY:-0}
 
+# Limitation: doesn't support the user changing their hist_ignore_space setting interactively
+typeset -gi _abbr_hist_ignore_space
+_abbr_hist_ignore_space=$options[hist_ignore_space]
+typeset -gri _abbr_hist_ignore_space
+
 # Behave as if `--quiet` was passed? (default false)
 typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
 
@@ -99,7 +104,7 @@ if [[ ${(t)ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES} == ${${(t)ABBR_REGULAR_ABB
 fi
 
 if [[ ${(t)ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES} == ${${(t)ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES}#array} ]]; then
-  typeset -ga ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES=( )
+  typeset -ga ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES=( ' ' )
 fi
 
 # FUNCTIONS
@@ -1096,6 +1101,8 @@ _abbr_regular_expansion() {
           abbreviation=$1
           use_globbing=$2
 
+          # setopt extended_glob
+
           prefixes=( $ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES )
 
           (( use_globbing )) && prefixes=( $ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES )
@@ -1490,6 +1497,7 @@ abbr-expand() {
   local abbreviation
   local -i i
   local -i j
+  local -i matched_full_buffer
   local -i ret
   local -a words
 
@@ -1569,10 +1577,15 @@ abbr-expand-and-accept() {
   # do not support debug message
 
   local -i entire_buffer_expanded
+  local -i hist_ignore
   local buffer
   local trailing_space
 
   trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
+
+  if [[ $_abbr_hist_ignore_space == on ]] && [[ $BUFFER[1] == ' ' ]]; then
+    hist_ignore=1
+  fi
 
   if [[ -z $trailing_space ]]; then
     buffer=$BUFFER
@@ -1583,7 +1596,7 @@ abbr-expand-and-accept() {
     (( $? == 1 || $? == 2 )) && entire_buffer_expanded=1
 
     # if it expanded and this widget can push to history
-    if [[ $BUFFER != $buffer ]] && (( ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY )); then
+    if (( ! hist_ignore )) && [[ $BUFFER != $buffer ]] && (( ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY )); then
       # if abbr-expand didn't already push the abbreviated line to history
       if (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )); then
         (( ! entire_buffer_expanded )) && print -s $buffer
