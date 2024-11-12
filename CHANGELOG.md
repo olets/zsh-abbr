@@ -1,3 +1,33 @@
+# [6.0.0](https://github.com/olets/zsh-abbr/compare/v6.0.0-beta.2...v6.0.0) (2024-11-12)
+
+⚠️ Has breaking changes. If you do advanced configuration, read the [migration guide](https://zsh-abbr.olets.dev/migrating-between-versions.html) and/or read about [pinning v5.x](https://v5.zsh-abbr.olets.dev/installation.html).
+
+<https://zsh-abbr.olets.dev/> is now the v6 docs. The v5 docs are available at <https://v5.zsh-abbr.olets.dev/>.
+
+- 🆕 [Save to history](https://zsh-abbr.olets.dev/history.html)
+- 🆕 [Prefixes](https://zsh-abbr.olets.dev/prefixes.html)
+- 🆕 [Reminders](https://zsh-abbr.olets.dev/reminders.html)
+- Drops everything that was deprecated in v5.x
+
+See also the v6.0.0 beta releases' release notes, below.
+
+### Bug Fixes
+
+* **cursor:** do not treat markers as patterns [[#140](https://github.com/olets/zsh-abbr/issues/140)] ([4449f42](https://github.com/olets/zsh-abbr/commit/4449f42ee91108ed74e1bb8ac721ebb82781998a))
+
+
+# [6.0.0-beta.2](https://github.com/olets/zsh-abbr/compare/v6.0.0-beta.2...v6.0.0-beta.2) (2024-10-31)
+
+### Bug Fixes
+
+* **reminders**: fix [[#154](https://github.com/olets/zsh-abbr/issues/154)]
+
+
+# [6.0.0-beta.1](https://github.com/olets/zsh-abbr/compare/v6.0.0-beta.2...v6.0.0-beta.1) (2024-10-29)
+
+Drop deprecated things; introduce history, prefixes, and reminders.
+
+
 # [5.8.3](https://github.com/olets/zsh-abbr/compare/v5.8.2...v5.8.3) (2024-10-08)
 
 
