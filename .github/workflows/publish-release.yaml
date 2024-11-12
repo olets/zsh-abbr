@@ -8,12 +8,42 @@ jobs:
     name: Bump Homebrew formula
     runs-on: ubuntu-latest
     steps:
+      - name: Bump primary formula
+        uses: mislav/bump-homebrew-formula-action@b3327118b2153c82da63fd9cbf58942146ee99f0 # v3.1
+        if: "contains(github.ref, 'v6')"
+        with:
+          formula-name: zsh-abbr
+          formula-path: zsh-abbr.rb
+          homebrew-tap: olets/homebrew-tap
+          download-url: https://github.com/olets/zsh-abbr.git
+          commit-message: |
+            feat({{formulaName}}): publish {{version}}
+
+            Created by https://github.com/mislav/bump-homebrew-formula-action
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
+
+      - name: Bump v6.x formula
+        uses: mislav/bump-homebrew-formula-action@b3327118b2153c82da63fd9cbf58942146ee99f0 # v3.1
+        if: "contains(github.ref, 'v6')"
+        with:
+          formula-name: zsh-abbr@6
+          formula-path: zsh-abbr@6.rb
+          homebrew-tap: olets/homebrew-tap
+          download-url: https://github.com/olets/zsh-abbr.git
+          commit-message: |
+            feat({{formulaName}}): publish {{version}}
+
+            Created by https://github.com/mislav/bump-homebrew-formula-action
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
+
       - name: Bump v5.x formula
         uses: mislav/bump-homebrew-formula-action@b3327118b2153c82da63fd9cbf58942146ee99f0 # v3.1
         if: "contains(github.ref, 'v5')"
         with:
-          formula-name: zsh-abbr
-          formula-path: zsh-abbr.rb
+          formula-name: zsh-abbr@5
+          formula-path: zsh-abbr@5.rb
           homebrew-tap: olets/homebrew-tap
           commit-message: |
             feat({{formulaName}}): publish {{version}}
