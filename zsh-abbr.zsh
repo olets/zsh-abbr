@@ -68,7 +68,6 @@ typeset -gi ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY=${ABBR_EXPAND_PUSH_ABBREVIA
 # Limitation: doesn't support the user changing their hist_ignore_space setting interactively
 typeset -gi _abbr_hist_ignore_space
 _abbr_hist_ignore_space=$options[hist_ignore_space]
-typeset -gri _abbr_hist_ignore_space
 
 # Behave as if `--quiet` was passed? (default false)
 typeset -gi ABBR_QUIET=${ABBR_QUIET:-0}
