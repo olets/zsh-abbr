@@ -273,7 +273,7 @@ abbr() {
 
         if ! (( dry_run )); then
           verb_phrase="Erased"
-          unset "${abbreviations_sets}[${(b)${(qqq)${(Q)abbreviation}}}]" # quotation marks required
+          unset "${abbreviations_sets}[${(qqq)${(Q)abbreviation}}]" # quotation marks required
 
           if [[ $abbreviations_sets =~ USER ]]; then
             _abbr:util_sync_user
