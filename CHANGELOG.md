@@ -1,3 +1,13 @@
+# [6.0.1](https://github.com/olets/zsh-abbr/compare/v6.0.0...v6.0.1) (2024-12-10)
+
+This is a no-changes release to document and announce impactful updates to associated repos. [[#156](https://github.com/olets/zsh-abbr/issues/156)]
+
+- The `zsh-abbr` and `zsh-abbr@6` Homebrew formulae successfully install zsh-abbr.
+- The GitHub release has an associated working archive.
+- The documentation site's manual installation snippet works.
+- The documentation site includes solutions for installing with zgen, zit, zr, and zsh4humans.
+
+
 # [6.0.0](https://github.com/olets/zsh-abbr/compare/v6.0.0-beta.2...v6.0.0) (2024-11-12)
 
 ⚠️ Has breaking changes. If you do advanced configuration, read the [migration guide](https://zsh-abbr.olets.dev/migrating-between-versions.html) and/or read about [pinning v5.x](https://v5.zsh-abbr.olets.dev/installation.html).
