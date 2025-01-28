@@ -6,35 +6,53 @@ main() {
 	{
 		ZTR_TEARDOWN_FN() {
 			emulate -LR zsh
-			
+
 			[[ $ABBR_USER_ABBREVIATIONS_FILE != $ABBR_USER_ABBREVIATIONS_FILE_SAVED ]] && \
 				echo '' > $ABBR_USER_ABBREVIATIONS_FILE
 		}
-	
+
 		abbr add $test_abbr_abbreviation=$test_abbr_expansion
 		abbr erase $test_abbr_abbreviation
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation" \
 			"Dependencies: add, erase"
-		
+
 		abbr add ${test_abbr_abbreviation}^=$test_abbr_expansion
 		abbr erase ${test_abbr_abbreviation}^
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation ending in a caret" \
 			"Dependencies: add, erase."
-		
+
 		abbr add ^$test_abbr_abbreviation=$test_abbr_expansion
 		abbr erase ^$test_abbr_abbreviation
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation starting with a caret" \
 			"Dependencies: add, erase."
-		
+
 		abbr add ${test_abbr_abbreviation}^${test_abbr_abbreviation}=$test_abbr_expansion
 		abbr erase ${test_abbr_abbreviation}^${test_abbr_abbreviation}
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation with an embedded caret" \
 			"Dependencies: add, erase."
-		
+
+		abbr add "${test_abbr_abbreviation}#"=$test_abbr_expansion
+		abbr erase "${test_abbr_abbreviation}#"
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+			"Can erase an abbreviation ending in a hash" \
+			"Dependencies: add, erase."
+
+		abbr add "#$test_abbr_abbreviation"=$test_abbr_expansion
+		abbr erase "#$test_abbr_abbreviation"
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+			"Can erase an abbreviation starting with a hash" \
+			"Dependencies: add, erase."
+
+		abbr add "${test_abbr_abbreviation}#${test_abbr_abbreviation}"=$test_abbr_expansion
+		abbr erase "${test_abbr_abbreviation}#${test_abbr_abbreviation}"
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+			"Can erase an abbreviation with an embedded hash" \
+			"Dependencies: add, erase."
+
 		# TODO
 		# See
 		# - https://github.com/olets/zsh-abbr/issues/84
@@ -44,7 +62,7 @@ main() {
 		ztr skip '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"@TODO. Can erase an abbreviation ending in an escaped exclamation point" \
 			"Dependencies: add, erase. GitHub issues: #84, #118"
-		
+
 		# See
 		# - https://github.com/olets/zsh-abbr/issues/84
 		# - https://github.com/olets/zsh-abbr/issues/118
@@ -53,7 +71,7 @@ main() {
 		ztr skip '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"@TODO. Can erase an abbreviation starting with an escaped exclamation point" \
 			"Dependencies: add, erase. GitHub issues: #84, #118"
-		
+
 		# See
 		# - https://github.com/olets/zsh-abbr/issues/84
 		# - https://github.com/olets/zsh-abbr/issues/118
@@ -62,7 +80,7 @@ main() {
 		ztr skip '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"@TODO. Can erase an abbreviation starting with a single-quoted exclamation point" \
 			"Dependencies: add, erase. GitHub issues: #84, #118"
-		
+
 		# See
 		# - https://github.com/olets/zsh-abbr/issues/118
 		local single_quoted_abbreviation="'"
