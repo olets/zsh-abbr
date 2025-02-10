@@ -238,7 +238,7 @@ abbr() {
         _abbr:util_error "abbr erase: Expected one argument"
         return
       elif [[ $# < 1 ]]; then
-        _abbr:util_error "abbr erase: Erase needs a variable name"
+        _abbr:util_error "abbr erase: Erase must be passed an abbreviation"
         return
       fi
 
