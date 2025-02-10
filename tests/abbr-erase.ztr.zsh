@@ -65,7 +65,7 @@ main() {
 		# abbr erase "${test_abbr_abbreviation}\\!"
 		# but this, the one we want working, doesn't
 		abbr erase $test_abbr_abbreviation'!'
-		ztr skip '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"@TODO. Can erase an abbreviation ending in an escaped exclamation point" \
 			"Dependencies: add, erase. GitHub issues: #84, #118"
 
@@ -78,7 +78,7 @@ main() {
 		# abbr erase "\\!$test_abbr_abbreviation"
 		# but this, the one we want working, doesn't
 		abbr erase \!$test_abbr_abbreviation
-		ztr skip '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"@TODO. Can erase an abbreviation starting with an escaped exclamation point" \
 			"Dependencies: add, erase. GitHub issues: #84, #118"
 
@@ -91,7 +91,7 @@ main() {
 		# abbr erase "\\!$test_abbr_abbreviation"
 		# but this, the one we want working, doesn't
 		abbr erase '!'$test_abbr_abbreviation
-		ztr skip '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"@TODO. Can erase an abbreviation starting with a single-quoted exclamation point" \
 			"Dependencies: add, erase. GitHub issues: #84, #118"
 
@@ -102,7 +102,7 @@ main() {
 		single_quoted_abbreviation+="'"
 		abbr add $single_quoted_abbreviation=$test_abbr_expansion
 		abbr erase $single_quoted_abbreviation
-		ztr skip '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation with single quotation marks" \
 			"Dependencies: add, erase"
 
@@ -111,7 +111,7 @@ main() {
 		double_quoted_abbreviation+='"'
 		abbr add $double_quoted_abbreviation=$test_abbr_expansion
 		abbr erase $double_quoted_abbreviation
-		ztr skip '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
+		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"Can erase an abbreviation starting with double quotation marks" \
 			"Dependencies: add, erase"
 
