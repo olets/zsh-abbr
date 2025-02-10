@@ -115,13 +115,31 @@ abbr() {
   _abbr_debugger
 
   {
-    local action error_color job_id logs_silent_when_quiet logs_silent_when_quieter \
-      opt output release_date scope success_color type version warn_color
-    local -i dry_run force has_error number_opts quiet quieter should_exit
+    local action
+    local -a args
+    local asterisk
+    local -i dry_run
+    local error_color
+    local -i force
+    local -i has_error
+    local job_id
+    local logs_silent_when_quiet
+    local logs_silent_when_quieter
+    local opt
+    local output
+    local -i quiet
+    local -i quieter
+    local release_date
+    local scope
+    local -i should_exit
+    local success_color
+    local type
+    local version
+    local warn_color
 
+    asterisk=$*
     dry_run=$ABBR_DRY_RUN
     force=$ABBR_FORCE
-    number_opts=0
     quiet=$ABBR_QUIET
     quiet=$(( ABBR_QUIETER || ABBR_QUIET ))
     quieter=$ABBR_QUIETER
@@ -220,7 +238,7 @@ abbr() {
         _abbr:util_error "abbr erase: Expected one argument"
         return
       elif [[ $# < 1 ]]; then
-        _abbr:util_error "abbr erase: Erase needs a variable name"
+        _abbr:util_error "abbr erase: Erase must be passed an abbreviation"
         return
       fi
 
@@ -752,6 +770,8 @@ abbr() {
       _abbr_debugger
 
       local abbreviation
+      local abbreviation_set
+      local -a abbreviations_sets
       local expansion
       local -i include_expansion
       local session_prefix
@@ -761,37 +781,36 @@ abbr() {
       session_prefix=$2
       user_prefix=$3
 
+      # DUPE (nearly) completions/_abbr's __abbr_describe_abbreviations, zsh-abbr.zsh's _abbr:util_list
+
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
-          for abbreviation in ${(iko)ABBR_GLOBAL_USER_ABBREVIATIONS}; do
-            (( include_expansion )) && expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[$abbreviation]}
-            _abbr:util_list_item $abbreviation $expansion ${user_prefix:+$user_prefix -g}
-          done
+          abbreviations_sets+=( ABBR_GLOBAL_USER_ABBREVIATIONS )
         fi
 
         if [[ $type != 'global' ]]; then
-          for abbreviation in ${(iko)ABBR_REGULAR_USER_ABBREVIATIONS}; do
-            (( include_expansion )) && expansion=${ABBR_REGULAR_USER_ABBREVIATIONS[$abbreviation]}
-            _abbr:util_list_item $abbreviation $expansion $user_prefix
-          done
+          abbreviations_sets+=( ABBR_REGULAR_USER_ABBREVIATIONS )
         fi
       fi
 
       if [[ $scope != 'user' ]]; then
         if [[ $type != 'regular' ]]; then
-          for abbreviation in ${(iko)ABBR_GLOBAL_SESSION_ABBREVIATIONS}; do
-            (( include_expansion )) && expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[$abbreviation]}
-            _abbr:util_list_item $abbreviation $expansion ${session_prefix:+$session_prefix -g}
-          done
+          abbreviations_sets+=( ABBR_GLOBAL_SESSION_ABBREVIATIONS )
         fi
 
         if [[ $type != 'global' ]]; then
-          for abbreviation in ${(iko)ABBR_REGULAR_SESSION_ABBREVIATIONS}; do
-            (( include_expansion )) && expansion=${ABBR_REGULAR_SESSION_ABBREVIATIONS[$abbreviation]}
-            _abbr:util_list_item $abbreviation $expansion $session_prefix
-          done
+          abbreviations_sets+=( ABBR_REGULAR_SESSION_ABBREVIATIONS )
         fi
       fi
+
+      for abbreviation_set in $abbreviations_sets; do
+        for abbreviation in ${(iko)${(P)abbreviation_set}}; do
+          (( include_expansion )) && expansion=${${(P)abbreviation_set}[$abbreviation]}
+          _abbr:util_list_item $abbreviation $expansion ${user_prefix:+$user_prefix -g}
+        done
+      done
+
+      # DUPE end
     }
 
     _abbr:util_list_item() {
@@ -839,17 +858,17 @@ abbr() {
     _abbr:util_set_once() {
       _abbr_debugger
 
-      local option value
+      local option
+      local value
 
       option=$1
       value=$2
 
       if [[ ${(P)option} ]]; then
-        return
+        return 1
       fi
 
       eval $option=$value
-      ((number_opts++))
     }
 
     _abbr:util_sync_user() {
@@ -907,39 +926,37 @@ abbr() {
       case $opt in
         "add"|\
         "a")
-          _abbr:util_set_once action add
+          _abbr:util_set_once action add || args+=( $opt )
           ;;
         "git"|\
         "g")
-          _abbr:util_set_once action git
+          _abbr:util_set_once action git || args+=( $opt )
           ;;
         "clear-session"|\
         "c")
-          _abbr:util_set_once action clear_session
+          _abbr:util_set_once action clear_session || args+=( $opt )
           ;;
         "--dry-run")
           dry_run=1
-          ((number_opts++))
           ;;
         "erase"|\
         "e")
-          _abbr:util_set_once action erase
+          _abbr:util_set_once action erase || args+=( $opt )
           ;;
         "expand"|\
         "x")
-          _abbr:util_set_once action expand
+          _abbr:util_set_once action expand || args+=( $opt )
           ;;
         "export-aliases")
-          _abbr:util_set_once action export_aliases
+          _abbr:util_set_once action export_aliases || args+=( $opt )
           ;;
         "--force"|\
         "-f")
           force=1
-          ((number_opts++))
           ;;
         "--global"|\
         "-g")
-          _abbr:util_set_once type global
+          _abbr:util_set_once type global || args+=( $opt )
           ;;
         "help"|\
         "--help")
@@ -947,75 +964,83 @@ abbr() {
           should_exit=1
           ;;
         "import-aliases")
-          _abbr:util_set_once action import_aliases
+          _abbr:util_set_once action import_aliases || args+=( $opt )
           ;;
         "import-fish")
-          _abbr:util_set_once action import_fish
+          _abbr:util_set_once action import_fish || args+=( $opt )
           ;;
         "import-git-aliases")
-          _abbr:util_set_once action import_git_aliases
+          _abbr:util_set_once action import_git_aliases || args+=( $opt )
           ;;
         "list")
-          _abbr:util_set_once action list
+          _abbr:util_set_once action list || args+=( $opt )
           ;;
         "list-abbreviations"|\
         "l")
-          _abbr:util_set_once action list_abbreviations
+          _abbr:util_set_once action list_abbreviations || args+=( $opt )
           ;;
         "list-commands"|\
         "L"|\
         "-L")
           # -L option is to match the builtin alias's `-L`
-          _abbr:util_set_once action list_commands
+          _abbr:util_set_once action list_commands || args+=( $opt )
           ;;
         "load")
           _abbr_load_user_abbreviations
           should_exit=1
           ;;
         "profile")
-          _abbr:util_set_once action profile
+          _abbr:util_set_once action profile || args+=( $opt )
           ;;
         "--quiet"|\
         "-q")
           quiet=1
-          ((number_opts++))
           ;;
         "--quieter"|\
         "-qq")
           quiet=1
           quieter=1
-          ((number_opts++))
           ;;
         "--regular"|\
         "-r")
-          _abbr:util_set_once type regular
+          _abbr:util_set_once type regular || args+=( $opt )
           ;;
         "rename"|\
         "R")
-          _abbr:util_set_once action rename
+          _abbr:util_set_once action rename || args+=( $opt )
           ;;
         "--session"|\
         "-S")
-          _abbr:util_set_once scope session
+          _abbr:util_set_once scope session || args+=( $opt )
           ;;
         "--user"|\
         "-U")
-          _abbr:util_set_once scope user
+          _abbr:util_set_once scope user || args+=( $opt )
           ;;
         "version"|\
         "--version"|\
         "-v")
-          _abbr:util_set_once action print_version
+          _abbr:util_set_once action print_version || args+=( $opt )
           ;;
         "--")
-          ((number_opts++))
+          # ${*#*--} trims `--` performs the string trim on every item in $*
+          args+=( ${(z)${asterisk#*--}} )
           break
+          ;;
+        *)
+          args+=( $opt )
           ;;
       esac
     done
 
     if ! (( should_exit )); then
-      shift $number_opts
+      if [[ -z $action ]]; then
+        if (( ${#args} )); then
+          action=add
+        else
+          action=list
+        fi
+      fi
 
       if ! (( ABBR_LOADING_USER_ABBREVIATIONS )) && [[ $scope != 'session' ]]; then
         job_id=$(${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh generate-id)
@@ -1026,18 +1051,8 @@ abbr() {
         fi
       fi
 
-      if [[ $action ]]; then
-        _abbr:${action} $@
-        has_error=$?
-      elif [[ $# > 0 ]]; then
-        # default if arguments are provided
-        _abbr:add $@
-        has_error=$?
-      else
-        # default if no argument is provided
-        _abbr:list $@
-        has_error=$?
-      fi
+      _abbr:${action} $args
+      has_error=$?
     fi
 
     if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
