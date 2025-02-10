@@ -108,7 +108,9 @@ main() {
             "(-g --global -r --regular)"{-g,--global}"[expand everywhere]" \
             "(-g --global -r --regular)"{-r,--regular}"[expand at the start of the line]" \
             "(-q --quiet -qq --quieter)"{-q,--quiet}"[silence success output]" \
-            "(-q --quiet -qq --quieter)"{-qq,--quieter}"[silence success output and warnings]"
+            "(-q --quiet -qq --quieter)"{-qq,--quieter}"[silence success output and warnings]" \
+            "(-S --session -U --user)"{-S,--session}"[available in this session]" \
+            "(-S --session -U --user)"{-U,--user}"[available in all sessions]"
           ret=0
           ;;
         import-fish)
