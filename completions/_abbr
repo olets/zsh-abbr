@@ -175,7 +175,7 @@ _abbr (){
   local -a completions_and_descriptions
   local scope
   local type
-  
+
   if (( $words[(Ie)-U] || $words[(Ie)--user] )); then
     scope="user"
   elif (( $words[(Ie)-S] || $words[(Ie)--session] )); then
