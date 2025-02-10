@@ -809,6 +809,8 @@ abbr() {
           _abbr:util_list_item $abbreviation $expansion ${user_prefix:+$user_prefix -g}
         done
       done
+
+      # DUPE end
     }
 
     _abbr:util_list_item() {

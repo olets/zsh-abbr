@@ -211,6 +211,8 @@ main() {
     done
   done
 
+  # DUPE end
+
   # "_describe [-12JVx] [ -oO | -t tag ] descr name1 [ name2 ] [ opt ... ]
   # The descr is taken as a string to display above the matches if the format style for the descriptions tag is set. This is followed by one or two names of arrays followed by options to pass to compadd. The array name1 contains the possible completions with their descriptions in the form ‘completion:description’. Any literal colons in completion must be quoted with a backslash. If a name2 is given, it should have the same number of elements as name1; in this case the corresponding elements are added as possible completions instead of the completion strings from name1. The completion list will retain the descriptions from name1. Finally, a set of completion options can appear.
   # https://zsh.sourceforge.io/Doc/Release/Completion-System.html#Completion-Functions
