@@ -50,7 +50,6 @@ main() {
       case $line[1] in
         a|\
         add)
-          # [<SCOPE>] [<TYPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)] ABBREVIATION=EXPANSION
           _arguments \
             "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
             "(-f --force)"{-f,--force}"[ignore warnings]" \
@@ -64,7 +63,6 @@ main() {
           ;;
         e|\
         erase)
-          # [<SCOPE>] [<TYPE>] [--dry-run] [--quiet] ABBREVIATION
           _arguments \
             "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
             "(-g --global -r --regular)"{-g,--global}"[expand everywhere]" \
@@ -81,7 +79,6 @@ main() {
         list-abbreviations|\
         L|\
         list-commands)
-          # [<SCOPE>] [<TYPE>]
           _arguments \
             "(-g --global -r --regular)"{-g,--global}"[expand everywhere]" \
             "(-g --global -r --regular)"{-r,--regular}"[expand at the start of the line]" \
@@ -90,7 +87,7 @@ main() {
           ret=0
           ;;
         git)
-          # [<SCOPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)] ABBREVIATION=EXPANSION
+          # does not support -g/--global/-r/--regular
           _arguments \
             "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
             "(-f --force)"{-f,--force}"[ignore warnings]" \
@@ -101,7 +98,6 @@ main() {
           ret=0
           ;;
         import-aliases)
-          # [<TYPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)]
           _arguments \
             "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
             "(-f --force)"{-f,--force}"[ignore warnings]" \
@@ -114,7 +110,7 @@ main() {
           ret=0
           ;;
         import-fish)
-          # [<SCOPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)] FILE
+          # does not support -g/--global/-r/--regular
           _arguments \
             "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
             "(-f --force)"{-f,--force}"[ignore warnings]" \
@@ -125,7 +121,6 @@ main() {
           ret=0
           ;;
         import-git-aliases)
-          # [<SCOPE>] [<TYPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)] [--file <config-file>] [--prefix <ABBREVIATION prefix>]
           _arguments \
             "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
             "(--file)--file[path to a Git config file]:filename:_files -/" \
@@ -141,7 +136,6 @@ main() {
           ;;
         R|\
         rename)
-          # [<SCOPE>] [<TYPE>] [--dry-run] [(--quiet | --quieter)] [(-f | --force)] OLD NEW
           _arguments \
             "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
             "(-f --force)"{-f,--force}"[ignore warnings]" \
