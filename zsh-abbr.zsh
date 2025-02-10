@@ -1089,14 +1089,14 @@ _abbr_regular_expansion() {
 
         _abbr_regular_expansion:get_expansion:get_prefixed_expansion() {
           # cannot support debug message
-          
+
           local abbreviation
           local abbreviation_sans_prefix
           local prefix_match
           local prefix_pattern
           local -a prefixes
           local -i use_globbing
-          
+
           abbreviation=$1
           use_globbing=$2
 
@@ -1316,14 +1316,14 @@ _abbr_get_available_abbreviation() {
 
         _abbr_get_available_abbreviation:regular:prefixed() {
           # cannot support debug message
-          
+
           local expansion
           local expansion_sans_prefix
           local prefix_match
           local prefix_pattern
           local -a prefixes
           local -i use_globbing
-          
+
           expansion=$1
           use_globbing=$2
 
@@ -1560,7 +1560,7 @@ abbr-expand() {
   # if it expanded and this widget can push to history
   (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
   if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion != ${expansion/$ABBR_EXPANSION_CURSOR_MARKER} ]]; then
-    LBUFFER=${LBUFFER%%$abbreviation}${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*} # DUPE difference 
+    LBUFFER=${LBUFFER%%$abbreviation}${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*} # DUPE difference
     RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
     ret=3
   else
@@ -1671,7 +1671,7 @@ _abbr_init() {
 
     log_available_abbreviation_hook=preexec
     (( ABBR_LOG_AVAILABLE_ABBREVIATION_AFTER )) && log_available_abbreviation_hook=precmd
-    
+
     typeset -g ABBR_UNUSED_ABBREVIATION
     typeset -g ABBR_UNUSED_ABBREVIATION_EXPANSION
     typeset -g ABBR_UNUSED_ABBREVIATION_PREFIX
