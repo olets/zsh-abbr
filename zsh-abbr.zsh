@@ -307,6 +307,10 @@ abbr() {
 
       expansion=$(_abbr:expansion $*)
 
+      if [[ -z $expansion ]]; then
+        return 1
+      fi
+
       _abbr:util_print $expansion
     }
 
@@ -1024,12 +1028,15 @@ abbr() {
 
       if [[ $action ]]; then
         _abbr:${action} $@
+        has_error=$?
       elif [[ $# > 0 ]]; then
         # default if arguments are provided
         _abbr:add $@
+        has_error=$?
       else
         # default if no argument is provided
         _abbr:list $@
+        has_error=$?
       fi
     fi
 
