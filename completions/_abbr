@@ -55,9 +55,9 @@ main() {
             "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
             "(-f --force)"{-f,--force}"[ignore warnings]" \
             "(-g --global -r --regular)"{-g,--global}"[expand everywhere]" \
+            "(-g --global -r --regular)"{-r,--regular}"[expand at the start of the line]" \
             "(-q --quiet -qq --quieter)"{-q,--quiet}"[silence success output]" \
             "(-q --quiet -qq --quieter)"{-qq,--quieter}"[silence success output and warnings]" \
-            "(-g --global -r --regular)"{-r,--regular}"[expand at the start of the line]" \
             "(-S --session -U --user)"{-S,--session}"[available in this session]" \
             "(-S --session -U --user)"{-U,--user}"[available in all sessions]"
           ret=0
@@ -68,8 +68,8 @@ main() {
           _arguments \
             "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
             "(-g --global -r --regular)"{-g,--global}"[expand everywhere]" \
-            "(-q --quiet)"{-q,--quiet}"[silence success output]" \
             "(-g --global -r --regular)"{-r,--regular}"[expand at the start of the line]" \
+            "(-q --quiet)"{-q,--quiet}"[silence success output]" \
             "(-S --session -U --user)"{-S,--session}"[available in this session]" \
             "(-S --session -U --user)"{-U,--user}"[available in all sessions]" \
             "1: :__abbr_describe_abbreviations"
@@ -106,9 +106,9 @@ main() {
             "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
             "(-f --force)"{-f,--force}"[ignore warnings]" \
             "(-g --global -r --regular)"{-g,--global}"[expand everywhere]" \
+            "(-g --global -r --regular)"{-r,--regular}"[expand at the start of the line]" \
             "(-q --quiet -qq --quieter)"{-q,--quiet}"[silence success output]" \
-            "(-q --quiet -qq --quieter)"{-qq,--quieter}"[silence success output and warnings]" \
-            "(-g --global -r --regular)"{-r,--regular}"[expand at the start of the line]"
+            "(-q --quiet -qq --quieter)"{-qq,--quieter}"[silence success output and warnings]"
           ret=0
           ;;
         import-fish)
@@ -127,12 +127,12 @@ main() {
           _arguments \
             "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
             "(--file)--file[path to a Git config file]:filename:_files -/" \
+            "(--prefix)--prefix[prefix added to the ABBREVIATIONs]" \
             "(-f --force)"{-f,--force}"[ignore warnings]" \
             "(-g --global -r --regular)"{-g,--global}"[expand everywhere]" \
-            "(-q --quiet -qq --quieter)"{-q,--quiet}"[silence success output]" \
-            "(--prefix)--prefix[prefix added to the ABBREVIATIONs]" \
-            "(-q --quiet -qq --quieter)"{-qq,--quieter}"[silence success output and warnings]" \
             "(-g --global -r --regular)"{-r,--regular}"[expand at the start of the line]" \
+            "(-q --quiet -qq --quieter)"{-q,--quiet}"[silence success output]" \
+            "(-q --quiet -qq --quieter)"{-qq,--quieter}"[silence success output and warnings]" \
             "(-S --session -U --user)"{-S,--session}"[available in this session]" \
             "(-S --session -U --user)"{-U,--user}"[available in all sessions]"
           ret=0
@@ -144,9 +144,9 @@ main() {
             "(--dry-run)--dry-run[see what would result, without making any actual changes]" \
             "(-f --force)"{-f,--force}"[ignore warnings]" \
             "(-g --global -r --regular)"{-g,--global}"[expand everywhere]" \
+            "(-g --global -r --regular)"{-r,--regular}"[expand at the start of the line]" \
             "(-q --quiet -qq --quieter)"{-q,--quiet}"[silence success output]" \
             "(-q --quiet -qq --quieter)"{-qq,--quieter}"[silence success output and warnings]" \
-            "(-g --global -r --regular)"{-r,--regular}"[expand at the start of the line]" \
             "(-S --session -U --user)"{-S,--session}"[available in this session]" \
             "(-S --session -U --user)"{-U,--user}"[available in all sessions]" \
             "1: :__abbr_describe_abbreviations"
