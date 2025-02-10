@@ -10,7 +10,7 @@
 #
 # ------------------------------------------------------------------------------
 
-_abbr (){
+main() {
   local line
   local state
 
@@ -218,6 +218,6 @@ _abbr (){
   _describe "abbr completions and descriptions" completions_and_descriptions
 }
 
-_abbr
+main
 
 # vim: ft=zsh
