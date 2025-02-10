@@ -1041,18 +1041,16 @@ abbr() {
         fi
       fi
 
-      if [[ $action ]]; then
-        _abbr:${action} $@
-        has_error=$?
-      elif [[ $# > 0 ]]; then
-        # default if arguments are provided
-        _abbr:add $@
-        has_error=$?
-      else
-        # default if no argument is provided
-        _abbr:list $@
-        has_error=$?
+      if [[ -z $action ]]; then
+        if (( ${#args} )); then
+          action=add
+        else
+          action=list
+        fi
       fi
+
+      _abbr:${action} $args
+      has_error=$?
     fi
 
     if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
