@@ -1032,20 +1032,20 @@ abbr() {
     done
 
     if ! (( should_exit )); then
+      if [[ -z $action ]]; then
+        if (( ${#args} )); then
+          action=add
+        else
+          action=list
+        fi
+      fi
+
       if ! (( ABBR_LOADING_USER_ABBREVIATIONS )) && [[ $scope != 'session' ]]; then
         job_id=$(${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh generate-id)
         ${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh push zsh-abbr $job_id $action
 
         if (( ABBR_AUTOLOAD )); then
           _abbr_load_user_abbreviations
-        fi
-      fi
-
-      if [[ -z $action ]]; then
-        if (( ${#args} )); then
-          action=add
-        else
-          action=list
         fi
       fi
 
