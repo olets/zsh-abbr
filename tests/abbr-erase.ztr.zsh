@@ -11,6 +11,8 @@ main() {
 				echo '' > $ABBR_USER_ABBREVIATIONS_FILE
 		}
 
+		# More contexts - for example --global / -g, --regular / -r, --session / -S, --user / -U, are tested in abbr-add.ztr.zsh
+
 		abbr add $test_abbr_abbreviation=$test_abbr_expansion
 		abbr erase $test_abbr_abbreviation
 		ztr test '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
@@ -91,7 +93,7 @@ main() {
 		ztr skip '(( ${#ABBR_REGULAR_USER_ABBREVIATIONS} == 0 ))' \
 			"@TODO. Can erase an abbreviation with single quotation marks" \
 			"Dependencies: add, erase. GitHub issues: #118"
-		
+
 		# See
 		# - https://github.com/olets/zsh-abbr/issues/118
 		local double_quoted_abbreviation='"'

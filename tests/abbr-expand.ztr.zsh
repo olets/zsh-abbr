@@ -6,7 +6,7 @@ main() {
 	{
 		ZTR_TEARDOWN_FN() {
 			emulate -LR zsh
-			
+
 			abbr erase $test_abbr_abbreviation
 		}
 
@@ -15,9 +15,19 @@ main() {
 			"Can expand an abbreviation in a script" \
 			"Dependencies: erase"
 
+		abbr -g add $test_abbr_abbreviation=$test_abbr_expansion
+		ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $test_abbr_expansion ]]' \
+			"Can expand a global abbreviation in a script with the flag before the command" \
+			"Dependencies: erase"
+
+		abbr add $test_abbr_abbreviation=$test_abbr_expansion -g
+		ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $test_abbr_expansion ]]' \
+			"Can expand a global abbreviation in a script with the flag after the command args" \
+			"Dependencies: erase"
+
 		abbr add -g $test_abbr_abbreviation=$test_abbr_expansion
 		ztr test '[[ $(abbr expand $test_abbr_abbreviation) == $test_abbr_expansion ]]' \
-			"Can expand a global abbreviation in a script" \
+			"Can expand a global abbreviation in a script with the flag between the command and its args" \
 			"Dependencies: erase"
 
 		abbr add -S $test_abbr_abbreviation=$test_abbr_expansion
