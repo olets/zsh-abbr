@@ -1023,8 +1023,8 @@ abbr() {
           _abbr:util_set_once action print_version || args+=( $opt )
           ;;
         "--")
-          # ${*#*--} trims `--` performs the string trim on every item in $*
-          args+=( ${(z)${asterisk#*--}} )
+          # ${*#* -- } trims ` -- ` performs the string trim on every item in $*
+          args+=( ${(z)${asterisk#* -- }} )
           break
           ;;
         *)
