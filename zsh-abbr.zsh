@@ -398,6 +398,7 @@ abbr() {
 
       if [[ $saved_type != 'global' ]]; then
         aliases_to_import=( ${(f)"$('builtin' 'alias' -r)"} )
+        # this quotation mark to fix syntax highlighting "
         for alias_to_import in $aliases_to_import; do
           _abbr:util_import_alias $alias_to_import
         done
@@ -407,6 +408,7 @@ abbr() {
         type='global'
 
         aliases_to_import=( ${(f)"$('builtin' 'alias' -g)"} )
+        # this quotation mark to fix syntax highlighting "
         for alias_to_import in $aliases_to_import; do
           _abbr:util_import_alias $alias_to_import
         done
@@ -430,6 +432,7 @@ abbr() {
 
       input_file=$1
       abbreviations=( ${(f)"$(<$input_file)"} )
+      # this quotation mark to fix syntax highlighting "
 
       for abbreviation in $abbreviations; do
         def=${line#* -- }
@@ -635,6 +638,7 @@ abbr() {
 
       if [[ ${abbreviation%=*} != $abbreviation ]]; then
         _abbr:util_error "abbr add: ABBREVIATION (\`${(Q)abbreviation}\`) may not contain an equals sign"
+         # this quotation mark to fix syntax highlighting "
         return 1
       fi
 
@@ -670,6 +674,7 @@ abbr() {
           (( dry_run )) && verb_phrase="Would not add"
 
           _abbr:util_error "$verb_phrase the $typed_scope \`${(Q)abbreviation}\`. It already has an expansion"
+          # this quotation mark to fix syntax highlighting "
           return 2
         fi
 
@@ -688,6 +693,7 @@ abbr() {
       fi
 
       _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color the $typed_scope \`${(Q)abbreviation}\`"
+      # this quotation mark to fix syntax highlighting "
     }
 
     _abbr:util_alias() {
@@ -756,11 +762,13 @@ abbr() {
           (( dry_run )) && verb_phrase="would now expand"
 
           _abbr:util_log_unless_quieter "\`${(Q)abbreviation}\` $verb_phrase as an abbreviation"
+          # this quotation mark to fix syntax highlighting "
         else
           verb_phrase="Did not"
           (( dry_run )) && verb_phrase="Would not"
 
           _abbr:util_warn "$verb_phrase add the abbreviation \`${(Q)abbreviation}\` because a command with the same name exists"
+          # this quotation mark to fix syntax highlighting "
           return 1
         fi
       fi
@@ -864,7 +872,7 @@ abbr() {
       option=$1
       value=$2
 
-      if [[ ${(P)option} ]]; then
+      if [[ "${(P)option}" ]]; then # quoted for syntax highlighting
         return 1
       fi
 
