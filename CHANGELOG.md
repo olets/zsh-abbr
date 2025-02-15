@@ -1,3 +1,17 @@
+# [6.2.0](https://github.com/olets/zsh-abbr/compare/v6.1.0...v6.2.0) (2025-02-15)
+
+### Bug Fixes
+
+- **abbr:** positional arg delimiter is standalone '--' [[#162](https://github.com/olets/zsh-abbr/issues/162)] ([24201fb](https://github.com/olets/zsh-abbr/commit/24201fba248ba6612f834eb37a1e22c6093fd9d4))
+
+### Features
+
+- **abbr:** no flag order opinion ([d4c5b06](https://github.com/olets/zsh-abbr/commit/d4c5b061ea23b68fa8791b5660084cd519b8a2c5))
+- **job-queue:** major upgrade to latest 2.x 'main' ([8a20b54](https://github.com/olets/zsh-abbr/commit/8a20b54fd43ef1a022f566623a112d6f88e353af))
+- **completions:** With thanks to [@Farid-NL](https://github.com/Farid-NL) (see PR [#128](https://github.com/olets/zsh-abbr/pull/128))
+  - Tab completion of options (and don't suggest equivalent options twice (no `--session` suggested if `-S` already in place))
+  - Tab completion of abbreviations in `erase` and `rename`
+
 # [6.1.0](https://github.com/olets/zsh-abbr/compare/v6.0.1...v6.1.0) (2025-02-10)
 
 ### Bug Fixes
