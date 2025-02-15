@@ -1734,6 +1734,8 @@ _abbr_init() {
         'builtin' 'print' abbr: There was a problem finishing installing dependencies
         return 1
       fi
+
+      source ${ABBR_SOURCE_PATH}/zsh-job-queue/zsh-job-queue.zsh
     }
 
     _abbr_init:add_widgets() {
