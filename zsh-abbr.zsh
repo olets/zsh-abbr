@@ -1206,6 +1206,11 @@ _abbr_regular_expansion() {
     }
 
     abbreviation=$1
+
+    # DUPE _abbr_global_expansion, _abbr_regular_expansion
+    # do not expand empty string or all-whitespace string
+    [[ -n ${(z)abbreviation} ]] || return
+
     expansion=$(_abbr_regular_expansion:get_expansion $abbreviation 1)
 
     if [[ ! $expansion ]]; then
@@ -1255,6 +1260,10 @@ _abbr_global_expansion() {
 
   abbreviation=$1
   session=$2
+
+  # DUPE _abbr_global_expansion, _abbr_regular_expansion
+  # do not expand empty string or all-whitespace string
+  [[ -n ${(z)abbreviation} ]] || return
 
   if (( session )); then
     expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]}
