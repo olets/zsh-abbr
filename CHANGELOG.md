@@ -1,3 +1,9 @@
+# [6.2.1](https://github.com/olets/zsh-abbr/compare/v6.2.0...v6.2.1) (2025-02-21)
+
+### Bug Fixes
+
+- **expansion:** do not conflate empty or all-whitespace buffer with '1'... [[#160](https://github.com/olets/zsh-abbr/issues/160)] ([7eda3c1](https://github.com/olets/zsh-abbr/commit/7eda3c1da75c6580bd3791feed24ca261b2d05ac))
+
 # [6.2.0](https://github.com/olets/zsh-abbr/compare/v6.1.0...v6.2.0) (2025-02-15)
 
 ### Bug Fixes
