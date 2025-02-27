@@ -83,7 +83,7 @@ typeset -gi ABBR_SET_EXPANSION_CURSOR=${ABBR_SET_EXPANSION_CURSOR:-0}
 
 # The directory temp files are stored in
 typeset -g _abbr_tmpdir=${${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr}%/}/
-if [[ ${(%):-%#} == '#' ]]; then
+if [[ $UID == 0 || $EUID == 0 ]]; then
   _abbr_tmpdir=${${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr-privileged-users}%/}/
 fi
 
