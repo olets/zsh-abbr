@@ -1517,7 +1517,7 @@ _abbr_log_available_abbreviation() {
     message="$style$message%f"
   fi
 
-  'builtin' 'print' -P '$message'
+  'builtin' 'print' -P $message
 }
 
 # WIDGETS
