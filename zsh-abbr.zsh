@@ -1508,16 +1508,16 @@ _abbr_log_available_abbreviation() {
 
   if ! _abbr_no_color; then
     # @DUPE (nearly) abbr, _abbr_log_available_abbreviation
-    style="%F{yellow}"
+    style="$fg[yellow]"
   fi
 
   message="abbr: \`$ABBR_UNUSED_ABBREVIATION\`${ABBR_UNUSED_ABBREVIATION_PREFIX:+, prefixed with \`$ABBR_UNUSED_ABBREVIATION_PREFIX\`,} is your $ABBR_UNUSED_ABBREVIATION_TYPE $ABBR_UNUSED_ABBREVIATION_SCOPE abbreviation for \`$ABBR_UNUSED_ABBREVIATION_EXPANSION\`"
 
   if ! _abbr_no_color; then
-    message="$style$message%f"
+    message="$style$message$reset_color"
   fi
 
-  'builtin' 'print' -P '$message'
+  'builtin' 'print' $message
 }
 
 # WIDGETS
