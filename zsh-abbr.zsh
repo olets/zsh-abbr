@@ -157,7 +157,7 @@ abbr() {
     elif ! _abbr_no_color; then
       error_color="$fg[red]"
       success_color="$fg[green]"
-      # @DUPE (nearly) abbr, _abbr_log_available_abbreviation
+      # @DUPE (nearly) abbr, _abbr_log_available_abbreviation, _abbr_warn_deprecation
       warn_color="$fg[yellow]"
     fi
 
@@ -1079,14 +1079,14 @@ abbr() {
     fi
 
     if (( has_error )); then
-      [[ -n $output ]] && 'builtin' 'echo' - $output >&2
+      [[ -n $output ]] && 'builtin' 'print' $output >&2
       return 1
     else
       if (( dry_run && ! ABBR_TESTING )); then
         output+="\\n${warn_color}Dry run. Changes not saved.$reset_color"
       fi
 
-      [[ -n $output ]] && 'builtin' 'echo' - $output >&1
+      [[ -n $output ]] && 'builtin' 'print' $output >&1
       return 0
     fi
   }
@@ -1504,17 +1504,17 @@ _abbr_log_available_abbreviation() {
     return
 
   local message
-  local style
 
+  # @DUPE (nearly) abbr, _abbr_log_available_abbreviation, _abbr_warn_deprecation
+  local warn_color
   if ! _abbr_no_color; then
-    # @DUPE (nearly) abbr, _abbr_log_available_abbreviation
-    style="$fg[yellow]"
+    warn_color="$fg[yellow]"
   fi
 
   message="abbr: \`$ABBR_UNUSED_ABBREVIATION\`${ABBR_UNUSED_ABBREVIATION_PREFIX:+, prefixed with \`$ABBR_UNUSED_ABBREVIATION_PREFIX\`,} is your $ABBR_UNUSED_ABBREVIATION_TYPE $ABBR_UNUSED_ABBREVIATION_SCOPE abbreviation for \`$ABBR_UNUSED_ABBREVIATION_EXPANSION\`"
 
   if ! _abbr_no_color; then
-    message="$style$message$reset_color"
+    message="$warn_color$message$reset_color"
   fi
 
   'builtin' 'print' $message
@@ -1683,6 +1683,12 @@ _abbr_warn_deprecation() {
   local message
   local replacement
 
+  # @DUPE (nearly) abbr, _abbr_log_available_abbreviation, _abbr_warn_deprecation
+  local warn_color
+  if ! _abbr_no_color; then
+    warn_color="$fg[yellow]"
+  fi
+
   deprecated=$1
   replacement=$2
   callstack=$3
@@ -1693,7 +1699,7 @@ _abbr_warn_deprecation() {
     message+="\\n${warn_color}Called by \`$callstack\`$reset_color"
   fi
 
-  'builtin' 'print' -P $message
+  'builtin' 'print' $message
 }
 
 # INITIALIZATION
