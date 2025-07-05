@@ -116,7 +116,9 @@ if [[ $UID == 0 || $EUID == 0 ]]; then
   # definition temp directories should not be counted on to exist.
   _abbr_tmpdir_privileged__v6_2_1=${${TMPDIR:-/tmp}%/}/zsh-abbr-privileged-users/ # }
 
-  if [[ -d $_abbr_tmpdir_privileged__v6_2_1 ]]; then
+  if [[ -n $ABBR_TMPDIR_PRIVILEDGED_USERS ]]; then
+    _abbr_tmpdir=$ABBR_TMPDIR_PRIVILEDGED_USERS
+  elif [[ -d $_abbr_tmpdir_privileged__v6_2_1 ]]; then
     _abbr_tmpdir=$_abbr_tmpdir_privileged__v6_2_1
   else
     _abbr_tmpdir+=privileged-users/
