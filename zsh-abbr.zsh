@@ -111,7 +111,18 @@ fi
 # The directory temp files are stored in
 typeset -g _abbr_tmpdir=${${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr}%/}/
 if [[ $UID == 0 || $EUID == 0 ]]; then
-  _abbr_tmpdir=${${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr-privileged-users}%/}/
+  # Support for this temp directory will be dropped in an upcoming version,
+  # potentially a minor version. Theoretically a breaking change, but by
+  # definition temp directories should not be counted on to exist.
+  _abbr_tmpdir_privileged__v6_2_1=${${TMPDIR:-/tmp}%/}/zsh-abbr-privileged-users/ # }
+
+  if [[ -d $_abbr_tmpdir_privileged__v6_2_1 ]]; then
+    _abbr_tmpdir=$_abbr_tmpdir_privileged__v6_2_1
+  else
+    _abbr_tmpdir+=privileged-users/
+  fi
+
+  unset _abbr_tmpdir_privileged__v6_2_1
 fi
 
 # The file abbreviations are stored in
