@@ -1,3 +1,13 @@
+# [6.3.0](https://github.com/olets/zsh-abbr/compare/v6.2.1...v6.3.0) (2025-07-05)
+
+### Bug Fixes
+
+- **reminders:** variables are reliably interpolated [[#173](https://github.com/olets/zsh-abbr/issues/173)] ([7e6068c](https://github.com/olets/zsh-abbr/commit/7e6068c33fd069304c4bd7699e65b5e77742cedc))
+
+### Features
+
+- **job-queue:** major upgrade to latest 2.x 'main' (2.1.0) ([bb3b498](https://github.com/olets/zsh-abbr/commit/bb3b498fe0a35b0925bc8d8c81465c47ce57505a))
+
 # [6.2.1](https://github.com/olets/zsh-abbr/compare/v6.2.0...v6.2.1) (2025-02-21)
 
 ### Bug Fixes
