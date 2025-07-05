@@ -42,4 +42,18 @@ To cut a new release:
 1. If possible to fast-forward `next` to `main`, do so. If it isn't, rebase/merge/etc as needed to have `next` fork off the tip of `main`.
 1. Fast-forward the major-version branch (e.g. branch `v5`) to `main`.
 1. Push `main`, the tag, `next`, the major version branch, and any branches rewritten in the process of bringing `next` up to `main`.
-1. In GitHub, publish a new release. https://github.com/olets/zsh-abbr/releases/new. A GitHub Actions workflow will automatically update the Homebrew formula.
+1. Create an archive at the tag:
+    ```shell
+    git archive --prefix=%ABBR_CURSOR%/ -o %ABBR_CURSOR%.tar.gz %ABBR_CURSOR% # replace cursor with `v`-prefixed tag name
+    ```
+1. Get the archive's SHA. On macOS as of this writing you can
+    ```shell
+    openssl sha256 %ABBR_CURSOR%.tar.gz
+    ```
+1. In GitHub, publish a new release at https://github.com/olets/zsh-abbr/releases/new
+  1. Copy the previous release's release notes.
+  1. Update the CHANGELOG link URL.
+  1. Update the version.
+  1. Update the archive SHA.
+  1. Attach the `tar.gz` archive.
+  1. A GitHub Actions workflow will automatically update the Homebrew formula.
