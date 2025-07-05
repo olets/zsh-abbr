@@ -19,8 +19,13 @@
 main() {
 	emulate -LR zsh
 
+	if ! 'builtin' 'command' -v ztr; then
+		printf "Requires ztr, which was not found. See https://zsh-test-runner.olets.dev\n"
+		return 1
+	fi
+
 	typeset -g ABBR_USER_ABBREVIATIONS_FILE_SAVED
-	
+
 	local \
 		abbr_dir \
 		abbr_expansion_cursor_marker_saved \
@@ -48,7 +53,7 @@ main() {
 
 	local -a abbr_scalar_prefixes_saved
 	local -a abbr_glob_prefixes_saved
-	
+
 	local -i abbr_quiet_saved
 
 	ztr_path=${ztr_path:-$ZTR_PATH}
@@ -98,7 +103,7 @@ main() {
 	# Configure
 	unset ABBR_EXPANSION_CURSOR_MARKER
 	unset ABBR_LINE_CURSOR_MARKER
-	
+
 	typeset -a ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES=( )
 	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES+=( $prefix_double_quotes )
 	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES+=( $prefix_multi_word )
