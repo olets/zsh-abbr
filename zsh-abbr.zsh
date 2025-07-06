@@ -234,6 +234,8 @@ abbr() {
       local message
       local verb_phrase
 
+      local REPLY
+
       if [[ $# > 1 ]]; then
         _abbr:util_error "abbr erase: Expected one argument"
         return
@@ -298,7 +300,8 @@ abbr() {
           fi
         fi
 
-        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color $(_abbr:util_set_to_typed_scope $abbreviations_sets) \`${(Q)abbreviation}\`"
+        _abbr:util_set_to_typed_scope $abbreviations_sets
+        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color $REPLY \`${(Q)abbreviation}\`"
       else
         verb_phrase="Did not erase"
         (( dry_run )) && verb_phrase="Would not erase"
@@ -306,7 +309,8 @@ abbr() {
         message="$error_color$verb_phrase$reset_color abbreviation \`${(Q)abbreviation}\`. Please specify one of\\n"
 
         for abbreviations_set in $abbreviations_sets; do
-          message+="  $(_abbr:util_set_to_typed_scope $abbreviations_set)\\n"
+          _abbr:util_set_to_typed_scope $abbreviations_set
+          message+="  $REPLY\\n"
         done
 
         _abbr:util_error $message
@@ -629,6 +633,8 @@ abbr() {
       local typed_scope
       local verb_phrase
 
+      local REPLY
+
       abbreviation=$1
       expansion=$2
       success=0
@@ -664,7 +670,8 @@ abbr() {
         fi
       fi
 
-      typed_scope=$(_abbr:util_set_to_typed_scope $abbreviations_set)
+      _abbr:util_set_to_typed_scope $abbreviations_set
+      typed_scope=$REPLY
 
       existing_expansion=${${(P)abbreviations_set}[${(qqq)${(Q)abbreviation}}]}
 
@@ -911,7 +918,7 @@ abbr() {
       local abbreviations_set
       abbreviations_set=$1
 
-      'builtin' 'echo' ${${${${abbreviations_set:l}%s}#abbr_}//_/ }
+      REPLY=${${${${abbreviations_set:l}%s}#abbr_}//_/ }
     }
 
     _abbr:util_usage() {
