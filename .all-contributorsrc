@@ -123,6 +123,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "NovaViper",
+      "name": "Ilise Leary",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7191115?v=4",
+      "profile": "https://github.com/NovaViper",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "commitType": "docs"
