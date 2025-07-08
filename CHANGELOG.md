@@ -1,3 +1,9 @@
+# [6.3.2](https://github.com/olets/zsh-abbr/compare/v6.3.1...v6.3.2) (2025-07-08)
+
+- **performance**: add, erase use REPLY instead of subshell output. Thanks to @5A6F65
+ (see PR [#179](https://github.com/olets/zsh-abbr/issues/179)) ([a39d6d5](https://github.com/olets/zsh-abbr/commit/a39d6d53f166739dc2d29298eae5cc03fa2a3be6))
+
+
 # [6.3.1](https://github.com/olets/zsh-abbr/compare/v6.3.0...v6.3.1) (2025-07-08)
 
 ### Bug Fixes
