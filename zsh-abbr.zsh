@@ -1500,24 +1500,10 @@ _abbr_get_available_abbreviation() {
 }
 
 _abbr_log_available_abbreviation() {
-  # For debugging, call manually passing up to string arguments
-
-  local unused_abbreviation
-  local unused_abbreviation_prefix
-  local unused_abbreviation_scope
-  local unused_abbreviation_type
-  local unused_abbreviation_expansion
-  local message
-
-  unused_abbreviation=${1:-$ABBR_UNUSED_ABBREVIATION}
-  unused_abbreviation_expansion=${2:-$ABBR_UNUSED_ABBREVIATION_EXPANSION}
-
-  unused_abbreviation_prefix=${3:-$ABBR_UNUSED_ABBREVIATION_PREFIX}
-  unused_abbreviation_scope=${4:-$ABBR_UNUSED_ABBREVIATION_SCOPE}
-  unused_abbreviation_type=${5:-$ABBR_UNUSED_ABBREVIATION_TYPE}
-
-  [[ -z $unused_abbreviation || -z $unused_abbreviation_expansion ]] && \
+  [[ -z $ABBR_UNUSED_ABBREVIATION || -z $ABBR_UNUSED_ABBREVIATION_EXPANSION ]] && \
     return
+
+  local message
 
   # @DUPE (nearly) abbr, _abbr_log_available_abbreviation, _abbr_warn_deprecation
   local warn_color
@@ -1525,7 +1511,7 @@ _abbr_log_available_abbreviation() {
     warn_color="$fg[yellow]"
   fi
 
-  message="abbr: \`$unused_abbreviation\`${unused_abbreviation_prefix:+, prefixed with \`$unused_abbreviation_prefix\`,} is your ${unused_abbreviation_type:+$unused_abbreviation_type }${unused_abbreviation_scope:+$unused_abbreviation_scope }abbreviation for \`$unused_abbreviation_expansion\`"
+  message="abbr: \`$ABBR_UNUSED_ABBREVIATION\`${ABBR_UNUSED_ABBREVIATION_PREFIX:+, prefixed with \`$ABBR_UNUSED_ABBREVIATION_PREFIX\`,} is your $ABBR_UNUSED_ABBREVIATION_TYPE $ABBR_UNUSED_ABBREVIATION_SCOPE abbreviation for \`$ABBR_UNUSED_ABBREVIATION_EXPANSION\`"
 
   if ! _abbr_no_color; then
     message="$warn_color$message$reset_color"
