@@ -739,7 +739,7 @@ abbr() {
       abbreviation=${1%%=*}
       expansion=${1#*=}
 
-      _abbr:util_add $abbreviation "$('builtin' 'echo' $expansion)"
+      _abbr:util_add "$abbreviation" "$('builtin' 'echo' "$expansion")"
     }
 
     _abbr:util_check_command() {
