@@ -218,7 +218,7 @@ Behave as if `--quiet` was passed? (0 or 1, default 0)
 
 .IP \(bu
 \fIABBR_USER_ABBREVIATIONS_FILE\fR
-File abbreviations are stored in (default ${HOME}/.config/zsh-abbr/user-abbreviations)
+Path to the file the user abbreviations are stored in (default ${XDG_CONFIG_HOME:-$HOME/.config}/zsh-abbr/user-abbreviations, with legacy support for using ${XDG_CONFIG_HOME:-$HOME/.config}/zsh/abbreviations instead if a file exists at that path)
 
 .IP \(bu
 \fINO_COLOR\fR
