@@ -162,7 +162,7 @@ abbr() {
       warn_color="$fg[yellow]"
     fi
 
-    _abbr:add() {
+    _abbr:add_UNFUNCTIONED() {
       _abbr_debugger
 
       local abbreviation
@@ -206,10 +206,10 @@ abbr() {
       type_saved=$type
 
       type='regular'
-      _abbr:add ${abbreviation}="git $expansion"
+      _abbr:add_UNFUNCTIONED ${abbreviation}="git $expansion"
 
       type='global'
-      _abbr:add "git ${abbreviation}"="git $expansion"
+      _abbr:add_UNFUNCTIONED "git ${abbreviation}"="git $expansion"
 
       type=$type_saved
     }
@@ -515,7 +515,7 @@ abbr() {
       done
     }
 
-    _abbr:list() {
+    _abbr:list_UNFUNCTIONED() {
       _abbr_debugger
 
       local -i include_expansion
@@ -1067,7 +1067,7 @@ abbr() {
         fi
       fi
 
-      _abbr:${action} $args
+      _abbr:${action}_UNFUNCTIONED $args
       has_error=$?
     fi
 
@@ -1918,6 +1918,4 @@ _abbr_init_UNFUNCTIONED
 # _abbr_regular_expansion
 
 unfunction -m _abbr
-unfunction -m _abbr:add
-unfunction -m _abbr:list
 unfunction -m "_abbr*_UNFUNCTIONED"
