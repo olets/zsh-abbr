@@ -149,7 +149,7 @@ abbr() {
 
     # Deprecation notices for values that could be meaningfully set after initialization
     # Example form:
-    # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
+    # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation_UNFUNCTIONED DEPRECATED_VAL VAL
     # VAL=$DEPRECATED_VAL
 
     if (( ABBR_LOADING_USER_ABBREVIATIONS )); then
@@ -158,7 +158,7 @@ abbr() {
     elif ! _abbr_no_color; then
       error_color="$fg[red]"
       success_color="$fg[green]"
-      # @DUPE (nearly) abbr, _abbr_log_available_abbreviation, _abbr_warn_deprecation
+      # @DUPE (nearly) abbr, _abbr_log_available_abbreviation, _abbr_warn_deprecation_UNFUNCTIONED
       warn_color="$fg[yellow]"
     fi
 
@@ -169,7 +169,7 @@ abbr() {
       local expansion
 
       if [[ $# > 1 ]]; then
-        _abbr:util_error "abbr add: Expected one argument, got $#: $*"
+        _abbr:util_error_UNFUNCTIONED "abbr add: Expected one argument, got $#: $*"
         return
       fi
 
@@ -182,14 +182,14 @@ abbr() {
       fi
 
       if [[ -z $abbreviation || -z $expansion || $abbreviation == $1 ]]; then
-        _abbr:util_error "abbr add: Requires abbreviation and expansion"
+        _abbr:util_error_UNFUNCTIONED "abbr add: Requires abbreviation and expansion"
         return
       fi
 
-      _abbr:util_add $abbreviation $expansion
+      _abbr:util_add_UNFUNCTIONED $abbreviation $expansion
     }
 
-    _abbr:git() {
+    _abbr:git_UNFUNCTIONED() {
       _abbr_debugger
 
       local abbreviation
@@ -197,7 +197,7 @@ abbr() {
       local type_saved
 
       if [[ $# > 1 ]]; then
-        _abbr:util_error "abbr add: Expected one argument, got $#: $*"
+        _abbr:util_error_UNFUNCTIONED "abbr add: Expected one argument, got $#: $*"
         return
       fi
 
@@ -214,11 +214,11 @@ abbr() {
       type=$type_saved
     }
 
-    _abbr:clear_session() {
+    _abbr:clear_session_UNFUNCTIONED() {
       _abbr_debugger
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error "abbr clear-session: Unexpected argument"
+        _abbr:util_error_UNFUNCTIONED "abbr clear-session: Unexpected argument"
         return
       fi
 
@@ -226,7 +226,7 @@ abbr() {
       ABBR_GLOBAL_SESSION_ABBREVIATIONS=( )
     }
 
-    _abbr:erase() {
+    _abbr:erase_UNFUNCTIONED() {
       _abbr_debugger
 
       local abbreviation
@@ -238,10 +238,10 @@ abbr() {
       local REPLY
 
       if [[ $# > 1 ]]; then
-        _abbr:util_error "abbr erase: Expected one argument"
+        _abbr:util_error_UNFUNCTIONED "abbr erase: Expected one argument"
         return
       elif [[ $# < 1 ]]; then
-        _abbr:util_error "abbr erase: Erase must be passed an abbreviation"
+        _abbr:util_error_UNFUNCTIONED "abbr erase: Erase must be passed an abbreviation"
         return
       fi
 
@@ -288,7 +288,7 @@ abbr() {
       fi
 
       if ! (( ${#abbreviations_sets} )); then
-        _abbr:util_error "abbr erase: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)abbreviation}\` found"
+        _abbr:util_error_UNFUNCTIONED "abbr erase: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)abbreviation}\` found"
       elif (( ${#abbreviations_sets} == 1 )); then
         verb_phrase="Would erase"
 
@@ -297,12 +297,12 @@ abbr() {
           unset "${abbreviations_sets}[${(qqq)${(Q)abbreviation}}]" # quotation marks required
 
           if [[ $abbreviations_sets =~ USER ]]; then
-            _abbr:util_sync_user
+            _abbr:util_sync_user_UNFUNCTIONED
           fi
         fi
 
-        _abbr:util_set_to_typed_scope $abbreviations_sets
-        _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color $REPLY \`${(Q)abbreviation}\`"
+        _abbr:util_set_to_typed_scope_UNFUNCTIONED $abbreviations_sets
+        _abbr:util_log_unless_quiet_UNFUNCTIONED "$success_color$verb_phrase$reset_color $REPLY \`${(Q)abbreviation}\`"
       else
         verb_phrase="Did not erase"
         (( dry_run )) && verb_phrase="Would not erase"
@@ -310,41 +310,41 @@ abbr() {
         message="$error_color$verb_phrase$reset_color abbreviation \`${(Q)abbreviation}\`. Please specify one of\\n"
 
         for abbreviations_set in $abbreviations_sets; do
-          _abbr:util_set_to_typed_scope $abbreviations_set
+          _abbr:util_set_to_typed_scope_UNFUNCTIONED $abbreviations_set
           message+="  $REPLY\\n"
         done
 
-        _abbr:util_error $message
+        _abbr:util_error_UNFUNCTIONED $message
       fi
     }
 
-    _abbr:expand() {
+    _abbr:expand_UNFUNCTIONED() {
       _abbr_debugger
 
       local expansion
 
       if ! (( $# )); then
-        _abbr:util_error "abbr expand: requires an argument"
+        _abbr:util_error_UNFUNCTIONED "abbr expand: requires an argument"
         return
       fi
 
-      expansion=$(_abbr:expansion $*)
+      expansion=$(_abbr:expansion_UNFUNCTIONED $*)
 
       if [[ -z $expansion ]]; then
         return 1
       fi
 
-      _abbr:util_print $expansion
+      _abbr:util_print_UNFUNCTIONED $expansion
     }
 
-    _abbr:expansion() {
+    _abbr:expansion_UNFUNCTIONED() {
       _abbr_debugger
 
       local abbreviation
       local expansion
 
       if ! (( $# )); then
-        _abbr:util_error "_abbr:expansion requires an argument"
+        _abbr:util_error_UNFUNCTIONED "_abbr:expansion_UNFUNCTIONED requires an argument"
         return
       fi
 
@@ -365,7 +365,7 @@ abbr() {
       'builtin' 'echo' - $expansion
     }
 
-    _abbr:export_aliases() {
+    _abbr:export_aliases_UNFUNCTIONED() {
       _abbr_debugger
 
       local type_saved
@@ -373,7 +373,7 @@ abbr() {
       type_saved=$type
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error "abbr export-aliases: Unexpected argument"
+        _abbr:util_error_UNFUNCTIONED "abbr export-aliases: Unexpected argument"
         return
       fi
 
@@ -381,10 +381,10 @@ abbr() {
       session_prefix="alias"
       user_prefix="alias"
 
-      _abbr:util_list $include_expansion $session_prefix $user_prefix
+      _abbr:util_list_UNFUNCTIONED $include_expansion $session_prefix $user_prefix
     }
 
-    _abbr:import_aliases() {
+    _abbr:import_aliases_UNFUNCTIONED() {
       _abbr_debugger
 
       local alias_to_import
@@ -397,7 +397,7 @@ abbr() {
       saved_type=$type
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error "abbr import-aliases: Unexpected argument"
+        _abbr:util_error_UNFUNCTIONED "abbr import-aliases: Unexpected argument"
         return
       fi
 
@@ -405,7 +405,7 @@ abbr() {
         aliases_to_import=( ${(f)"$('builtin' 'alias' -r)"} )
         # this quotation mark to fix syntax highlighting "
         for alias_to_import in $aliases_to_import; do
-          _abbr:util_import_alias $alias_to_import
+          _abbr:util_import_alias_UNFUNCTIONED $alias_to_import
         done
       fi
 
@@ -415,14 +415,14 @@ abbr() {
         aliases_to_import=( ${(f)"$('builtin' 'alias' -g)"} )
         # this quotation mark to fix syntax highlighting "
         for alias_to_import in $aliases_to_import; do
-          _abbr:util_import_alias $alias_to_import
+          _abbr:util_import_alias_UNFUNCTIONED $alias_to_import
         done
       fi
 
       type=$saved_type
     }
 
-    _abbr:import_fish() {
+    _abbr:import_fish_UNFUNCTIONED() {
       _abbr_debugger
 
       local abbreviation
@@ -431,7 +431,7 @@ abbr() {
       local input_file
 
       if [[ $# != 1 ]]; then
-        _abbr:util_error "abbr import-fish: requires exactly one argument"
+        _abbr:util_error_UNFUNCTIONED "abbr import-fish: requires exactly one argument"
         return
       fi
 
@@ -444,11 +444,11 @@ abbr() {
         abbreviation=${def%% *}
         expansion=${def#* }
 
-        _abbr:util_add $abbreviation $expansion
+        _abbr:util_add_UNFUNCTIONED $abbreviation $expansion
       done
     }
 
-    _abbr:import_git_aliases() {
+    _abbr:import_git_aliases_UNFUNCTIONED() {
       _abbr_debugger
 
       local config_file
@@ -460,7 +460,7 @@ abbr() {
         case $1 in
           "--file")
             if [[ -z $2 ]]; then
-              _abbr:util_error "abbr import-git-aliases: --file requires a file path"
+              _abbr:util_error_UNFUNCTIONED "abbr import-git-aliases: --file requires a file path"
               return
             fi
 
@@ -470,7 +470,7 @@ abbr() {
             ;;
           "--prefix")
             if [[ -z $2 ]]; then
-              _abbr:util_error "abbr import-git-aliases: --prefix requires a prefix string"
+              _abbr:util_error_UNFUNCTIONED "abbr import-git-aliases: --prefix requires a prefix string"
               return
             fi
 
@@ -479,14 +479,14 @@ abbr() {
             shift 2
             ;;
           *)
-            _abbr:util_error "abbr import-git-aliases: Unexpected argument"
+            _abbr:util_error_UNFUNCTIONED "abbr import-git-aliases: Unexpected argument"
             return
         esac
       done
 
       if [[ -n $config_file ]]; then
         if [[ ! -f $config_file ]]; then
-          _abbr:util_error "abbr import-git-aliases: Config file not found"
+          _abbr:util_error_UNFUNCTIONED "abbr import-git-aliases: Config file not found"
           return
         fi
 
@@ -503,14 +503,14 @@ abbr() {
           verb_phrase="Did not"
           ((dry_run)) && verb_phrase="Would not"
 
-          _abbr:util_warn "$verb_phrase import the Git alias \`$key\` because its expansion is a function"
+          _abbr:util_warn_UNFUNCTIONED "$verb_phrase import the Git alias \`$key\` because its expansion is a function"
         else
           if ! (( ABBR_LOADING_USER_ABBREVIATIONS )); then
             key=${(q)key}
             value=${(q)value}
           fi
 
-          _abbr:util_add "$prefix$key" "git $value"
+          _abbr:util_add_UNFUNCTIONED "$prefix$key" "git $value"
         fi
       done
     }
@@ -521,27 +521,27 @@ abbr() {
       local -i include_expansion
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error "abbr list definitions: Unexpected argument"
+        _abbr:util_error_UNFUNCTIONED "abbr list definitions: Unexpected argument"
         return
       fi
 
       include_expansion=1
 
-      _abbr:util_list $include_expansion
+      _abbr:util_list_UNFUNCTIONED $include_expansion
     }
 
-    _abbr:list_abbreviations() {
+    _abbr:list_abbreviations_UNFUNCTIONED() {
       _abbr_debugger
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error "abbr list: Unexpected argument"
+        _abbr:util_error_UNFUNCTIONED "abbr list: Unexpected argument"
         return
       fi
 
-      _abbr:util_list
+      _abbr:util_list_UNFUNCTIONED
     }
 
-    _abbr:list_commands() {
+    _abbr:list_commands_UNFUNCTIONED() {
       _abbr_debugger
 
       local -i include_expansion
@@ -549,7 +549,7 @@ abbr() {
       local user_prefix
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error "abbr list commands: Unexpected argument"
+        _abbr:util_error_UNFUNCTIONED "abbr list commands: Unexpected argument"
         return
       fi
 
@@ -557,38 +557,38 @@ abbr() {
       session_prefix="abbr -S"
       user_prefix=abbr
 
-      _abbr:util_list $include_expansion $session_prefix $user_prefix
+      _abbr:util_list_UNFUNCTIONED $include_expansion $session_prefix $user_prefix
     }
 
-    _abbr:print_version() {
+    _abbr:print_version_UNFUNCTIONED() {
       _abbr_debugger
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error "abbr version: Unexpected argument"
+        _abbr:util_error_UNFUNCTIONED "abbr version: Unexpected argument"
         return
       fi
 
-      _abbr:util_print $version
+      _abbr:util_print_UNFUNCTIONED $version
     }
 
-    _abbr:profile() {
+    _abbr:profile_UNFUNCTIONED() {
       _abbr_debugger
 
       local zsh_version
 
       if [[ $# > 0 ]]; then
-        _abbr:util_error "abbr version: Unexpected argument"
+        _abbr:util_error_UNFUNCTIONED "abbr version: Unexpected argument"
         return
       fi
 
       zsh_version=$(zsh --version)
 
-      _abbr:util_print $version
-      _abbr:util_print $zsh_version
-      _abbr:util_print "OSTYPE $OSTYPE"
+      _abbr:util_print_UNFUNCTIONED $version
+      _abbr:util_print_UNFUNCTIONED $zsh_version
+      _abbr:util_print_UNFUNCTIONED "OSTYPE $OSTYPE"
     }
 
-    _abbr:rename() {
+    _abbr:rename_UNFUNCTIONED() {
       _abbr_debugger
 
       local err
@@ -597,31 +597,31 @@ abbr() {
       local old
 
       if [[ $# != 2 ]]; then
-        _abbr:util_error "abbr rename: Requires exactly two arguments"
+        _abbr:util_error_UNFUNCTIONED "abbr rename: Requires exactly two arguments"
         return
       fi
 
       current_abbreviation=$1
       new_abbreviation=$2
-      job_group='_abbr:rename'
+      job_group='_abbr:rename_UNFUNCTIONED'
 
-      expansion=$(_abbr:expansion $current_abbreviation)
+      expansion=$(_abbr:expansion_UNFUNCTIONED $current_abbreviation)
 
       if [[ -n $expansion ]]; then
-        _abbr:util_add $new_abbreviation $expansion
+        _abbr:util_add_UNFUNCTIONED $new_abbreviation $expansion
 
         if (( $? )); then
-          _abbr:util_error "abbr rename: ${type:+$type }${scope:+$scope }abbreviation \`${(Q)current_abbreviation}\` left untouched"
+          _abbr:util_error_UNFUNCTIONED "abbr rename: ${type:+$type }${scope:+$scope }abbreviation \`${(Q)current_abbreviation}\` left untouched"
           return 1
         fi
 
-        _abbr:erase $current_abbreviation
+        _abbr:erase_UNFUNCTIONED $current_abbreviation
       else
-        _abbr:util_error "abbr rename: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)current_abbreviation}\` exists"
+        _abbr:util_error_UNFUNCTIONED "abbr rename: No${type:+ $type}${scope:+ $scope} abbreviation \`${(Q)current_abbreviation}\` exists"
       fi
     }
 
-    _abbr:util_add() {
+    _abbr:util_add_UNFUNCTIONED() {
       _abbr_debugger
 
       local abbreviation
@@ -644,7 +644,7 @@ abbr() {
       (( dry_run )) && verb_phrase="Would add"
 
       if [[ ${abbreviation%=*} != $abbreviation ]]; then
-        _abbr:util_error "abbr add: ABBREVIATION (\`${(Q)abbreviation}\`) may not contain an equals sign"
+        _abbr:util_error_UNFUNCTIONED "abbr add: ABBREVIATION (\`${(Q)abbreviation}\`) may not contain an equals sign"
          # this quotation mark to fix syntax highlighting "
         return 1
       fi
@@ -671,7 +671,7 @@ abbr() {
         fi
       fi
 
-      _abbr:util_set_to_typed_scope $abbreviations_set
+      _abbr:util_set_to_typed_scope_UNFUNCTIONED $abbreviations_set
       typed_scope=$REPLY
 
       existing_expansion=${${(P)abbreviations_set}[${(qqq)${(Q)abbreviation}}]}
@@ -681,7 +681,7 @@ abbr() {
           verb_phrase="Did not add"
           (( dry_run )) && verb_phrase="Would not add"
 
-          _abbr:util_error "$verb_phrase the $typed_scope \`${(Q)abbreviation}\`. It already has an expansion"
+          _abbr:util_error_UNFUNCTIONED "$verb_phrase the $typed_scope \`${(Q)abbreviation}\`. It already has an expansion"
           # this quotation mark to fix syntax highlighting "
           return 2
         fi
@@ -690,21 +690,21 @@ abbr() {
         (( dry_run )) && verb_phrase="Would redefine"
       fi
 
-      _abbr:util_check_command $abbreviation || return 3
+      _abbr:util_check_command_UNFUNCTIONED $abbreviation || return 3
 
       if ! (( dry_run )); then
         eval $abbreviations_set'[${(qqq)${(Q)abbreviation}}]=${(qqq)${(Q)expansion}}'
       fi
 
       if [[ $scope != 'session' ]]; then
-        _abbr:util_sync_user
+        _abbr:util_sync_user_UNFUNCTIONED
       fi
 
-      _abbr:util_log_unless_quiet "$success_color$verb_phrase$reset_color the $typed_scope \`${(Q)abbreviation}\`"
+      _abbr:util_log_unless_quiet_UNFUNCTIONED "$success_color$verb_phrase$reset_color the $typed_scope \`${(Q)abbreviation}\`"
       # this quotation mark to fix syntax highlighting "
     }
 
-    _abbr:util_alias() {
+    _abbr:util_alias_UNFUNCTIONED() {
       _abbr_debugger
 
       local abbreviation
@@ -726,13 +726,13 @@ abbr() {
       done
     }
 
-    _abbr:util_bad_options() {
+    _abbr:util_bad_options_UNFUNCTIONED() {
       _abbr_debugger
 
-      _abbr:util_error "abbr: Illegal combination of options"
+      _abbr:util_error_UNFUNCTIONED "abbr: Illegal combination of options"
     }
 
-    _abbr:util_error() {
+    _abbr:util_error_UNFUNCTIONED() {
       _abbr_debugger
 
       has_error=1
@@ -740,17 +740,17 @@ abbr() {
       should_exit=1
     }
 
-    _abbr:util_import_alias() {
+    _abbr:util_import_alias_UNFUNCTIONED() {
       local abbreviation
       local expansion
 
       abbreviation=${1%%=*}
       expansion=${1#*=}
 
-      _abbr:util_add $abbreviation "$('builtin' 'echo' $expansion)"
+      _abbr:util_add_UNFUNCTIONED $abbreviation "$('builtin' 'echo' $expansion)"
     }
 
-    _abbr:util_check_command() {
+    _abbr:util_check_command_UNFUNCTIONED() {
       _abbr_debugger
 
       local abbreviation
@@ -769,20 +769,20 @@ abbr() {
           verb_phrase="will now expand"
           (( dry_run )) && verb_phrase="would now expand"
 
-          _abbr:util_log_unless_quieter "\`${(Q)abbreviation}\` $verb_phrase as an abbreviation"
+          _abbr:util_log_unless_quieter_UNFUNCTIONED "\`${(Q)abbreviation}\` $verb_phrase as an abbreviation"
           # this quotation mark to fix syntax highlighting "
         else
           verb_phrase="Did not"
           (( dry_run )) && verb_phrase="Would not"
 
-          _abbr:util_warn "$verb_phrase add the abbreviation \`${(Q)abbreviation}\` because a command with the same name exists"
+          _abbr:util_warn_UNFUNCTIONED "$verb_phrase add the abbreviation \`${(Q)abbreviation}\` because a command with the same name exists"
           # this quotation mark to fix syntax highlighting "
           return 1
         fi
       fi
     }
 
-    _abbr:util_list() {
+    _abbr:util_list_UNFUNCTIONED() {
       _abbr_debugger
 
       local abbreviation
@@ -797,7 +797,7 @@ abbr() {
       session_prefix=$2
       user_prefix=$3
 
-      # DUPE (nearly) completions/_abbr's __abbr_describe_abbreviations, zsh-abbr.zsh's _abbr:util_list
+      # DUPE (nearly) completions/_abbr's __abbr_describe_abbreviations, zsh-abbr.zsh's _abbr:util_list_UNFUNCTIONED
 
       if [[ $scope != 'session' ]]; then
         if [[ $type != 'regular' ]]; then
@@ -822,14 +822,14 @@ abbr() {
       for abbreviation_set in $abbreviations_sets; do
         for abbreviation in ${(iko)${(P)abbreviation_set}}; do
           (( include_expansion )) && expansion=${${(P)abbreviation_set}[$abbreviation]}
-          _abbr:util_list_item $abbreviation $expansion ${user_prefix:+$user_prefix -g}
+          _abbr:util_list_item_UNFUNCTIONED $abbreviation $expansion ${user_prefix:+$user_prefix -g}
         done
       done
 
       # DUPE end
     }
 
-    _abbr:util_list_item() {
+    _abbr:util_list_item_UNFUNCTIONED() {
       _abbr_debugger
 
       local abbreviation
@@ -850,28 +850,28 @@ abbr() {
         result="$prefix $result"
       fi
 
-      _abbr:util_print $result
+      _abbr:util_print_UNFUNCTIONED $result
     }
 
-    _abbr:util_log_unless_quiet() {
+    _abbr:util_log_unless_quiet_UNFUNCTIONED() {
       _abbr_debugger
 
       logs_silent_when_quiet+="${logs_silent_when_quiet:+\\n}$1"
     }
 
-    _abbr:util_log_unless_quieter() {
+    _abbr:util_log_unless_quieter_UNFUNCTIONED() {
       _abbr_debugger
 
       logs_silent_when_quieter+="${logs_silent_when_quieter:+\\n}$1"
     }
 
-    _abbr:util_print() {
+    _abbr:util_print_UNFUNCTIONED() {
       _abbr_debugger
 
       output+="${output:+\\n}$1"
     }
 
-    _abbr:util_set_once() {
+    _abbr:util_set_once_UNFUNCTIONED() {
       _abbr_debugger
 
       local option
@@ -887,7 +887,7 @@ abbr() {
       eval $option=$value
     }
 
-    _abbr:util_sync_user() {
+    _abbr:util_sync_user_UNFUNCTIONED() {
       _abbr_debugger
 
       (( ABBR_LOADING_USER_ABBREVIATIONS )) && return
@@ -913,7 +913,7 @@ abbr() {
       'command' 'mv' $user_updated $ABBR_USER_ABBREVIATIONS_FILE
     }
 
-    _abbr:util_set_to_typed_scope() {
+    _abbr:util_set_to_typed_scope_UNFUNCTIONED() {
       _abbr_debugger
 
       local abbreviations_set
@@ -922,13 +922,13 @@ abbr() {
       REPLY=${${${${abbreviations_set:l}%s}#abbr_}//_/ }
     }
 
-    _abbr:util_usage() {
+    _abbr:util_usage_UNFUNCTIONED() {
       _abbr_debugger
 
       'command' 'man' abbr 2>/dev/null || 'command' 'man' ${ABBR_SOURCE_PATH}/man/man1/abbr.1
     }
 
-    _abbr:util_warn() {
+    _abbr:util_warn_UNFUNCTIONED() {
       _abbr_debugger
 
       logs_silent_when_quiet+="${logs_silent_when_quiet:+\\n}$warn_color$@$reset_color"
@@ -942,29 +942,29 @@ abbr() {
       case $opt in
         "add"|\
         "a")
-          _abbr:util_set_once action add || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action add || args+=( $opt )
           ;;
         "git"|\
         "g")
-          _abbr:util_set_once action git || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action git || args+=( $opt )
           ;;
         "clear-session"|\
         "c")
-          _abbr:util_set_once action clear_session || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action clear_session || args+=( $opt )
           ;;
         "--dry-run")
           dry_run=1
           ;;
         "erase"|\
         "e")
-          _abbr:util_set_once action erase || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action erase || args+=( $opt )
           ;;
         "expand"|\
         "x")
-          _abbr:util_set_once action expand || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action expand || args+=( $opt )
           ;;
         "export-aliases")
-          _abbr:util_set_once action export_aliases || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action export_aliases || args+=( $opt )
           ;;
         "--force"|\
         "-f")
@@ -972,41 +972,41 @@ abbr() {
           ;;
         "--global"|\
         "-g")
-          _abbr:util_set_once type global || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED type global || args+=( $opt )
           ;;
         "help"|\
         "--help")
-          _abbr:util_usage
+          _abbr:util_usage_UNFUNCTIONED
           should_exit=1
           ;;
         "import-aliases")
-          _abbr:util_set_once action import_aliases || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action import_aliases || args+=( $opt )
           ;;
         "import-fish")
-          _abbr:util_set_once action import_fish || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action import_fish || args+=( $opt )
           ;;
         "import-git-aliases")
-          _abbr:util_set_once action import_git_aliases || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action import_git_aliases || args+=( $opt )
           ;;
         "list")
-          _abbr:util_set_once action list || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action list || args+=( $opt )
           ;;
         "list-abbreviations"|\
         "l")
-          _abbr:util_set_once action list_abbreviations || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action list_abbreviations || args+=( $opt )
           ;;
         "list-commands"|\
         "L"|\
         "-L")
           # -L option is to match the builtin alias's `-L`
-          _abbr:util_set_once action list_commands || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action list_commands || args+=( $opt )
           ;;
         "load")
           _abbr_load_user_abbreviations
           should_exit=1
           ;;
         "profile")
-          _abbr:util_set_once action profile || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action profile || args+=( $opt )
           ;;
         "--quiet"|\
         "-q")
@@ -1019,24 +1019,24 @@ abbr() {
           ;;
         "--regular"|\
         "-r")
-          _abbr:util_set_once type regular || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED type regular || args+=( $opt )
           ;;
         "rename"|\
         "R")
-          _abbr:util_set_once action rename || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action rename || args+=( $opt )
           ;;
         "--session"|\
         "-S")
-          _abbr:util_set_once scope session || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED scope session || args+=( $opt )
           ;;
         "--user"|\
         "-U")
-          _abbr:util_set_once scope user || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED scope user || args+=( $opt )
           ;;
         "version"|\
         "--version"|\
         "-v")
-          _abbr:util_set_once action print_version || args+=( $opt )
+          _abbr:util_set_once_UNFUNCTIONED action print_version || args+=( $opt )
           ;;
         "--")
           # ${*#* -- } trims ` -- ` performs the string trim on every item in $*
@@ -1514,7 +1514,7 @@ _abbr_log_available_abbreviation() {
 
   local message
 
-  # @DUPE (nearly) abbr, _abbr_log_available_abbreviation, _abbr_warn_deprecation
+  # @DUPE (nearly) abbr, _abbr_log_available_abbreviation, _abbr_warn_deprecation_UNFUNCTIONED
   local warn_color
   if ! _abbr_no_color; then
     warn_color="$fg[yellow]"
@@ -1682,7 +1682,7 @@ abbr-expand-and-insert() {
 # DEPRECATION
 # -----------
 
-_abbr_warn_deprecation() {
+_abbr_warn_deprecation_UNFUNCTIONED() {
   emulate -LR zsh
 
   _abbr_debugger
@@ -1692,7 +1692,7 @@ _abbr_warn_deprecation() {
   local message
   local replacement
 
-  # @DUPE (nearly) abbr, _abbr_log_available_abbreviation, _abbr_warn_deprecation
+  # @DUPE (nearly) abbr, _abbr_log_available_abbreviation, _abbr_warn_deprecation_UNFUNCTIONED
   local warn_color
   if ! _abbr_no_color; then
     warn_color="$fg[yellow]"
@@ -1714,7 +1714,7 @@ _abbr_warn_deprecation() {
 # INITIALIZATION
 # --------------
 
-_abbr_init() {
+_abbr_init_UNFUNCTIONED() {
   emulate -LR zsh
 
   local job_id
@@ -1820,7 +1820,7 @@ _abbr_init() {
 
         # START Deprecation notices for values that could not be meaningfully set after initialization
         # Example form:
-        # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation DEPRECATED_VAL VAL
+        # (( ${+DEPRECATED_VAL} )) && _abbr_warn_deprecation_UNFUNCTIONED DEPRECATED_VAL VAL
         # VAL=$DEPRECATED_VAL
 
         # END Deprecation notices for values that could not be meaningfully set after initialization
@@ -1828,7 +1828,7 @@ _abbr_init() {
         # START Deprecation notices for functions
         # Example form:
         # deprecated_fn() {
-        #   _abbr_warn_deprecation deprecated_fn fn
+        #   _abbr_warn_deprecation_UNFUNCTIONED deprecated_fn fn
         #   fn
         # }
 
@@ -1853,7 +1853,7 @@ _abbr_init() {
             zle -N $deprecated
 
             if [[ -n $bindkey_declaration ]]; then
-              _abbr_warn_deprecation $deprecated $replacement "bindkey $bindkey_declaration"
+              _abbr_warn_deprecation_UNFUNCTIONED $deprecated $replacement "bindkey $bindkey_declaration"
             fi
           done
         }
@@ -1897,11 +1897,11 @@ _abbr_init() {
   }
 }
 
-# _abbr_init should remain the last function defined in this file
+# _abbr_init_UNFUNCTIONED should remain the last function defined in this file
 
 typeset -g ABBR_SOURCE_PATH
 ABBR_SOURCE_PATH=${0:A:h}
-_abbr_init
+_abbr_init_UNFUNCTIONED
 
 # can't unset
 # unset _abbr_tmpdir
@@ -1918,37 +1918,6 @@ _abbr_init
 # _abbr_regular_expansion
 
 unfunction -m _abbr
-unfunction -m _abbr_init
-unfunction -m _abbr_warn_deprecation
 unfunction -m _abbr:add
-unfunction -m _abbr:clear_session
-unfunction -m _abbr:erase
-unfunction -m _abbr:expand
-unfunction -m _abbr:expansion
-unfunction -m _abbr:export_aliases
-unfunction -m _abbr:git
-unfunction -m _abbr:import_aliases
-unfunction -m _abbr:import_fish
-unfunction -m _abbr:import_git_aliases
 unfunction -m _abbr:list
-unfunction -m _abbr:list_abbreviations
-unfunction -m _abbr:list_commands
-unfunction -m _abbr:print_version
-unfunction -m _abbr:profile
-unfunction -m _abbr:rename
-unfunction -m _abbr:util_add
-unfunction -m _abbr:util_alias
-unfunction -m _abbr:util_bad_options
-unfunction -m _abbr:util_check_command
-unfunction -m _abbr:util_error
-unfunction -m _abbr:util_import_alias
-unfunction -m _abbr:util_list
-unfunction -m _abbr:util_list_item
-unfunction -m _abbr:util_log_unless_quiet
-unfunction -m _abbr:util_log_unless_quieter
-unfunction -m _abbr:util_print
-unfunction -m _abbr:util_set_once
-unfunction -m _abbr:util_set_to_typed_scope
-unfunction -m _abbr:util_sync_user
-unfunction -m _abbr:util_usage
-unfunction -m _abbr:util_warn
+unfunction -m "_abbr*_UNFUNCTIONED"
