@@ -130,6 +130,7 @@ abbr() {
     local -i quiet
     local -i quieter
     local release_date
+    local REPLY
     local scope
     local -i should_exit
     local success_color
@@ -1058,7 +1059,8 @@ abbr() {
       fi
 
       if ! (( ABBR_LOADING_USER_ABBREVIATIONS )) && [[ $scope != 'session' ]]; then
-        job_id=$(job-queue__zsh-abbr push zsh-abbr $action)
+        job-queue__zsh-abbr push zsh-abbr $action
+        job_id=$REPLY
 
         if (( ABBR_AUTOLOAD )); then
           _abbr_load_user_abbreviations
@@ -1719,6 +1721,7 @@ _abbr_init() {
 
   {
     local log_available_abbreviation_hook
+    local REPLY
 
     log_available_abbreviation_hook=preexec
     (( ABBR_LOG_AVAILABLE_ABBREVIATION_AFTER )) && log_available_abbreviation_hook=precmd
@@ -1871,7 +1874,8 @@ _abbr_init() {
 
     _abbr_init:dependencies || return
 
-    job_id=$(job-queue__zsh-abbr push zsh-abbr initialization)
+    job-queue__zsh-abbr push zsh-abbr initialization
+    job_id=$REPLY
 
     (( ABBR_LOG_AVAILABLE_ABBREVIATION && ABBR_GET_AVAILABLE_ABBREVIATION )) && {
       'builtin' 'autoload' -Uz add-zsh-hook
