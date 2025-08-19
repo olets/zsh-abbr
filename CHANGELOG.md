@@ -1,4 +1,4 @@
-# [6.3.3](https://github.com/olets/zsh-abbr/compare/v6.3.2...v6.3.3) (2025-07-08)
+# [6.3.3](https://github.com/olets/zsh-abbr/compare/v6.3.2...v6.3.3) (2025-08-19)
 
 ### Bug Fixes
 
