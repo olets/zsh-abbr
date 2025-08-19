@@ -1,3 +1,10 @@
+# [6.3.3](https://github.com/olets/zsh-abbr/compare/v6.3.2...v6.3.3) (2025-07-08)
+
+### Bug Fixes
+
+- **job-queue**: bump submodule to v3.0.0, use REPLY pattern ([#176](https://github.com/olets/zsh-abbr/issues/176)) ([932e74b](https://github.com/olets/zsh-abbr/commit/932e74b56e624827dc6eb297572189d81ee24c27))
+  - Protects against stale job queue entries
+
 # [6.3.2](https://github.com/olets/zsh-abbr/compare/v6.3.1...v6.3.2) (2025-07-08)
 
 - **performance**: add, erase use REPLY instead of subshell output. Thanks to @5A6F65
