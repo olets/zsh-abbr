@@ -1,3 +1,20 @@
+# [6.4.0](https://github.com/olets/zsh-abbr/compare/v6.3.3...v6.4.0) (2025-11-27)
+
+
+### Bug Fixes
+
+* **version:** typo ([4feb57d](https://github.com/olets/zsh-abbr/commit/4feb57d0426fc29fc236decbbdffc89b349f2984))
+
+
+### Features
+
+* **ABBR_SPLIT_FN:** new config var customizes abbreviation delimiters [[#196](https://github.com/olets/zsh-abbr/issues/196)] ([ca51142](https://github.com/olets/zsh-abbr/commit/ca51142cf46213f069b9279f110594d0501753f8))
+* **abbr,load:** do not run cmd args through split fn... ([378a5d4](https://github.com/olets/zsh-abbr/commit/378a5d462ae9d13852959603e4bdf1be0e85165d))
+* **changelog script:** switch to standard-changelog from conventional-changelog... ([49d8224](https://github.com/olets/zsh-abbr/commit/49d822488d3ca5cced16c8133683846016e5db63))
+* **expansion:** optionally expand command position regular abbreviations via ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS [[#53](https://github.com/olets/zsh-abbr/issues/53)] ([16e6384](https://github.com/olets/zsh-abbr/commit/16e6384d4b76e7119ea570cce892230736593b9b))
+
+
+
 # [6.3.3](https://github.com/olets/zsh-abbr/compare/v6.3.2...v6.3.3) (2025-08-19)
 
 ### Bug Fixes
