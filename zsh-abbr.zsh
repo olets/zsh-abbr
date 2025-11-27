@@ -92,6 +92,18 @@ typeset -gi ABBR_SET_LINE_CURSOR=${ABBR_SET_LINE_CURSOR:-0}
 # In expansions, replace the first instance of ABBR_EXPANSION_CURSOR_MARKER with the cursor
 typeset -gi ABBR_SET_EXPANSION_CURSOR=${ABBR_SET_EXPANSION_CURSOR:-0}
 
+# Function for splitting strings into abbreviation candidates
+# Default: split into words with shell grammar.
+# NB in my testing on zsh 5.9 (x86_64-apple-darwin21.3.0),
+#     [[ ${${(k)functions}[(Ie)ABBR_SPLIT_FN]} == 0 ]]
+# can be significantly more performant than
+#     (( ${${(k)functions}[(Ie)ABBR_SPLIT_FN]} == 0 ))
+if [[ ${${(k)functions}[(Ie)ABBR_SPLIT_FN]} == 0 ]]; then
+  function ABBR_SPLIT_FN() {
+    REPLY=( ${(z)*} )
+  }
+fi
+
 # The directory temp files are stored in
 typeset -g _abbr_tmpdir=${${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr}%/}/
 if [[ ${(%):-%#} == '#' ]]; then
@@ -954,108 +966,134 @@ abbr() {
         "add"|\
         "a")
           _abbr:util_set_once action add || args+=( $opt )
+          shift
           ;;
         "git"|\
         "g")
           _abbr:util_set_once action git || args+=( $opt )
+          shift
           ;;
         "clear-session"|\
         "c")
           _abbr:util_set_once action clear_session || args+=( $opt )
+          shift
           ;;
         "--dry-run")
           dry_run=1
+          shift
           ;;
         "erase"|\
         "e")
           _abbr:util_set_once action erase || args+=( $opt )
+          shift
           ;;
         "expand"|\
         "x")
           _abbr:util_set_once action expand || args+=( $opt )
+          shift
           ;;
         "export-aliases")
           _abbr:util_set_once action export_aliases || args+=( $opt )
+          shift
           ;;
         "--force"|\
         "-f")
           force=1
+          shift
           ;;
         "--global"|\
         "-g")
           _abbr:util_set_once type global || args+=( $opt )
+          shift
           ;;
         "help"|\
         "--help")
           _abbr:util_usage
           should_exit=1
+          shift
           ;;
         "import-aliases")
           _abbr:util_set_once action import_aliases || args+=( $opt )
+          shift
           ;;
         "import-fish")
           _abbr:util_set_once action import_fish || args+=( $opt )
+          shift
           ;;
         "import-git-aliases")
           _abbr:util_set_once action import_git_aliases || args+=( $opt )
+          shift
           ;;
         "list")
           _abbr:util_set_once action list || args+=( $opt )
+          shift
           ;;
         "list-abbreviations"|\
         "l")
           _abbr:util_set_once action list_abbreviations || args+=( $opt )
+          shift
           ;;
         "list-commands"|\
         "L"|\
         "-L")
           # -L option is to match the builtin alias's `-L`
           _abbr:util_set_once action list_commands || args+=( $opt )
+          shift
           ;;
         "load")
           _abbr_load_user_abbreviations
           should_exit=1
+          shift
           ;;
         "profile")
           _abbr:util_set_once action profile || args+=( $opt )
+          shift
           ;;
         "--quiet"|\
         "-q")
           quiet=1
+          shift
           ;;
         "--quieter"|\
         "-qq")
           quiet=1
           quieter=1
+          shift
           ;;
         "--regular"|\
         "-r")
           _abbr:util_set_once type regular || args+=( $opt )
+          shift
           ;;
         "rename"|\
         "R")
           _abbr:util_set_once action rename || args+=( $opt )
+          shift
           ;;
         "--session"|\
         "-S")
           _abbr:util_set_once scope session || args+=( $opt )
+          shift
           ;;
         "--user"|\
         "-U")
           _abbr:util_set_once scope user || args+=( $opt )
+          shift
           ;;
         "version"|\
         "--version"|\
         "-v")
           _abbr:util_set_once action print_version || args+=( $opt )
+          shift
           ;;
         "--")
-          # ${*#* -- } trims ` -- ` performs the string trim on every item in $*
-          args+=( ${(z)${asterisk#* -- }} )
+          shift
+          args+=( $@ )
           break
           ;;
         *)
           args+=( $opt )
+          shift
           ;;
       esac
     done
@@ -1129,6 +1167,7 @@ _abbr_regular_expansion() {
 
     # cannot support debug message
 
+    local -a REPLY
     local abbreviation
     local expansion
 
@@ -1232,7 +1271,8 @@ _abbr_regular_expansion() {
 
     # DUPE _abbr_global_expansion, _abbr_regular_expansion
     # do not expand empty string or all-whitespace string
-    [[ -n ${(z)abbreviation} ]] || return
+    ABBR_SPLIT_FN $abbreviation
+    [[ -n $REPLY ]] || return
 
     expansion=$(_abbr_regular_expansion:get_expansion $abbreviation 1)
 
@@ -1277,6 +1317,7 @@ _abbr_global_expansion() {
   # `_abbr_global_expansion … 0` must always be preceded by creating and sourcing files
   # search this file for examples
 
+  local -a REPLY
   local abbreviation
   local expansion
   local -i session
@@ -1286,7 +1327,8 @@ _abbr_global_expansion() {
 
   # DUPE _abbr_global_expansion, _abbr_regular_expansion
   # do not expand empty string or all-whitespace string
-  [[ -n ${(z)abbreviation} ]] || return
+  ABBR_SPLIT_FN $abbreviation
+  [[ -n $REPLY ]] || return
 
   if (( session )); then
     expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]}
@@ -1315,11 +1357,10 @@ _abbr_load_user_abbreviations() {
     function _abbr_load_user_abbreviations:load() {
       _abbr_debugger
 
-      local abbreviation
-      local arguments
-      local program
+      local cmd
+      local -a cmds
       local -i shwordsplit_on
-      typeset -a user_abbreviations
+      local -a words
 
       typeset -gi ABBR_LOADING_USER_ABBREVIATIONS
 
@@ -1333,15 +1374,14 @@ _abbr_load_user_abbreviations() {
       if [[ -f $ABBR_USER_ABBREVIATIONS_FILE ]]; then
         unsetopt shwordsplit
 
-        user_abbreviations=( ${(f)"$(<$ABBR_USER_ABBREVIATIONS_FILE)"} )
+        cmds=( ${(f)"$(<$ABBR_USER_ABBREVIATIONS_FILE)"} )
 
-        for abbreviation in $user_abbreviations; do
-          program="${abbreviation%% *}"
-          arguments="${abbreviation#* }"
+        for cmd in $cmds; do
+          words=( ${(z)cmd} ) # this bracket for syntax highlighting }
 
           # Only execute abbr commands
-          if [[ $program == "abbr" && $program != $abbreviation ]]; then
-            abbr ${(z)arguments}
+          if (( ${#words} > 1 )) && [[ ${words[1]} == abbr ]]; then
+            abbr ${words:1}
           fi
         done
 
@@ -1462,6 +1502,7 @@ _abbr_get_available_abbreviation() {
 
     local expansion
     local -i i
+    local -a REPLY
     local -a words
 
     expansion=$LBUFFER
@@ -1486,9 +1527,11 @@ _abbr_get_available_abbreviation() {
       return
     fi
 
+    ABBR_SPLIT_FN $LBUFFER
+    words=( $REPLY )
+
     # Look for global session abbreviation
 
-    words=( ${(z)LBUFFER} )
     while [[ -z $ABBR_UNUSED_ABBREVIATION ]] && (( i < ${#words} )); do
       expansion=${words:$i}
       ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_SESSION_ABBREVIATIONS[(re)${(qqq)expansion}]}}
@@ -1505,7 +1548,6 @@ _abbr_get_available_abbreviation() {
     # Look for global user abbreviation
 
     i=0
-    words=( ${(z)LBUFFER} )
     while [[ -z $ABBR_UNUSED_ABBREVIATION ]] && (( i < ${#words} )); do
       expansion=${words:$i}
       ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS[(re)${(qqq)expansion}]}}
@@ -1553,9 +1595,10 @@ _abbr_log_available_abbreviation() {
 abbr-expand() {
   emulate -LR zsh
 
-  local expansion
+  local -a REPLY
   local abbreviation
   local -a cmds
+  local expansion
   local -i i
   local -i j
   local -i k
@@ -1609,9 +1652,11 @@ abbr-expand() {
     # END DUPE abbr-expand 2x with differences
   fi
 
+  ABBR_SPLIT_FN $LBUFFER
+  words=( $REPLY )
+
   # Check for global session expansion
 
-  words=( ${(z)LBUFFER} )
   # first check the full LBUFFER, then trim words off the front
   while [[ -z $expansion ]] && (( i < ${#words} )); do
     abbreviation=${words:$i}
@@ -1623,7 +1668,6 @@ abbr-expand() {
     # Check for global user expansion
 
     i=0
-    words=( ${(z)LBUFFER} )
 
     _abbr_create_files
     source ${_abbr_tmpdir}global-user-abbreviations
