@@ -35,7 +35,7 @@ To cut a new release:
     ```shell
     git commit -i CHANGELOG.md completions/_abbr man/man1/abbr.1 zsh-abbr.zsh -m "feat(release): bump to v%ABBR_CURSOR%, update changelog"
     ```
-1. Create a signed commit with the version number, prefixed with `v`.
+1. Create a signed tag with the version number, prefixed with `v`.
     ```shell
     git tag -s v%ABBR_CURSOR% -m v%ABBR_CURSOR%
     ```
