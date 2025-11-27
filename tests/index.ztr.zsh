@@ -99,6 +99,9 @@ main() {
 	abbr_tmpdir_saved=$ABBR_TMPDIR
 	ABBR_USER_ABBREVIATIONS_FILE_SAVED=$ABBR_USER_ABBREVIATIONS_FILE
 	aliases_saved=$(alias -L)
+	if [[ ${${(k)functions}[(Ie)ABBR_SPLIT_FN]} > 0 ]]; then
+		functions[abbr_split_fn_saved]=$functions[ABBR_SPLIT_FN]
+	fi
 
 	# Configure
 	unset ABBR_EXPANSION_CURSOR_MARKER
@@ -118,6 +121,7 @@ main() {
 	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
 	ABBR_TMPDIR=$test_tmpdir
 	unalias -m '*'
+	unset -f ABBR_SPLIT_FN
 
 	# Set up data
 	touch $ABBR_USER_ABBREVIATIONS_FILE
@@ -160,6 +164,10 @@ main() {
 	ABBR_USER_ABBREVIATIONS_FILE=$ABBR_USER_ABBREVIATIONS_FILE_SAVED
 	unset ABBR_USER_ABBREVIATIONS_FILE_SAVED
 	eval $aliases_saved
+	if [[ ${${(k)functions}[(Ie)abbr_split_fn_saved]} > 0 ]]; then
+		functions[ABBR_SPLIT_FN]=$functions[abbr_split_fn_saved]
+		unset -f abbr_split_fn_saved
+	fi
 
 	if $(command -v _abbr_load_user_abbreviations); then
 		_abbr_load_user_abbreviations

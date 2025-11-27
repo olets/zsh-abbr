@@ -92,6 +92,18 @@ typeset -gi ABBR_SET_LINE_CURSOR=${ABBR_SET_LINE_CURSOR:-0}
 # In expansions, replace the first instance of ABBR_EXPANSION_CURSOR_MARKER with the cursor
 typeset -gi ABBR_SET_EXPANSION_CURSOR=${ABBR_SET_EXPANSION_CURSOR:-0}
 
+# Function for splitting strings into abbreviation candidates
+# Default: split into words with shell grammar.
+# NB in my testing on zsh 5.9 (x86_64-apple-darwin21.3.0),
+#     [[ ${${(k)functions}[(Ie)ABBR_SPLIT_FN]} == 0 ]]
+# can be significantly more performant than
+#     (( ${${(k)functions}[(Ie)ABBR_SPLIT_FN]} == 0 ))
+if [[ ${${(k)functions}[(Ie)ABBR_SPLIT_FN]} == 0 ]]; then
+  function ABBR_SPLIT_FN() {
+    REPLY=( ${(z)*} )
+  }
+fi
+
 # The directory temp files are stored in
 typeset -g _abbr_tmpdir=${${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr}%/}/
 if [[ ${(%):-%#} == '#' ]]; then
@@ -1051,7 +1063,8 @@ abbr() {
           ;;
         "--")
           # ${*#* -- } trims ` -- ` performs the string trim on every item in $*
-          args+=( ${(z)${asterisk#* -- }} )
+          ABBR_SPLIT_FN ${asterisk#* -- }
+          args+=( $REPLY )
           break
           ;;
         *)
@@ -1129,6 +1142,7 @@ _abbr_regular_expansion() {
 
     # cannot support debug message
 
+    local -a REPLY
     local abbreviation
     local expansion
 
@@ -1232,7 +1246,8 @@ _abbr_regular_expansion() {
 
     # DUPE _abbr_global_expansion, _abbr_regular_expansion
     # do not expand empty string or all-whitespace string
-    [[ -n ${(z)abbreviation} ]] || return
+    ABBR_SPLIT_FN $abbreviation
+    [[ -n $REPLY ]] || return
 
     expansion=$(_abbr_regular_expansion:get_expansion $abbreviation 1)
 
@@ -1277,6 +1292,7 @@ _abbr_global_expansion() {
   # `_abbr_global_expansion … 0` must always be preceded by creating and sourcing files
   # search this file for examples
 
+  local -a REPLY
   local abbreviation
   local expansion
   local -i session
@@ -1286,7 +1302,8 @@ _abbr_global_expansion() {
 
   # DUPE _abbr_global_expansion, _abbr_regular_expansion
   # do not expand empty string or all-whitespace string
-  [[ -n ${(z)abbreviation} ]] || return
+  ABBR_SPLIT_FN $abbreviation
+  [[ -n $REPLY ]] || return
 
   if (( session )); then
     expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]}
@@ -1315,6 +1332,7 @@ _abbr_load_user_abbreviations() {
     function _abbr_load_user_abbreviations:load() {
       _abbr_debugger
 
+      local -a REPLY
       local abbreviation
       local rest
       local first_word
@@ -1341,7 +1359,8 @@ _abbr_load_user_abbreviations() {
 
           # Only execute abbr commands
           if [[ $first_word == "abbr" && $first_word != $abbreviation ]]; then
-            abbr ${(z)rest}
+            ABBR_SPLIT_FN $rest
+            abbr $REPLY
           fi
         done
 
@@ -1462,6 +1481,7 @@ _abbr_get_available_abbreviation() {
 
     local expansion
     local -i i
+    local -a REPLY
     local -a words
 
     expansion=$LBUFFER
@@ -1486,7 +1506,8 @@ _abbr_get_available_abbreviation() {
       return
     fi
 
-    words=( ${(z)LBUFFER} )
+    ABBR_SPLIT_FN $LBUFFER
+    words=( $REPLY )
 
     # Look for global session abbreviation
 
@@ -1553,9 +1574,10 @@ _abbr_log_available_abbreviation() {
 abbr-expand() {
   emulate -LR zsh
 
-  local expansion
+  local -a REPLY
   local abbreviation
   local -a cmds
+  local expansion
   local -i i
   local -i j
   local -i k
@@ -1609,7 +1631,8 @@ abbr-expand() {
     # END DUPE abbr-expand 2x with differences
   fi
 
-  words=( ${(z)LBUFFER} )
+  ABBR_SPLIT_FN $LBUFFER
+  words=( $REPLY )
 
   # Check for global session expansion
 

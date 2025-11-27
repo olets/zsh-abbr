@@ -133,6 +133,8 @@ main() {
 		abbr erase "a b c"
 
 		ztr skip '@TODO' 'Can enable experimental support for command position regular abbreviations'
+
+		ztr skip '@TODO' 'Can customize split function'
 	} always {
 		unfunction -m ZTR_TEARDOWN_FN
 	}
