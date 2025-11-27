@@ -65,6 +65,17 @@ typeset -gi ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY=${ABBR_EXPAN
 # Should abbr-expand push the abbreviation to the shell history? (default false)
 typeset -gi ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY=${ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY:-0}
 
+# Regular abbreviations expand when in command position, even if not at start of line
+# Experimental. Currently teats all `;`, `&`, `|`, and all reduplications (e.g. `&&`, `||`) as command delimiters.
+#
+# 0 to disable (default)
+# 1 to enable, with warning on shell startup
+# 2 to enable without warning
+typeset -gi ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS=${ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS:-0}
+if (( ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS == 1 )); then
+  'builtin' 'print' "abbr: You have set ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS=1. This feature is *experimental* and may have unexpected or undesired results. If it graduates from experimental, the variable name will change.\nYou can suppress this message while still enabling the feature by setting\n\n  ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS=2\n"
+fi
+
 # Limitation: doesn't support the user changing their hist_ignore_space setting interactively
 typeset -gi _abbr_hist_ignore_space
 _abbr_hist_ignore_space=$options[hist_ignore_space]
@@ -1182,10 +1193,13 @@ _abbr_regular_expansion() {
 
             # Re-prepend anything trimmed off during the prefix check
             expansion="${(qqq)prefix_match}$expansion"
+            # this quotation mark to fix syntax highlighting "
           done
 
           'builtin' 'echo' - $expansion
         }
+
+        # this quotation mark to fix syntax highlighting "
 
         local abbreviation
         local expansion
@@ -1195,9 +1209,9 @@ _abbr_regular_expansion() {
         session=$2
 
         if (( session )); then
-          expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]
+          expansion=$ABBR_REGULAR_SESSION_ABBREVIATIONS[${(qqq)abbreviation}] # this bracket to fix syntax highlighting }
         else
-          expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}]
+          expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}] # this bracket to fix syntax highlighting }
         fi
 
         if [[ ! $expansion ]]; then
@@ -1541,10 +1555,13 @@ abbr-expand() {
 
   local expansion
   local abbreviation
+  local -a cmds
   local -i i
   local -i j
+  local -i k
   local -i matched_full_buffer
   local -i ret
+  local -a subcmds
   local -a words
 
   ABBR_UNUSED_ABBREVIATION=
@@ -1553,26 +1570,46 @@ abbr-expand() {
   ABBR_UNUSED_ABBREVIATION_SCOPE=
   ABBR_UNUSED_ABBREVIATION_TYPE=
 
-  abbreviation=$LBUFFER
-  i=1
+  # Check for regular expansion
+  # Supports <=v6.3.3 "from the start of the line" sense of regular
+  # (match against entire LBUFFER) and (roughly) "command-position"
+  # sense (matching against righ-most command in LBUFFER).
 
-  expansion=$(_abbr_regular_expansion "$abbreviation")
+  cmds=( $LBUFFER )
+
+  if (( ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS )); then
+    # Treat all `;`, `&`, `|`, and all reduplications (e.g. `&&`, `||`) as command delimiters
+    subcmds=( ${(s.;.)LBUFFER//[&|]/;} )
+
+    if (( ${#subcmds} > 1 )); then
+      cmds+=( ${subcmds[-1]} )
+    fi
+  fi
+
+  while [[ -z $expansion ]] && (( k < ${#cmds} )); do
+    abbreviation=${cmds[-1]}
+    expansion=$(_abbr_regular_expansion "$abbreviation")
+    (( k++ ))
+  done
 
   if [[ -n $expansion ]]; then
     # BEGIN DUPE abbr-expand 2x with differences
     # if it expanded and this widget can push to history
     (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
+    LBUFFER=${LBUFFER%%$abbreviation}
     if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion != ${expansion/$ABBR_EXPANSION_CURSOR_MARKER} ]]; then
-      LBUFFER=${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*} # DUPE difference
+      LBUFFER=${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
       RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
       ret=2 # DUPE difference
     else
-      LBUFFER=$expansion
+      LBUFFER+=$expansion
       ret=1 # DUPE difference
     fi
     return $ret
     # END DUPE abbr-expand 2x with differences
   fi
+
+  # Check for global session expansion
 
   words=( ${(z)LBUFFER} )
   # first check the full LBUFFER, then trim words off the front
@@ -1583,6 +1620,8 @@ abbr-expand() {
   done
 
   if [[ -z $expansion ]]; then
+    # Check for global user expansion
+
     i=0
     words=( ${(z)LBUFFER} )
 
@@ -1598,6 +1637,8 @@ abbr-expand() {
   fi
 
   if [[ -z $expansion ]]; then
+    # No expansion found. See if one was available
+
     (( ABBR_GET_AVAILABLE_ABBREVIATION )) && _abbr_get_available_abbreviation
 
     return $ret
@@ -1606,12 +1647,13 @@ abbr-expand() {
   # BEGIN DUPE abbr-expand 2x with differences
   # if it expanded and this widget can push to history
   (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
+  LBUFFER=${LBUFFER%%$abbreviation}
   if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion != ${expansion/$ABBR_EXPANSION_CURSOR_MARKER} ]]; then
-    LBUFFER=${LBUFFER%%$abbreviation}${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*} # DUPE difference
+    LBUFFER+=${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
     RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
-    ret=3
+    ret=3 # DUPE difference
   else
-    LBUFFER=${LBUFFER%%$abbreviation}$expansion
+    LBUFFER+=$expansion
   fi
   return $ret
   # END DUPE abbr-expand 2x with differences
