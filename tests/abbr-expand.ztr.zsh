@@ -131,6 +131,8 @@ main() {
 			"Can expand a three-word abbreviation in a script" \
 			"Dependencies: erase"
 		abbr erase "a b c"
+
+		ztr skip '@TODO' 'Can enable experimental support for command position regular abbreviations'
 	} always {
 		unfunction -m ZTR_TEARDOWN_FN
 	}
