@@ -966,109 +966,134 @@ abbr() {
         "add"|\
         "a")
           _abbr:util_set_once action add || args+=( $opt )
+          shift
           ;;
         "git"|\
         "g")
           _abbr:util_set_once action git || args+=( $opt )
+          shift
           ;;
         "clear-session"|\
         "c")
           _abbr:util_set_once action clear_session || args+=( $opt )
+          shift
           ;;
         "--dry-run")
           dry_run=1
+          shift
           ;;
         "erase"|\
         "e")
           _abbr:util_set_once action erase || args+=( $opt )
+          shift
           ;;
         "expand"|\
         "x")
           _abbr:util_set_once action expand || args+=( $opt )
+          shift
           ;;
         "export-aliases")
           _abbr:util_set_once action export_aliases || args+=( $opt )
+          shift
           ;;
         "--force"|\
         "-f")
           force=1
+          shift
           ;;
         "--global"|\
         "-g")
           _abbr:util_set_once type global || args+=( $opt )
+          shift
           ;;
         "help"|\
         "--help")
           _abbr:util_usage
           should_exit=1
+          shift
           ;;
         "import-aliases")
           _abbr:util_set_once action import_aliases || args+=( $opt )
+          shift
           ;;
         "import-fish")
           _abbr:util_set_once action import_fish || args+=( $opt )
+          shift
           ;;
         "import-git-aliases")
           _abbr:util_set_once action import_git_aliases || args+=( $opt )
+          shift
           ;;
         "list")
           _abbr:util_set_once action list || args+=( $opt )
+          shift
           ;;
         "list-abbreviations"|\
         "l")
           _abbr:util_set_once action list_abbreviations || args+=( $opt )
+          shift
           ;;
         "list-commands"|\
         "L"|\
         "-L")
           # -L option is to match the builtin alias's `-L`
           _abbr:util_set_once action list_commands || args+=( $opt )
+          shift
           ;;
         "load")
           _abbr_load_user_abbreviations
           should_exit=1
+          shift
           ;;
         "profile")
           _abbr:util_set_once action profile || args+=( $opt )
+          shift
           ;;
         "--quiet"|\
         "-q")
           quiet=1
+          shift
           ;;
         "--quieter"|\
         "-qq")
           quiet=1
           quieter=1
+          shift
           ;;
         "--regular"|\
         "-r")
           _abbr:util_set_once type regular || args+=( $opt )
+          shift
           ;;
         "rename"|\
         "R")
           _abbr:util_set_once action rename || args+=( $opt )
+          shift
           ;;
         "--session"|\
         "-S")
           _abbr:util_set_once scope session || args+=( $opt )
+          shift
           ;;
         "--user"|\
         "-U")
           _abbr:util_set_once scope user || args+=( $opt )
+          shift
           ;;
         "version"|\
         "--version"|\
         "-v")
           _abbr:util_set_once action print_version || args+=( $opt )
+          shift
           ;;
         "--")
-          # ${*#* -- } trims ` -- ` performs the string trim on every item in $*
-          ABBR_SPLIT_FN ${asterisk#* -- }
-          args+=( $REPLY )
+          shift
+          args+=( $@ )
           break
           ;;
         *)
           args+=( $opt )
+          shift
           ;;
       esac
     done
@@ -1332,12 +1357,10 @@ _abbr_load_user_abbreviations() {
     function _abbr_load_user_abbreviations:load() {
       _abbr_debugger
 
-      local -a REPLY
-      local abbreviation
-      local rest
-      local first_word
+      local cmd
+      local -a cmds
       local -i shwordsplit_on
-      typeset -a user_abbreviations
+      local -a words
 
       typeset -gi ABBR_LOADING_USER_ABBREVIATIONS
 
@@ -1351,16 +1374,14 @@ _abbr_load_user_abbreviations() {
       if [[ -f $ABBR_USER_ABBREVIATIONS_FILE ]]; then
         unsetopt shwordsplit
 
-        user_abbreviations=( ${(f)"$(<$ABBR_USER_ABBREVIATIONS_FILE)"} )
+        cmds=( ${(f)"$(<$ABBR_USER_ABBREVIATIONS_FILE)"} )
 
-        for abbreviation in $user_abbreviations; do
-          first_word="${abbreviation%% *}"
-          rest="${abbreviation#* }"
+        for cmd in $cmds; do
+          words=( ${(z)cmd} ) # this bracket for syntax highlighting }
 
           # Only execute abbr commands
-          if [[ $first_word == "abbr" && $first_word != $abbreviation ]]; then
-            ABBR_SPLIT_FN $rest
-            abbr $REPLY
+          if (( ${#words} > 1 )) && [[ ${words[1]} == abbr ]]; then
+            abbr ${words:1}
           fi
         done
 
