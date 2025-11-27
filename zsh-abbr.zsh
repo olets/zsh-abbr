@@ -1193,10 +1193,13 @@ _abbr_regular_expansion() {
 
             # Re-prepend anything trimmed off during the prefix check
             expansion="${(qqq)prefix_match}$expansion"
+            # this quotation mark to fix syntax highlighting "
           done
 
           'builtin' 'echo' - $expansion
         }
+
+        # this quotation mark to fix syntax highlighting "
 
         local abbreviation
         local expansion
