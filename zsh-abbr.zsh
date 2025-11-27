@@ -1316,8 +1316,8 @@ _abbr_load_user_abbreviations() {
       _abbr_debugger
 
       local abbreviation
-      local arguments
-      local program
+      local rest
+      local first_word
       local -i shwordsplit_on
       typeset -a user_abbreviations
 
@@ -1336,12 +1336,12 @@ _abbr_load_user_abbreviations() {
         user_abbreviations=( ${(f)"$(<$ABBR_USER_ABBREVIATIONS_FILE)"} )
 
         for abbreviation in $user_abbreviations; do
-          program="${abbreviation%% *}"
-          arguments="${abbreviation#* }"
+          first_word="${abbreviation%% *}"
+          rest="${abbreviation#* }"
 
           # Only execute abbr commands
-          if [[ $program == "abbr" && $program != $abbreviation ]]; then
-            abbr ${(z)arguments}
+          if [[ $first_word == "abbr" && $first_word != $abbreviation ]]; then
+            abbr ${(z)rest}
           fi
         done
 
