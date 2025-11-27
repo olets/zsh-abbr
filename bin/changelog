@@ -1,19 +1,12 @@
 #!/usr/bin/env zsh
 
 main() {
-  [[ -n $('builtin' 'command' -v conventional-changelog) ]] || {
-    printf "Requires conventional-changelog-angular\nhttps://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular\n"
+  [[ -n $('builtin' 'command' -v standard-changelog) ]] || {
+    printf "Requires standard-changelog\nhttps://github.com/conventional-changelog/conventional-changelog/tree/master/packages/standard-changelog\n"
     return 1
   }
 
-  [[ -n $('builtin' 'command' -v conventional-changelog) ]] || {
-    printf "Requires conventional-changelog-angular\nhttps://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular\n"
-    return 1
-  }
-
-  'builtin' 'command' conventional-changelog -i CHANGELOG.md -s -p angular
-
-  printf "If you got a\n    Cannot find package 'conventional-changelog-angular'\nerror, install conventional-changelog-angular per the docs at https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular#install\n"
+  'builtin' 'command' standard-changelog
 }
 
 main
