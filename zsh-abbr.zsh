@@ -1486,9 +1486,10 @@ _abbr_get_available_abbreviation() {
       return
     fi
 
+    words=( ${(z)LBUFFER} )
+
     # Look for global session abbreviation
 
-    words=( ${(z)LBUFFER} )
     while [[ -z $ABBR_UNUSED_ABBREVIATION ]] && (( i < ${#words} )); do
       expansion=${words:$i}
       ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_SESSION_ABBREVIATIONS[(re)${(qqq)expansion}]}}
@@ -1505,7 +1506,6 @@ _abbr_get_available_abbreviation() {
     # Look for global user abbreviation
 
     i=0
-    words=( ${(z)LBUFFER} )
     while [[ -z $ABBR_UNUSED_ABBREVIATION ]] && (( i < ${#words} )); do
       expansion=${words:$i}
       ABBR_UNUSED_ABBREVIATION=${(Q)${(k)ABBR_GLOBAL_USER_ABBREVIATIONS[(re)${(qqq)expansion}]}}
@@ -1609,9 +1609,10 @@ abbr-expand() {
     # END DUPE abbr-expand 2x with differences
   fi
 
+  words=( ${(z)LBUFFER} )
+
   # Check for global session expansion
 
-  words=( ${(z)LBUFFER} )
   # first check the full LBUFFER, then trim words off the front
   while [[ -z $expansion ]] && (( i < ${#words} )); do
     abbreviation=${words:$i}
@@ -1623,7 +1624,6 @@ abbr-expand() {
     # Check for global user expansion
 
     i=0
-    words=( ${(z)LBUFFER} )
 
     _abbr_create_files
     source ${_abbr_tmpdir}global-user-abbreviations
