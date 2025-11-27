@@ -1606,6 +1606,8 @@ abbr-expand() {
     # END DUPE abbr-expand 2x with differences
   fi
 
+  # Check for global session expansion
+
   words=( ${(z)LBUFFER} )
   # first check the full LBUFFER, then trim words off the front
   while [[ -z $expansion ]] && (( i < ${#words} )); do
@@ -1615,6 +1617,8 @@ abbr-expand() {
   done
 
   if [[ -z $expansion ]]; then
+    # Check for global user expansion
+
     i=0
     words=( ${(z)LBUFFER} )
 
@@ -1630,6 +1634,8 @@ abbr-expand() {
   fi
 
   if [[ -z $expansion ]]; then
+    # No expansion found. See if one was available
+
     (( ABBR_GET_AVAILABLE_ABBREVIATION )) && _abbr_get_available_abbreviation
 
     return $ret
