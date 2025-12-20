@@ -1695,8 +1695,9 @@ _abbr_update_buffer() {
 
   LBUFFER=${LBUFFER%%$abbreviation}
   if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion != ${expansion/$ABBR_EXPANSION_CURSOR_MARKER} ]]; then
-    LBUFFER=${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
-    RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
+    LBUFFER+=${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
+    RBUFFER+=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
+
     [[ type == 'regular' ]] && {
       REPLY=2
     } || REPLY=3
