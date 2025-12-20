@@ -1309,6 +1309,96 @@ _abbr_debugger() {
   (( ABBR_DEBUG )) && 'builtin' 'echo' - $funcstack[2]
 }
 
+# If an expansion is found, sets the `reply` to
+# `( <abbreviation> <expansion> <abbreviation type> )`
+_abbr_get_abbreviation_and_expansion() {
+  emulate -LR zsh
+
+  local -a REPLY # will be set by ABBR_SPLIT_FN
+  local abbreviation
+  local -a cmds
+  local expansion
+  local -i i
+  local input
+  local -i j
+  local -i k
+  local -a subcmds
+  local type
+  local -a words
+
+  ABBR_UNUSED_ABBREVIATION=
+  ABBR_UNUSED_ABBREVIATION_EXPANSION=
+  ABBR_UNUSED_ABBREVIATION_PREFIX=
+  ABBR_UNUSED_ABBREVIATION_SCOPE=
+  ABBR_UNUSED_ABBREVIATION_TYPE=
+
+  input=$@
+
+  # Check for regular expansion
+  # Supports <=v6.3.x "from the start of the line" sense of regular
+  # (match against entire input) and (roughly) "command-position"
+  # sense (matching against righ-most command in input).
+
+  cmds=( $input )
+
+  if (( ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS )); then
+    # Treat all `;`, `&`, `|`, and all reduplications (e.g. `&&`, `||`) as command delimiters
+    subcmds=( ${(s.;.)input//[&|]/;} )
+
+    if (( ${#subcmds} > 1 )); then
+      cmds+=( ${subcmds[-1]} )
+    fi
+  fi
+
+  while [[ -z $expansion ]] && (( k < ${#cmds} )); do
+    abbreviation=${cmds[-1]}
+    expansion=$(_abbr_regular_expansion "$abbreviation")
+    (( k++ ))
+  done
+
+  if [[ -n $expansion ]]; then
+    reply=( $abbreviation $expansion regular )
+    return
+  fi
+
+  ABBR_SPLIT_FN $input
+  words=( $REPLY )
+
+  # Check for global session expansion
+
+  # first check the full input, then trim words off the front
+  while [[ -z $expansion ]] && (( i < ${#words} )); do
+    abbreviation=${words:$i}
+    expansion=$(_abbr_global_expansion "$abbreviation" 1)
+    (( i++ ))
+  done
+
+  if [[ -z $expansion ]]; then
+    # Check for global user expansion
+
+    i=0
+
+    _abbr_create_files
+    source ${_abbr_tmpdir}global-user-abbreviations
+
+    # first check the full input, then trim words off the front
+    while [[ -z $expansion ]] && (( i < ${#words} )); do
+      abbreviation=${words:$i}
+      expansion=$(_abbr_global_expansion "$abbreviation" 0)
+      (( i++ ))
+    done
+  fi
+
+  if [[ -n $expansion ]]; then
+    reply=( $abbreviation $expansion global )
+    return
+  fi
+
+  # No expansion found. See if one was available
+
+  (( ABBR_GET_AVAILABLE_ABBREVIATION )) && _abbr_get_available_abbreviation
+}
+
 _abbr_global_expansion() {
   emulate -LR zsh
 
@@ -1331,12 +1421,13 @@ _abbr_global_expansion() {
   [[ -n $REPLY ]] || return
 
   if (( session )); then
-    expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]}
+    expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]} # }
+    # }
   else
     expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)abbreviation}]}
   fi
 
-  'builtin' 'echo' - ${(Q)expansion}
+  'builtin' 'echo' - ${(Q)expansion} # ' " $ {}
 }
 
 _abbr_load_user_abbreviations() {
@@ -1585,122 +1676,47 @@ _abbr_log_available_abbreviation() {
   'builtin' 'print' $message
 }
 
+# sets REPLY to
+# - 1 if _the entire_ buffer expanded AND if the cursor _wasn't_ placed
+# - 2 if _the entire_ buffer expanded AND the cursor _was_ placed
+# - 3 if _only part_ of the buffer expanded AND the cursor _was_ placed
+# - 0 otherwise
+_abbr_update_buffer() {
+  local abbreviation
+  local expansion
+  local type
+
+  abbreviation=$1
+  expansion=$2
+  type=$3
+
+  # if it expanded and this widget can push to history
+  (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
+
+  LBUFFER=${LBUFFER%%$abbreviation}
+  if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion != ${expansion/$ABBR_EXPANSION_CURSOR_MARKER} ]]; then
+    LBUFFER=${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
+    RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
+    [[ type == 'regular' ]] && {
+      REPLY=2
+    } || REPLY=3
+  else
+    LBUFFER+=$expansion
+    [[ type == 'regular' ]] && REPLY=1
+  fi
+}
+
 # WIDGETS
 # -------
 
-# returns 1 if the cursor wasn't placed and the entire buffer expanded,
-# 2 if the entire buffer expanded and the cursor was placed
-# 3 if only part of the buffer expanded and the cursor was placed
-# 0 otherwise
 abbr-expand() {
   emulate -LR zsh
 
-  local -a REPLY
-  local abbreviation
-  local -a cmds
-  local expansion
-  local -i i
-  local -i j
-  local -i k
-  local -i matched_full_buffer
-  local -i ret
-  local -a subcmds
-  local -a words
+  local REPLY # will be set by _abbr_update_buffer
+  local -a reply # will be set by abbr-expand
 
-  ABBR_UNUSED_ABBREVIATION=
-  ABBR_UNUSED_ABBREVIATION_EXPANSION=
-  ABBR_UNUSED_ABBREVIATION_PREFIX=
-  ABBR_UNUSED_ABBREVIATION_SCOPE=
-  ABBR_UNUSED_ABBREVIATION_TYPE=
-
-  # Check for regular expansion
-  # Supports <=v6.3.x "from the start of the line" sense of regular
-  # (match against entire LBUFFER) and (roughly) "command-position"
-  # sense (matching against righ-most command in LBUFFER).
-
-  cmds=( $LBUFFER )
-
-  if (( ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS )); then
-    # Treat all `;`, `&`, `|`, and all reduplications (e.g. `&&`, `||`) as command delimiters
-    subcmds=( ${(s.;.)LBUFFER//[&|]/;} )
-
-    if (( ${#subcmds} > 1 )); then
-      cmds+=( ${subcmds[-1]} )
-    fi
-  fi
-
-  while [[ -z $expansion ]] && (( k < ${#cmds} )); do
-    abbreviation=${cmds[-1]}
-    expansion=$(_abbr_regular_expansion "$abbreviation")
-    (( k++ ))
-  done
-
-  if [[ -n $expansion ]]; then
-    # BEGIN DUPE abbr-expand 2x with differences
-    # if it expanded and this widget can push to history
-    (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
-    LBUFFER=${LBUFFER%%$abbreviation}
-    if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion != ${expansion/$ABBR_EXPANSION_CURSOR_MARKER} ]]; then
-      LBUFFER=${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
-      RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
-      ret=2 # DUPE difference
-    else
-      LBUFFER+=$expansion
-      ret=1 # DUPE difference
-    fi
-    return $ret
-    # END DUPE abbr-expand 2x with differences
-  fi
-
-  ABBR_SPLIT_FN $LBUFFER
-  words=( $REPLY )
-
-  # Check for global session expansion
-
-  # first check the full LBUFFER, then trim words off the front
-  while [[ -z $expansion ]] && (( i < ${#words} )); do
-    abbreviation=${words:$i}
-    expansion=$(_abbr_global_expansion "$abbreviation" 1)
-    (( i++ ))
-  done
-
-  if [[ -z $expansion ]]; then
-    # Check for global user expansion
-
-    i=0
-
-    _abbr_create_files
-    source ${_abbr_tmpdir}global-user-abbreviations
-
-    # first check the full LBUFFER, then trim words off the front
-    while [[ -z $expansion ]] && (( i < ${#words} )); do
-      abbreviation=${words:$i}
-      expansion=$(_abbr_global_expansion "$abbreviation" 0)
-      (( i++ ))
-    done
-  fi
-
-  if [[ -z $expansion ]]; then
-    # No expansion found. See if one was available
-
-    (( ABBR_GET_AVAILABLE_ABBREVIATION )) && _abbr_get_available_abbreviation
-
-    return $ret
-  fi
-
-  # BEGIN DUPE abbr-expand 2x with differences
-  # if it expanded and this widget can push to history
-  (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
-  LBUFFER=${LBUFFER%%$abbreviation}
-  if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion != ${expansion/$ABBR_EXPANSION_CURSOR_MARKER} ]]; then
-    LBUFFER+=${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
-    RBUFFER=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
-    ret=3 # DUPE difference
-  else
-    LBUFFER+=$expansion
-  fi
-  return $ret
-  # END DUPE abbr-expand 2x with differences
+  _abbr_expand $LBUFFER
+  _abbr_update_buffer $reply
 }
 
 abbr-expand-and-accept() {
@@ -1711,6 +1727,9 @@ abbr-expand-and-accept() {
   local -i entire_buffer_expanded
   local -i hist_ignore
   local buffer
+  local -i rply
+  local REPLY # will be set by _abbr_update_buffer
+  local -a reply # will be set by abbr-expand
   local trailing_space
 
   trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
@@ -1722,10 +1741,12 @@ abbr-expand-and-accept() {
   if [[ -z $trailing_space ]]; then
     buffer=$BUFFER
 
-    abbr-expand
+    _abbr_get_abbreviation_and_expansion $LBUFFER
+    _abbr_update_buffer $reply
+    rply=$REPLY
 
     # If changing this, abbr-expand may need to change
-    (( $? == 1 || $? == 2 )) && entire_buffer_expanded=1
+    (( $rply == 1 || $rply == 2 )) && entire_buffer_expanded=1
 
     # if it expanded and this widget can push to history
     if (( ! hist_ignore )) && [[ $BUFFER != $buffer ]] && (( ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY )); then
@@ -1746,11 +1767,16 @@ abbr-expand-and-insert() {
 
   local buffer
   local -i cursor_was_placed
+  local -i rply
+  local REPLY # will be set by _abbr_update_buffer
+  local -a reply # will be set by abbr-expand
 
-  abbr-expand
+  _abbr_get_abbreviation_and_expansion $LBUFFER
+  _abbr_update_buffer $reply
+  rply=$REPLY
 
-  # If changing this, abbr-expand may need to change
-  (( $? == 2 || $? == 3 )) && cursor_was_placed=1
+  # If changing this, _abbr_update_buffer may need to change
+  (( rply == 2 || rply == 3 )) && cursor_was_placed=1
   (( cursor_was_placed )) && return
 
   if (( ABBR_SET_LINE_CURSOR )) && [[ $BUFFER != ${BUFFER/$ABBR_LINE_CURSOR_MARKER} ]]; then
