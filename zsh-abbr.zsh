@@ -1422,16 +1422,17 @@ _abbr_global_expansion() {
 
   if (( session )); then
     expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]} # }
-    # }
   else
     expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)abbreviation}]}
   fi
 
-  'builtin' 'echo' - ${(Q)expansion} # ' " $ {}
+  'builtin' 'echo' - ${(Q)expansion} #  these characters for syntax highlighting  " $
 }
 
 _abbr_load_user_abbreviations() {
   emulate -LR zsh
+
+  # these characters for syntax highlighting ' $
 
   {
     _abbr_debugger
@@ -1465,7 +1466,7 @@ _abbr_load_user_abbreviations() {
       if [[ -f $ABBR_USER_ABBREVIATIONS_FILE ]]; then
         unsetopt shwordsplit
 
-        cmds=( ${(f)"$(<$ABBR_USER_ABBREVIATIONS_FILE)"} )
+        cmds=( ${(f)"$(<$ABBR_USER_ABBREVIATIONS_FILE)"} ) # this backtick for syntax highlighting `
 
         for cmd in $cmds; do
           words=( ${(z)cmd} ) # this bracket for syntax highlighting }
@@ -1667,7 +1668,7 @@ _abbr_log_available_abbreviation() {
     warn_color="$fg[yellow]"
   fi
 
-  message="abbr: \`$ABBR_UNUSED_ABBREVIATION\`${ABBR_UNUSED_ABBREVIATION_PREFIX:+, prefixed with \`$ABBR_UNUSED_ABBREVIATION_PREFIX\`,} is your $ABBR_UNUSED_ABBREVIATION_TYPE $ABBR_UNUSED_ABBREVIATION_SCOPE abbreviation for \`$ABBR_UNUSED_ABBREVIATION_EXPANSION\`"
+  message="abbr: \`$ABBR_UNUSED_ABBREVIATION\`${ABBR_UNUSED_ABBREVIATION_PREFIX:+, prefixed with \`$ABBR_UNUSED_ABBREVIATION_PREFIX\`,} is your $ABBR_UNUSED_ABBREVIATION_TYPE $ABBR_UNUSED_ABBREVIATION_SCOPE abbreviation for \`$ABBR_UNUSED_ABBREVIATION_EXPANSION\`" # this backtick for syntax highlighting `
 
   if ! _abbr_no_color; then
     message="$warn_color$message$reset_color"
