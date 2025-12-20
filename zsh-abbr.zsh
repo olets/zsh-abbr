@@ -1676,11 +1676,9 @@ _abbr_log_available_abbreviation() {
   'builtin' 'print' $message
 }
 
-# sets REPLY to
-# - 1 if _the entire_ buffer expanded AND if the cursor _wasn't_ placed
-# - 2 if _the entire_ buffer expanded AND the cursor _was_ placed
-# - 3 if _only part_ of the buffer expanded AND the cursor _was_ placed
-# - 0 otherwise
+# Sets reply to `( <entire buffer expanded> <cursor was placed> )`
+# where <entire buffer expanded> and <cursor was placed> are
+# integer booleans, `0` for "false" and `1` for "true".
 _abbr_update_buffer() {
   local abbreviation
   local expansion
@@ -1690,20 +1688,24 @@ _abbr_update_buffer() {
   expansion=$2
   type=$3
 
-  # if it expanded and this widget can push to history
+  reply=( 0 0 )
+
+  [[ -z $abbreviation ]] && return
+
   (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
 
   LBUFFER=${LBUFFER%%$abbreviation}
+
   if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $expansion != ${expansion/$ABBR_EXPANSION_CURSOR_MARKER} ]]; then
     LBUFFER+=${expansion%%$ABBR_EXPANSION_CURSOR_MARKER*}
     RBUFFER+=${expansion#*$ABBR_EXPANSION_CURSOR_MARKER}$RBUFFER
 
     [[ type == 'regular' ]] && {
-      REPLY=2
-    } || REPLY=3
+      reply=( 1 1 )
+    } || reply=( 0 1 )
   else
     LBUFFER+=$expansion
-    [[ type == 'regular' ]] && REPLY=1
+    [[ type == 'regular' ]] && reply=( 1 0 )
   fi
 }
 
@@ -1728,9 +1730,7 @@ abbr-expand-and-accept() {
   local -i entire_buffer_expanded
   local -i hist_ignore
   local buffer
-  local -i rply
-  local REPLY # will be set by _abbr_update_buffer
-  local -a reply # will be set by abbr-expand
+  local -a reply # will be set by abbr-expand and then by _abbr_update_buffer
   local trailing_space
 
   trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
@@ -1742,12 +1742,11 @@ abbr-expand-and-accept() {
   if [[ -z $trailing_space ]]; then
     buffer=$BUFFER
 
-    _abbr_get_abbreviation_and_expansion $LBUFFER
-    _abbr_update_buffer $reply
-    rply=$REPLY
+    _abbr_get_abbreviation_and_expansion $LBUFFER # sets `reply`
+    _abbr_update_buffer $reply # sets `reply`
 
     # If changing this, abbr-expand may need to change
-    (( $rply == 1 || $rply == 2 )) && entire_buffer_expanded=1
+    entire_buffer_expanded=$reply[1]
 
     # if it expanded and this widget can push to history
     if (( ! hist_ignore )) && [[ $BUFFER != $buffer ]] && (( ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY )); then
@@ -1768,16 +1767,13 @@ abbr-expand-and-insert() {
 
   local buffer
   local -i cursor_was_placed
-  local -i rply
-  local REPLY # will be set by _abbr_update_buffer
-  local -a reply # will be set by abbr-expand
+  local -a reply # will be set by abbr-expand and then by _abbr_update_buffer
 
-  _abbr_get_abbreviation_and_expansion $LBUFFER
-  _abbr_update_buffer $reply
-  rply=$REPLY
+  _abbr_get_abbreviation_and_expansion $LBUFFER # sets `reply`
+  _abbr_update_buffer $reply # sets `reply`
 
   # If changing this, _abbr_update_buffer may need to change
-  (( rply == 2 || rply == 3 )) && cursor_was_placed=1
+  cursor_was_placed=$reply[2]
   (( cursor_was_placed )) && return
 
   if (( ABBR_SET_LINE_CURSOR )) && [[ $BUFFER != ${BUFFER/$ABBR_LINE_CURSOR_MARKER} ]]; then
