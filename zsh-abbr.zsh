@@ -1873,7 +1873,7 @@ _abbr_init() {
       fi
 
       zle -N abbr-expand
-      zle -N accept-line abbr-expand-and-accept
+      zle -N abbr-expand-and-accept
       zle -N abbr-expand-and-insert
     }
 
@@ -1881,6 +1881,9 @@ _abbr_init() {
       emulate -LR zsh
 
       _abbr_debugger
+
+      # enter expands abbreviations and runs the command
+      zle -N accept-line abbr-expand-and-accept
 
       # spacebar expands abbreviations
       bindkey " " abbr-expand-and-insert
@@ -1971,7 +1974,7 @@ _abbr_init() {
     _abbr_load_user_abbreviations
     _abbr_init:add_widgets
     _abbr_init:deprecations
-    (( ABBR_DEFAULT_BINDINGS )) &&  _abbr_init:bind_widgets
+    (( ABBR_DEFAULT_BINDINGS )) && _abbr_init:bind_widgets
 
     job-queue__zsh-abbr pop zsh-abbr $job_id
     unset ABBR_INITIALIZING
