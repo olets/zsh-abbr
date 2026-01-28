@@ -31,6 +31,16 @@ main() {
 			' \
 		"_abbr_expand_line returns correct values for global abbreviation with no rinput"
 	abbr erase $test_abbr_abbreviation
+
+	abbr -g $test_abbr_abbreviation=$test_abbr_expansion
+	_abbr_expand_line $test_abbr_abbreviation right_text
+	ztr test '[[ $reply[abbreviation] == $test_abbr_abbreviation ]] \
+			&& [[ $reply[rinput] == right_text ]]
+			' \
+		"_abbr_expand_line preserves right text when not placing cursor"
+	abbr erase $test_abbr_abbreviation
+
+	ztr skip '' "_abbr_expand_line can place cursor"
 }
 
 main
