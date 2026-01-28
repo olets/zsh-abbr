@@ -1766,37 +1766,44 @@ abbr-expand-and-accept() {
   local -i hist_ignore
   local buffer
   local -A reply # will be set by _abbr_expand_line
-  local trailing_space
 
-  # TODO this seems strange. why would I want this escape hatch? can just append a `;`. but would be a breaking change
+  # TODO this seems strange
+  # Why was this escape hatch desirable three years ago?
+  # Can just append a `;`. But dropping this would be a breaking change
+  local trailing_space
   trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
+  if [[ -n $trailing_space ]]; then
+    _abbr_accept-line
+    return
+  fi
 
   if [[ $_abbr_hist_ignore_space == on ]] && [[ $BUFFER[1] == ' ' ]]; then
     hist_ignore=1
   fi
 
-  if [[ -z $trailing_space ]]; then
-    buffer=$BUFFER
+  buffer=$BUFFER
 
-    _abbr_expand_line $LBUFFER $RBUFFER # sets `reply`
+  _abbr_expand_line $LBUFFER $RBUFFER # sets `reply`
 
-    [[ -n $reply[abbreviation] ]] && {
-      _abbr_push_expanded_abbreviation_to_history $reply[abbreviation]
-    }
+  [[ -n $reply[abbreviation] ]] && {
+    _abbr_push_expanded_abbreviation_to_history $reply[abbreviation]
+  }
 
-    LBUFFER=$reply[loutput]
-    RBUFFER=$reply[rouput]
+  LBUFFER=$reply[loutput]
+  RBUFFER=$reply[rouput]
 
-    # if it expanded and this widget can push to history
-    if (( ! hist_ignore )) && [[ $BUFFER != $buffer ]] && (( ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY )); then
-      if (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )); then
-        # if the abbreviation was pushed to history,
-        # don't push the abbreviated line to history if that will make a duplicative history entry
-        [[ $buffer != $reply[abbreviation] ]] && print -s $buffer
-      else
-        print -s $buffer
-      fi
-    fi
+  if (( hist_ignore )) || [[ $BUFFER == $buffer ]] || (( ! ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY )); then
+    _abbr_accept-line
+    return
+  fi
+
+  # if it expanded and this widget can push to history
+  if (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )); then
+    # if the abbreviation was pushed to history,
+    # don't push the abbreviated line to history if that will make a duplicative history entry
+    [[ $buffer != $reply[abbreviation] ]] && print -s $buffer
+  else
+    print -s $buffer
   fi
 
   _abbr_accept-line
