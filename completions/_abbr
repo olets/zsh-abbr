@@ -40,7 +40,7 @@ main() {
         {import-git-aliases,}"[Add regular abbreviations for every Git alias in the current session. The EXPANSION is prefixed with git\[Space\].]" \
         {list,}"[List the abbreviations with their expansions.]" \
         {list-abbreviations,l}"[List the abbreviations only.]" \
-        {list-commands,}"[List as commands suitable for export.]" \
+        {list-commands,L}"[List as commands suitable for export.]" \
         {profile,}"[Log profile information for debugging.]" \
         {rename,R}"[Rename an abbreviation.]" \
         {version,--version,-v}"[Show the current version.]"
