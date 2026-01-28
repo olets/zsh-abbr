@@ -1740,6 +1740,30 @@ _abbr_push_expanded_abbreviation_to_history() {
   (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
 }
 
+_abbr_set_line_cursor() {
+  emulate -LR zsh
+
+  _abbr_debugger
+
+  local str
+
+  str=$1
+
+  reply=( [cursor_was_placed]=0 )
+
+  # setting the line cursor must be enabled
+  (( ABBR_SET_LINE_CURSOR )) || return
+
+  # str must contain ABBR_LINE_CURSOR_MARKER
+  [[ $str != ${str/$ABBR_LINE_CURSOR_MARKER} ]] || return
+
+  reply+=(
+    [cursor_was_placed]=1
+    [loutput]=${str%%$ABBR_LINE_CURSOR_MARKER*} # set loutput to str up to and not including the first instance of ABBR_LINE_CURSOR_MARKER
+    [routput]=${str#*$ABBR_LINE_CURSOR_MARKER} # set routput to str starting after the first instance of ABBR_LINE_CURSOR_MARKER
+  )
+}
+
 # WIDGETS
 # -------
 
@@ -1824,22 +1848,20 @@ abbr-expand-and-insert() {
   LBUFFER=$reply[loutput]
   RBUFFER=$reply[routput]
 
+  # stop if cursor was placed during expansion
   (( $reply[cursor_was_placed] )) && return # this apostrophe for syntax highlighting '
 
-  # TODO move into new fn
-  if (( ABBR_SET_LINE_CURSOR )) && \
-    [[ $BUFFER != ${BUFFER/$ABBR_LINE_CURSOR_MARKER} ]] # BUFFER contains ABBR_LINE_CURSOR_MARKER
-  then
-    buffer=$BUFFER
+  reply=()
+  _abbr_set_line_cursor $BUFFER # sets `reply`
 
-    LBUFFER=${buffer%%$ABBR_LINE_CURSOR_MARKER*} # set LBUFFER to buffer up to and not including the first instance of ABBR_LINE_CURSOR_MARKER
-    RBUFFER=${buffer#*$ABBR_LINE_CURSOR_MARKER} # set RBUFFER to buffer starting after the first instance of ABBR_LINE_CURSOR_MARKER
+  # do not insert the bound trigger if the cursor is set
+  (( ! $reply[cursor_was_placed] )) && {
+    zle self-insert
+    return # this apostrophe for syntax highlighting '
+  }
 
-    # if line cursor was set, do not insert the bound trigger
-    return
-  fi
-
-  zle self-insert
+  LBUFFER=$reply[loutput]
+  RBUFFER=$reply[routput]
 }
 
 # DEPRECATION
