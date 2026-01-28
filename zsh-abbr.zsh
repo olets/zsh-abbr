@@ -1317,9 +1317,9 @@ _abbr_expand_line() {
   {
     _abbr_debugger
 
-    # If an expansion is found, sets `reply` to
-    # `( <abbreviation> <expansion> <abbreviation type> )`
-    function _abbr_expand_line:expand() {
+    _abbr_expand_line:expand_abbreviation() {
+      emulate -LR zsh
+
       _abbr_debugger
 
       local -a REPLY # will be set by ABBR_SPLIT_FN
@@ -1327,34 +1327,22 @@ _abbr_expand_line() {
       local -a cmds
       local expansion
       local -i i
-      local input
       local -i j
       local -i k
-      local linput
-      # local rinput
       local -a subcmds
       local type
       local -a words
-
-      ABBR_UNUSED_ABBREVIATION=
-      ABBR_UNUSED_ABBREVIATION_EXPANSION=
-      ABBR_UNUSED_ABBREVIATION_PREFIX=
-      ABBR_UNUSED_ABBREVIATION_SCOPE=
-      ABBR_UNUSED_ABBREVIATION_TYPE=
-
-      linput=$reply[linput]
-      # rinput=$reply[rinput]
 
       # Check for regular expansion
       # Supports <=v6.3.x "from the start of the line" sense of regular
       # (match against entire linput) and (roughly) "command-position"
       # sense (matching against righ-most command in linput).
 
-      cmds=( $linput )
+      cmds=( $reply[linput] )
 
       if (( ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS )); then
         # Treat all `;`, `&`, `|`, and all reduplications (e.g. `&&`, `||`) as command delimiters
-        subcmds=( ${(s.;.)linput//[&|]/;} )
+        subcmds=( ${(s.;.)reply[linput]//[&|]/;} )
 
         if (( ${#subcmds} > 1 )); then
           cmds+=( ${subcmds[-1]} )
@@ -1368,11 +1356,17 @@ _abbr_expand_line() {
       done
 
       if [[ -n $expansion ]]; then
-        reply+=( [abbreviation]=$abbreviation [expansion]=$expansion [type]=regular )
+        reply+=(
+          [abbreviation]=$abbreviation
+          [expansion]=$expansion
+          [loutput]=${reply[linput]%%$abbreviation}$expansion
+          [type]=regular
+        )
+
         return
       fi
 
-      ABBR_SPLIT_FN $linput
+      ABBR_SPLIT_FN $reply[linput]
       words=( $REPLY )
 
       # Check for global session expansion
@@ -1401,53 +1395,58 @@ _abbr_expand_line() {
       fi
 
       if [[ -n $expansion ]]; then
-        reply+=( [abbreviation]=$abbreviation [expansion]=$expansion [type]=global )
-        return
+        reply+=(
+          [abbreviation]=$abbreviation
+          [expansion]=$expansion
+          [loutput]=${reply[linput]%%$abbreviation}$expansion
+          [type]=global
+        )
       fi
-
-      # No expansion found. See if one was available
-
-      (( ABBR_GET_AVAILABLE_ABBREVIATION )) && _abbr_get_available_abbreviation
     }
 
-    # Sets reply to `( <entire buffer expanded> <cursor was placed> )`
-    # where <entire buffer expanded> and <cursor was placed> are
-    # integer booleans, `0` for "false" and `1` for "true".
-    function _abbr_expand_line:update_buffer() {
+    _abbr_expand_line:set_expansion_cursor() {
+      emulate -LR zsh
+
       _abbr_debugger
 
-      [[ -z $reply[abbreviation] ]] && return
+      (( ABBR_SET_EXPANSION_CURSOR )) || return
 
-      (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $reply[abbreviation]
+      # if expansion doesn't contain expansion cursor marker, no cursor placement to be done
+      [[ $reply[expansion] != ${reply[expansion]/$ABBR_EXPANSION_CURSOR_MARKER} ]] || return
 
-      reply+=( [loutput]=${reply[linput]%%$reply[abbreviation]} )
+      reply+=( [loutput]=${reply[linput]%%$reply[abbreviation]}${reply[expansion]%%$ABBR_EXPANSION_CURSOR_MARKER*} )
+      reply+=( [routput]=${reply[expansion]#*$ABBR_EXPANSION_CURSOR_MARKER}$reply[rinput] )
 
-      if (( ABBR_SET_EXPANSION_CURSOR )) && [[ $reply[expansion] != ${reply[expansion]/$ABBR_EXPANSION_CURSOR_MARKER} ]]; then
-        reply+=( [loutput]=$reply[loutput]${reply[expansion]%%$ABBR_EXPANSION_CURSOR_MARKER*} )
-        reply+=( [routput]=${reply[expansion]#*$ABBR_EXPANSION_CURSOR_MARKER}$reply[rinput] )
-
-        reply+=( [cursor_was_placed]=1 )
-
-        [[ $reply[type] == 'regular' ]] && {
-          reply+=( [expand_entire_buffer]=1 )
-        } || reply+=( [expand_entire_buffer]=0 )
-      else
-        reply+=( [loutput]=$reply[loutput]$reply[expansion] )
-
-        [[ $reply[type] == 'regular' ]] && \
-          reply+=( [expand_entire_buffer]=1 [cursor_was_placed]=0 )
-      fi
+      reply+=( [cursor_was_placed]=1 )
     }
 
-    # typeset -A reply
-    reply=( [linput]=$1 [loutput]=$1 [expand_entire_buffer]=0 [cursor_was_placed]=0 )
+    ABBR_UNUSED_ABBREVIATION=
+    ABBR_UNUSED_ABBREVIATION_EXPANSION=
+    ABBR_UNUSED_ABBREVIATION_PREFIX=
+    ABBR_UNUSED_ABBREVIATION_SCOPE=
+    ABBR_UNUSED_ABBREVIATION_TYPE=
+
+    reply=(
+      [linput]=$1
+      [loutput]=$1
+      [cursor_was_placed]=0
+    )
+
     [[ -n $2 ]] && reply+=( [rinput]=$2 [routput]=$2 )
 
-    _abbr_expand_line:expand
-    _abbr_expand_line:update_buffer
+    _abbr_expand_line:expand_abbreviation
+
+    if [[ -n $reply[expansion] ]]; then
+      _abbr_expand_line:set_expansion_cursor
+
+      return
+    fi
+
+    # No expansion found. See if one was available
+
+    (( ABBR_GET_AVAILABLE_ABBREVIATION )) && _abbr_get_available_abbreviation
   } always {
-    unfunction -m _abbr_expand_line:expand
-    unfunction -m _abbr_expand_line:update_buffer
+    unfunction -m _abbr_expand_line:set_expansion_cursor
   }
 }
 
@@ -1473,12 +1472,12 @@ _abbr_global_expansion() {
   [[ -n $REPLY ]] || return
 
   if (( session )); then
-    expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]} # }
+    expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]}
   else
     expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)abbreviation}]}
   fi
 
-  'builtin' 'echo' - ${(Q)expansion} #  these characters for syntax highlighting  " $
+  'builtin' 'echo' - ${(Q)expansion} #  this bracket for syntax highlighting }
 }
 
 _abbr_load_user_abbreviations() {
@@ -1729,6 +1728,18 @@ _abbr_log_available_abbreviation() {
   'builtin' 'print' $message
 }
 
+_abbr_push_expanded_abbreviation_to_history() {
+  emulate -LR zsh
+
+  _abbr_debugger
+
+  local abbrevation
+
+  abbrevation=$1
+
+  (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
+}
+
 # WIDGETS
 # -------
 
@@ -1738,6 +1749,11 @@ abbr-expand() {
   local -A reply # will be set by _abbr_expand_line
 
   _abbr_expand_line $LBUFFER $RBUFFER # sets `reply`
+
+  [[ -n $reply[abbreviation] ]] && {
+    _abbr_push_expanded_abbreviation_to_history $reply[abbreviation]
+  }
+
   LBUFFER=$reply[louput]
   RBUFFER=$reply[routput]
 }
@@ -1752,7 +1768,7 @@ abbr-expand-and-accept() {
   local -A reply # will be set by _abbr_expand_line
   local trailing_space
 
-  # TODO this seems strange. why would I want this escape hatch? but would be a breaking change
+  # TODO this seems strange. why would I want this escape hatch? can just append a `;`. but would be a breaking change
   trailing_space=${LBUFFER##*[^[:IFSSPACE:]]}
 
   if [[ $_abbr_hist_ignore_space == on ]] && [[ $BUFFER[1] == ' ' ]]; then
@@ -1763,16 +1779,20 @@ abbr-expand-and-accept() {
     buffer=$BUFFER
 
     _abbr_expand_line $LBUFFER $RBUFFER # sets `reply`
+
+    [[ -n $reply[abbreviation] ]] && {
+      _abbr_push_expanded_abbreviation_to_history $reply[abbreviation]
+    }
+
     LBUFFER=$reply[loutput]
     RBUFFER=$reply[rouput]
 
     # if it expanded and this widget can push to history
-    # TODO may need to use `$LBUFFER$RBUFFER` instead of `$BUFFER`
     if (( ! hist_ignore )) && [[ $BUFFER != $buffer ]] && (( ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY )); then
-      # if abbr-expand didn't already push the abbreviated line to history
       if (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )); then
-        # If changing this, abbr-expand may need to change
-        (( ! $reply[entire_buffer_expanded] )) && print -s $buffer
+        # if the abbreviation was pushed to history,
+        # don't push the abbreviated line to history if that will make a duplicative history entry
+        [[ $buffer != $reply[abbreviation] ]] && print -s $buffer
       else
         print -s $buffer
       fi
@@ -1789,24 +1809,26 @@ abbr-expand-and-insert() {
   local -A reply # will be set by _abbr_expand_line
 
   _abbr_expand_line $LBUFFER $RBUFFER # sets `reply`
-  # TODO for k v in ${(kv)reply}; do echo $k=$v; done
+
+  [[ -n $reply[abbreviation] ]] && {
+    _abbr_push_expanded_abbreviation_to_history $reply[abbreviation]
+  }
+
   LBUFFER=$reply[loutput]
   RBUFFER=$reply[routput]
 
-  # If changing this, _abbr_expand_line may need to change
   (( $reply[cursor_was_placed] )) && return # this apostrophe for syntax highlighting '
 
-  # TODO move into _abbr_expand_line?
+  # TODO move into new fn
   if (( ABBR_SET_LINE_CURSOR )) && \
     [[ $BUFFER != ${BUFFER/$ABBR_LINE_CURSOR_MARKER} ]] # BUFFER contains ABBR_LINE_CURSOR_MARKER
-    # TODO may need to use `$LBUFFER$RBUFFER` instead of `$BUFFER`
   then
-    # TODO may need to use `$LBUFFER$RBUFFER` instead of `$BUFFER`
     buffer=$BUFFER
 
     LBUFFER=${buffer%%$ABBR_LINE_CURSOR_MARKER*} # set LBUFFER to buffer up to and not including the first instance of ABBR_LINE_CURSOR_MARKER
     RBUFFER=${buffer#*$ABBR_LINE_CURSOR_MARKER} # set RBUFFER to buffer starting after the first instance of ABBR_LINE_CURSOR_MARKER
 
+    # if line cursor was set, do not insert the bound trigger
     return
   fi
 
@@ -2051,6 +2073,7 @@ _abbr_init
 # _abbr_log_available_abbreviation
 # _abbr_no_color
 # _abbr_regular_expansion
+# TODO can we unfunction _abbr_push_expanded_abbreviation_to_history
 
 unfunction -m _abbr
 unfunction -m _abbr_init

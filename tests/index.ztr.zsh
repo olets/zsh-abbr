@@ -96,6 +96,7 @@ main() {
 	abbr_line_cursor_marker_saved=$ABBR_LINE_CURSOR_MARKER
 	abbr_quiet_saved=$ABBR_QUIET
 	abbr_scalar_prefixes_saved=( $ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES )
+	abbr_set_expansion_cursor=$ABBR_SET_EXPANSION_CURSOR
 	abbr_tmpdir_saved=$ABBR_TMPDIR
 	ABBR_USER_ABBREVIATIONS_FILE_SAVED=$ABBR_USER_ABBREVIATIONS_FILE
 	aliases_saved=$(alias -L)
@@ -118,8 +119,9 @@ main() {
 	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES+=( $prefix_glob_2 )
 
 	ABBR_QUIET=1
-	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
+	ABBR_SET_EXPANSION_CURSOR=0
 	ABBR_TMPDIR=$test_tmpdir
+	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
 	unalias -m '*'
 	unset -f ABBR_SPLIT_FN
 
