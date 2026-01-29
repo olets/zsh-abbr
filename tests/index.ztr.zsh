@@ -92,6 +92,7 @@ main() {
 
 	# Save user configuration
 	abbr_expansion_cursor_marker_saved=$ABBR_EXPANSION_CURSOR_MARKER
+	abbr_experimental_command_position_regular_abbreviations=$ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS
 	abbr_glob_prefixes_saved=( $ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES )
 	abbr_line_cursor_marker_saved=$ABBR_LINE_CURSOR_MARKER
 	abbr_quiet_saved=$ABBR_QUIET
@@ -119,6 +120,7 @@ main() {
 	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES+=( $prefix_glob_1 )
 	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES+=( $prefix_glob_2 )
 
+  ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS=0
 	ABBR_QUIET=1
 	ABBR_SET_LINE_CURSOR=0
 	ABBR_SET_EXPANSION_CURSOR=0
@@ -160,6 +162,7 @@ main() {
 
 	# Reset
 	ABBR_EXPANSION_CURSOR_MARKER=$abbr_expansion_cursor_marker_saved
+	ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS=$abbr_experimental_command_position_regular_abbreviations
 	ABBR_LINE_CURSOR_MARKER=$abbr_line_cursor_marker_saved
 	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES=( $abbr_glob_prefixes_saved )
 	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES=( $abbr_scalar_prefixes_saved )
