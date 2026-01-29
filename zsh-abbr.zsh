@@ -1311,13 +1311,13 @@ _abbr_debugger() {
 
 # If an expansion is found, sets the `reply` to
 # `( <abbreviation> <expansion> <abbreviation type> )`
-_abbr_expand_line() {
+abbr-expand-line() {
   emulate -LR zsh
 
   {
     _abbr_debugger
 
-    _abbr_expand_line:expand_abbreviation() {
+    abbr-expand-line:expand_abbreviation() {
       emulate -LR zsh
 
       _abbr_debugger
@@ -1404,7 +1404,7 @@ _abbr_expand_line() {
       fi
     }
 
-    _abbr_expand_line:set_expansion_cursor() {
+    abbr-expand-line:set_expansion_cursor() {
       emulate -LR zsh
 
       _abbr_debugger
@@ -1434,10 +1434,10 @@ _abbr_expand_line() {
 
     [[ -n $2 ]] && reply+=( [rinput]=$2 [routput]=$2 )
 
-    _abbr_expand_line:expand_abbreviation
+    abbr-expand-line:expand_abbreviation
 
     if [[ -n $reply[expansion] ]]; then
-      _abbr_expand_line:set_expansion_cursor
+      abbr-expand-line:set_expansion_cursor
 
       return
     fi
@@ -1446,7 +1446,7 @@ _abbr_expand_line() {
 
     (( ABBR_GET_AVAILABLE_ABBREVIATION )) && _abbr_get_available_abbreviation
   } always {
-    unfunction -m _abbr_expand_line:set_expansion_cursor
+    unfunction -m abbr-expand-line:set_expansion_cursor
   }
 }
 
@@ -1740,7 +1740,7 @@ _abbr_push_expanded_abbreviation_to_history() {
   (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
 }
 
-_abbr_set_line_cursor() {
+abbr-set-line-cursor() {
   emulate -LR zsh
 
   _abbr_debugger
@@ -1770,9 +1770,9 @@ _abbr_set_line_cursor() {
 abbr-expand() {
   emulate -LR zsh
 
-  local -A reply # will be set by _abbr_expand_line
+  local -A reply # will be set by abbr-expand-line
 
-  _abbr_expand_line $LBUFFER $RBUFFER # sets `reply`
+  abbr-expand-line $LBUFFER $RBUFFER # sets `reply`
 
   [[ -n $reply[abbreviation] ]] && {
     _abbr_push_expanded_abbreviation_to_history $reply[abbreviation]
@@ -1789,7 +1789,7 @@ abbr-expand-and-accept() {
 
   local -i hist_ignore
   local buffer
-  local -A reply # will be set by _abbr_expand_line
+  local -A reply # will be set by abbr-expand-line
 
   # TODO this seems strange
   # Why was this escape hatch desirable three years ago?
@@ -1807,7 +1807,7 @@ abbr-expand-and-accept() {
 
   buffer=$BUFFER
 
-  _abbr_expand_line $LBUFFER $RBUFFER # sets `reply`
+  abbr-expand-line $LBUFFER $RBUFFER # sets `reply`
 
   [[ -n $reply[abbreviation] ]] && {
     _abbr_push_expanded_abbreviation_to_history $reply[abbreviation]
@@ -1837,9 +1837,9 @@ abbr-expand-and-insert() {
   emulate -LR zsh
 
   local buffer
-  local -A reply # will be set by _abbr_expand_line
+  local -A reply # will be set by abbr-expand-line
 
-  _abbr_expand_line $LBUFFER $RBUFFER # sets `reply`
+  abbr-expand-line $LBUFFER $RBUFFER # sets `reply`
 
   [[ -n $reply[abbreviation] ]] && {
     _abbr_push_expanded_abbreviation_to_history $reply[abbreviation]
@@ -1852,7 +1852,7 @@ abbr-expand-and-insert() {
   (( $reply[cursor_was_placed] )) && return # this apostrophe for syntax highlighting '
 
   reply=()
-  _abbr_set_line_cursor $BUFFER # sets `reply`
+  abbr-set-line-cursor $BUFFER # sets `reply`
 
   # do not insert the bound trigger if the cursor is set
   (( ! $reply[cursor_was_placed] )) && {
@@ -2088,6 +2088,14 @@ typeset -g ABBR_SOURCE_PATH
 ABBR_SOURCE_PATH=${0:A:h}
 _abbr_init
 
+# user-reaching
+#
+# abbr-expand-line
+# abbr-expand
+# abbr-expand-and-accept
+# abbr-expand-and-insert
+# abbr-set-line-cursor
+
 # can't unset
 # unset _abbr_tmpdir
 
@@ -2095,7 +2103,6 @@ _abbr_init
 # _abbr_accept-line
 # _abbr_create_files
 # _abbr_debugger
-# _abbr_expand_line
 # _abbr_get_available_abbreviation
 # _abbr_global_expansion
 # _abbr_load_user_abbreviations
