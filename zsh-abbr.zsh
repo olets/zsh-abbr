@@ -1394,14 +1394,14 @@ abbr-expand-line() {
         done
       fi
 
-      if [[ -n $expansion ]]; then
-        reply+=(
-          [abbreviation]=$abbreviation
-          [expansion]=$expansion
-          [loutput]=${reply[linput]%%$abbreviation}$expansion
-          [type]=global
-        )
-      fi
+      [[ -z $expansion ]] && return
+
+      reply+=(
+        [abbreviation]=$abbreviation
+        [expansion]=$expansion
+        [loutput]=${reply[linput]%%$abbreviation}$expansion
+        [type]=global
+      )
     }
 
     abbr-expand-line:set_expansion_cursor() {
