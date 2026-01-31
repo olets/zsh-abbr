@@ -1415,10 +1415,11 @@ abbr-expand-line() {
       # if expansion doesn't contain expansion cursor marker, no cursor placement to be done
       [[ $reply[expansion] != ${reply[expansion]/$ABBR_EXPANSION_CURSOR_MARKER} ]] || return 1
 
-      reply+=( [loutput]=${reply[linput]%%$reply[abbreviation]}${reply[expansion]%%$ABBR_EXPANSION_CURSOR_MARKER*} )
-      reply+=( [routput]=${reply[expansion]#*$ABBR_EXPANSION_CURSOR_MARKER}$reply[rinput] )
-
-      reply+=( [expansion_cursor_set]=1 )
+      reply+=(
+        [expansion_cursor_set]=1
+        [loutput]=${reply[linput]%%$reply[abbreviation]}${reply[expansion]%%$ABBR_EXPANSION_CURSOR_MARKER*}
+        [routput]=${reply[expansion]#*$ABBR_EXPANSION_CURSOR_MARKER}$reply[rinput]
+      )
     }
 
     ABBR_UNUSED_ABBREVIATION=
@@ -1428,9 +1429,9 @@ abbr-expand-line() {
     ABBR_UNUSED_ABBREVIATION_TYPE=
 
     reply=(
+      [expansion_cursor_set]=0
       [linput]=$1
       [loutput]=$1
-      [expansion_cursor_set]=0
     )
 
     [[ -n $2 ]] && reply+=( [rinput]=$2 [routput]=$2 )
