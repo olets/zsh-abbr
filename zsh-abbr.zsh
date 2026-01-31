@@ -1799,7 +1799,7 @@ abbr-expand-and-accept() {
   # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
   # abbr-expand-line sets `reply`
   abbr-expand-line $LBUFFER $RBUFFER \
-    && (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) \
+    && (( ! hist_ignore )) && (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) \
       && print -s $reply[abbreviation]
 
   LBUFFER=$reply[loutput]
