@@ -1329,6 +1329,7 @@ abbr-expand-line() {
       local -i i
       local -i j
       local -i k
+      local -i res
       local -a subcmds
       local type
       local -a words
@@ -1394,7 +1395,7 @@ abbr-expand-line() {
         done
       fi
 
-      [[ -z $expansion ]] && return
+      [[ -z $expansion ]] && return 1
 
       reply+=(
         [abbreviation]=$abbreviation
@@ -1409,10 +1410,10 @@ abbr-expand-line() {
 
       _abbr_debugger
 
-      (( ABBR_SET_EXPANSION_CURSOR )) || return
+      (( ABBR_SET_EXPANSION_CURSOR )) || return 1
 
       # if expansion doesn't contain expansion cursor marker, no cursor placement to be done
-      [[ $reply[expansion] != ${reply[expansion]/$ABBR_EXPANSION_CURSOR_MARKER} ]] || return
+      [[ $reply[expansion] != ${reply[expansion]/$ABBR_EXPANSION_CURSOR_MARKER} ]] || return 1
 
       reply+=( [loutput]=${reply[linput]%%$reply[abbreviation]}${reply[expansion]%%$ABBR_EXPANSION_CURSOR_MARKER*} )
       reply+=( [routput]=${reply[expansion]#*$ABBR_EXPANSION_CURSOR_MARKER}$reply[rinput] )
@@ -1435,16 +1436,16 @@ abbr-expand-line() {
     [[ -n $2 ]] && reply+=( [rinput]=$2 [routput]=$2 )
 
     abbr-expand-line:expand_abbreviation
+    res=$?
 
-    if [[ -n $reply[expansion] ]]; then
+    (( res )) && {
+      # No expansion found. See if one was available
+      (( ABBR_GET_AVAILABLE_ABBREVIATION )) && _abbr_get_available_abbreviation
+    } || {
       abbr-expand-line:set_expansion_cursor
+    }
 
-      return
-    fi
-
-    # No expansion found. See if one was available
-
-    (( ABBR_GET_AVAILABLE_ABBREVIATION )) && _abbr_get_available_abbreviation
+    return $res
   } always {
     unfunction -m abbr-expand-line:set_expansion_cursor
   }
