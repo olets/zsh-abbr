@@ -1749,16 +1749,15 @@ abbr-set-line-cursor() {
 
   str=$1
 
-  reply=( [cursor_was_placed]=0 )
+  reply=( )
 
   # setting the line cursor must be enabled
-  (( ABBR_SET_LINE_CURSOR )) || return
+  (( ABBR_SET_LINE_CURSOR )) || return 1
 
   # str must contain ABBR_LINE_CURSOR_MARKER
-  [[ $str != ${str/$ABBR_LINE_CURSOR_MARKER} ]] || return
+  [[ $str != ${str/$ABBR_LINE_CURSOR_MARKER} ]] || return 1
 
   reply+=(
-    [cursor_was_placed]=1
     [loutput]=${str%%$ABBR_LINE_CURSOR_MARKER*} # set loutput to str up to and not including the first instance of ABBR_LINE_CURSOR_MARKER
     [routput]=${str#*$ABBR_LINE_CURSOR_MARKER} # set routput to str starting after the first instance of ABBR_LINE_CURSOR_MARKER
   )
@@ -1855,7 +1854,7 @@ abbr-expand-and-insert() {
   abbr-set-line-cursor $BUFFER # sets `reply`
 
   # do not insert the bound trigger if the cursor is set
-  (( ! $reply[cursor_was_placed] )) && {
+  (( $? )) && {
     zle self-insert
     return # this apostrophe for syntax highlighting '
   }
