@@ -1759,12 +1759,16 @@ abbr-set-line-cursor() {
 abbr-expand() {
   emulate -LR zsh
 
+  local -i hist_ignore
   local -A reply # will be set by abbr-expand-line
 
-  # DUPE abbr-expand (nearly), abbr-expand-and-accept, abbr-expand-and-insert
+  # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
+  if [[ $_abbr_hist_ignore_space == on ]] && [[ $BUFFER[1] == ' ' ]]; then
+    hist_ignore=1
+  fi
   # abbr-expand-line sets `reply`
   abbr-expand-line $LBUFFER $RBUFFER \
-    && (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) \
+    && (( ! hist_ignore )) && (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) \
       && print -s $reply[abbreviation]
 
   LBUFFER=$reply[louput]
@@ -1792,7 +1796,7 @@ abbr-expand-and-accept() {
 
   buffer=$BUFFER
 
-  # DUPE abbr-expand (nearly), abbr-expand-and-accept, abbr-expand-and-insert
+  # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
   if [[ $_abbr_hist_ignore_space == on ]] && [[ $BUFFER[1] == ' ' ]]; then
     hist_ignore=1
   fi
@@ -1828,7 +1832,7 @@ abbr-expand-and-insert() {
   local -i hist_ignore
   local -A reply # will be set by abbr-expand-line
 
-  # DUPE abbr-expand (nearly), abbr-expand-and-accept, abbr-expand-and-insert
+  # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
   if [[ $_abbr_hist_ignore_space == on ]] && [[ $BUFFER[1] == ' ' ]]; then
     hist_ignore=1
   fi
