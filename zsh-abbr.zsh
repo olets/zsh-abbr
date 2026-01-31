@@ -1410,8 +1410,6 @@ abbr-expand-line() {
 
       _abbr_debugger
 
-      (( ABBR_SET_EXPANSION_CURSOR )) || return 1
-
       # if expansion doesn't contain expansion cursor marker, no cursor placement to be done
       [[ $reply[expansion] != ${reply[expansion]/$ABBR_EXPANSION_CURSOR_MARKER} ]] || return 1
 
@@ -1443,7 +1441,7 @@ abbr-expand-line() {
       # No expansion found. See if one was available
       (( ABBR_GET_AVAILABLE_ABBREVIATION )) && _abbr_get_available_abbreviation
     } || {
-      abbr-expand-line:set_expansion_cursor
+      (( ABBR_SET_EXPANSION_CURSOR )) && abbr-expand-line:set_expansion_cursor
     }
 
     return $res
