@@ -1314,6 +1314,8 @@ _abbr_debugger() {
 abbr-expand-line() {
   emulate -LR zsh
 
+  # typeset -A reply=( $reply )
+
   {
     _abbr_debugger
 
@@ -1728,18 +1730,6 @@ _abbr_log_available_abbreviation() {
   'builtin' 'print' $message
 }
 
-_abbr_push_expanded_abbreviation_to_history() {
-  emulate -LR zsh
-
-  _abbr_debugger
-
-  local abbrevation
-
-  abbrevation=$1
-
-  (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) && print -s $abbreviation
-}
-
 abbr-set-line-cursor() {
   emulate -LR zsh
 
@@ -1771,11 +1761,11 @@ abbr-expand() {
 
   local -A reply # will be set by abbr-expand-line
 
-  abbr-expand-line $LBUFFER $RBUFFER # sets `reply`
-
-  [[ -n $reply[abbreviation] ]] && {
-    _abbr_push_expanded_abbreviation_to_history $reply[abbreviation]
-  }
+  # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
+  # abbr-expand-line sets `reply`
+  abbr-expand-line $LBUFFER $RBUFFER \
+    && (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) \
+      && print -s $reply[abbreviation]
 
   LBUFFER=$reply[louput]
   RBUFFER=$reply[routput]
@@ -1806,11 +1796,11 @@ abbr-expand-and-accept() {
 
   buffer=$BUFFER
 
-  abbr-expand-line $LBUFFER $RBUFFER # sets `reply`
-
-  [[ -n $reply[abbreviation] ]] && {
-    _abbr_push_expanded_abbreviation_to_history $reply[abbreviation]
-  }
+  # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
+  # abbr-expand-line sets `reply`
+  abbr-expand-line $LBUFFER $RBUFFER \
+    && (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) \
+      && print -s $reply[abbreviation]
 
   LBUFFER=$reply[loutput]
   RBUFFER=$reply[routput]
@@ -1838,11 +1828,11 @@ abbr-expand-and-insert() {
   local buffer
   local -A reply # will be set by abbr-expand-line
 
-  abbr-expand-line $LBUFFER $RBUFFER # sets `reply`
-
-  [[ -n $reply[abbreviation] ]] && {
-    _abbr_push_expanded_abbreviation_to_history $reply[abbreviation]
-  }
+  # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
+  # abbr-expand-line sets `reply`
+  abbr-expand-line $LBUFFER $RBUFFER \
+    && (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) \
+      && print -s $reply[abbreviation]
 
   LBUFFER=$reply[loutput]
   RBUFFER=$reply[routput]
@@ -2108,7 +2098,6 @@ _abbr_init
 # _abbr_log_available_abbreviation
 # _abbr_no_color
 # _abbr_regular_expansion
-# TODO can we unfunction _abbr_push_expanded_abbreviation_to_history
 
 unfunction -m _abbr
 unfunction -m _abbr_init
