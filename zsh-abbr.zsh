@@ -1813,7 +1813,7 @@ abbr-expand-and-accept() {
   }
 
   LBUFFER=$reply[loutput]
-  RBUFFER=$reply[rouput]
+  RBUFFER=$reply[routput]
 
   if (( hist_ignore )) || [[ $BUFFER == $buffer ]] || (( ! ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY )); then
     _abbr_accept-line
