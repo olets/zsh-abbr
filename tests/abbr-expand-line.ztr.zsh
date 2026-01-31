@@ -9,7 +9,7 @@ main() {
 	abbr-expand-line foo
 	res=$?
 	ztr test '[[ -z $reply[abbreviation] ]] \
-			&& [[ $reply[cursor_was_placed] == 0 ]] \
+			&& [[ $reply[expansion_cursor_set] == 0 ]] \
 			&& [[ -z $reply[expansion] ]] \
 			&& [[ $reply[linput] == foo ]] \
 			&& [[ $reply[loutput] == foo ]] \
@@ -23,7 +23,7 @@ main() {
 	abbr-expand-line "$ABBR_EXPANSION_CURSOR_MARKER foo"
 	res=$?
 	ztr test '[[ -z $reply[abbreviation] ]] \
-			&& [[ $reply[cursor_was_placed] == 0 ]] \
+			&& [[ $reply[expansion_cursor_set] == 0 ]] \
 			&& [[ -z $reply[expansion] ]] \
 			&& [[ $reply[linput] == "$ABBR_EXPANSION_CURSOR_MARKER foo" ]] \
 			&& [[ $reply[loutput] == "$ABBR_EXPANSION_CURSOR_MARKER foo" ]] \
@@ -38,7 +38,7 @@ main() {
 	abbr-expand-line $test_abbr_abbreviation
 	res=$?
 	ztr test '[[ $reply[abbreviation] == $test_abbr_abbreviation ]] \
-			&& [[ $reply[cursor_was_placed] == 0 ]] \
+			&& [[ $reply[expansion_cursor_set] == 0 ]] \
 			&& [[ $reply[expansion] == $test_abbr_expansion ]] \
 			&& [[ $reply[linput] == $test_abbr_abbreviation ]] \
 			&& [[ $reply[loutput] == $test_abbr_expansion ]] \
@@ -54,7 +54,7 @@ main() {
 	abbr-expand-line $test_abbr_abbreviation
 	res=$?
 	ztr test '[[ $reply[abbreviation] == $test_abbr_abbreviation ]] \
-			&& [[ $reply[cursor_was_placed] == 0 ]] \
+			&& [[ $reply[expansion_cursor_set] == 0 ]] \
 			&& [[ $reply[expansion] == $test_abbr_expansion ]] \
 			&& [[ $reply[linput] == $test_abbr_abbreviation ]] \
 			&& [[ $reply[loutput] == $test_abbr_expansion ]] \

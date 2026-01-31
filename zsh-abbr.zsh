@@ -1418,7 +1418,7 @@ abbr-expand-line() {
       reply+=( [loutput]=${reply[linput]%%$reply[abbreviation]}${reply[expansion]%%$ABBR_EXPANSION_CURSOR_MARKER*} )
       reply+=( [routput]=${reply[expansion]#*$ABBR_EXPANSION_CURSOR_MARKER}$reply[rinput] )
 
-      reply+=( [cursor_was_placed]=1 )
+      reply+=( [expansion_cursor_set]=1 )
     }
 
     ABBR_UNUSED_ABBREVIATION=
@@ -1430,7 +1430,7 @@ abbr-expand-line() {
     reply=(
       [linput]=$1
       [loutput]=$1
-      [cursor_was_placed]=0
+      [expansion_cursor_set]=0
     )
 
     [[ -n $2 ]] && reply+=( [rinput]=$2 [routput]=$2 )
@@ -1849,7 +1849,7 @@ abbr-expand-and-insert() {
   RBUFFER=$reply[routput]
 
   # stop if cursor was placed during expansion
-  (( $reply[cursor_was_placed] )) && return # this apostrophe for syntax highlighting '
+  (( $reply[expansion_cursor_set] )) && return # this apostrophe for syntax highlighting '
 
   reply=()
   abbr-set-line-cursor $BUFFER # sets `reply`
