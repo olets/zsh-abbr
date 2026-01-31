@@ -77,7 +77,7 @@ if (( ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS == 1 )); then
 fi
 
 # Limitation: doesn't support the user changing their hist_ignore_space setting interactively
-typeset -gi _abbr_hist_ignore_space
+typeset -g _abbr_hist_ignore_space
 _abbr_hist_ignore_space=$options[hist_ignore_space]
 
 # Behave as if `--quiet` was passed? (default false)
