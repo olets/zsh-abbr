@@ -76,7 +76,11 @@ if (( ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS == 1 )); then
   'builtin' 'print' "abbr: You have set ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS=1. This feature is *experimental* and may have unexpected or undesired results. If it graduates from experimental, the variable name will change.\nYou can suppress this message while still enabling the feature by setting\n\n  ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS=2\n"
 fi
 
-# Limitation: doesn't support the user changing their hist_ignore_space setting interactively
+# Limitation: doesn't support changing the option interactively
+typeset -g _abbr_hist_ignore_dups
+_abbr_hist_ignore_dups=$options[hist_ignore_dups]
+
+# Limitation: doesn't support changing the option interactively
 typeset -g _abbr_hist_ignore_space
 _abbr_hist_ignore_space=$options[hist_ignore_space]
 
@@ -1781,6 +1785,7 @@ abbr-expand-and-accept() {
   # do not support debug message
 
   local -i hist_ignore
+  local -i ignore_dups
   local buffer
   local -A reply # will be set by abbr-expand-line
 
@@ -1795,6 +1800,10 @@ abbr-expand-and-accept() {
   fi
 
   buffer=$BUFFER
+
+  if [[ $_abbr_hist_ignore_dups == on ]]; then
+    ignore_dups=1
+  fi
 
   # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
   if [[ $_abbr_hist_ignore_space == on ]] && [[ $BUFFER[1] == ' ' ]]; then
@@ -1813,15 +1822,22 @@ abbr-expand-and-accept() {
     return
   fi
 
-  # if it expanded and this widget can push to history
-  if (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )); then
-    # if the abbreviation was pushed to history,
-    # don't push the abbreviated line to history if that will make a duplicative history entry
-    [[ $buffer != $reply[abbreviation] ]] && print -s $buffer
-  else
+  # no risk of duplicative history entry if expansion did not push the abbreviation to history
+  if (( ! ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )); then
     print -s $buffer
+    _abbr_accept-line
+    return
   fi
 
+  # expansion pushed the abbreviation to history
+
+  # if history_ignore_dups is on and expansion pushed the expanded line to history
+  if (( ignore_dups )) && [[ $buffer = $reply[abbreviation] ]]; then
+    _abbr_accept-line
+    return
+  fi
+
+  print -s $buffer
   _abbr_accept-line
 }
 
@@ -2093,7 +2109,9 @@ _abbr_init
 # abbr-set-line-cursor
 
 # can't unset
-# unset _abbr_tmpdir
+# _abbr_hist_ignore_dups
+# _abbr_hist_ignore_space
+# _abbr_tmpdir
 
 # can't unfunction
 # _abbr_accept-line
