@@ -1775,7 +1775,7 @@ abbr-expand() {
     && (( ! hist_ignore )) && (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) \
       && print -s $reply[abbreviation]
 
-  LBUFFER=$reply[louput]
+  LBUFFER=$reply[loutput]
   RBUFFER=$reply[routput]
 }
 
