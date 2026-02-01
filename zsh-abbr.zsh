@@ -1844,7 +1844,6 @@ abbr-expand-and-accept() {
 abbr-expand-and-insert() {
   emulate -LR zsh
 
-  local buffer
   local -i hist_ignore
   local -A reply # will be set by abbr-expand-line
 
