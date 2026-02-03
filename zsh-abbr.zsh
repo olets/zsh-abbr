@@ -1313,12 +1313,31 @@ _abbr_debugger() {
   (( ABBR_DEBUG )) && 'builtin' 'echo' - $funcstack[2]
 }
 
-# If an expansion is found, sets the `reply` to
-# `( <abbreviation> <expansion> <abbreviation type> )`
+# abbr-expand-line
+# - changes values in the `reply` associative array,
+# **which must exist in the calling scope**
+# - returns truthy if an abbreviation is expanded, and falsy (non-zero) otherwise
+#
+# At a minimum, `reply` will have entries with keys
+#
+# - `expansion_cursor_set` (0)
+# - `linput` (the left-of-the-cursor text before any expansion, passed to the function as its first argument)
+# - `loutput` (the left-of-the-cursor text after any expansion)
+#
+# Optionally, `reply` can have entries with keys
+# - `rinput` (the right-of-the-cursor text, passed to the function as its second argument)
+# - `routput` (the right-of-the-cursor text after any expansion)
+#
+# If an abbreviation is expanded, `reply` will also have entries with keys
+# - `abbrevation` (the expanded abbreviation)
+# - `expansion` (the expanded abbreviation's expansion)
+# - `type` (the expanded abbreviation's type)
+#
+# If the cursor is placed during expansion (requires that
+# ABBR_SET_EXPANSION_CURSOR be greater than zero), `reply[routput]` may be
+# different from `reply[rinput]`
 abbr-expand-line() {
   emulate -LR zsh
-
-  # typeset -A reply=( $reply )
 
   {
     _abbr_debugger
@@ -2146,6 +2165,8 @@ _abbr_init
 # can't unset
 # _abbr_hist_ignore_dups
 # _abbr_hist_ignore_space
+# _abbr_may_push_abbreviated_line_to_history
+# _abbr_may_push_abbreviation_to_history
 # _abbr_tmpdir
 
 # can't unfunction
