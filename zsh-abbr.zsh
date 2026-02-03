@@ -1426,12 +1426,6 @@ abbr-expand-line() {
       )
     }
 
-    ABBR_UNUSED_ABBREVIATION=
-    ABBR_UNUSED_ABBREVIATION_EXPANSION=
-    ABBR_UNUSED_ABBREVIATION_PREFIX=
-    ABBR_UNUSED_ABBREVIATION_SCOPE=
-    ABBR_UNUSED_ABBREVIATION_TYPE=
-
     reply=(
       [expansion_cursor_set]=0
       [linput]=$1
@@ -1443,12 +1437,9 @@ abbr-expand-line() {
     abbr-expand-line:expand_abbreviation
     res=$?
 
-    (( res )) && {
-      # No expansion found. See if one was available
-      (( ABBR_GET_AVAILABLE_ABBREVIATION )) && _abbr_get_available_abbreviation
-    } || {
-      (( ABBR_SET_EXPANSION_CURSOR )) && abbr-expand-line:set_expansion_cursor
-    }
+    (( ! res )) \
+      && (( ABBR_SET_EXPANSION_CURSOR )) \
+        && abbr-expand-line:set_expansion_cursor
 
     return $res
   } always {
@@ -1832,9 +1823,10 @@ abbr-expand() {
 
   # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
   # abbr-expand-line sets `reply`
-  abbr-expand-line $LBUFFER $RBUFFER \
-    && _abbr_may_push_abbreviation_to_history $_abbr_hist_ignore_space $BUFFER \
+  abbr-expand-line $LBUFFER $RBUFFER && {
+    _abbr_may_push_abbreviation_to_history $_abbr_hist_ignore_space $BUFFER \
       && print -s $reply[abbreviation]
+  }
 
   LBUFFER=$reply[loutput]
   RBUFFER=$reply[routput]
@@ -1847,6 +1839,12 @@ abbr-expand-and-accept() {
 
   local buffer
   local -A reply # will be set by abbr-expand-line
+
+  ABBR_UNUSED_ABBREVIATION=
+  ABBR_UNUSED_ABBREVIATION_EXPANSION=
+  ABBR_UNUSED_ABBREVIATION_PREFIX=
+  ABBR_UNUSED_ABBREVIATION_SCOPE=
+  ABBR_UNUSED_ABBREVIATION_TYPE=
 
   # TODO this seems strange
   # Why was this escape hatch desirable three years ago?
@@ -1862,9 +1860,16 @@ abbr-expand-and-accept() {
 
   # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
   # abbr-expand-line sets `reply`
-  abbr-expand-line $LBUFFER $RBUFFER \
-    && _abbr_may_push_abbreviation_to_history $_abbr_hist_ignore_space $BUFFER \
+  abbr-expand-line $LBUFFER $RBUFFER && {
+    _abbr_may_push_abbreviation_to_history $_abbr_hist_ignore_space $BUFFER \
       && print -s $reply[abbreviation]
+  } || {
+    # END DUPE this part unique to abbr-expand-and-accept
+    # No expansion found. See if one was available
+    (( ABBR_GET_AVAILABLE_ABBREVIATION )) \
+      && _abbr_get_available_abbreviation
+  }
+
 
   LBUFFER=$reply[loutput]
   RBUFFER=$reply[routput]
@@ -1882,15 +1887,16 @@ abbr-expand-and-insert() {
 
   # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
   # abbr-expand-line sets `reply`
-  abbr-expand-line $LBUFFER $RBUFFER \
-  && _abbr_may_push_abbreviation_to_history $_abbr_hist_ignore_space $BUFFER \
+  abbr-expand-line $LBUFFER $RBUFFER && {
+    _abbr_may_push_abbreviation_to_history $_abbr_hist_ignore_space $BUFFER \
       && print -s $reply[abbreviation]
+  }
 
   LBUFFER=$reply[loutput]
   RBUFFER=$reply[routput]
 
   # stop if cursor was placed during expansion
-  (( $reply[expansion_cursor_set] )) && print -s x && return # this apostrophe for syntax highlighting '
+  (( $reply[expansion_cursor_set] )) && return # this apostrophe for syntax highlighting '
 
   reply=()
   abbr-set-line-cursor $BUFFER # sets `reply`
