@@ -28,6 +28,8 @@ main() {
 
 	local \
 		abbr_dir \
+		abbr_expand_and_accept_push_abbreviated_line_to_history_saved \
+		abbr_expand_push_abbreviation_to_history_saved \
 		abbr_expansion_cursor_marker_saved \
 		abbr_line_cursor_marker_saved \
 		abbr_tmpdir_saved \
@@ -91,11 +93,16 @@ main() {
 	fi
 
 	# Save user configuration
+	abbr_expand_and_accept_push_abbreviated_line_to_history_saved=$ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY
+	abbr_expand_push_abbreviation_to_history_saved=$ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY
 	abbr_expansion_cursor_marker_saved=$ABBR_EXPANSION_CURSOR_MARKER
+	abbr_experimental_command_position_regular_abbreviations=$ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS
 	abbr_glob_prefixes_saved=( $ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES )
 	abbr_line_cursor_marker_saved=$ABBR_LINE_CURSOR_MARKER
 	abbr_quiet_saved=$ABBR_QUIET
 	abbr_scalar_prefixes_saved=( $ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES )
+	abbr_set_expansion_cursor=$ABBR_SET_EXPANSION_CURSOR
+	abbr_set_line_cursor=$ABBR_SET_LINE_CURSOR
 	abbr_tmpdir_saved=$ABBR_TMPDIR
 	ABBR_USER_ABBREVIATIONS_FILE_SAVED=$ABBR_USER_ABBREVIATIONS_FILE
 	aliases_saved=$(alias -L)
@@ -117,9 +124,14 @@ main() {
 	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES+=( $prefix_glob_1 )
 	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES+=( $prefix_glob_2 )
 
+	ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY=0
+	ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY=0
+	ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS=0
 	ABBR_QUIET=1
-	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
+	ABBR_SET_LINE_CURSOR=0
+	ABBR_SET_EXPANSION_CURSOR=0
 	ABBR_TMPDIR=$test_tmpdir
+	ABBR_USER_ABBREVIATIONS_FILE=$test_dir/abbreviations.$RANDOM.tmp
 	unalias -m '*'
 	unset -f ABBR_SPLIT_FN
 
@@ -155,10 +167,15 @@ main() {
 	unalias -m '*'
 
 	# Reset
+	ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY=$abbr_expand_and_accept_push_abbreviated_line_to_history_saved
+	ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY=$abbr_expand_push_abbreviation_to_history_saved
 	ABBR_EXPANSION_CURSOR_MARKER=$abbr_expansion_cursor_marker_saved
+	ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS=$abbr_experimental_command_position_regular_abbreviations
 	ABBR_LINE_CURSOR_MARKER=$abbr_line_cursor_marker_saved
 	ABBR_REGULAR_ABBREVIATION_GLOB_PREFIXES=( $abbr_glob_prefixes_saved )
 	ABBR_REGULAR_ABBREVIATION_SCALAR_PREFIXES=( $abbr_scalar_prefixes_saved )
+	ABBR_SET_EXPANSION_CURSOR=$abbr_set_expansion_cursor
+	ABBR_SET_LINE_CURSOR=$abbr_set_line_cursor
 	ABBR_QUIET=$abbr_quiet_saved
 	ABBR_TMPDIR=$abbr_tmpdir_saved
 	ABBR_USER_ABBREVIATIONS_FILE=$ABBR_USER_ABBREVIATIONS_FILE_SAVED
