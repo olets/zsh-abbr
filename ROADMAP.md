@@ -18,6 +18,3 @@ _Currently considered feature complete._
 - [ ] Test for XDG_CONFIG_HOME support
 
 ## Maybe maybe?
-
-- [x] command completion
-- [ ] command highlighting
