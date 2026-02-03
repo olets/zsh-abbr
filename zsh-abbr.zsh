@@ -1757,22 +1757,83 @@ abbr-set-line-cursor() {
   )
 }
 
+_abbr_may_push_abbreviation_to_history() {
+  emulate -LR zsh
+
+  _abbr_debugger
+
+  local hist_ignore_space
+  local line
+
+  line=$1
+  hist_ignore_space=${2:-off}
+
+  (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) || return 1
+
+  [[ $hist_ignore_space == on ]] && [[ ${line[1]} == ' ' ]] \
+    && return 2
+
+  return 0
+}
+
+_abbr_may_push_abbreviated_line_to_history() {
+  emulate -LR zsh
+
+  _abbr_debugger
+
+  local abbreviation
+  local expanded_line
+  local input_line
+  local hist_ignore_dups
+  local hist_ignore_space
+
+  input_line=$1
+  expanded_line=${2:-$input_line}
+  hist_ignore_dups=${3:-off}
+  hist_ignore_space=${4:-off}
+  abbreviation=${5:-""}
+
+  (( ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY )) || return 1
+
+  # DUPE _abbr_may_push_abbreviation_to_history, _abbr_may_push_abbreviated_line_to_history
+  # May not push to history if the original buffer starts with a space
+  if [[ $hist_ignore_space == on ]] && [[ $input_line[1] == ' ' ]]; then
+    return 2
+  fi
+
+  # May not push to history if the entry would be duplicated by accept-line's
+  if [[ $expanded_line == $input_line ]]; then
+    return 3
+  fi
+
+  # No risk of duplicative history entry if expansion did not push the abbreviation to history
+  (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) || return 0
+
+  # expansion pushed the abbreviation to history
+
+  [[ $hist_ignore_dups == off ]] && return 0
+
+  # hist_ignore_dups
+
+  if [[ $input_line == $abbreviation ]]; then
+    return 4
+  fi
+
+  return 0
+}
+
 # WIDGETS
 # -------
 
 abbr-expand() {
   emulate -LR zsh
 
-  local -i hist_ignore
   local -A reply # will be set by abbr-expand-line
 
   # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
-  if [[ $_abbr_hist_ignore_space == on ]] && [[ $BUFFER[1] == ' ' ]]; then
-    hist_ignore=1
-  fi
   # abbr-expand-line sets `reply`
   abbr-expand-line $LBUFFER $RBUFFER \
-    && (( ! hist_ignore )) && (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) \
+    && _abbr_may_push_abbreviation_to_history $_abbr_hist_ignore_space $BUFFER \
       && print -s $reply[abbreviation]
 
   LBUFFER=$reply[loutput]
@@ -1784,8 +1845,6 @@ abbr-expand-and-accept() {
 
   # do not support debug message
 
-  local -i hist_ignore
-  local -i ignore_dups
   local buffer
   local -A reply # will be set by abbr-expand-line
 
@@ -1801,59 +1860,30 @@ abbr-expand-and-accept() {
 
   buffer=$BUFFER
 
-  if [[ $_abbr_hist_ignore_dups == on ]]; then
-    ignore_dups=1
-  fi
-
   # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
-  if [[ $_abbr_hist_ignore_space == on ]] && [[ $BUFFER[1] == ' ' ]]; then
-    hist_ignore=1
-  fi
   # abbr-expand-line sets `reply`
   abbr-expand-line $LBUFFER $RBUFFER \
-    && (( ! hist_ignore )) && (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) \
+    && _abbr_may_push_abbreviation_to_history $_abbr_hist_ignore_space $BUFFER \
       && print -s $reply[abbreviation]
 
   LBUFFER=$reply[loutput]
   RBUFFER=$reply[routput]
 
-  if (( hist_ignore )) || [[ $BUFFER == $buffer ]] || (( ! ABBR_EXPAND_AND_ACCEPT_PUSH_ABBREVIATED_LINE_TO_HISTORY )); then
-    _abbr_accept-line
-    return
-  fi
+  _abbr_may_push_abbreviated_line_to_history \
+    && print -s $buffer
 
-  # no risk of duplicative history entry if expansion did not push the abbreviation to history
-  if (( ! ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )); then
-    print -s $buffer
-    _abbr_accept-line
-    return
-  fi
-
-  # expansion pushed the abbreviation to history
-
-  # if history_ignore_dups is on and expansion pushed the expanded line to history
-  if (( ignore_dups )) && [[ $buffer = $reply[abbreviation] ]]; then
-    _abbr_accept-line
-    return
-  fi
-
-  print -s $buffer
   _abbr_accept-line
 }
 
 abbr-expand-and-insert() {
   emulate -LR zsh
 
-  local -i hist_ignore
   local -A reply # will be set by abbr-expand-line
 
   # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
-  if [[ $_abbr_hist_ignore_space == on ]] && [[ $BUFFER[1] == ' ' ]]; then
-    hist_ignore=1
-  fi
   # abbr-expand-line sets `reply`
   abbr-expand-line $LBUFFER $RBUFFER \
-    && (( ! hist_ignore )) && (( ABBR_EXPAND_PUSH_ABBREVIATION_TO_HISTORY )) \
+  && _abbr_may_push_abbreviation_to_history $_abbr_hist_ignore_space $BUFFER \
       && print -s $reply[abbreviation]
 
   LBUFFER=$reply[loutput]
