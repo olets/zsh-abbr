@@ -88,15 +88,26 @@ main() {
 	abbr erase $test_abbr_abbreviation
 
 	ABBR_SET_EXPANSION_CURSOR=1
-	abbr -g $test_abbr_abbreviation=$test_abbr_expansion$ABBR_EXPANSION_CURSOR_MARKER$test_abbr_expansion_2
+	abbr $test_abbr_abbreviation=$test_abbr_expansion$ABBR_EXPANSION_CURSOR_MARKER$test_abbr_expansion_2
 	abbr-expand-line $test_abbr_abbreviation
-
 	res=$?
 	ztr test '[[ $reply[loutput] == $test_abbr_expansion ]] \
 			&& [[ $reply[routput] == $test_abbr_expansion_2 ]] \
 			&& (( res == 0 ))
 			' \
 		"abbr-expand-line can set the expansion cursor when expanding a regular abbreviation"
+	ABBR_SET_EXPANSION_CURSOR=0
+	abbr erase $test_abbr_abbreviation
+
+	ABBR_SET_EXPANSION_CURSOR=1
+	abbr -g $test_abbr_abbreviation=$test_abbr_expansion$ABBR_EXPANSION_CURSOR_MARKER$test_abbr_expansion_2
+	abbr-expand-line $test_abbr_abbreviation
+	res=$?
+	ztr test '[[ $reply[loutput] == $test_abbr_expansion ]] \
+			&& [[ $reply[routput] == $test_abbr_expansion_2 ]] \
+			&& (( res == 0 ))
+			' \
+		"abbr-expand-line can set the expansion cursor when expanding a global abbreviation"
 	ABBR_SET_EXPANSION_CURSOR=0
 	abbr erase $test_abbr_abbreviation
 
