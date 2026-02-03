@@ -20,6 +20,7 @@ The test suite uses [zsh-test-runner](https://github.com/olets/zsh-test-runner).
 
 To cut a new release:
 
+1. Put everything you want to release in `main`.
 1. Check out the `main` branch.
 1. Update all instances of the version number in [`zsh-abbr.zsh`](zsh-abbr.zsh).
 1. Update all instances of the release date in [`zsh-abbr.zsh`](zsh-abbr.zsh).
