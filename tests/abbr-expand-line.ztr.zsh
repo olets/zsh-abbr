@@ -123,7 +123,6 @@ main() {
 
 	abbr -g $test_abbr_abbreviation=$test_abbr_expansion
 	abbr-expand-line "foo $test_abbr_abbreviation" right_text
-
 	res=$?
 	ztr test '[[ $reply[loutput] == "foo $test_abbr_expansion" ]] \
      	&& [[ $reply[rinput] == $reply[routput] ]] \
@@ -132,10 +131,9 @@ main() {
 			"abbr-expand-line expands a global abbreviation not at the start of the line"
 	abbr erase $test_abbr_abbreviation
 
-	ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS=0
+	ABBR_EXPERIMENTAL_COMMAND_POSITION_REGULAR_ABBREVIATIONS=1
 
 	abbr $test_abbr_abbreviation=$test_abbr_expansion
-	abbr cm="git checkout main"
 	abbr-expand-line "foo; $test_abbr_abbreviation"
 	ztr skip '[[ $reply[loutput] == "foo; $test_abbr_expansion" ]] \
 			&& (( res == 0 ))' \
