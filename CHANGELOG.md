@@ -9,7 +9,7 @@
 
 ### Features
 
-* Several **expansion**, **cursor placement**, and **history** features moved into their own testable functions `abbr-expand-line`, `abbr-set-line-cursor`, `_abbr_may_push_abbreviation_to_history`, and `_abbr_may_push_abbreviated_line_to_history` (many commits, merged by [a2391b7](https://github.com/olets/zsh-abbr/commit/a2391b7e4380ae740acd30eb46e6b9a6f901b7d1))
+* Several **expansion**, **cursor placement**, and **history** features moved into their own testable functions `abbr-expand-line`, `abbr-set-line-cursor`, `_abbr_may_push_abbreviation_to_history`, and `_abbr_may_push_abbreviated_line_to_history` (many commits, merged by [a2391b7](https://github.com/olets/zsh-abbr/commit/a2391b7e4380ae740acd30eb46e6b9a6f901b7d1)). Learn more in [pull request #204](https://github.com/olets/zsh-abbr/pull/204) and in the [Extending documentation](https://zsh-abbr.olets.dev/extending.html)
 * **reminders:** move _abbr_get_available_abbreviation call to abbr-accept-line from abbr-expand-line... ([c169419](https://github.com/olets/zsh-abbr/commit/c1694194e81f78766aeaefba2451d60cbad90883))
 
 
