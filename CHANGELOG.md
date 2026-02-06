@@ -1,3 +1,12 @@
+# [v6.5.2](https://github.com/olets/zsh-abbr/compare/v6.5.1...v6.5.2) (2026-02-06)
+
+
+### Bug Fixes
+
+* **abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert:** support empty LBUFFER ([2935213](https://github.com/olets/zsh-abbr/commit/2935213bce119b69e27eb273b352955ed3d383e0))
+
+
+
 # [v6.5.1](https://github.com/olets/zsh-abbr/compare/v6.5.0...v6.5.1) (2026-02-06)
 
 
