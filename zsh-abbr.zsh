@@ -1851,7 +1851,7 @@ abbr-expand() {
 
   # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
   # abbr-expand-line sets `reply`
-  abbr-expand-line $LBUFFER $RBUFFER && {
+  abbr-expand-line "$LBUFFER" "$RBUFFER" && {
     _abbr_may_push_abbreviation_to_history $_abbr_hist_ignore_space $BUFFER \
       && print -s $reply[abbreviation]
   }
@@ -1888,7 +1888,7 @@ abbr-expand-and-accept() {
 
   # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
   # abbr-expand-line sets `reply`
-  abbr-expand-line $LBUFFER $RBUFFER && {
+  abbr-expand-line "$LBUFFER" "$RBUFFER" && {
     _abbr_may_push_abbreviation_to_history $_abbr_hist_ignore_space $BUFFER \
       && print -s $reply[abbreviation]
   } || {
@@ -1915,7 +1915,7 @@ abbr-expand-and-insert() {
 
   # DUPE abbr-expand, abbr-expand-and-accept, abbr-expand-and-insert
   # abbr-expand-line sets `reply`
-  abbr-expand-line $LBUFFER $RBUFFER && {
+  abbr-expand-line "$LBUFFER" "$RBUFFER" && {
     _abbr_may_push_abbreviation_to_history $_abbr_hist_ignore_space $BUFFER \
       && print -s $reply[abbreviation]
   }

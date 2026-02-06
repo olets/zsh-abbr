@@ -71,9 +71,12 @@ main() {
 		' \
 		"abbr-expand-line returns correct values when expanding a line containing only a global abbreviation"
 
+		ztr test 'abbr-expand-line "" "abc"; \
+		  [[ -z $reply[loutput] ]] && [[ $reply[routput] == "abc" ]]' \
+			"abbr-expand-line supports empty LBUFFER"
+
 		abbr $test_abbr_abbreviation=$test_abbr_expansion
 		abbr-expand-line $test_abbr_abbreviation right_text
-
 		res=$?
 		ztr test '[[ $reply[abbreviation] == $test_abbr_abbreviation ]] \
 		&& [[ $reply[rinput] == right_text ]] \
