@@ -1,3 +1,12 @@
+# [v6.5.1](https://github.com/olets/zsh-abbr/compare/v6.5.0...v6.5.1) (2026-02-06)
+
+
+### Bug Fixes
+
+* **list-commands:** only global abbreviations have the '-g' flag [[#203](https://github.com/olets/zsh-abbr/issues/203)] ([e219ac0](https://github.com/olets/zsh-abbr/commit/e219ac085c8d4539a29b82ec40953f8cea2c2a8d))
+
+
+
 # [6.5.0](https://github.com/olets/zsh-abbr/compare/v6.4.0...v6.5.0) (2026-02-03)
 
 
