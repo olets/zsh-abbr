@@ -819,10 +819,12 @@ abbr() {
       local -i include_expansion
       local session_prefix
       local user_prefix
+      local user_prefix_saved
 
       include_expansion=$1
       session_prefix=$2
       user_prefix=$3
+      user_prefix_saved=$user_prefix
 
       # DUPE (nearly) completions/_abbr's __abbr_describe_abbreviations, zsh-abbr.zsh's _abbr:util_list
 
@@ -847,9 +849,16 @@ abbr() {
       fi
 
       for abbreviation_set in $abbreviations_sets; do
+        user_prefix=$user_prefix_saved
+
+        if [[ -n $user_prefix ]] && [[ -z ${abbreviation_set##ABBR_GLOBAL_*} ]]; then
+          user_prefix+=" -g"
+        fi
+
         for abbreviation in ${(iko)${(P)abbreviation_set}}; do
           (( include_expansion )) && expansion=${${(P)abbreviation_set}[$abbreviation]}
-          _abbr:util_list_item $abbreviation $expansion ${user_prefix:+$user_prefix -g}
+
+          _abbr:util_list_item $abbreviation $expansion $user_prefix
         done
       done
 
