@@ -132,6 +132,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "cohml",
+      "name": "cohml",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62400541?v=4",
+      "profile": "https://github.com/cohml",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "commitType": "docs"
