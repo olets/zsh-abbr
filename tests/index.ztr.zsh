@@ -153,9 +153,9 @@ main() {
 
   # Run tests
   if [[ -n $cmd ]]; then
-    . $test_dir/abbr-$cmd.ztr.zsh
+    . $test_dir/_$cmd.ztr.zsh
   else
-    for f ($test_dir/abbr-*.ztr.zsh(N.)); do
+    for f ($test_dir/_*.ztr.zsh(N.)); do
       printf "File: %s\n" $f
       . $f
       echo -
