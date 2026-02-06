@@ -92,7 +92,7 @@ main() {
 
 		abbr add $test_abbr_abbreviation=$test_abbr_expansion
 		ztr test '[[ -z $(abbr expand "$prefix_glob_1_mismatch$test_abbr_abbreviation") ]]' \
-			"Can expand an abbreviation, prefixed with a glob, in a script — 3/n" \
+			"Cannot expand an abbreviation prefixed with a mismatching glob, on the command line" \
 			"Dependencies: erase"
 
 		abbr add $test_abbr_abbreviation=$test_abbr_expansion
