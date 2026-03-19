@@ -109,9 +109,10 @@ if [[ ${${(k)functions}[(Ie)ABBR_SPLIT_FN]} == 0 ]]; then
 fi
 
 # The directory temp files are stored in
-typeset -g _abbr_tmpdir=${${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr}%/}/
-if [[ ${(%):-%#} == '#' ]]; then
-  _abbr_tmpdir=${${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr-privileged-users}%/}/
+if [[ -n "${XDG_RUNTIME_DIR}" ]]; then
+  typeset -g _abbr_tmpdir=${ABBR_TMPDIR:-${XDG_RUNTIME_DIR}/zsh-abbr}/
+else
+  typeset -g _abbr_tmpdir=${${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr-${UID}}}/
 fi
 
 # The file abbreviations are stored in
