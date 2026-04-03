@@ -26,7 +26,7 @@ See the [ROADMAP](ROADMAP.md) file.
 
 ## Contributing
 
-_Looking for the documentation site's source? See <https://github.com/olets/zsh-abbr-docs>_
+_Looking for the documentation site's source? See <https://github.com/olets/zsh-abbr-v6-docs>_
 
 Thanks for your interest. Contributions are welcome!
 
@@ -51,7 +51,7 @@ Love zsh-abbr? I'm happy to be able to provide it for free. If you are moved to 
 
 This project uses all-contributors to recognize its community. The key to the emojis is on the [all-contributors website](https://allcontributors.org/docs/en/emoji-key).
 
-The following are some of the people who have contributed. All zsh-abbr repo committers are listed [here](https://github.com/olets/zsh-abbr/contributors), and all zsh-abbr docs committers are listed [here](https://github.com/olets/zsh-abbr-v4-docs/graphs/contributors) (v4) and  [here](https://github.com/olets/zsh-abbr-v5-docs/graphs/contributors) (v5). Other people have reported bugs and typos, helped debug, helped test features and bug fixes. The project wouldn't be where it is without them.
+The following are some of the people who have contributed. All zsh-abbr repo committers are listed [here](https://github.com/olets/zsh-abbr/contributors), and all zsh-abbr docs committers are listed [here](https://github.com/olets/zsh-abbr-v4-docs/graphs/contributors) (v4), [here](https://github.com/olets/zsh-abbr-v5-docs/graphs/contributors) (v5), and [here](https://github.com/olets/zsh-abbr-v6-docs/graphs/contributors) (v6). Other people have reported bugs and typos, helped debug, helped test features and bug fixes. The project wouldn't be where it is without them.
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
