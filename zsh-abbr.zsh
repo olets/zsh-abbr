@@ -109,9 +109,14 @@ if [[ ${${(k)functions}[(Ie)ABBR_SPLIT_FN]} == 0 ]]; then
 fi
 
 # The directory temp files are stored in
-typeset -g _abbr_tmpdir=${${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr}%/}/
-if [[ ${(%):-%#} == '#' ]]; then
-  _abbr_tmpdir=${${ABBR_TMPDIR:-${${TMPDIR:-/tmp}%/}/zsh-abbr-privileged-users}%/}/
+if [[ -n "${ABBR_TMPDIR}" ]]; then
+  typeset -g _abbr_tmpdir=${${ABBR_TMPDIR}%/}/zsh-abbr-${UID}
+elif [[ -n "${XDG_RUNTIME_DIR}" ]]; then
+  typeset -g _abbr_tmpdir=${${XDG_RUNTIME_DIR}%/}/zsh-abbr
+elif [[ -n "${TMPDIR}" ]]; then
+  typeset -g _abbr_tmpdir=${${TMPDIR}%/}/zsh-abbr-${UID}
+else
+  typeset -g _abbr_tmpdir=/tmp/zsh-abbr-${UID}
 fi
 
 # The file abbreviations are stored in
