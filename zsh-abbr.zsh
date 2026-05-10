@@ -2182,6 +2182,7 @@ _abbr_init
 # _abbr_tmpdir
 
 # can't unfunction
+# _abbr (name collision with shipped completion function completions/_abbr)
 # _abbr_accept-line
 # _abbr_create_files
 # _abbr_debugger
@@ -2192,7 +2193,6 @@ _abbr_init
 # _abbr_no_color
 # _abbr_regular_expansion
 
-unfunction -m _abbr
 unfunction -m _abbr_init
 unfunction -m _abbr_warn_deprecation
 unfunction -m _abbr:add
