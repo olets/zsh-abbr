@@ -2182,7 +2182,7 @@ _abbr_init
 # _abbr_tmpdir
 
 # can't unfunction
-# _abbr (name collision with shipped completion function completions/_abbr)
+# _abbr (see completions)
 # _abbr_accept-line
 # _abbr_create_files
 # _abbr_debugger

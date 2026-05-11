@@ -144,9 +144,8 @@ main() {
   test_abbr_expansion="zsh abbr test"
   test_abbr_expansion_2="zsh abbr test 2"
 
-  # Autoload the shipped completion function (regression guard for #210).
-  # The fpath addition persists for the rest of the suite; harmless.
-  fpath=( $abbr_dir/completions $fpath )
+  # As done by zsh-abbr.plugin.zsh
+  fpath+=$abbr_dir/completions
   autoload -Uz _abbr
 
   # Source dependencies
