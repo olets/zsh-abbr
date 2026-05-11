@@ -144,6 +144,10 @@ main() {
   test_abbr_expansion="zsh abbr test"
   test_abbr_expansion_2="zsh abbr test 2"
 
+  # As done by zsh-abbr.plugin.zsh
+  fpath+=$abbr_dir/completions
+  autoload -Uz _abbr
+
   # Source dependencies
   . $abbr_dir/zsh-abbr.zsh
   . $ztr_path
