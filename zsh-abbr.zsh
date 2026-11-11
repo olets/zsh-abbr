@@ -355,7 +355,8 @@ abbr() {
         return
       fi
 
-      expansion=$(_abbr:expansion $*)
+      _abbr:expansion $*
+      expansion=$REPLY
 
       if [[ -z $expansion ]]; then
         return 1
@@ -368,7 +369,7 @@ abbr() {
       _abbr_debugger
 
       local abbreviation
-      local expansion
+      typeset -g REPLY=
 
       if ! (( $# )); then
         _abbr:util_error "_abbr:expansion requires an argument"
@@ -377,19 +378,15 @@ abbr() {
 
       abbreviation=$*
 
-      expansion=$(_abbr_regular_expansion "$abbreviation")
+      REPLY=$(_abbr_regular_expansion "$abbreviation")
+      if [[ $REPLY ]] return 0
 
-      if [[ ! "$expansion" ]]; then
-        expansion=$(_abbr_global_expansion "$abbreviation" 1)
-      fi
+      REPLY=$(_abbr_global_expansion "$abbreviation" 1)
+      if [[ $REPLY ]] return 0
 
-      if [[ ! "$expansion" ]]; then
-        _abbr_create_files
-        source ${_abbr_tmpdir}global-user-abbreviations
-        expansion=$(_abbr_global_expansion "$abbreviation" 0)
-      fi
-
-      'builtin' 'echo' - $expansion
+      _abbr_create_files
+      source ${_abbr_tmpdir}global-user-abbreviations
+      REPLY=$(_abbr_global_expansion "$abbreviation" 0)
     }
 
     _abbr:export_aliases() {
@@ -632,7 +629,8 @@ abbr() {
       new_abbreviation=$2
       job_group='_abbr:rename'
 
-      expansion=$(_abbr:expansion $current_abbreviation)
+      _abbr:expansion $current_abbreviation
+      expansion=$REPLY
 
       if [[ -n $expansion ]]; then
         _abbr:util_add $new_abbreviation $expansion
