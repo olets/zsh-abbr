@@ -1706,7 +1706,7 @@ _abbr_get_available_abbreviation() {
     fi
 
     ABBR_SPLIT_FN $LBUFFER
-    words=( $REPLY )
+    words=( "${(@)REPLY}" )
 
     # Look for global session abbreviation
 
@@ -2117,11 +2117,13 @@ _abbr_init() {
           local replacement
           local deprecated
 
+          if (( ! $#deprecated_widgets )) return 0
+
           bindkey_declarations=$(bindkey)
 
           # deprecated_widgets is defined in _abbr_init:deprecations
           for deprecated replacement in ${(kv)deprecated_widgets}; do
-            bindkey_declaration=$('builtin' 'echo' $bindkey_declarations | grep $deprecated)
+            bindkey_declaration=${(M)${(f)bindkey_declarations}:#*$deprecated*}
 
             zle -N $deprecated
 
