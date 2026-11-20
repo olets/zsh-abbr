@@ -1,0 +1,38 @@
+name: Package release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      RELEASE_TAG: ${{ github.event.release.tag_name }}
+    steps:
+      - name: Check out release and submodules
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: refs/tags/${{ github.event.release.tag_name }}
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Package source
+        shell: bash
+        run: |
+          version="${RELEASE_TAG#v}"
+          if [[ ! "$version" =~ ^[0-9][0-9A-Za-z.+-]*$ ]]; then
+            echo "Unsupported version tag: $RELEASE_TAG" >&2
+            exit 1
+          fi
+          archive="$RUNNER_TEMP/v${version}.tar.gz"
+          tar --exclude='.git' -czf "$archive" -C "$GITHUB_WORKSPACE" .
+          echo "RELEASE_ARCHIVE=$archive" >> "$GITHUB_ENV"
+
+      - name: Upload release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release upload "$RELEASE_TAG" "$RELEASE_ARCHIVE" --clobber
