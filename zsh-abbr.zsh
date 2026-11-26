@@ -355,7 +355,8 @@ abbr() {
         return
       fi
 
-      expansion=$(_abbr:expansion $*)
+      _abbr:expansion $*
+      expansion=$REPLY
 
       if [[ -z $expansion ]]; then
         return 1
@@ -368,7 +369,7 @@ abbr() {
       _abbr_debugger
 
       local abbreviation
-      local expansion
+      typeset -g REPLY=
 
       if ! (( $# )); then
         _abbr:util_error "_abbr:expansion requires an argument"
@@ -377,19 +378,15 @@ abbr() {
 
       abbreviation=$*
 
-      expansion=$(_abbr_regular_expansion "$abbreviation")
+      _abbr_regular_expansion "$abbreviation"
+      if [[ $REPLY ]] return 0
 
-      if [[ ! "$expansion" ]]; then
-        expansion=$(_abbr_global_expansion "$abbreviation" 1)
-      fi
+      _abbr_global_expansion "$abbreviation" 1
+      if [[ $REPLY ]] return 0
 
-      if [[ ! "$expansion" ]]; then
-        _abbr_create_files
-        source ${_abbr_tmpdir}global-user-abbreviations
-        expansion=$(_abbr_global_expansion "$abbreviation" 0)
-      fi
-
-      'builtin' 'echo' - $expansion
+      _abbr_create_files
+      source ${_abbr_tmpdir}global-user-abbreviations
+      _abbr_global_expansion "$abbreviation" 0
     }
 
     _abbr:export_aliases() {
@@ -632,7 +629,8 @@ abbr() {
       new_abbreviation=$2
       job_group='_abbr:rename'
 
-      expansion=$(_abbr:expansion $current_abbreviation)
+      _abbr:expansion $current_abbreviation
+      expansion=$REPLY
 
       if [[ -n $expansion ]]; then
         _abbr:util_add $new_abbreviation $expansion
@@ -774,7 +772,7 @@ abbr() {
       abbreviation=${1%%=*}
       expansion=${1#*=}
 
-      _abbr:util_add $abbreviation "$('builtin' 'echo' $expansion)"
+      _abbr:util_add $abbreviation $expansion''
     }
 
     _abbr:util_check_command() {
@@ -1180,9 +1178,8 @@ _abbr_regular_expansion() {
 
     # cannot support debug message
 
-    local -a REPLY
     local abbreviation
-    local expansion
+    local -a words
 
     _abbr_regular_expansion:get_expansion() {
       {
@@ -1231,11 +1228,13 @@ _abbr_regular_expansion() {
 
             if [[ -n $prefix_match ]]; then
               if [[ ! $expansion ]]; then
-                expansion=$(_abbr_regular_expansion:get_expansion:get_prefixed_expansion $abbreviation_sans_prefix 1)
+                _abbr_regular_expansion:get_expansion:get_prefixed_expansion $abbreviation_sans_prefix 1
+                expansion=$REPLY
               fi
 
               if [[ ! $expansion ]]; then
-                expansion=$(_abbr_regular_expansion:get_expansion:get_prefixed_expansion $abbreviation_sans_prefix 0)
+                _abbr_regular_expansion:get_expansion:get_prefixed_expansion $abbreviation_sans_prefix 0
+                expansion=$REPLY
               fi
             fi
 
@@ -1248,7 +1247,7 @@ _abbr_regular_expansion() {
             # this quotation mark to fix syntax highlighting "
           done
 
-          'builtin' 'echo' - $expansion
+          REPLY=$expansion
         }
 
         # this quotation mark to fix syntax highlighting "
@@ -1266,15 +1265,15 @@ _abbr_regular_expansion() {
           expansion=$ABBR_REGULAR_USER_ABBREVIATIONS[${(qqq)abbreviation}] # this bracket to fix syntax highlighting }
         fi
 
-        if [[ ! $expansion ]]; then
-          expansion=$(_abbr_regular_expansion:get_expansion:get_prefixed_expansion $abbreviation 1)
+        if [[ $expansion ]]; then
+          REPLY=$expansion
+          return 0
         fi
 
-        if [[ ! $expansion ]]; then
-          expansion=$(_abbr_regular_expansion:get_expansion:get_prefixed_expansion $abbreviation 0)
-        fi
+        _abbr_regular_expansion:get_expansion:get_prefixed_expansion $abbreviation 1
+        if [[ $REPLY ]] return 0
 
-        'builtin' 'echo' - $expansion
+        _abbr_regular_expansion:get_expansion:get_prefixed_expansion $abbreviation 0
       } always {
         unfunction -m _abbr_regular_expansion:get_expansion:get_prefixed_expansion
       }
@@ -1284,18 +1283,24 @@ _abbr_regular_expansion() {
 
     # DUPE _abbr_global_expansion, _abbr_regular_expansion
     # do not expand empty string or all-whitespace string
+
     ABBR_SPLIT_FN $abbreviation
-    [[ -n $REPLY ]] || return
+    # TODO zsh convention is to name array reply variables as `reply` (lowercase)
+    # but ABBR_SPLIT_FN is intended to be overridable externally, so changing that would
+    # be breaking. Once fixed, update this to `reply`.
+    words=( "${(@)REPLY}" )
+    REPLY=
+    if (( ! $#words )) return 1
 
-    expansion=$(_abbr_regular_expansion:get_expansion $abbreviation 1)
+    _abbr_regular_expansion:get_expansion $abbreviation 1
 
-    if [[ ! $expansion ]]; then
+    if [[ ! $REPLY ]]; then
       _abbr_create_files
       source ${_abbr_tmpdir}regular-user-abbreviations
-      expansion=$(_abbr_regular_expansion:get_expansion $abbreviation 0)
+      _abbr_regular_expansion:get_expansion $abbreviation 0
     fi
 
-    'builtin' 'echo' - ${(Q)expansion}
+    REPLY=${(Q)REPLY}
   } always {
     unfunction -m _abbr_regular_expansion:get_expansion
   }
@@ -1386,7 +1391,8 @@ abbr-expand-line() {
 
       while [[ -z $expansion ]] && (( k < ${#cmds} )); do
         abbreviation=${cmds[-1]}
-        expansion=$(_abbr_regular_expansion "$abbreviation")
+        _abbr_regular_expansion "$abbreviation"
+        expansion=$REPLY
         (( k++ ))
       done
 
@@ -1409,7 +1415,8 @@ abbr-expand-line() {
       # first check the full linput, then trim words off the front
       while [[ -z $expansion ]] && (( i < ${#words} )); do
         abbreviation=${words:$i}
-        expansion=$(_abbr_global_expansion "$abbreviation" 1)
+        _abbr_global_expansion "$abbreviation" 1
+        expansion=$REPLY
         (( i++ ))
       done
 
@@ -1424,7 +1431,8 @@ abbr-expand-line() {
         # first check the full linput, then trim words off the front
         while [[ -z $expansion ]] && (( i < ${#words} )); do
           abbreviation=${words:$i}
-          expansion=$(_abbr_global_expansion "$abbreviation" 0)
+          _abbr_global_expansion "$abbreviation" 0
+          expansion=$REPLY
           (( i++ ))
         done
       fi
@@ -1483,10 +1491,10 @@ _abbr_global_expansion() {
   # `_abbr_global_expansion … 0` must always be preceded by creating and sourcing files
   # search this file for examples
 
-  local -a REPLY
   local abbreviation
   local expansion
   local -i session
+  local -a words
 
   abbreviation=$1
   session=$2
@@ -1494,7 +1502,9 @@ _abbr_global_expansion() {
   # DUPE _abbr_global_expansion, _abbr_regular_expansion
   # do not expand empty string or all-whitespace string
   ABBR_SPLIT_FN $abbreviation
-  [[ -n $REPLY ]] || return
+  words=( "${(@)REPLY}" )
+  REPLY=
+  if (( ! $#words )) return 1
 
   if (( session )); then
     expansion=${ABBR_GLOBAL_SESSION_ABBREVIATIONS[${(qqq)abbreviation}]}
@@ -1502,7 +1512,7 @@ _abbr_global_expansion() {
     expansion=${ABBR_GLOBAL_USER_ABBREVIATIONS[${(qqq)abbreviation}]}
   fi
 
-  'builtin' 'echo' - ${(Q)expansion} #  this bracket for syntax highlighting }
+  REPLY=${(Q)expansion} #  this bracket for syntax highlighting }
 }
 
 _abbr_load_user_abbreviations() {
@@ -1696,7 +1706,7 @@ _abbr_get_available_abbreviation() {
     fi
 
     ABBR_SPLIT_FN $LBUFFER
-    words=( $REPLY )
+    words=( "${(@)REPLY}" )
 
     # Look for global session abbreviation
 
@@ -2107,11 +2117,13 @@ _abbr_init() {
           local replacement
           local deprecated
 
+          if (( ! $#deprecated_widgets )) return 0
+
           bindkey_declarations=$(bindkey)
 
           # deprecated_widgets is defined in _abbr_init:deprecations
           for deprecated replacement in ${(kv)deprecated_widgets}; do
-            bindkey_declaration=$('builtin' 'echo' $bindkey_declarations | grep $deprecated)
+            bindkey_declaration=${(M)${(f)bindkey_declarations}:#*$deprecated*}
 
             zle -N $deprecated
 
