@@ -1,0 +1,45 @@
+name: Build and Attach Release Archive
+
+on:
+  workflow_dispatch:
+    inputs:
+      archive_name:
+        description: 'Name to use for the archive'
+        required: true
+        type: string
+      release_tag:
+        description: 'Existing release tag to attach archive to (e.g., v1.0.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  attach-archive:
+    runs-on: ubuntu-latest
+    env:
+      ARCHIVE_NAME: ${{ inputs.archive_name }}
+      TARGET_TAG: ${{ inputs.release_tag }}
+
+    steps:
+      - name: Checkout code at the target release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_TAG }}
+          submodules: recursive
+
+      - name: Install git-archive-all
+        run: pip install git-archive-all
+
+      - name: Create archive
+        run: |
+          git-archive-all --prefix="${ARCHIVE_NAME}/" "${ARCHIVE_NAME}.tar.gz"
+
+      - name: Attach archive to GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CHECKSUM_FILE="${ARCHIVE_NAME}.sha256"
+          sha256sum "${ARCHIVE_NAME}.tar.gz" > "${CHECKSUM_FILE}"
+          gh release upload "${TARGET_TAG}" "${ARCHIVE_NAME}.tar.gz" "${CHECKSUM_FILE}" --clobber
